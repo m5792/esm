@@ -885,11 +885,11 @@ async function fetchGlobalMessage() {
     <label for="adminColumn4">Ledger:</label>
     <select id="adminColumn4" style="width:200px;"></select>
 
-    <label for="starusertDate">From:</label>
-    <input type="date" id="starusertDate" />
+    <label for="startAdmintDate">From:</label>
+    <input type="date" id="startAdmintDate" />
 
-    <label for="enduserDate">To:</label>
-    <input type="date" id="enduserDate" />
+    <label for="endAdminDate">To:</label>
+    <input type="date" id="endAdminDate" />
 
     
 
@@ -941,7 +941,7 @@ async function fetchGlobalMessage() {
         <option value="https://docs.google.com/spreadsheets/d/1FXdbotep3MTk34gUdSF0e0h_hN_Uz66AL0Gnvc-pt_s/edit?gid=475142657#gid=475142657">	Party Weight Sheet</option>
         <option value="https://docs.google.com/spreadsheets/d/1EMIe8Y50_vMXg7y9zT7lXV0vgLyOZuSKdthf8C5XUXc/edit?gid=1752231070#gid=1752231070">	Mukhtiyar</option>
         <option value="https://docs.google.com/spreadsheets/d/1F3Wf5V8sLxENPJFtHij-0GDGBXfeYByGx0DSafDucgM/edit?gid=90095763#gid=90095763">	Tushar</option>
-	<option value="https://docs.google.com/spreadsheets/d/1Av6-EbJ5hcikcTpXOT4G7ZY8uHzlWYsVrPqwHeour78/edit?gid=607297805#gid=607297805">	Transport (Sunil)</option>
+	<option value="https://www.google.com/android/find/">	Find My Device</option>
 	<option value="https://docs.google.com/spreadsheets/d/1wvsPdAQA57HxhTxA3cCcQvUEz93IWkBre_Ix-qvzwss/edit?gid=627393391#gid=627393391">	Store Database SHeet*</option>
 	<option value="https://docs.google.com/spreadsheets/d/1U_jwvZNtFuP91Gljjrbz_cpmb1OIkeDHnKa7aDe7F20/edit?gid=1511450281#gid=1511450281">	Clint List Sheet*</option>
 	<option value="https://docs.google.com/spreadsheets/d/17GZv2O6uupdA5r6p7-zqKZ8AQgZozbGQf2aXPlUzhDA/edit?gid=1122888223#gid=1122888223">	Mipl Office</option>
@@ -952,10 +952,9 @@ async function fetchGlobalMessage() {
      <option value="https://docs.google.com/spreadsheets/d/1ECwXrxs8_FDWw1qAC6_qxEwP_HE3SGMM4qNKVZHlIS0/edit?gid=0#gid=0">	Cash Management Sheet*</option>
      <option value="https://docs.google.com/spreadsheets/d/1h3uC_0Ji4-NUhqrN0aIR-XwLZL5VdgilCBlIzC--SDA/edit?gid=0#gid=0">	Imprest Voucher Sheet*</option>
       <option value="https://docs.google.com/spreadsheets/d/1B6dyXPay3Tyl_7RzGuL9Rg8AhkzdBNhJNRu-T-3kmvI/edit?pli=1&gid=207048997#gid=207048997">	MIPL Party Weight REport*</option>
-     <option value="MULTITECH2023.html">	MIPL DASHBOARD OLD</option>
+     <option value="MULTITECH V.2023.html">	MIPL DASHBOARD OLD</option>
      <option value="IVVOUCHER/IVINDEX.HTML">	Imprest Voucher Dashboard</option>
      <option value="https://github.com/">	github (mukhtarahamadksp@gmail.com)</option>
-	 <option value="eTally.html">eServices|Stationery</option>
     </select>
 </body>
 </html>
@@ -1544,14 +1543,15 @@ const allivuserOptions = [
   { value: "IV04", text: "RAJU-UK18CA3770" },
   { value: "IV05", text: "MANNU-UK18CA4819" },
    { value: "IV06", text: "AAKASH-UK04CC1458" },
-  { value: "IV07", text: "MANJEET-UK18CA4818" }
+  { value: "IV07", text: "MANJEET-UK18CA4818" },
+  { value: "IV10", text: "AJAY KUMAR-UK18CA4819" }
 ];
 
 // 2. Which user sees which options
 const userOptionsivuserMap = {
    "NITIN": [0,2],          // 
-  "Anchal": [0,2, 3,4,5,6,7],              // 
-  "Mukhtar (Admin)": [0, 1, 2, 3,4,5,6,7],   // All options
+  "Anchal": [0,2, 3,4,5,6,7,8],              // 
+  "Mukhtar (Admin)": [0, 1, 2, 3,4,5,6,7,8],   // All options
    "Rahul Kumar": [0,1]   // All options
 };
 
@@ -5333,7 +5333,8 @@ function populateIVDropdowns(data) {
         IV06: "User | Aakash - UK04CC1458",
         IV07: "User | Manjeet - UK18CA4818",
         IV08: "User | NITIN KUMAR",
-        IV09: "User | SUNIL YADAV"
+        IV09: "User | SUNIL YADAV",
+        IV10: "User | AJAY KUMAR-UK18CA4819"
 
         //   <div id="resultIVDiv"></div>  user name show as per your requre
     };
@@ -7759,8 +7760,8 @@ fetch(`https://gnews.io/api/v4/top-headlines?lang=hi&country=in&max=10&token=${a
     dropdown1.onchange = filterAdminTable;
     dropdown2.onchange = filterAdminTable;
     dropdown4.onchange = filterAdminTable;
-    document.getElementById('starusertDate').onchange = filterAdminTable;
-    document.getElementById('enduserDate').onchange = filterAdminTable;
+    document.getElementById('startAdmintDate').onchange = filterAdminTable;
+    document.getElementById('endAdminDate').onchange = filterAdminTable;
     document.getElementById('searchbarAdmin').addEventListener('input', filterAdminTable);
   }
 
@@ -7778,8 +7779,8 @@ fetch(`https://gnews.io/api/v4/top-headlines?lang=hi&country=in&max=10&token=${a
   const f1 = document.getElementById('adminColumn1').value.toLowerCase();
   const f2 = document.getElementById('adminColumn2').value.toLowerCase();
   const f4 = $('#adminColumn4').val()?.toLowerCase();
-  const fromDate = new Date(document.getElementById('starusertDate').value);
-  const toDate = new Date(document.getElementById('enduserDate').value);
+  const fromDate = new Date(document.getElementById('startAdmintDate').value);
+  const toDate = new Date(document.getElementById('endAdminDate').value);
   const searchQuery = document.getElementById('searchbarAdmin').value.toLowerCase().trim();
   const rows = document.querySelectorAll('#userTableBody tr');
 
