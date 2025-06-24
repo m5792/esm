@@ -7674,12 +7674,7 @@ fetch(`https://gnews.io/api/v4/top-headlines?lang=hi&country=in&max=10&token=${a
       font-size: 16px;
     }
 
-   
-
-    .red-bg {
-   
-      color: red;
-    }
+  
 
     a {
       text-decoration: none;
@@ -7690,104 +7685,162 @@ fetch(`https://gnews.io/api/v4/top-headlines?lang=hi&country=in&max=10&token=${a
 <body>
 
   <script>
-    const api123Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-    const sheet123Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
-    const range123 = "POINDEX!U:AC";
+  const api123Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+  const sheet123Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
+  const range123 = "POINDEX!U:AC";
 
-    async function fetchData() {
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet123Id}/values/${range123}?key=${api123Key}`;
-      const response = await fetch(url);
-      const data = await response.json();
-      return data.values;
+  // Inject styles directly into head
+  const style = document.createElement("style");
+  style.textContent = `
+    .blue-bg {
+     
+      color: GREEN;
     }
-
-    function renderSummryTable(data) {
-      const table = document.getElementById("dataTable");
-      table.innerHTML = "";
-
-      // Header
-      const thead = document.createElement("thead");
-      const headerRow = document.createElement("tr");
-      data[0].forEach(header => {
-        const th = document.createElement("th");
-        th.textContent = header;
-        headerRow.appendChild(th);
-      });
-      thead.appendChild(headerRow);
-      table.appendChild(thead);
-
-      // Body
-      const tbody = document.createElement("tbody");
-      for (let i = 1; i < data.length; i++) {
-        const row = document.createElement("tr");
-
-        data[i].forEach((cell, j) => {
-          const td = document.createElement("td");
-
-          // If cell contains a URL, show as icon
-          if (typeof cell === 'string' && (cell.startsWith('http') || cell.startsWith('www'))) {
-            const a = document.createElement('a');
-            a.href = cell.startsWith('http') ? cell : 'https://' + cell;
-            a.innerHTML = "&#128221;"; // 📑 icon
-            a.target = "_blank";
-            td.appendChild(a);
-          } else {
-            td.textContent = cell;
-          }
-
-          // Conditional formatting based on column 5 (index 4) and column 8 (index 7)
-          const col5Val = parseFloat(data[i][4]) || 0;
-          const col8Val = parseFloat(data[i][7]) || 0;
-
-          if (col5Val < 0 && j >= 2 && j <= 4) {
-            td.classList.add("red-bg");
-          }
-
-          if (col8Val < 0 && j >= 5 && j <= 7) {
-            td.classList.add("red-bg");
-          }
-
-          row.appendChild(td);
-        });
-
-        tbody.appendChild(row);
-      }
-
-      table.appendChild(tbody);
+    .pink-bg {
+    
+      color: BLUE;
     }
-
-    function setupSearch(data) {
-      const search123Input = document.getElementById("search123Input");
-      search123Input.addEventListener("input", () => {
-        const searchText = search123Input.value.toLowerCase();
-        const filtered = data.filter((row, index) => {
-          if (index === 0) return true; // Keep header
-          return row.some(cell => (cell || "").toLowerCase().includes(searchText));
-        });
-        renderSummryTable(filtered);
-      });
+    .green-bg {
+    
+      color: #4682b4;
     }
+    .red-bg {
+      color: #ff0000;
+    }
+  `;
+  document.head.appendChild(style);
 
-  async function init() {
-  const data = await fetchData();
-  const header = data[0];
-  const rows = data.slice(1);
+  async function fetch123Data() {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet123Id}/values/${range123}?key=${api123Key}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    return data.values;
+  }
 
-  // Sort by Column 5 (Y) in descending order (index = 4)
-  rows.sort((a, b) => {
-    const valA = parseFloat(a[4]) || 0;
-    const valB = parseFloat(b[4]) || 0;
-    return valB - valA; // Descending
-  });
+  function renderSummryTable(data) {
+    const table = document.getElementById("dataTable");
+    table.innerHTML = "";
 
-  const sortedData = [header, ...rows];
-  renderSummryTable(sortedData);
-  setupSearch(sortedData);
+    // Header
+    const thead = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+
+    const progressHeader = document.createElement("th");
+    progressHeader.textContent = "Progress %";
+    headerRow.appendChild(progressHeader);
+
+    data[0].forEach(header => {
+      const th = document.createElement("th");
+      th.textContent = header;
+      headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    // Body
+    const tbody = document.createElement("tbody");
+    for (let i = 1; i < data.length; i++) {
+      const row = document.createElement("tr");
+
+   const val2 = parseFloat(data[i][2]) || 0; // Column 2: Target
+const val3 = parseFloat(data[i][3]) || 0; // Column 3: Actual
+
+let progress = 0;
+let label = '';
+
+if (val2 !== 0) {
+  progress = (val3 / val2) * 100;
+
+  if (progress <= 100) {
+    label = `${progress.toFixed()}% work complete`;
+  } else {
+    const extra = progress - 100;
+    label = `${extra.toFixed()}% work extra`;
+  }
+} else {
+  label = "---";
 }
 
+const progressCell = document.createElement("td");
+progressCell.textContent = label;
 
-    init();
-  </script>
+
+      // Apply color classes
+      if (progress >= 60 && progress <= 100) {
+        progressCell.classList.add("blue-bg");
+      } else if (progress >= 30 && progress < 60) {
+        progressCell.classList.add("pink-bg");
+      } else if (progress >= 0 && progress < 30) {
+        progressCell.classList.add("green-bg");
+      } else if (progress < 0) {
+        progressCell.classList.add("red-bg");
+      }
+
+      row.appendChild(progressCell);
+
+      data[i].forEach((cell, j) => {
+        const td = document.createElement("td");
+
+        // Show icon if URL
+        if (typeof cell === 'string' && (cell.startsWith('http') || cell.startsWith('www'))) {
+          const a = document.createElement('a');
+          a.href = cell.startsWith('http') ? cell : 'https://' + cell;
+          a.innerHTML = "&#128221;";
+          a.target = "_blank";
+          td.appendChild(a);
+        } else {
+          td.textContent = cell;
+        }
+
+        const col5Val = parseFloat(data[i][4]) || 0;
+        const col8Val = parseFloat(data[i][7]) || 0;
+
+        if (col5Val < 0 && j >= 2 && j <= 4) {
+          td.classList.add("red-bg");
+        }
+        if (col8Val < 0 && j >= 5 && j <= 7) {
+          td.classList.add("red-bg");
+        }
+
+        row.appendChild(td);
+      });
+
+      tbody.appendChild(row);
+    }
+
+    table.appendChild(tbody);
+  }
+
+  function setupSearch(data) {
+    const search123Input = document.getElementById("search123Input");
+    search123Input.addEventListener("input", () => {
+      const searchText = search123Input.value.toLowerCase();
+      const filtered = data.filter((row, index) => {
+        if (index === 0) return true;
+        return row.some(cell => (cell || "").toLowerCase().includes(searchText));
+      });
+      renderSummryTable(filtered);
+    });
+  }
+
+  async function init() {
+    const data = await fetch123Data();
+    const header = data[0];
+    const rows = data.slice(1);
+
+    rows.sort((a, b) => {
+      const valA = parseFloat(a[4]) || 0;
+      const valB = parseFloat(b[4]) || 0;
+      return valB - valA;
+    });
+
+    const sortedData = [header, ...rows];
+    renderSummryTable(sortedData);
+    setupSearch(sortedData);
+  }
+
+  init();
+</script>
 
 </body>
 </html>
