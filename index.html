@@ -5626,7 +5626,7 @@ function populateIVDropdown(dropdown, values) {
       const response = await fetch(`${scriptIVCRURL}?sNo=${sNo}`);
       const data = await response.json();
 
-       if (data.Voucher === "IV03" || data.Voucher === "IV04" ||data.Voucher === "IV05" || data.Voucher === "IV06"|| data.Voucher === "IV07"|| data.Voucher === "IV08"|| data.Voucher === "IV09") {
+       if (data.Voucher === "IV03" || data.Voucher === "IV10" ||data.Voucher === "IV04" ||data.Voucher === "IV05" || data.Voucher === "IV06"|| data.Voucher === "IV07"|| data.Voucher === "IV08"|| data.Voucher === "IV09") {
         document.getElementById("sNo").value = data.SNo;
         document.getElementById("voucherType").value = data.Voucher;
         document.getElementById("ivcr0").value = data.Type;
