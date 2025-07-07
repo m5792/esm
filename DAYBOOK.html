@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Searchable Dropdown Table</title>
+  <style>
+  /* ===== Table Design ===== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 70px; /* space for fixed footer */
+  }
+
+  th, td {
+    border: 1px solid #ccc;
+    padding: 4px;
+    text-align: left;
+  }
+
+  th {
+    background: #012644;
+    color: white;
+  }
+
+  .highlight {
+    background: yellow;
+  }
+
+  /* ===== Footer Layout ===== */
+  .footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #026186;
+    padding: 10px 16px;
+    z-index: 1000;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    color: white;
+  }
+
+  .footer label {
+    margin-right: 4px;
+    font-weight: bold;
+    color: white;
+  }
+
+  #summaryTotals {
+    flex: 1;
+    text-align: right;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  #searchInput {
+    padding: 6px;
+    width: 220px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+
+  /* ===== Dropdown Styling ===== */
+  .custom-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dropdown-search {
+    width: 180px;
+    padding: 6px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 4in;
+  }
+
+  /* ===== Drop-up (Options Show Upward) ===== */
+  .footer .dropdown-options {
+    position: absolute;
+    bottom: 100%;
+    top: auto;
+    left: 0;
+    width: 5in;
+    max-height: 400px;
+    overflow-y: auto;
+    background: rgb(250, 251, 252);
+    border: 1px solid #ccc;
+    z-index: 1001;
+    margin-bottom: 4px;
+    color: black;
+  }
+
+  .dropdown-options div {
+    padding: 5px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .dropdown-options div:hover {
+    background-color: #adf0f5;
+    
+  }
+
+  #summaryTotals {
+  color: #fff;
+  font-size: 18px;
+  text-align: center;
+  width: 100%;
+}
+
+</style>
+
+</head>
+<body>
+
+
+<div class="footer">
+<label>Select Ledger:</label>
+<div id="dropdownDContainer" class="custom-dropdown" ></div>
+
+<label>Selecty V. Type:</label>
+<div id="dropdownBContainer" class="custom-dropdown"></div>
+
+<label>Select PO/REff No.:</label>
+<div id="dropdownFContainer" class="custom-dropdown"></div>
+
+<br><br>
+<input type="text" id="searchInput" placeholder="🔍 Search table..." style="width: 300px; padding: 6px;">
+<br><br>
+<span id="summaryTotals" ></span>
+</div>
+
+
+<table id="dataTable" ></table>
+
+<script>
+const apiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheetId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
+const range = "LEDGER!A:L";
+let sheetData = [];
+
+async function fetchSheetData() {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+  const response = await fetch(url);
+  const data = await response.json();
+  sheetData = data.values;
+
+  populateDropdownD();
+  updateDropdownB();
+  updateDropdownF();
+  renderTable();
+  updateSummaryTotals();
+}
+
+
+function createSearchableDropdown(id, values, onChange) {
+  const container = document.getElementById(id + "Container");
+  container.innerHTML = '';
+
+  const input = document.createElement("input");
+  input.type = "text";
+  input.placeholder = "Search...";
+  input.className = "dropdown-search";
+
+  const dropdown = document.createElement("div");
+  dropdown.className = "dropdown-options";
+  dropdown.style.display = "none"; // 🔴 Hide initially
+
+  container.appendChild(input);
+  container.appendChild(dropdown);
+
+  const uniqueValues = Array.from(new Set(values)).filter(Boolean).sort();
+  let currentOptions = [];
+
+  function renderOptions(filter = "") {
+    dropdown.innerHTML = "";
+    currentOptions = [];
+
+    const filtered = uniqueValues.filter(v => v.toLowerCase().includes(filter.toLowerCase()));
+    const finalList = ["All", ...filtered];
+
+    finalList.forEach(val => {
+      const option = document.createElement("div");
+      option.textContent = val;
+      option.addEventListener("click", () => {
+        input.value = val === "All" ? "" : val;
+        onChange(input.value);
+        dropdown.style.display = "none"; // 🔴 Hide after selecting
+      });
+      dropdown.appendChild(option);
+      currentOptions.push(option);
+    });
+
+    dropdown.style.display = "block"; // ✅ Show only when rendering options
+  }
+
+  input.addEventListener("input", () => {
+    renderOptions(input.value);
+  });
+
+  input.addEventListener("focus", () => {
+    renderOptions(input.value);
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!container.contains(e.target)) {
+      dropdown.style.display = "none"; // 🔴 Hide when clicked outside
+    }
+  });
+
+  // No need to call renderOptions() initially here
+}
+
+
+function populateDropdownD() {
+  const dValues = sheetData.slice(1).map(r => r[3]);
+  createSearchableDropdown("dropdownD", dValues, () => {
+    updateDropdownB();
+    updateDropdownF();
+    renderTable();
+    updateSummaryTotals();
+  });
+}
+
+function updateDropdownB() {
+  const selectedD = document.querySelector('#dropdownDContainer input').value;
+  const bValues = [];
+
+  for (let i = 1; i < sheetData.length; i++) {
+    const dVal = sheetData[i][3];
+    const bVal = sheetData[i][1];
+    if (!selectedD || dVal === selectedD) bValues.push(bVal);
+  }
+
+  createSearchableDropdown("dropdownB", bValues, renderTable);
+}
+
+function updateDropdownF() {
+  const selectedD = document.querySelector('#dropdownDContainer input').value;
+  const fValues = [];
+
+  for (let i = 1; i < sheetData.length; i++) {
+    const dVal = sheetData[i][3];
+    const fVal = sheetData[i][5];
+    if (!selectedD || dVal === selectedD) fValues.push(fVal);
+  }
+
+  createSearchableDropdown("dropdownF", fValues, renderTable);
+}
+
+function renderTable() {
+  const selectedD = document.querySelector('#dropdownDContainer input').value;
+  const selectedB = document.querySelector('#dropdownBContainer input').value;
+  const selectedF = document.querySelector('#dropdownFContainer input').value;
+  const searchQuery = document.getElementById("searchInput").value.trim().toLowerCase();
+
+  const table = document.getElementById("dataTable");
+  table.innerHTML = "";
+
+  const headers = sheetData[0];
+  const headerRow = document.createElement("tr");
+  headers.forEach(h => {
+    const th = document.createElement("th");
+    th.textContent = h;
+    headerRow.appendChild(th);
+  });
+  table.appendChild(headerRow);
+
+  for (let i = 1; i < sheetData.length; i++) {
+    const row = sheetData[i];
+    const dVal = row[3];
+    const bVal = row[1];
+    const fVal = row[5];
+
+    let showRow = false;
+    if (searchQuery) {
+      showRow = row.some(cell => cell && cell.toLowerCase().includes(searchQuery));
+    } else {
+      const matchesD = !selectedD || dVal === selectedD;
+      const matchesB = !selectedB || bVal === selectedB;
+      const matchesF = !selectedF || fVal === selectedF;
+      showRow = matchesD && matchesB && matchesF;
+    }
+
+    if (showRow) {
+      const tr = document.createElement("tr");
+      const value = (row[1] || "").trim().toUpperCase();
+      if (value === "BANK") tr.style.color = "red";
+      else if (value === "CREDIT NOTE") tr.style.color = "blue";
+
+      row.forEach((cell, index) => {
+        const td = document.createElement(index === 0 ? 'th' : 'td');
+        if (cell && (cell.startsWith("http") || cell.startsWith("www"))) {
+          const a = document.createElement("a");
+          a.href = cell.startsWith("http") ? cell : "http://" + cell;
+          a.innerHTML = "&#128221";
+          a.target = "_blank";
+          td.appendChild(a);
+        } else {
+          if (searchQuery && cell && cell.toLowerCase().includes(searchQuery)) {
+            td.classList.add("highlight");
+          }
+          td.textContent = cell || "";
+        }
+        tr.appendChild(td);
+      });
+
+      table.appendChild(tr);
+    }
+  }
+}
+function updateSummaryTotals() {
+  const selectedD = document.querySelector('#dropdownDContainer input').value;
+  const selectedB = document.querySelector('#dropdownBContainer input').value;
+  const selectedF = document.querySelector('#dropdownFContainer input').value;
+  const searchQuery = document.getElementById("searchInput").value.trim().toLowerCase();
+
+  let totalTaxInvoice = 0;
+  let totalBank = 0;
+  let totalCreditNote = 0;
+  let totalWeight = 0;
+
+  for (let i = 1; i < sheetData.length; i++) {
+    const row = sheetData[i];
+    const dVal = row[3];
+    const bVal = (row[1] || "").trim().toUpperCase();
+    const fVal = row[5];
+    const colE = parseFloat(row[4]) || 0;
+    const colG = parseFloat(row[6]) || 0;
+    const colH = parseFloat(row[7]) || 0;
+
+    let showRow = false;
+
+    // Show based on search OR dropdowns
+    if (searchQuery) {
+      showRow = row.some(cell => cell && cell.toLowerCase().includes(searchQuery));
+    } else {
+      const matchesD = !selectedD || dVal === selectedD;
+      const matchesB = !selectedB || bVal === selectedB;
+      const matchesF = !selectedF || fVal === selectedF;
+      showRow = matchesD && matchesB && matchesF;
+    }
+
+    if (showRow) {
+      if (bVal === "TAX INVOICE") totalTaxInvoice += colG;
+      if (bVal === "BANK") totalBank += colE;
+      if (bVal === "CREDIT NOTE") totalCreditNote += colG;
+      totalWeight += colH;
+    }
+  }
+
+  const summaryDiv = document.getElementById("summaryTotals");
+  summaryDiv.innerHTML = `
+    <b>Total Tax Invoice:</b> ₹${totalTaxInvoice.toFixed()} |
+    <b>Bank:</b> ₹${totalBank.toFixed()} |
+    <b>Credit Note:</b> ₹${totalCreditNote.toFixed()} |
+    <b>Weight:</b> ${totalWeight.toFixed()} kg
+  `;
+}
+
+
+document.getElementById("searchInput").addEventListener("input", () => {
+  renderTable();
+  updateSummaryTotals();
+  // fetchSheetData();
+});
+ fetchSheetData();
+</script>
+
+</body>
+</html>
