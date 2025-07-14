@@ -443,10 +443,35 @@
 
     const user = users[userId];
 
-    if (user.status === "locked") {
-      document.getElementById('login-msg').innerText = "Your account is locked!";
-      return;
-    }
+
+    //****
+   const status = user.status;
+
+if (status === "locked") {
+  document.getElementById('login-msg').innerText = "Your account is locked!";
+  return;
+}
+
+// Check if status is a valid date
+const expiryDate = Date.parse(status);
+if (!isNaN(expiryDate)) {
+  const today = new Date();
+  const expiry = new Date(expiryDate);
+  const diffTime = expiry - today;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 0) {
+    document.getElementById('login-msg').innerText = "Your Licence Expired, Please Contact Admin";
+    return;  // warning dikhani ho aur login allow karna ho, to return mat likhna.
+  } else if (diffDays <= 5) {
+    const msg = `Your licence will expire in ${diffDays} day${diffDays === 1 ? '' : 's'}`;
+    alert(msg);
+    document.getElementById('login-msg').innerText = msg;
+    
+    // Yahan return nahi dena chahenge agar login allow karna hai
+  }
+}
+//***
 
     if (user.password === password) {
       currentUser = userId;
@@ -956,18 +981,19 @@ async function fetchGlobalMessage() {
      <option value="MULTITECH V.2023.html">	MIPL DASHBOARD OLD</option>
      <option value="MULTITECH2023.html">MIPL Old Dashboard</option>
      <option value="https://github.com/">	github (mukhtarahamadksp@gmail.com)</option>
+     <option value="eTally.html">	eTally Dashboard</option>
     </select>
-
-	
-<br/><br/><br/>
-
- <a href="file://///Laptop-q248401d/mipl" target="_blank"><img src="https://cdn-icons-png.freepik.com/512/7575/7575914.png" alt="You Tube" width="60" height="60" /></a>
-     
 </body>
 </html>
 
 <!-- यह एक नोट है, Dropdown URL  Script Stop Heare -->
 
+<option value="\\Laptop-q248401d\mipl">Sharing Folder</option>
+
+<br/><br/><br/>
+
+ <a href="\\Laptop-q248401d\mipl" target="_blank"><img src="https://cdn-icons-png.freepik.com/512/7575/7575914.png" alt="You Tube" width="60" height="60" /></a>
+                            
 
 
         </div> <!-- यह एक नोट है, vertical Two Part Div (30-70) left content stop -->
@@ -3789,29 +3815,31 @@ filterAndRender(currentAccountType, currentLedgerFilter);
     try {
       const response = await fetch(`${scriptIVMAURL}?sNo=${sNo}`);
       const data = await response.json();
+      
 
-      if (
-        data.result !== "error" &&
-        (data.Voucher === "MA" || data.Voucher === "TA" || data.Voucher === "BANK" || data.Voucher === "JLN")
-      ) {
-        document.getElementById("sNo").value = data.SNo;
-        document.getElementById("msaf51").value = data.Voucher;
-        document.getElementById("msaf52").value = data.Type;
-        document.getElementById("msaf53").value = data.Date;
-        document.getElementById("msaf54").value = data.Ledger;
-        document.getElementById("msaf55").value = data.Amount;
-        document.getElementById("msaf56").value = data.Narration;
+      //**** option value ke base par data fetch krna
+const msaf51Dropdown = document.getElementById("msaf51");
+const selectedVoucher = msaf51Dropdown.value;
 
-        // ✅ Add "DLT - delete" option if not present
-        const msaf51Dropdown = document.getElementById("msaf51");
-        if (![...msaf51Dropdown.options].some(opt => opt.value === "DLT")) {
-          const dlt51Option = document.createElement("option");
-          dlt51Option.value = "DLT";
-          dlt51Option.text = "Delete";
-          dlt51Option.style.color = "red";
-          dlt51Option.style.backgroundColor = "blue";
-          msaf51Dropdown.appendChild(dlt51Option);
-        } 
+if (data.result !== "error" && data.Voucher === selectedVoucher) {
+  document.getElementById("sNo").value = data.SNo;
+  msaf51Dropdown.value = data.Voucher;
+  document.getElementById("msaf52").value = data.Type;
+  document.getElementById("msaf53").value = data.Date;
+  document.getElementById("msaf54").value = data.Ledger;
+  document.getElementById("msaf55").value = data.Amount;
+  document.getElementById("msaf56").value = data.Narration;
+
+  // ✅ Add "DLT - delete" option if not present
+  if (![...msaf51Dropdown.options].some(opt => opt.value === "DLT")) {
+    const dlt51Option = document.createElement("option");
+    dlt51Option.value = "DLT";
+    dlt51Option.text = "Delete";
+    dlt51Option.style.color = "red";
+    dlt51Option.style.backgroundColor = "blue";
+    msaf51Dropdown.appendChild(dlt51Option);
+  }
+ 
         //
 
         // ✅ Switch to modify mode
@@ -5628,12 +5656,26 @@ function populateIVDropdown(dropdown, values) {
     waitMessage.style.display = 'block';
 
   //   document.getElementById("submitIVCRButton").style.display = "none";  //****
-    try {
-      const response = await fetch(`${scriptIVCRURL}?sNo=${sNo}`);
-      const data = await response.json();
+ //   try {
+  //    const response = await fetch(`${scriptIVCRURL}?sNo=${sNo}`);
+   //   const data = await response.json();
 
-       if (data.Voucher === "IV03" || data.Voucher === "IV10" ||data.Voucher === "IV04" ||data.Voucher === "IV05" || data.Voucher === "IV06"|| data.Voucher === "IV07"|| data.Voucher === "IV08"|| data.Voucher === "IV09") {
-        document.getElementById("sNo").value = data.SNo;
+    //   if (data.Voucher === "IV03" || data.Voucher === "IV10" ||data.Voucher === "IV04" ||data.Voucher === "IV05" || data.Voucher === "IV06"|| data.Voucher === "IV07"|| data.Voucher === "IV08"|| data.Voucher === "IV09") {
+     
+
+
+    //**** option value ke base par data fetch krna
+
+    try {
+  const response = await fetch(`${scriptIVCRURL}?sNo=${sNo}`);
+  const data = await response.json(); // ✅ You need this line!
+
+const voucherTypeDropdown = document.getElementById("voucherType");
+const selectedIVVoucher = voucherTypeDropdown.value;
+
+if (data.result !== "error" && data.Voucher === selectedIVVoucher) {
+    
+    document.getElementById("sNo").value = data.SNo;
         document.getElementById("voucherType").value = data.Voucher;
         document.getElementById("ivcr0").value = data.Type;
         document.getElementById("ivcr1").value = data.Date;
@@ -8086,6 +8128,22 @@ progressCell.textContent = label;
 
 
 
+<style>
+#floatingBrand {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  z-index: 9999;
+  background: transparent;
+  padding: 5px 10px;
+  pointer-events: none; /* Prevent clicks if needed */
+}
+</style>
+
+<div id="floatingBrand">
+  <span style="color:rgb(129, 1, 1);font-size:130%;font-family:Magneto;">eS |</span> 
+  <span style="color:#004d80;font-size:130%;font-family:Magneto;">MTally</span>
+</div>
 
 
 
