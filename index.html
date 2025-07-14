@@ -8128,22 +8128,62 @@ progressCell.textContent = label;
 
 
 
+
+<!-- ADMIN LOGO DETAILS start -->
 <style>
 #floatingBrand {
   position: fixed;
-  bottom: 10px;
-  right: 10px;
+  top: 6px;
+  right: 300px;
   z-index: 9999;
   background: transparent;
   padding: 5px 10px;
-  pointer-events: none; /* Prevent clicks if needed */
+  pointer-events: auto; /* Allow hover events */
+}
+
+/* Sticky Note Style */
+#noteTooltip {
+  display: none;
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: #cceaff;
+  border: 1px solid #013556;
+  padding: 10px;
+  width: 200px;
+  font-family: Arial, sans-serif;
+  font-size: 90%;
+  box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+  z-index: 10000;
+  border-radius: 5px;
 }
 </style>
 
 <div id="floatingBrand">
-  <span style="color:rgb(129, 1, 1);font-size:130%;font-family:Magneto;">eS |</span> 
-  <span style="color:#004d80;font-size:130%;font-family:Magneto;">MTally</span>
+  <span style="color:rgb(236, 135, 135);font-size:130%;font-family:Magneto;">eS |</span> 
+  <span style="color:#93d4ff;font-size:130%;font-family:Magneto;">MTally</span>
+  
+  <div id="noteTooltip">Dighin By: eS|MTally <br/> Admin: Mukhtiyar Ahamad <br/> Contect: +91-9756735792</div>
 </div>
+
+<script>
+const brand = document.getElementById('floatingBrand');
+const tooltip = document.getElementById('noteTooltip');
+
+// Show on hover
+brand.addEventListener('mouseenter', () => {
+  tooltip.style.display = 'block';
+});
+
+// Hide when mouse leaves
+brand.addEventListener('mouseleave', () => {
+  tooltip.style.display = 'none';
+});
+</script>
+
+<!-- ADMIN LOGO DETAILS stop -->
+
+
 
 
 
