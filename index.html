@@ -253,24 +253,45 @@
   overflow-x: auto;
 }
 
+
+
+ 
 /* Base table style */
-  table {
-      width: 100%;
-   
-      margin-top: 20px;
-    }
-    th, td {
-      border: 1px solid #090909;
-      padding: 6px;
-      text-align: left;
-    }
-    th {
-      background-color: #333;
-      color: white;
-    }
-     table tr:hover {
-            background-color: #011d30 ; color: white;
-        }
+ table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e0e0e0;
+  padding: 10px 14px;
+  text-align: left;
+}
+
+th {
+  background-color: #004d80;
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+table tr:hover {
+  background-color: #004d80;
+  color: white;
+  transition: background-color 0.3s ease, color 0.3s ease;
+ 
+}
 
 /* Form Styling Scoped to .form-container */
 .form-container input,
@@ -374,9 +395,9 @@
     <button onclick="showSection(2)">Cash Ledger Report</button>
     <button onclick="showSection(3)">MIPL Ledger Report</button>
     <button onclick="showSection(4)">Imprest Voucher Report</button>
-    <button onclick="showSection(5)">PO Summry</button>
+    <button onclick="showSection(5)">Job/Reff Summry</button>
     
-    <button onclick="showSection(6)">Job/Reff</button>
+     <!-- <button onclick="showSection(6)">Job/Reff</button> -->
   
     <button onclick="showSection(7)" style="color: rgb(250, 184, 184);">Admin*</button>
  
@@ -554,13 +575,13 @@ async function fetchGlobalMessage() {
 
 <!-- Welcome Massage start-->
  <script>
-    let hasSpoken = false;
-    function speakOnce() {
-      if (hasSpoken) return;
-      hasSpoken = true;
-      const msg = new SpeechSynthesisUtterance("Welcome");
-      window.speechSynthesis.speak(msg);
-    }
+    //   let hasSpoken = false;
+    //   function speakOnce() {
+     //  if (hasSpoken) return;
+   //    hasSpoken = true;
+     // const msg = new SpeechSynthesisUtterance("Welcome");
+   //   window.speechSynthesis.speak(msg);
+  //   }
   </script>
    <!-- Welcome Massage Stop-->
 </body>
@@ -576,7 +597,7 @@ async function fetchGlobalMessage() {
    
       
 <!-- यह एक नोट है, vertical Two Part Div (30-70) container content start  Heare ((CODE501)) -->
-    <div class="container">  <div class="left">   <!-- यह एक नोट है, vertical Two Part Div (30-70) left content start -->
+    <div class="container">  <div class="left" style="background-color: #ecf6f7; border: none;">   <!-- यह एक नोट है, vertical Two Part Div (30-70) left content start -->
 
 
         <blink> <span style="color:#131c3b;font-size:120%;font-family:Arial Black;">Home</span> </blink> <br/>   
@@ -812,44 +833,31 @@ async function fetchGlobalMessage() {
      
       <div id="section4" class="section hidden"><table id="myIVTable"></table><br/><br/><br/><br/><br/><br/><br/><br/></div>    <!--  sections4 start  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
       
-      <div id="section5" class="section hidden"> <table id="dataTable"></table><br/><br/><br/><br/><br/><br/><br/><br/></div>
+
+      <!--  sections5 START  AAAAAAAAAAAAAAAAAAA  X -->
+      <div id="section5" class="section hidden"> 
+      
+      
+  <table id="dataTable"></table>
+
+  <!-- Modal Popup -->
+  <div id="overlay" onclick="closeModal()"></div>
+  <div id="dataModal">
+    <h3>Multitech Infracon Pvt Ltd. <br/>Ledger Details</h3>
+     <button onclick="printModal()">🖨️ Print</button>
+    <button onclick="closeModal()">❌ Close</button>
+    <div id="modalContent"></div>
+  </div>
+
+        <br/><br/><br/><br/><br/><br/><br/><br/>
+      
+      
+      </div>    <!--  sections5 stop  AAAAAAAAAAAAAAAAAAA  X -->
       
 
 <!--  sections6 start  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
-      <div id="section6" class="section hidden">
-        
-        
-<body>
-  <!-- Filter Bar -->
-  <div class="filterJBcontainer">
-    <label for="userFilter">User:</label>
-    <select id="userFilter" onchange="filterJBData()">
-      <option value="">All</option>
-    </select>
-
-    <label for="orderByFilter">Order By:</label>
-    <select id="orderByFilter" onchange="filterJBData()">
-      <option value="">All</option>
-    </select>
-
-    <label for="typeFilter">By Status:</label>
-    <select id="typeFilter" onchange="filterJBData()">
-      <option value="">All</option>
-    </select>
-
-    <input type="text" id="searchBox" placeholder="🔍 Search..." oninput="filterJBData()" />
-
-    <button class="print-btn" onclick="printJBTable()">🖨️ Print Table</button>
-  </div>
-
-  
-
-  <!-- Main Content -->
-  <div class="contentJB">
-    <div id="resultsJB"></div>
-  </div>
-
- </div>    <!--  sections6 stop  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
+      <div id="section6" class="section hidden"> </div>   
+   <!--  sections6 stop  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
 
 
 
@@ -1049,7 +1057,8 @@ async function fetchGlobalMessage() {
           <select id="msaf52" name="Type" required>
             <option value="PAYMENT" style="color: green;">Payment</option>
             <option value="RECEIPT" style="color: red;">Receipt</option>
-            <option value="BILL">Bill</option>
+            <option value="BILLDR">Bills Payable</option>
+            <option value="BILLCR">Bills Receivable</option>
             <option value="SALARY">Salary</option>
           </select>
           
@@ -1323,6 +1332,8 @@ function syncLedgerMsaf99Option() {
               <button type="button" class="fetchbtn" onclick="fetchSRRDetails()">Fetch Details</button>
               <button type="button" class="fetchbtn" id="modifySRRButton" onclick="modifySRREntry()" style="display:none;">Modify Entry</button>
     </form>  
+
+<br/><br/><br/>
     </div>
 
 
@@ -1340,7 +1351,7 @@ function syncLedgerMsaf99Option() {
 <!--  sections10 start  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA -->
       <div id="section10" class="section hidden">
 
-    <div class="container">  <div class="left" style="background-color: rgb(1, 91, 114);color:#f2f2f3;font-weight: bold;">   <!-- यह एक नोट है, vertical Two Part Div (30-70) left content start ((CODE501)) -->
+    <div class="container">  <div class="left" style="background-color: rgb(233, 252, 228);color:#003e3f;font-weight: bold;">   <!-- यह एक नोट है, vertical Two Part Div (30-70) left content start ((CODE501)) -->
 
     <div class="form-container">
 
@@ -1653,72 +1664,21 @@ document.addEventListener("DOMContentLoaded", function () {
 <!--  sections13 start  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA -->
       <div id="section13" class="section hidden">
 
-    <div class="container">  <div class="left" style="background-color: #007685;">   <!-- यह एक नोट है, vertical Two Part Div (30-70) left content start ((CODE501)) -->
+    <div class="container">  <div class="left" style="background-color: #e2e5e6;">   <!-- यह एक नोट है, vertical Two Part Div (30-70) left content start ((CODE501)) -->
+
+      <label style="font-size: 16px; font-weight: bold;color: rgb(1, 25, 68);">Select Voucher:</label>
+<select id="designUSER" required onchange="showForm(this.value)" style="width: 3in; font-size: 18px; text-align: center; background-color: #030010;color: rgb(247, 247, 247);">
+     <option value="MFDY">Modify Entry</option>
+      <option value="CREAT">New Job/Reff No.</option>
+</select>
+
 
     <div class="form-container">
 
-       <form id="mainREFFNOForm">
-          <input type="hidden" name="SNo" id="sNo" />
-
-          <label  style="font-size:100%;font-family:Arial;color: red;font-weight: bold;">User*</label>
-          <select id="msaf70" name="Voucher" required>
-            <option value="JOB/REFF">Job Details</option>
-           </select>
-
-<label  style="color:black;font-size:100%;font-family:Arial;color: rgb(234, 248, 234);font-weight: bold;">Select Job/Reff. User*</label>
-<select id="msaf71" name="Type" required></select> 
-
-
-
-           <label  style="color:rgb(234, 248, 234);font-size:100%;font-family:Arial;">Order By</label>
-          <select id="msaf72" name="Date" required>
-            <option value="RAHUL">RAHUL</option>
-            <option value="TUSHAR AGARWAR (MD)">TUSHAR AGARWAL (MD)</option>
-            <option value="LESHANT">LESHANT</option>
-            <option value="OTHER">OTHER</option>
-           </select>
-
-           <label  style="color:rgb(234, 248, 234);font-size:100%;font-family:Arial;">Clint Name*</label>
-            <input type="text" id="msaf73" name="Ledger" required placeholder="Enter Cline Name"> 
-
-            <label  style="color:rgb(234, 248, 234);font-size:100%;font-family:Arial;">Firm Name/ Order Details*</label>
-            <input type="text" id="msaf74" name="VNo" required placeholder="Enter Firm Name/ Order Details"> 
-
-            <label  style="color:rgb(234, 248, 234);font-size:100%;font-family:Arial;">Address*</label>
-            <input type="text" id="msaf75" name="Reff" placeholder="Enter Address"style="text-transform: uppercase;">
-         
+<div id="formContent">
+    <!-- Form will be injected here -->
+  </div>
        
-
-          <label  style="color:rgb(234, 248, 234);font-size:100%;font-family:Arial;">Job/Reff No.*</label>
-          <input type="text" id="msaf76" name="Amount" placeholder="Enter Job/Reff No."style="text-transform: uppercase;">
-
-          <label  style="color:rgb(234, 248, 234);font-size:90%;font-family:Arial;">Status</label>
-          <select id="msaf77" name="Weight" required>
-            <option value="RUNNING">Running</option>
-            <option value="COMPLETED">Completed</option>
-            <option value="CANCELED">Canceled</option>
-            <option value="PENDING">Pending</option>
-           </select>
-
-          <input type="hidden" name="Timestamp" id="timestampREFFNO">
-          <input type="submit" id="submitREFFNOButton" value="Submit">
-        </form>
-    
-
-         <H3 style="background-color: #004d80;color: WHITE;font-size: 100%; text-align: center;">Entry Modify</H3>
-
-        <form id="modifyREFFNOForm">
-          <input type="hidden" id="formModeREFFNO" name="formModeREFFNO" value="new">
-            <input type="number" id="searchREFFNOSNo" placeholder="Enter S.No. to Modify Entry" >
-            <button type="button" class="fetchbtn" onclick="fetchREFFNODetails()">Fetch Details</button>
-            <button type="button" class="fetchbtn" id="modifyREFFNOButton" onclick="modifyREFFNOEntry()" style="display:none;">Modify Entry</button>
-             <!-- Wait message div -->
-<div id="waitREFFNOMessage" style="display:none; color:red; font-size:16px; font-weight:bold;"></div>
-        </form>  
-
-    <br/>
-        <span style="color:rgb(248, 163, 163);font-size:130%;font-family:Magneto;">eS |</span> 
-        <span style="color:#88c5ee;font-size:130%;font-family:Magneto;">MTally</span>
 </div>   
 
         </div> <!-- यह एक नोट है, vertical Two Part Div (30-70) left content stop -->
@@ -2183,7 +2143,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
       </div>  <!-- section3B content stop hare *********************************************************************************************************-->
 
-      <div id="section5b" class="section hidden"> <input type="text" id="search123Input" placeholder="🔍 Search..." /></div> <!-- section5B content stop hare ****-->
+      <div id="section5b" class="section hidden" style="background-color: #d7d9dc;">  <!-- section5B content START hare ****-->
+        
+          <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+    <div id="poSummaryBox" style="color: rgb(0, 30, 38); padding-left: 10px;">Summary</div>
+    <div style="display: flex; align-items: center; gap: 8px; padding-right: 10px;">
+      <label for="search123Input" style="color: rgb(1, 17, 53);">Search:</label>
+      <input type="text" id="search123Input" placeholder="🔍 Search..." style="padding: 4px 8px; border-radius: 4px; border: none;" />
+    </div>
+  </div>
+      
+      </div> <!-- section5B content stop hare ****-->
 
       <!-- section4B content start hare *********************************************************************************************************-->
        <div id="section4b" class="section hidden">
@@ -2219,7 +2189,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
       </div>  <!-- section4B content stop hare *********************************************************************************************************-->
 
-      <div id="section6b" class="section hidden"><div id="jbSummaryBox"></div></div>    <!-- section6B content  hare ----->
 
 
 
@@ -2247,12 +2216,13 @@ document.addEventListener("DOMContentLoaded", function () {
 <div id="searchDiv">
 
    <label for="sheetSelector" style="color: black;font-size: 20px;">Select Sheet:</label>
-  <select id="sheetSelector" style="width: 6in; height: 30px; font-size:20px;" onchange="loadusrAdminSheet()">
+  <select id="sheetSelector" style="width: 6in; height: 30px; font-size:15px;" onchange="loadusrAdminSheet()">
+    <option value="psw">ID/Password View</option>
     <option value="mpr">CASH LEDGER REPORT</option>
     <option value="ivcr">IMPREST VOUCHER REPORT</option>
     <option value="sale">SALE VOUCHER REPORT</option>
     <option value="po">PURCHASE ORDER REPORT </option>
-    <option value="psw">ID/Password VIEW</option>
+    
   </select>
            <label  style="color: black;font-size: 20px;">Search in Sheet:</label>
             <input type="text" id="searchbarAdmin" style="width: 6in; height: 30px; font-size:20px;" placeholder="🔍 Search Heare ..." />
@@ -2412,10 +2382,13 @@ setInterval(displayCurrentDateTime, 1000);
         }
       .left {
     flex: 2; /* 70% */
-    background-color: #b9e0f9;
-    padding: 20px;
-    border-bottom: 1px solid #ccc;
-    overflow: auto; /* Scroll content if it overflows */
+    background-color: #dddedf;
+      border: 7px solid #004d80;
+      padding: 10px;
+      z-index: 99;
+      overflow-y: auto;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      border-radius: 8px;
 }
 
 .right {
@@ -2773,11 +2746,13 @@ setInterval(displayCurrentDateTime, 1000);
           loadIVCRSheet();
           //
           filterSKHR(); // shekher table
-         jobbJBload();
+       
           eventSheet();
           fetchUserData();
           filterDp();  // SRR RAGISTER
 
+           document.getElementById("designUSER").value = "CREAT"; // po/reff no. form ***
+    showForm("CREAT"); // po/reff no. form ***
 //
 loadSheet();
             document.getElementById('searchBar').addEventListener('input', filterTable);
@@ -5772,23 +5747,7 @@ if (![...voucherDropdown.options].some(opt => opt.value === "DLT")) {
 <head>
   <title>Ledger Filter</title>
   <style>
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 6px;
-      text-align: left;
-    }
-    th {
-      background-color: #333;
-      color: white;
-    }
-     table tr:hover {
-            background-color: #011d30 ; color: white;
-        }
+   
     tr.receipt { background-color: #ffe6e6; color: #a10404; }
     tr.bill { background-color: #e6f3ff; color: #1d03c6; }
     .runningBalance { font-weight: bold; }
@@ -6002,603 +5961,6 @@ function populateDropdownList(data) {
  <!-- IMPREST VOUCHER FORM LEDGER DROPDOWN & TABLE CODE STOP -->
 
   
-
-
-
-
-
- 
-            
-<!-- job/reff VOUCHER form div script start hare -->
-<script>
-  const scriptREFFNOURL = 'https://script.google.com/macros/s/AKfycbw0xCIuyevQ3rXPs_sa-9yQGZ50eSIFGMwta7Rq0GqEXHCWDJqi5e4xvdE1hh1NSdU/exec';
-
-  document.addEventListener("submit", async function (e) {
-    const form = e.target;
-    if (form.id !== "mainREFFNOForm") return;
-
-    e.preventDefault();
-     const formMode = document.getElementById("formModeREFFNO").value; //****
-    const submitREFFNOButton = document.getElementById("submitREFFNOButton");
-    submitREFFNOButton.disabled = true;
-    submitREFFNOButton.value = "Wait..";
-
-    const now = new Date();
-    document.getElementById('timestampREFFNO').value = `${now.getMonth()+1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
-
-    const formInputs = form.querySelectorAll('input, textarea');
-    formInputs.forEach(input => {
-      if (input.type === 'text' || input.type === 'textarea') {
-        input.value = input.value.toUpperCase();
-      }
-    });
-
-    //****
-    
-    if (formMode === "modify") {
-      await modifyREFFNOEntry();
-    } else {
-      await submitREFFNOEntry(form);
-    }
-
-    submitREFFNOButton.disabled = false;
-    submitREFFNOButton.value = "Submit";
-  });
-
-  async function submitREFFNOEntry(form) {
-    const formData = new FormData(form);
-    try {
-      const response = await fetch(scriptREFFNOURL, { method: 'POST', body: formData });
-      const result = await response.json();
-
-      if (result.result === 'success') {
-        alert('Entry saved successfully!');
-        form.reset(); // FORM RESET
-        document.getElementById("formModeREFFNO").value = "new";
-        jobbJBload(); // Reload dropdowns or table if needed
-         fetchData();  // ✅ Refresh dropdowns or UI
-         jobbPOReffload(); //
-
-           // ✅ Remove DLT option after submit
-        const jobreffDropdown = document.getElementById("msaf70");
-        const dltJOBOption = [...jobreffDropdown.options].find(opt => opt.value === "DLT");
-        if (dltJOBOption) {
-          jobreffDropdown.removeChild(dltJOBOption);
-        }
-        //
-      } else {
-        alert(`Error: ${result.error || 'Unknown error occurred.'}`);
-      }
-    } catch (error) {
-      alert(`Error submitting the form: ${error.message}`);
-    }
-  }
-    //****
-   
-
-  async function fetchREFFNODetails() {
-    const sNo = document.getElementById("searchREFFNOSNo").value;
-    const waitMessage = document.getElementById("waitREFFNOMessage");
-    waitMessage.innerText = "Fetching data... Please wait...";
-    waitMessage.style.display = 'block';
-
-  //   document.getElementById("submitREFFNOButton").style.display = "none";  //****
-    try {
-      const response = await fetch(`${scriptREFFNOURL}?sNo=${sNo}`);
-      const data = await response.json();
-
-      if (data.result !== "error" && (data.Type === "PRAKHAR" || data.Type === "HARSHIT")) {
-        document.getElementById("sNo").value = data.SNo;
-        document.getElementById("msaf70").value = data.Voucher;
-        document.getElementById("msaf71").value = data.Type;
-        document.getElementById("msaf72").value = data.Date;
-        document.getElementById("msaf73").value = data.Ledger;
-        document.getElementById("msaf74").value = data.VNo;
-        document.getElementById("msaf75").value = data.Reff;
-        document.getElementById("msaf76").value = data.Amount;
-        document.getElementById("msaf77").value = data.Weight;
-      //  document.getElementById("modifyREFFNOButton").style.display = "inline-block";
-
-
-       // ✅ Add "DLT - delete" option if it doesn't exist already
-const jobreffDropdown = document.getElementById("msaf70");
-if (![...jobreffDropdown.options].some(opt => opt.value === "DLT")) {
-  const dltOptionJOBREFF = document.createElement("option");
-  dltOptionJOBREFF.value = "DLT";
-  dltOptionJOBREFF.text = "Delete";
-  dltOptionJOBREFF.style.color = "red";
-  dltOptionJOBREFF.style.backgroundColor = "blue";
-  jobreffDropdown.appendChild(dltOptionJOBREFF);
-}
-
-       document.getElementById("formModeREFFNO").value = "modify"; // ✅ Set to modify
-    //    document.getElementById("modifyREFFNOButton").style.display = "inline-block";
-
-    // ✅ Show alert after successful data fetch
-      alert(" Select Delete Option in User Section For Delete Entry");
-
-      } else {
-        alert("No record found for the given S.No.");
-      }
-    } catch (error) {
-      console.error("Error fetching details:", error);
-      alert("Please reconcile details or contact admin.");
-    } finally {
-      setTimeout(() => waitMessage.style.display = 'none', 2000);
-    }
-  }
-
-  async function modifyREFFNOEntry() {
-    const waitMessage = document.getElementById("waitREFFNOMessage");
-    waitMessage.innerText = "Please wait...";
-    waitMessage.style.display = "block";
-
-
-    const form = document.getElementById('mainREFFNOForm');
-
-    // ✅ Set new timestamp
-    const now = new Date();
-    document.getElementById('timestampREFFNO').value = `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
-
-    const formData = new FormData(form);
-    formData.set('SNo', document.getElementById('sNo').value);
-
-    try {
-      const response = await fetch(scriptREFFNOURL, { method: 'POST', body: formData });
-      const result = await response.json();
-
-      if (result.result === 'success') {
-        alert('Entry modified successfully!');
-        form.reset();
-        document.getElementById("formModeREFFNO").value = "new"; // ✅ Reset to new
-      
-         jobbJBload(); // Reload dropdowns or table if needed
-         fetchData();  // ✅ Refresh dropdowns or UI
-         jobbPOReffload(); //
-        document.getElementById("submitREFFNOButton").style.display = "inline-block";
-        document.getElementById("modifyREFFNOButton").style.display = "none";
-
-          // ✅ Remove DLT option after modify
-        const jobreffDropdown = document.getElementById("msaf71");
-        const dltJOBOption = [...jobreffDropdown.options].find(opt => opt.value === "DLT");
-        if (dltJOBOption) {
-          jobreffDropdown.removeChild(dltJOBOption);
-        }
-        //
-      } else {
-        alert(`Error modifying entry: ${result.error}`);
-      }
-    } catch (error) {
-      alert(`Error: ${error.message}`);
-    } finally {
-      setTimeout(() => waitMessage.style.display = 'none', 2000);
-    }
-  }
-
-    //*****
-</script>
-
-<!-- job/reff VOUCHER form div script stop hare -->
-
-
-<!-- job/reff TOP 10 ENTRY WITH TOTAL JOB BY USER script START hare -->
-
-<script>
-   let sheetJRdata = []; // Store filtered and sorted data
-
-// Function to load the data from Google Sheets
-async function jobbPOReffload() {
-    const apiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-    const sheetId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
-    const range = 'FORM!A:N';
-    const jobRefResultsDiv = document.getElementById("jobRefResults");
-
-    try {
-        jobRefResultsDiv.innerHTML = "<p>Loading job reference data...</p>";
-
-        const response = await fetch(
-            `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`
-        );
-        const data = await response.json();
-
-        if (data.values) {
-            // Filter and store only the entries where column K (index 10) is "JOB/REFF"
-            sheetJRdata = data.values.filter(row => row.length > 10 && row[10] === "JOB/REFF");
-
-            // Sort the filtered data by column A (index 0) in descending order
-            sheetJRdata.sort((a, b) => (b[0] > a[0] ? 1 : -1));
-
-            console.log("Filtered and Sorted Data:", sheetJRdata);
-
-            // Display results and summary
-            displayJOBNOResults(getFilteredJOBNOData("latestEntry"));
-            displayJOBNOSummary();
-
-            // Update `jobRefResults` div with summary
-            jobRefResultsDiv.innerHTML = `
-                <p><strong>Total Job/Ref:</strong> ${sheetJRdata.length}</p>
-                <p><strong>Last Updated:</strong> ${new Date().toLocaleString()}</p>
-            `;
-        } else {
-            jobRefResultsDiv.innerHTML = "<p>No data found in the specified range.</p>";
-            console.error("No data found in the specified range.");
-        }
-    } catch (error) {
-        jobRefResultsDiv.innerHTML = "<p>Error loading data.</p>";
-        console.error("Error fetching data from Google Sheets:", error);
-    }
-}
-
-// Function to handle the dropdown selection
-function jobPOreffDropdown() {
-    const filterType = document.getElementById("filterType").value;
-    displayJOBNOResults(getFilteredJOBNOData(filterType));
-}
-
-// Function to filter data based on the selected option
-function getFilteredJOBNOData(filterType) {
-    let filteredData = [];
-    switch (filterType) {
-        case "latestEntry":
-            filteredData = sheetJRdata.slice(0, 10); // Get last 10 entries
-            break;
-        case "allJobreff":
-            filteredData = sheetJRdata; // Show all "JOB/REFF" entries
-            break;
-        case "userHarshit":
-            filteredData = sheetJRdata.filter(row => row.length > 1 && row[1].toLowerCase() === "harshit");
-            break;
-        case "userPrakhar":
-            filteredData = sheetJRdata.filter(row => row.length > 1 && row[1].toLowerCase() === "prakhar");
-            break;
-    }
-    return filteredData;
-}
-
-// Function to display the filtered results in a table
-function displayJOBNOResults(entries) {
-    const resultsDiv = document.getElementById("results");
-    resultsDiv.innerHTML = "";
-
-    if (entries.length === 0) {
-        resultsDiv.innerHTML = "<p>No matching records found.</p>";
-        return;
-    }
-
-    const table = document.createElement("table");
-    const thead = document.createElement("thead");
-    const tbody = document.createElement("tbody");
-
-    // Create table header
-    const headerRow = document.createElement("tr");
-    const headers = ["S.No", "User", "Order By", "Client Name", "Firm Name/Details", "Address", "Job/Reff No.", "Status", "View Order", "Description", "Job/Reff No."];
-    headers.forEach(headerText => {
-        const th = document.createElement("th");
-        th.textContent = headerText;
-        headerRow.appendChild(th);
-    });
-    thead.appendChild(headerRow);
-
-    // Create table body with filtered entries
-    entries.forEach(entry => {
-        const row = document.createElement("tr");
-
-        entry.forEach((cell, index) => {
-            const td = document.createElement(index === 0 ? 'th' : 'td');
-
-            // If the cell is a URL, make it clickable
-            if (typeof cell === "string" && (cell.startsWith('http') || cell.startsWith('www'))) {
-                const a = document.createElement('a');
-                a.href = cell;
-                a.innerHTML = "&#128221;"; // Icon (📑)
-                a.target = "_blank";
-                td.appendChild(a);
-            } else {
-                td.textContent = cell;
-            }
-
-            row.appendChild(td);
-        });
-
-        tbody.appendChild(row);
-    });
-
-    table.appendChild(thead);
-    table.appendChild(tbody);
-    resultsDiv.appendChild(table);
-}
-
-// Function to display the summary of "Prakhar" and "Harshit" counts
-function displayJOBNOSummary() {
-    const summaryDiv = document.getElementById("summary");
-    
-    const prakharCount = sheetJRdata.filter(row => row.length > 1 && row[1].toLowerCase() === "prakhar").length;
-    const harshitCount = sheetJRdata.filter(row => row.length > 1 && row[1].toLowerCase() === "harshit").length;
-
-    summaryDiv.innerHTML = `
-        <p><strong>Total Project By Prakhar:</strong> ${prakharCount}</p>
-        <p><strong>Total Project By Harshit:</strong> ${harshitCount}</p>
-    `;
-}
-
-// Run on page load
-//  window.onload = jobbPOReffload;
-</script>
-
-
-
-
-<!-- job/reff TOP 10 ENTRY WITH TOTAL JOB BY USER  script stop hare -->
-
-
-<!-- job/reff  filter code start hare -- -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>JOB/REFF</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-     
-    }
-
-    .filterJBcontainer {
-     position: fixed;
-      top: 50;
-      left: 0;
-      width: 100%;
-      background: #ebecec;
-      padding: 10px 20px;
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      z-index: 1000;
-    
-    }
-
-    .filterJBcontainer label {
-      font-weight: bold;
-    }
-
-    .filterJBcontainer select,
-    .filterJBcontainer input {
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-/* Table content */
-    .contentJB {
-      margin-top: 60px;
-      padding: 0 20px;
-    }
-
-    
-
-    .pending { background-color: rgb(218, 218, 248); }
-    .canceled { background-color: rgb(246, 220, 220); }
-    .complete { background-color: #d4f7d4; }
-    .running { background-color: rgb(243, 243, 241); }
-
-    #jbSummaryBox {
-      /*  margin-top: 60px;*/
-      padding: 10px 20px;
-      font-size: 16px;
-      font-weight: bold;
-      color: black;
-    }
-
-    .print-btn {
-      padding: 8px 12px;
-      border: none;
-      background-color: #0077b6;
-      color: white;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .print-btn:hover {
-      background-color: #005f8c;
-    }
-  </style>
-</head>
-
-
-  <script>
-  let sheetJBdata = [];
-  let uniqueUsers = new Set();
-  let uniqueOrderBy = new Set();
-  let uniqueTypes = new Set();
-
-  async function jobbJBload() {
-    const apiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-    const sheetId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
-    const range = 'POINDEX!G:Q';
-
-    try {
-      const response = await fetch(
-        `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`
-      );
-      const data = await response.json();
-
-      if (data.values) {
-        sheetJBdata = data.values.filter(row => row.length > 10 && row[10] === "JOB/REFF");
-
-        sheetJBdata.sort((a, b) => b[0].localeCompare(a[0], undefined, { numeric: true }));
-
-        sheetJBdata.forEach(row => {
-          if (row.length > 1) uniqueUsers.add(row[1]);
-          if (row.length > 2) uniqueOrderBy.add(row[2]);
-          if (row.length > 7) uniqueTypes.add(row[7]);
-        });
-
-        populateJBDropdown("userFilter", uniqueUsers);
-        populateJBDropdown("orderByFilter", uniqueOrderBy);
-        populateJBDropdown("typeFilter", uniqueTypes);
-
-        displayJBResults(sheetJBdata);
-      }
-    } catch (error) {
-      console.error("Error fetching data from Google Sheets:", error);
-    }
-  }
-
-  function populateJBDropdown(dropdownId, values) {
-    const dropdown = document.getElementById(dropdownId);
-    dropdown.innerHTML = '<option value="">All</option>';
-    values.forEach(value => {
-      const option = document.createElement("option");
-      option.value = value;
-      option.textContent = value;
-      dropdown.appendChild(option);
-    });
-  }
-
-  function filterJBData() {
-    const selectedUser = document.getElementById("userFilter").value.toLowerCase();
-    const selectedOrderBy = document.getElementById("orderByFilter").value.toLowerCase();
-    const selectedType = document.getElementById("typeFilter").value.toLowerCase();
-    const searchKeyword = document.getElementById("searchBox").value.toLowerCase();
-
-    const filteredData = sheetJBdata.filter(row => {
-      const userMatch = !selectedUser || row[1].toLowerCase() === selectedUser;
-      const orderByMatch = !selectedOrderBy || row[2].toLowerCase() === selectedOrderBy;
-      const typeMatch = !selectedType || row[7].toLowerCase() === selectedType;
-      const keywordMatch = !searchKeyword || row.some(cell => String(cell).toLowerCase().includes(searchKeyword));
-      return userMatch && orderByMatch && typeMatch && keywordMatch;
-    });
-
-    displayJBResults(filteredData);
-  }
-
-  function displayJBResults(entries) {
-    const resultsDiv = document.getElementById("resultsJB");
-    const summaryDiv = document.getElementById("jbSummaryBox");
-    resultsDiv.innerHTML = "";
-    summaryDiv.innerHTML = "";
-
-    if (entries.length === 0) {
-      resultsDiv.innerHTML = "<p>No matching records found.</p>";
-      return;
-    }
-
-    // Count statuses
-    let completedCount = 0, pendingCount = 0, canceledCount = 0, runningCount = 0;
-    entries.forEach(entry => {
-      const status = entry[7]?.toLowerCase();
-      if (status === "pending") pendingCount++;
-      else if (status === "canceled") canceledCount++;
-      else if (status === "completed") completedCount++;
-      else if (status === "running") runningCount++;
-    });
-
-    // Display summary
-    summaryDiv.innerHTML = `
-      ✅ Completed: <span class="complete">${completedCount}</span> |
-      ⏳ Pending: <span class="pending">${pendingCount}</span> |
-      ❌ Canceled: <span class="canceled">${canceledCount}</span> |
-      🔄 Running: <span class="running">${runningCount}</span>
-    `;
-
-    // Table headers (without S.No)
-    const headers = ["S.No.","User", "Order By", "Firm/Ledger Name", "Address", "Contect Details", "Job/Reff No.", "Status", "View Order", "Running Bill Status", "Type"];
-    const table = document.createElement("table");
-    const thead = document.createElement("thead");
-    const headerRow = document.createElement("tr");
-    headers.forEach(headerText => {
-      const th = document.createElement("th");
-      th.textContent = headerText;
-      headerRow.appendChild(th);
-    });
-    thead.appendChild(headerRow);
-
-    // Table body
-    const tbody = document.createElement("tbody");
-    entries.forEach(entry => {
-      const tr = document.createElement("tr");
-
-      entry.forEach((cell, cellIndex) => {
-        const td = createCell(cell, "td");
-
-        // Add row class based on Status (index 7)
-        if (cellIndex === 7) {
-          const cellText = cell.toLowerCase();
-          if (cellText === "pending") tr.classList.add("pending");
-          else if (cellText === "canceled") tr.classList.add("canceled");
-          else if (cellText === "completed") tr.classList.add("complete");
-          else if (cellText === "running") tr.classList.add("running");
-        }
-
-        tr.appendChild(td);
-      });
-
-      tbody.appendChild(tr);
-    });
-
-    table.appendChild(thead);
-    table.appendChild(tbody);
-    resultsDiv.appendChild(table);
-  }
-
-  function createCell(value, type) {
-    const cell = document.createElement(type);
-    if (typeof value === "string" && (value.startsWith("http") || value.startsWith("www"))) {
-      const link = document.createElement("a");
-      link.href = value;
-      link.innerHTML = "🔗";
-      link.target = "_blank";
-      cell.appendChild(link);
-    } else {
-      cell.textContent = value;
-    }
-    return cell;
-  }
-
-  function printJBTable() {
-    const printWindow = window.open('', '', 'width=800,height=600');
-    const tableHTML = document.getElementById("resultsJB").innerHTML;
-
-    printWindow.document.write(`
-      <html>
-      <head>
-        <title>Print Table</title>
-        <style>
-          body { font-family: Arial, sans-serif; text-align: center; }
-          table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-          th, td { padding: 10px; border: 1px solid black; text-align: center; }
-          th { background: #0077b6; color: white; font-weight: bold; }
-          .complete { background-color: #d4f7d4; }
-          .pending { background-color: rgb(205, 205, 252); }
-          .canceled { background-color: rgb(243, 194, 194); }
-          .running { background-color: rgb(252, 252, 181); }
-        </style>
-      </head>
-      <body>
-        <h2>Job | Reff Status</h2>
-        ${tableHTML}
-        <script>window.onload = () => { window.print(); window.close(); }<\/script>
-      </body>
-      </html>
-    `);
-    printWindow.document.close();
-  }
-
-//  window.onload = jobbJBload;
-</script>
-
-</body>
-</html>
-<!-- job/reff  filter code stop hare (code506) -->
-
-
-
-
-
 
 
  <!-- mainSRRForm  code start hare -->
@@ -7661,7 +7023,7 @@ table tr:hover {
 
 
     // ✅ Auto Refresh Every 1 Minute (60000 milliseconds)
-  setInterval(refreshAll, 60000);  // auto refresh after 1 mnt
+  setInterval(refreshAll, 300000);  // auto refresh after 5 mnt
     // Optional: Run once on page load
   //  window.onload = refreshAll;
   </script>
@@ -7703,195 +7065,423 @@ fetch(`https://gnews.io/api/v4/top-headlines?lang=hi&country=in&max=10&token=${a
 
 
 
-<!-- यह एक नोट है, summrry report start -->
+
+
+
+
+
+<!-- यह एक नोट है, PO SUMMRY CODE AND SCRIPT START -->
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Google Sheet Table Viewer</title>
+  <title>PO/REFF NO</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-
+   
+        
     #search123Input {
       margin-bottom: 10px;
       padding: 8px;
       width: 250px;
       font-size: 16px;
     }
-
    
     a {
       text-decoration: none;
       font-size: 18px;
     }
+    .blue-bg { color: green; }
+    .pink-bg { color: blue; }
+    .green-bg { color: #4682b4; }
+    .red-bg { color: red; }
+
+    /* Modal styles */
+    #dataModal {
+       display: none;
+      position: fixed;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgb(230, 231, 231);
+    
+      padding: 20px;
+      z-index: 1000;
+      max-height: 75%;
+      overflow: auto;
+      width: 90%;
+      max-width: 1600px;
+      border: 10px solid #013135;
+      border-radius: 20px;
+    }
+    #overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #00000066;
+      z-index: 999;
+    }
+    .btnposummry {
+      margin: 10px 5px 0 0;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+
+
   </style>
 </head>
 <body>
+  <!-- Modal Popup -->
+  <div id="overlay" onclick="closeModal()"></div>
+  <div id="dataModal">
+    <h3>Multitech Infracon Pvt Ltd. <br/>Ledger Details</h3>
+     <button class="btnposummry"  onclick="printModal()">🖨️ Print</button>
+    <button class="btnposummry"  onclick="closeModal()">❌ Close</button>
+    <div id="modalContent"></div>
+  </div>
 
-  <script>
-  const api123Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-  const sheet123Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
-  const range123 = "POINDEX!U:AC";
 
-  // Inject styles directly into head
-  const style = document.createElement("style");
-  style.textContent = `
-    .blue-bg {
-     
-      color: GREEN;
-    }
-    .pink-bg {
-    
-      color: BLUE;
-    }
-    .green-bg {
-    
-      color: #4682b4;
-    }
-    .red-bg {
-      color: #ff0000;
-    }
-  `;
-  document.head.appendChild(style);
 
-  async function fetch123Data() {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet123Id}/values/${range123}?key=${api123Key}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    return data.values;
-  }
+<script>
+const api123Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheet123Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
+const range123 = "POREFF!A:R";
 
-  function renderSummryTable(data) {
-    const table = document.getElementById("dataTable");
-    table.innerHTML = "";
+const headerHTML = `
+  <tr>
+    <th>Progress %</th>
+    <th>Ledger</th><th>PO/Reff No</th><th>PO Amount</th><th>Billing Amount</th><th>Balance</th>
+    <th>PO Weight</th><th>Billing Weight</th><th>Balance</th><th>PO Pdf.</th><th>Status</th><th>User</th><th>Order By</th>
+  </tr>`;
 
-    // Header
-    const thead = document.createElement("thead");
-    const headerRow = document.createElement("tr");
+const visibleIndexes = [16, 6, 8, 12, 14, 9, 13, 15, 11, 7, 1, 2];
+let fullTableData = [];
 
-    const progressHeader = document.createElement("th");
-    progressHeader.textContent = "Progress %";
-    headerRow.appendChild(progressHeader);
+// Fetch and sort Google Sheet data
+async function fetch123Data() {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet123Id}/values/${range123}?key=${api123Key}`;
+  const response = await fetch(url);
+  const data = await response.json();
+  const rows = data.values || [];
 
-    data[0].forEach(header => {
-      const th = document.createElement("th");
-      th.textContent = header;
-      headerRow.appendChild(th);
-    });
-    thead.appendChild(headerRow);
-    table.appendChild(thead);
+  const header = rows[0];
+  const dataRows = rows.slice(1);
 
-    // Body
-    const tbody = document.createElement("tbody");
-    for (let i = 1; i < data.length; i++) {
-      const row = document.createElement("tr");
+  // Sort by column 12 (Billing Amount) descending
+  dataRows.sort((a, b) => (parseFloat(b[13]) || 0) - (parseFloat(a[13]) || 0));
 
-   const val2 = parseFloat(data[i][2]) || 0; // Column 2: Target
-const val3 = parseFloat(data[i][3]) || 0; // Column 3: Actual
+  fullTableData = [header, ...dataRows];
 
-let progress = 0;
-let label = '';
-
-if (val2 !== 0) {
-  progress = (val3 / val2) * 100;
-
-  if (progress <= 100) {
-    label = `${progress.toFixed()}% work complete`;
-  } else {
-    const extra = progress - 100;
-    label = `${extra.toFixed()}% work extra`;
-  }
-} else {
-  label = "---";
+  renderPOSUMMRYTable(fullTableData);
+  setupSearch(fullTableData);
 }
-
-const progressCell = document.createElement("td");
-progressCell.textContent = label;
+//****
 
 
-      // Apply color classes
-      if (progress >= 60 && progress <= 100) {
-        progressCell.classList.add("blue-bg");
-      } else if (progress >= 30 && progress < 60) {
-        progressCell.classList.add("pink-bg");
-      } else if (progress >= 0 && progress < 30) {
-        progressCell.classList.add("green-bg");
-      } else if (progress < 0) {
-        progressCell.classList.add("red-bg");
+
+
+
+
+function renderPOSUMMRYTable(data) {
+ 
+
+  const table = document.getElementById("dataTable");
+  table.innerHTML = "";
+
+  // Add static header
+  const thead = document.createElement("thead");
+  thead.innerHTML = headerHTML;
+  table.appendChild(thead);
+
+  const tbody = document.createElement("tbody");
+
+  for (let i = 1; i < data.length; i++) {
+    const row = document.createElement("tr");
+
+
+
+
+    // Progress Calculation
+    const poAmount = parseFloat(data[i][8]) || 0;
+    const billingAmount = parseFloat(data[i][12]) || 0;
+    let progress = 0;
+    let label = "---";
+
+    if (poAmount !== 0) {
+      progress = (billingAmount / poAmount) * 100;
+      label = progress <= 100
+        ? `${progress.toFixed()}% work complete`
+        : `${(progress - 100).toFixed()}% work extra`;
+    }
+
+    const progressCell = document.createElement("td");
+    progressCell.textContent = label;
+
+    // Progress color
+    if (progress > 100) progressCell.classList.add("orange-bg");
+    else if (progress >= 60) progressCell.classList.add("blue-bg");
+    else if (progress >= 30) progressCell.classList.add("pink-bg");
+    else progressCell.classList.add("green-bg");
+
+    row.appendChild(progressCell);
+
+    // Add other visible columns
+    visibleIndexes.forEach(colIndex => {
+      const td = document.createElement("td");
+      const cellValue = data[i][colIndex] || "";
+
+      if (colIndex === 6) {
+        td.style.cursor = "pointer";
+        td.style.color = "#2980b9";
+        td.style.fontSize = "16PX";
+        td.style.textDecoration = "underline";
+        td.addEventListener("click", () => {
+          const jobNo = cellValue;
+          const ledgerName = data[i][16] || "---";
+          const ledgerAddress = data[i][17] || "---";
+          fetchReffNo(jobNo, ledgerName, ledgerAddress);
+        });
       }
 
-      row.appendChild(progressCell);
+      if (typeof cellValue === 'string' && (cellValue.startsWith("http") || cellValue.startsWith("www"))) {
+        const a = document.createElement("a");
+        a.href = cellValue.startsWith("http") ? cellValue : "https://" + cellValue;
+        a.innerHTML = "&#128221;";
+        a.target = "_blank";
+        td.appendChild(a);
+      } else {
+        td.textContent = cellValue;
 
-      data[i].forEach((cell, j) => {
-        const td = document.createElement("td");
+// ✅ Apply formatting ONLY to column 7 (status column)
+if (colIndex === 7) {
+  td.style.fontWeight = "bold";
+  td.style.fontSize = "13px";
 
-        // Show icon if URL
-        if (typeof cell === 'string' && (cell.startsWith('http') || cell.startsWith('www'))) {
-          const a = document.createElement('a');
-          a.href = cell.startsWith('http') ? cell : 'https://' + cell;
-          a.innerHTML = "&#128221;";
-          a.target = "_blank";
-          td.appendChild(a);
-        } else {
-          td.textContent = cell;
-        }
+  if (cellValue === "CANCELED") td.style.color = "#dc7633";
+  else if (cellValue === "COMPLETED") td.style.color = "#48c9b0";
+  else if (cellValue === "RUNNING") td.style.color = "#808b96";
+  else if (cellValue === "PENDING") td.style.color = "#5dade2";
+}
 
-        const col5Val = parseFloat(data[i][4]) || 0;
-        const col8Val = parseFloat(data[i][7]) || 0;
 
-        if (col5Val < 0 && j >= 2 && j <= 4) {
-          td.classList.add("red-bg");
-        }
-        if (col8Val < 0 && j >= 5 && j <= 7) {
-          td.classList.add("red-bg");
-        }
 
-        row.appendChild(td);
-      });
+      }
 
-      tbody.appendChild(row);
-    }
+      // Highlight red for negative balances
+      const col5Val = parseFloat(data[i][14]) || 0;
+      const col8Val = parseFloat(data[i][15]) || 0;
+      if (col5Val < 0 && colIndex === 14) td.classList.add("red-bg");
+      if (col8Val < 0 && colIndex === 15) td.classList.add("red-bg");
 
-    table.appendChild(tbody);
-  }
-
-  function setupSearch(data) {
-    const search123Input = document.getElementById("search123Input");
-    search123Input.addEventListener("input", () => {
-      const searchText = search123Input.value.toLowerCase();
-      const filtered = data.filter((row, index) => {
-        if (index === 0) return true;
-        return row.some(cell => (cell || "").toLowerCase().includes(searchText));
-      });
-      renderSummryTable(filtered);
-    });
-  }
-
-  async function init() {
-    const data = await fetch123Data();
-    const header = data[0];
-    const rows = data.slice(1);
-
-    rows.sort((a, b) => {
-      const valA = parseFloat(a[4]) || 0;
-      const valB = parseFloat(b[4]) || 0;
-      return valB - valA;
+      row.appendChild(td);
     });
 
-    const sortedData = [header, ...rows];
-    renderSummryTable(sortedData);
-    setupSearch(sortedData);
+    tbody.appendChild(row);
   }
 
-  init();
+  table.appendChild(tbody);
+
+  // ✅ Show status summary
+  displayporeffResults(data);
+}
+
+
+
+
+function displayporeffResults(entries) {
+  const summaryDiv = document.getElementById("poSummaryBox");
+  summaryDiv.innerHTML = "";
+
+  if (!entries || entries.length <= 1) {
+    summaryDiv.innerHTML = "<p>No matching records found.</p>";
+    return;
+  }
+
+  // Count statuses in column index 14 (visible index 14 = actual index 9 or 13?)
+  let completed = 0, pending = 0, canceled = 0, running = 0;
+
+  entries.slice(1).forEach(row => {
+    const status = (row[7] || "").toLowerCase();
+    if (status === "completed") completed++;
+    else if (status === "pending") pending++;
+    else if (status === "canceled") canceled++;
+    else if (status === "running") running++;
+  });
+
+  summaryDiv.innerHTML = `
+    ✅ Completed: <span class="complete">${completed}</span> |
+    ⏳ Pending: <span class="pending">${pending}</span> |
+    ❌ Canceled: <span class="canceled">${canceled}</span> |
+    🔄 Running: <span class="running">${running}</span>
+  `;
+}
+
+
+// Search functionality
+function setupSearch(data) {
+  const searchInput = document.getElementById("search123Input");
+  searchInput.addEventListener("input", () => {
+    const text = searchInput.value.toLowerCase();
+    const filtered = data.filter((row, i) => {
+      if (i === 0) return true;
+      return row.some(cell => (cell || "").toLowerCase().includes(text));
+    });
+    renderPOSUMMRYTable(filtered);
+  });
+}
+
+// Modal handling
+function openModal(htmlContent) {
+  document.getElementById("modalContent").innerHTML = htmlContent;
+  document.getElementById("dataModal").style.display = "block";
+  document.getElementById("overlay").style.display = "block";
+}
+
+function closeModal() {
+  document.getElementById("dataModal").style.display = "none";
+  document.getElementById("overlay").style.display = "none";
+}
+
+
+function printModal() {
+  const content = document.getElementById("modalContent").innerHTML;
+
+  const printWindow = window.open('', '', 'height=800,width=1000');
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print</title>
+
+        <body>
+
+           <span style="color:rgb(246, 156, 156);font-size:130%;font-family:Magneto;">eS |</span> 
+  <span style="color:#a0d0f0;font-size:130%;font-family:Magneto;">MTally</span>
+            <h4>Multitech Infracon Pvt. Ltd.</h4>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+          }
+
+          table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e0e0e0;
+  padding: 10px 14px;
+  text-align: left;
+}
+
+th {
+  background-color: #004d80;
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+
+        </style>
+      </head>
+      <body>
+        ${content}
+      </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+}
+
+
+// Show Ledger Modal
+async function fetchReffNo(jobNo, ledgerName = "---", ledgerAddress = "---") {
+ 
+  const range124 = "LEDGER!B:L";
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet123Id}/values/${range124}?key=${api123Key}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  const rows = data.values || [];
+
+  const headers = rows[0];
+  const matched = rows.slice(1).filter(r => r[4] === jobNo); // Column F
+
+  if (matched.length === 0) {
+    openModal("<p>No Match Found</p>");
+    return;
+  }
+
+  let totalG = 0;
+  let totalH = 0;
+  matched.forEach(row => {
+    totalG += parseFloat(row[5]) || 0;
+    totalH += parseFloat(row[6]) || 0;
+  });
+
+  let html = `
+   <p>
+  <strong>Ledger Name:</strong> ${ledgerName}<br>
+  <strong>Address:</strong> ${ledgerAddress}<br>
+
+  <span style="color: rgb(1, 107, 37); font-weight: bold; font-size: 18px;">Total Billng :-</span> Rs.  ${totalG.toFixed()} /
+  <span style="color: blue; font-weight: bold; font-size: 18px;">Total Weight:-</span>  ${totalH.toFixed()} Kg.
+</p>
+
+    <table border='1'><tr>`;
+
+  headers.forEach(h => html += `<th>${h}</th>`);
+  html += `</tr>`;
+
+  matched.forEach(row => {
+    const isCredit = (row[0] || "").toLowerCase().includes("credit note");
+    const rowStyle = isCredit ? ` style="color: red;"` : "";
+    html += `<tr${rowStyle}>`;
+
+    headers.forEach((_, i) => {
+      const cell = row[i] || "";
+      if (typeof cell === "string" && (cell.startsWith("http") || cell.startsWith("www"))) {
+        const href = cell.startsWith("http") ? cell : "https://" + cell;
+        html += `<td><a href="${href}" target="_blank">&#128221;</a></td>`;
+      } else {
+        const overrideStyle = isCredit && i === 0 ? ` style="color: black;"` : "";
+        html += `<td${overrideStyle}>${cell}</td>`;
+      }
+    });
+
+    html += `</tr>`;
+  });
+
+  html += `</table>`;
+  openModal(html);
+}
+
+// Init load
+fetch123Data();
 </script>
+
 </body>
 </html>
 
-<!-- यह एक नोट है, summrry report stop -->
+
+
+<!-- यह एक नोट है, PO SUMMRY CODE AND SCRIPT STOP -->
 
 
 
@@ -8129,16 +7719,17 @@ progressCell.textContent = label;
 
 
 
-<!-- ADMIN LOGO DETAILS start -->
+<!-- यह एक नोट है, logo code start -->
+
 <style>
 #floatingBrand {
   position: fixed;
-  top: 6px;
-  right: 300px;
+  top: 8px;
+  right: 400px;
   z-index: 9999;
   background: transparent;
   padding: 5px 10px;
-  pointer-events: auto; /* Allow hover events */
+  pointer-events: auto; /* Prevent clicks if needed */
 }
 
 /* Sticky Note Style */
@@ -8158,13 +7749,14 @@ progressCell.textContent = label;
   border-radius: 5px;
 }
 </style>
+</style>
 
 <div id="floatingBrand">
-  <span style="color:rgb(236, 135, 135);font-size:130%;font-family:Magneto;">eS |</span> 
-  <span style="color:#93d4ff;font-size:130%;font-family:Magneto;">MTally</span>
-  
-  <div id="noteTooltip">Design By: eS|MTally <br/> Admin: Mukhtiyar Ahamad <br/> Contect: +91-9756735792</div>
+  <span style="color:rgb(246, 156, 156);font-size:130%;font-family:Magneto;">eS |</span> 
+  <span style="color:#a0d0f0;font-size:130%;font-family:Magneto;">MTally</span>
+   <div id="noteTooltip">Design By: eS|MTally <br/> Admin: Mukhtiyar Ahamad <br/> Contect: +91-9756735792</div>
 </div>
+
 
 <script>
 const brand = document.getElementById('floatingBrand');
@@ -8180,8 +7772,663 @@ brand.addEventListener('mouseleave', () => {
   tooltip.style.display = 'none';
 });
 </script>
+<!-- यह एक नोट है, logo code stop -->
 
-<!-- ADMIN LOGO DETAILS stop -->
+
+
+
+
+
+<!-- job/reff VOUCHER form div code  start hare -->
+<script>
+  function showForm(type) {
+  
+
+    const contentMap = {
+      MFDY: `
+        
+       <H3 style="background-color: #004d80;color: WHITE;font-size: 100%; text-align: center;">Entry Sr. No. For Entry Search</H3>
+
+        <form id="modifyReffMDFYForm">
+          <input type="hidden" id="formModeReffMDFY" name="formModeReffMDFY" value="new">
+            <input type="number" id="searchReffMDFYSNo" placeholder="Enter S.No. to Modify Entry" >
+            <button type="button" class="fetchbtn" onclick="fetchReffMDFYDetails()">Fetch Details</button>
+            <button type="button" class="fetchbtn" id="modifyReffMDFYButton" onclick="modifyReffMDFYEntry()" style="display:none;">Modify Entry</button>
+             <!-- Wait message div -->
+<div id="waitReffMDFYMessage" style="display:none; color:red; font-size:16px; font-weight:bold;"></div>
+        </form>  
+
+<H3 style="background-color: #004d80;color: WHITE;font-size: 100%; text-align: center;">Edit Modify Modify</H3>
+       <form id="mainJBMDFYForm">
+          <input type="hidden" name="SNo" id="sNo" />
+
+
+          <!-- Hidden inputs to preserve fetched values -->
+<input type="hidden" id="savedVoucher" name="Voucher">
+<input type="hidden" id="savedType" name="Type">
+<input type="hidden" id="savedRate" name="Rate">
+<input type="hidden" id="savedNarration" name="Narration">
+<input type="hidden" id="savedVType" name="VType">
+
+
+          <label  style="font-size:100%;font-family:Arial;color: black ;font-weight: bold;">Voucher (Readonly)</label>
+          <input type="text" id="msafMFDY70" name="Voucher" value="" readonly>
+
+            <label  style="color:black;font-size:100%;font-family:Arial;color: black;font-weight: bold;">User Name (Readonly)</label>
+            <input type="text" id="msafMFDY71" name="Type" value="" readonly>
+
+           <label  style="color:#a93226;font-size:100%;font-family:Arial;font-weight: bold; ">Order By*</label>
+          <select id="msafMFDY72" name="Date" required>
+            <option value="RAHUL">RAHUL</option>
+            <option value="TUSHAR AGARWAR (MD)">TUSHAR AGARWAL (MD)</option>
+            <option value="LESHANT">LESHANT</option>
+            <option value="OTHER">OTHER</option>
+           </select>
+
+           <label  style="color:#a93226 ;font-size:100%;font-family:Arial; font-weight: bold;">Clint Name*</label>
+            <input type="text" id="msafMFDY73" name="Ledger" required placeholder="Enter Cline Name"> 
+
+            <label  style="color:#a93226 ;font-size:100%;font-family:Arial; font-weight: bold;">Firm Name/ Order Details*</label>
+            <input type="text" id="msafMFDY74" name="VNo" required placeholder="Enter Firm Name/ Order Details"> 
+
+            <label  style="color:#a93226; font-size:100%;font-family:Arial; font-weight: bold;">Address*</label>
+            <input type="text" id="msafMFDY75" name="Reff" placeholder="Enter Address"style="text-transform: uppercase;">
+         
+       
+
+          <label  style="color:#a93226; font-size:100%;font-family:Arial; font-weight: bold;">Job/Reff No.*</label>
+          <input type="text" id="msafMFDY76" name="Amount" placeholder="Enter Job/Reff No."style="text-transform: uppercase;">
+
+          <label  style="color:#a93226; font-size:90%;font-family:Arial; font-weight: bold;">Status</label>
+          <select id="msafMFDY77" name="Weight" required>
+            <option value="RUNNING">Running</option>
+            <option value="COMPLETED">Completed</option>
+            <option value="CANCELED">Canceled</option>
+            <option value="PENDING">Pending</option>
+           </select>
+
+          <input type="hidden" name="Timestamp" id="timestampReffMDFY">
+          <input  style="display:none;" type="submit" id="submitReffMDFYButton" value="Submit">
+        </form>
+    
+      `,
+      CREAT: `
+  <form id="mainREFFNOForm">
+          <input type="hidden" name="SNo" id="sNo" />
+
+          <label  style="font-size:100%;font-family:Arial;color: #a93226;font-weight: bold;">User*</label>
+          <select id="msaf70" name="Voucher" required>
+            <option value="JOB/REFF">Job Details</option>
+           </select>
+
+<label  style="color:black;font-size:100%;font-family:Arial;color: #a93226;font-weight: bold;">Select Job/Reff. User*</label>
+<select id="msaf71" name="Type" required></select> 
+
+
+
+           <label  style="color: #a93226;font-weight: bold; font-size:100%;font-family:Arial;">Order By</label>
+          <select id="msaf72" name="Date" required>
+            <option value="RAHUL">RAHUL</option>
+            <option value="TUSHAR AGARWAR (MD)">TUSHAR AGARWAL (MD)</option>
+            <option value="LESHANT">LESHANT</option>
+            <option value="OTHER">OTHER</option>
+           </select>
+
+           <label  style="color: #a93226;font-weight: bold; font-size:100%;font-family:Arial;">Clint Name*</label>
+            <input type="text" id="msaf73" name="Ledger" required placeholder="Enter Cline Name"> 
+
+            <label  style="color: #a93226;font-weight: bold; font-size:100%;font-family:Arial;">Firm Name/ Order Details*</label>
+            <input type="text" id="msaf74" name="VNo" required placeholder="Enter Firm Name/ Order Details"> 
+
+            <label  style="color: #a93226;font-weight: bold; font-size:100%;font-family:Arial;">Address*</label>
+            <input type="text" id="msaf75" name="Reff" placeholder="Enter Address"style="text-transform: uppercase;">
+         
+       
+
+          <label  style="color: #a93226;font-weight: bold; font-size:100%;font-family:Arial;">Job/Reff No.*</label>
+          <input type="text" id="msaf76" name="Amount" placeholder="Enter Job/Reff No."style="text-transform: uppercase;">
+
+          <label  style="color: #a93226;font-weight: bold; font-size:90%;font-family:Arial;">Status</label>
+          <select id="msaf77" name="Weight" required>
+            <option value="RUNNING">Running</option>
+            <option value="COMPLETED">Completed</option>
+            <option value="CANCELED">Canceled</option>
+            <option value="PENDING">Pending</option>
+           </select>
+
+          <input type="hidden" name="Timestamp" id="timestampREFFNO">
+          <input type="submit" id="submitREFFNOButton" value="Submit">
+        </form>
+    
+
+         <H3 style="color: red ;font-size: 100%; text-align: center;">**Select the Voucher option for Entry Mody</H3>
+
+        <form id="modifyREFFNOForm">
+          <input type="hidden" id="formModeREFFNO" name="formModeREFFNO" value="new">
+            <input type="number" style="display:none;" id="searchREFFNOSNo" placeholder="Enter S.No. to Modify Entry" >
+            <button type="button" class="fetchbtn" onclick="fetchREFFNODetails()" style="display:none;">Fetch Details</button>
+            <button type="button" class="fetchbtn" id="modifyREFFNOButton" onclick="modifyREFFNOEntry()" style="display:none;">Modify Entry</button>
+             <!-- Wait message div -->
+<div id="waitREFFNOMessage" style="display:none; color:red; font-size:16px; font-weight:bold;"></div>
+        </form>  
+
+    <br/>
+        <span style="color:rgb(248, 163, 163);font-size:130%;font-family:Magneto;">eS |</span> 
+        <span style="color:#88c5ee;font-size:130%;font-family:Magneto;">MTally</span>
+   
+      `
+
+    };
+
+   
+   document.getElementById("formContent").innerHTML = contentMap[type] || "";
+  }
+
+  // ✅ यह सुनिश्चित करता है कि पेज लोड होते ही default option का content दिखे
+  //window.onload = function () {
+    //  document.getElementById("designUSER").value = "CREAT";
+    // showForm("CREAT");
+  // };
+  
+
+</script>
+
+
+<!-- job/reff VOUCHER form div code  stop hare -->
+
+
+            
+<!-- job/reff VOUCHER new entry form div script start hare 11111111111111111111111111111111 -->
+<script>
+  const scriptREFFNOURL = 'https://script.google.com/macros/s/AKfycbw0xCIuyevQ3rXPs_sa-9yQGZ50eSIFGMwta7Rq0GqEXHCWDJqi5e4xvdE1hh1NSdU/exec';
+
+  document.addEventListener("submit", async function (e) {
+    const form = e.target;
+    if (form.id !== "mainREFFNOForm") return;
+
+    e.preventDefault();
+     const formMode = document.getElementById("formModeREFFNO").value; //****
+    const submitREFFNOButton = document.getElementById("submitREFFNOButton");
+    submitREFFNOButton.disabled = true;
+    submitREFFNOButton.value = "Wait..";
+
+    const now = new Date();
+    document.getElementById('timestampREFFNO').value = `${now.getMonth()+1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+
+    const formInputs = form.querySelectorAll('input, textarea');
+    formInputs.forEach(input => {
+      if (input.type === 'text' || input.type === 'textarea') {
+        input.value = input.value.toUpperCase();
+      }
+    });
+
+    //****
+    
+    if (formMode === "modify") {
+      await modifyREFFNOEntry();
+    } else {
+      await submitREFFNOEntry(form);
+    }
+
+    submitREFFNOButton.disabled = false;
+    submitREFFNOButton.value = "Submit";
+  });
+
+  async function submitREFFNOEntry(form) {
+    const formData = new FormData(form);
+    try {
+      const response = await fetch(scriptREFFNOURL, { method: 'POST', body: formData });
+      const result = await response.json();
+
+      if (result.result === 'success') {
+        alert('Entry saved successfully!');
+        form.reset(); // FORM RESET
+        document.getElementById("formModeREFFNO").value = "new";
+        jobbJBload(); // Reload dropdowns or table if needed
+         fetchData();  // ✅ Refresh dropdowns or UI
+         jobbPOReffload(); //
+
+           // ✅ Remove DLT option after submit
+        const jobreffDropdown = document.getElementById("msaf70");
+        const dltJOBOption = [...jobreffDropdown.options].find(opt => opt.value === "DLT");
+        if (dltJOBOption) {
+          jobreffDropdown.removeChild(dltJOBOption);
+        }
+        //
+      } else {
+        alert(`Error: ${result.error || 'Unknown error occurred.'}`);
+      }
+    } catch (error) {
+      alert(`Error submitting the form: ${error.message}`);
+    }
+  }
+    //****
+   
+
+  async function fetchREFFNODetails() {
+    const sNo = document.getElementById("searchREFFNOSNo").value;
+    const waitMessage = document.getElementById("waitREFFNOMessage");
+    waitMessage.innerText = "Fetching data... Please wait...";
+    waitMessage.style.display = 'block';
+
+  //   document.getElementById("submitREFFNOButton").style.display = "none";  //****
+    try {
+      const response = await fetch(`${scriptREFFNOURL}?sNo=${sNo}`);
+      const data = await response.json();
+
+      if (data.result !== "error" && (data.Type === "PRAKHAR" || data.Type === "HARSHIT")) {
+        document.getElementById("sNo").value = data.SNo;
+        document.getElementById("msaf70").value = data.Voucher;
+        document.getElementById("msaf71").value = data.Type;
+        document.getElementById("msaf72").value = data.Date;
+        document.getElementById("msaf73").value = data.Ledger;
+        document.getElementById("msaf74").value = data.VNo;
+        document.getElementById("msaf75").value = data.Reff;
+        document.getElementById("msaf76").value = data.Amount;
+        document.getElementById("msaf77").value = data.Weight;
+      //  document.getElementById("modifyREFFNOButton").style.display = "inline-block";
+
+
+       // ✅ Add "DLT - delete" option if it doesn't exist already
+const jobreffDropdown = document.getElementById("msaf70");
+if (![...jobreffDropdown.options].some(opt => opt.value === "DLT")) {
+  const dltOptionJOBREFF = document.createElement("option");
+  dltOptionJOBREFF.value = "DLT";
+  dltOptionJOBREFF.text = "Delete";
+  dltOptionJOBREFF.style.color = "red";
+  dltOptionJOBREFF.style.backgroundColor = "blue";
+  jobreffDropdown.appendChild(dltOptionJOBREFF);
+}
+
+       document.getElementById("formModeREFFNO").value = "modify"; // ✅ Set to modify
+    //    document.getElementById("modifyREFFNOButton").style.display = "inline-block";
+
+    // ✅ Show alert after successful data fetch
+      alert(" Select Delete Option in User Section For Delete Entry");
+
+      } else {
+        alert("No record found for the given S.No.");
+      }
+    } catch (error) {
+      console.error("Error fetching details:", error);
+      alert("Please reconcile details or contact admin.");
+    } finally {
+      setTimeout(() => waitMessage.style.display = 'none', 2000);
+    }
+  }
+
+  async function modifyREFFNOEntry() {
+    const waitMessage = document.getElementById("waitREFFNOMessage");
+    waitMessage.innerText = "Please wait...";
+    waitMessage.style.display = "block";
+
+
+    const form = document.getElementById('mainREFFNOForm');
+
+    // ✅ Set new timestamp
+    const now = new Date();
+    document.getElementById('timestampREFFNO').value = `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+
+    const formData = new FormData(form);
+    formData.set('SNo', document.getElementById('sNo').value);
+
+    try {
+      const response = await fetch(scriptREFFNOURL, { method: 'POST', body: formData });
+      const result = await response.json();
+
+      if (result.result === 'success') {
+        alert('Entry modified successfully!');
+        form.reset();
+        document.getElementById("formModeREFFNO").value = "new"; // ✅ Reset to new
+      
+         jobbJBload(); // Reload dropdowns or table if needed
+         fetchData();  // ✅ Refresh dropdowns or UI
+         jobbPOReffload(); //
+        document.getElementById("submitREFFNOButton").style.display = "inline-block";
+        document.getElementById("modifyREFFNOButton").style.display = "none";
+
+          // ✅ Remove DLT option after modify
+        const jobreffDropdown = document.getElementById("msaf71");
+        const dltJOBOption = [...jobreffDropdown.options].find(opt => opt.value === "DLT");
+        if (dltJOBOption) {
+          jobreffDropdown.removeChild(dltJOBOption);
+        }
+        //
+      } else {
+        alert(`Error modifying entry: ${result.error}`);
+      }
+    } catch (error) {
+      alert(`Error: ${error.message}`);
+    } finally {
+      setTimeout(() => waitMessage.style.display = 'none', 2000);
+    }
+  }
+
+    //*****
+</script>
+
+<!-- job/reff VOUCHER new entry form div script stop hare 11111111111111111111111111111111 -->
+
+
+
+<!-- job/reff VOUCHER form entry modify form div script start hare 2222222222222222222222222222 -->
+
+       <script>
+  const scriptReffMDFYURL = 'https://script.google.com/macros/s/AKfycbw0xCIuyevQ3rXPs_sa-9yQGZ50eSIFGMwta7Rq0GqEXHCWDJqi5e4xvdE1hh1NSdU/exec';
+
+  document.addEventListener("submit", async function (e) {
+    const form = e.target;
+    if (form.id !== "mainJBMDFYForm") return;
+
+    e.preventDefault();
+
+    const formMode = document.getElementById("formModeReffMDFY").value;
+    const submitReffMDFYButton = document.getElementById("submitReffMDFYButton");
+    submitReffMDFYButton.disabled = true;
+    submitReffMDFYButton.value = "Wait..";
+
+    const now = new Date();
+    const timestamp = `${now.getMonth()+1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+    document.getElementById('timestampReffMDFY').value = timestamp;
+
+    const formInputs = form.querySelectorAll('input, textarea');
+    formInputs.forEach(input => {
+      if (input.type === 'text' || input.type === 'textarea') {
+        input.value = input.value.toUpperCase();
+      }
+    });
+
+    if (formMode === "modify") {
+      await modifyReffMDFYEntry(timestamp);
+    } else {
+      await submitReffMDFYEntry(form);
+    }
+
+    submitReffMDFYButton.disabled = false;
+    submitReffMDFYButton.value = "Submit";
+  });
+
+  async function submitReffMDFYEntry(form) {
+    const formData = new FormData(form);
+    try {
+      const response = await fetch(scriptReffMDFYURL, { method: 'POST', body: formData });
+      const result = await response.json();
+
+      if (result.result === 'success') {
+        alert('Entry saved successfully!');
+        form.reset();
+        document.getElementById("formModeReffMDFY").value = "new";
+      document.getElementById("submitReffMDFYButton").style.display = "none";
+        jobbJBload();
+        fetchData();
+        jobbPOReffload();
+
+        const jobreffDropdown = document.getElementById("msafMFDY70");
+        const dltJOBOption = [...jobreffDropdown.options].find(opt => opt.value === "DLT");
+        if (dltJOBOption) {
+          jobreffDropdown.removeChild(dltJOBOption);
+        }
+      } else {
+        alert(`Error: ${result.error || 'Unknown error occurred.'}`);
+      }
+    } catch (error) {
+      alert(`Error submitting the form: ${error.message}`);
+    }
+  }
+
+  async function fetchReffMDFYDetails() {
+    const sNo = document.getElementById("searchReffMDFYSNo").value;
+    const waitMessage = document.getElementById("waitReffMDFYMessage");
+    waitMessage.innerText = "Fetching data... Please wait...";
+    waitMessage.style.display = 'block';
+
+    try {
+      const response = await fetch(`${scriptReffMDFYURL}?sNo=${sNo}`);
+      const data = await response.json();
+
+      if (data.result !== "error" && (data.Type === "PRAKHAR" || data.Type === "HARSHIT")) {
+        document.getElementById("sNo").value = data.SNo;
+        document.getElementById("msafMFDY70").value = data.Voucher;
+        document.getElementById("msafMFDY71").value = data.Type;
+        document.getElementById("msafMFDY72").value = data.Date;
+        document.getElementById("msafMFDY73").value = data.Ledger;
+        document.getElementById("msafMFDY74").value = data.VNo;
+        document.getElementById("msafMFDY75").value = data.Reff;
+        document.getElementById("msafMFDY76").value = data.Amount;
+        document.getElementById("msafMFDY77").value = data.Weight;
+
+        // ✅ Save to hidden fields for modify
+        document.getElementById("savedVoucher").value = data.Voucher;
+        document.getElementById("savedType").value = data.Type;
+        document.getElementById("savedRate").value = data.Rate;
+        document.getElementById("savedNarration").value = data.Narration;
+        document.getElementById("savedVType").value = data.VType;
+
+         document.getElementById("submitReffMDFYButton").style.display = "inline-block";  // Show modify
+
+    
+
+        document.getElementById("formModeReffMDFY").value = "modify";
+        alert(" View Entry Details and Modify Field.");
+      } else {
+        alert("No record found for the given S.No.");
+      }
+    } catch (error) {
+      console.error("Error fetching details:", error);
+      alert("Please reconcile details or contact admin.");
+    } finally {
+      setTimeout(() => waitMessage.style.display = 'none', 2000);
+    }
+  }
+async function modifyReffMDFYEntry(timestamp) {
+  const form = document.getElementById("mainJBMDFYForm");
+  const waitMessage = document.getElementById("waitReffMDFYMessage");
+  waitMessage.innerText = "Please wait...";
+  waitMessage.style.display = "block";
+
+  const formData = new FormData();
+  formData.append('SNo', document.getElementById('sNo').value);
+  formData.append('Voucher', document.getElementById('savedVoucher').value);
+  formData.append('Type', document.getElementById('savedType').value);
+  formData.append('Date', document.getElementById('msafMFDY72').value);
+  formData.append('Ledger', document.getElementById('msafMFDY73').value);
+  formData.append('VNo', document.getElementById('msafMFDY74').value);
+  formData.append('Rate', document.getElementById('savedRate').value);
+  formData.append('Narration', document.getElementById('savedNarration').value);
+  formData.append('VType', document.getElementById('savedVType').value);
+  formData.append('Reff', document.getElementById('msafMFDY75').value);
+  formData.append('Amount', document.getElementById('msafMFDY76').value);
+  formData.append('Weight', document.getElementById('msafMFDY77').value);
+  formData.append('timestamp', timestamp);
+  formData.append('formMode', 'modify');
+
+     
+
+  try {
+    const response = await fetch(scriptReffMDFYURL, {
+      method: 'POST',
+      body: formData
+    });
+
+    const result = await response.json();
+
+    if (result.result === 'success') {
+      alert('Entry modified successfully!');
+      form.reset();
+      document.getElementById("formModeReffMDFY").value = "new";
+      jobbJBload();
+      fetchData();
+      jobbPOReffload();
+      document.getElementById("submitReffMDFYButton").style.display = "none";
+    } else {
+      alert(`Error modifying entry: ${result.error}`);
+    }
+  } catch (error) {
+    alert(`Error: ${error.message}`);
+  } finally {
+    setTimeout(() => waitMessage.style.display = 'none', 2000);
+  }
+}
+
+</script>
+
+<!-- job/reff VOUCHER form entry modify form div script stop  hare 22222222222222222222222222-->
+
+
+
+
+<!-- job/reff TOP 10 ENTRY WITH TOTAL JOB BY USER script START hare -->
+
+<script>
+   let sheetJRdata = []; // Store filtered and sorted data
+
+// Function to load the data from Google Sheets
+async function jobbPOReffload() {
+    const apiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+    const sheetId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
+    const range = 'FORM!A:N';
+    const jobRefResultsDiv = document.getElementById("jobRefResults");
+
+    try {
+        jobRefResultsDiv.innerHTML = "<p>Loading job reference data...</p>";
+
+        const response = await fetch(
+            `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`
+        );
+        const data = await response.json();
+
+        if (data.values) {
+            // Filter and store only the entries where column K (index 10) is "JOB/REFF"
+            sheetJRdata = data.values.filter(row => row.length > 10 && row[10] === "JOB/REFF");
+
+            // Sort the filtered data by column A (index 0) in descending order
+            sheetJRdata.sort((a, b) => (b[0] > a[0] ? 1 : -1));
+
+            console.log("Filtered and Sorted Data:", sheetJRdata);
+
+            // Display results and summary
+            displayJOBNOResults(getFilteredJOBNOData("latestEntry"));
+            displayJOBNOSummary();
+
+            // Update `jobRefResults` div with summary
+            jobRefResultsDiv.innerHTML = `
+                <p><strong>Total Job/Ref:</strong> ${sheetJRdata.length}</p>
+                <p><strong>Last Updated:</strong> ${new Date().toLocaleString()}</p>
+            `;
+        } else {
+            jobRefResultsDiv.innerHTML = "<p>No data found in the specified range.</p>";
+            console.error("No data found in the specified range.");
+        }
+    } catch (error) {
+        jobRefResultsDiv.innerHTML = "<p>Error loading data.</p>";
+        console.error("Error fetching data from Google Sheets:", error);
+    }
+}
+
+// Function to handle the dropdown selection
+function jobPOreffDropdown() {
+    const filterType = document.getElementById("filterType").value;
+    displayJOBNOResults(getFilteredJOBNOData(filterType));
+}
+
+// Function to filter data based on the selected option
+function getFilteredJOBNOData(filterType) {
+    let filteredData = [];
+    switch (filterType) {
+        case "latestEntry":
+            filteredData = sheetJRdata.slice(0, 10); // Get last 10 entries
+            break;
+        case "allJobreff":
+            filteredData = sheetJRdata; // Show all "JOB/REFF" entries
+            break;
+        case "userHarshit":
+            filteredData = sheetJRdata.filter(row => row.length > 1 && row[1].toLowerCase() === "harshit");
+            break;
+        case "userPrakhar":
+            filteredData = sheetJRdata.filter(row => row.length > 1 && row[1].toLowerCase() === "prakhar");
+            break;
+    }
+    return filteredData;
+}
+
+// Function to display the filtered results in a table
+function displayJOBNOResults(entries) {
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "";
+
+    if (entries.length === 0) {
+        resultsDiv.innerHTML = "<p>No matching records found.</p>";
+        return;
+    }
+
+    const table = document.createElement("table");
+    const thead = document.createElement("thead");
+    const tbody = document.createElement("tbody");
+
+    // Create table header
+    const headerRow = document.createElement("tr");
+    const headers = ["S.No", "User", "Order By", "Client Name", "Firm Name/Details", "Address", "Job/Reff No.", "Status", "PO Amount", "PO Weight", "V.Code", "Pdf."];
+    headers.forEach(headerText => {
+        const th = document.createElement("th");
+        th.textContent = headerText;
+        headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+
+    // Create table body with filtered entries
+    entries.forEach(entry => {
+        const row = document.createElement("tr");
+
+        entry.forEach((cell, index) => {
+            const td = document.createElement(index === 0 ? 'th' : 'td');
+
+            // If the cell is a URL, make it clickable
+            if (typeof cell === "string" && (cell.startsWith('http') || cell.startsWith('www'))) {
+                const a = document.createElement('a');
+                a.href = cell;
+                a.innerHTML = "&#128221;"; // Icon (📑)
+                a.target = "_blank";
+                td.appendChild(a);
+            } else {
+                td.textContent = cell;
+            }
+
+            row.appendChild(td);
+        });
+
+        tbody.appendChild(row);
+    });
+
+    table.appendChild(thead);
+    table.appendChild(tbody);
+    resultsDiv.appendChild(table);
+}
+
+// Function to display the summary of "Prakhar" and "Harshit" counts
+function displayJOBNOSummary() {
+    const summaryDiv = document.getElementById("summary");
+    
+    const prakharCount = sheetJRdata.filter(row => row.length > 1 && row[1].toLowerCase() === "prakhar").length;
+    const harshitCount = sheetJRdata.filter(row => row.length > 1 && row[1].toLowerCase() === "harshit").length;
+
+    summaryDiv.innerHTML = `
+        <p><strong>Total Project By Prakhar:</strong> ${prakharCount}</p>
+        <p><strong>Total Project By Harshit:</strong> ${harshitCount}</p>
+    `;
+}
+
+// Run on page load
+//  window.onload = jobbPOReffload;
+</script>
+
+
+
+
+<!-- job/reff TOP 10 ENTRY WITH TOTAL JOB BY USER  script stop hare -->
+
+
+
+
 
 
 
