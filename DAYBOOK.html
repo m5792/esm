@@ -1,375 +1,646 @@
+
+
+
+  <table id="dataTable"></table>
+
+<footer class="footer">
+  <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+    <div id="poSummaryBox" style="color: white; padding-left: 10px;">Summary</div>
+
+    <button class="btnposummry">DAYBOOK</button>
+
+
+    <div style="display: flex; align-items: center; gap: 8px; padding-right: 10px;">
+      <label for="search123Input" style="color: white;">Search:</label>
+      <input type="text" id="search123Input" placeholder="🔍 Search..." style="padding: 4px 8px; border-radius: 4px; border: none;" />
+    </div>
+  </div>
+</footer>
+
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Searchable Dropdown Table</title>
+  <meta charset="UTF-8" />
+  <title>PO/REFF NO</title>
   <style>
-  /* ===== Table Design ===== */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 70px; /* space for fixed footer */
-  }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
 
-  th, td {
-    border: 1px solid #ccc;
-    padding: 4px;
-    text-align: left;
-  }
-
-  th {
-    background: #012644;
-    color: white;
-  }
-
-  .highlight {
-    background: yellow;
-  }
-
-  /* ===== Footer Layout ===== */
-  .footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #026186;
-    padding: 10px 16px;
-    z-index: 1000;
-
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 16px;
-    color: white;
-  }
-
-  .footer label {
-    margin-right: 4px;
-    font-weight: bold;
-    color: white;
-  }
-
-  #summaryTotals {
-    flex: 1;
-    text-align: right;
-    font-weight: bold;
-    color: #fff;
-  }
-
-  #searchInput {
-    padding: 6px;
-    width: 220px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-  }
-
-  /* ===== Dropdown Styling ===== */
-  .custom-dropdown {
-    position: relative;
-    display: inline-block;
-  }
-
-  .dropdown-search {
-    width: 180px;
-    padding: 6px;
-    box-sizing: border-box;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    width: 4in;
-  }
-
-  /* ===== Drop-up (Options Show Upward) ===== */
-  .footer .dropdown-options {
-    position: absolute;
-    bottom: 100%;
-    top: auto;
-    left: 0;
-    width: 5in;
-    max-height: 400px;
-    overflow-y: auto;
-    background: rgb(250, 251, 252);
-    border: 1px solid #ccc;
-    z-index: 1001;
-    margin-bottom: 4px;
-    color: black;
-  }
-
-  .dropdown-options div {
-    padding: 5px;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-
-  .dropdown-options div:hover {
-    background-color: #adf0f5;
     
-  }
-
-  #summaryTotals {
-  color: #fff;
-  font-size: 18px;
-  text-align: center;
+/* Base table style */
+ table {
   width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
 }
 
-</style>
+th, td {
+  border: 1px solid #e0e0e0;
+  padding: 10px 14px;
+  text-align: left;
+}
 
+th {
+  background-color: #004d80;
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+table tr:hover {
+  background-color: #004d80;
+  color: white;
+  transition: background-color 0.3s ease, color 0.3s ease;
+ 
+}
+
+        
+    #search123Input {
+      margin-bottom: 10px;
+      padding: 8px;
+      width: 250px;
+      font-size: 16px;
+    }
+   
+    a {
+      text-decoration: none;
+      font-size: 18px;
+    }
+    .blue-bg { color: green; }
+    .pink-bg { color: blue; }
+    .green-bg { color: #4682b4; }
+    .red-bg { color: red; }
+
+    /* Modal styles */
+    #dataModal {
+       display: none;
+      position: fixed;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgb(230, 231, 231);
+    
+      padding: 20px;
+      z-index: 1000;
+      max-height: 75%;
+      overflow: auto;
+      width: 90%;
+      max-width: 1600px;
+      border: 10px solid #013355;
+      border-radius: 20px;
+    }
+    #overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #00000066;
+      z-index: 999;
+    }
+    .btnposummry {
+      margin: 10px 5px 0 0;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+
+  .footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #026186;
+  padding: 6px 0;
+  z-index: 1000;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+}
+
+  </style>
 </head>
 <body>
+  <!-- Modal Popup -->
+  <div id="overlay" onclick="closeModal()"></div>
+  <div id="dataModal">
+    <h3>Multitech Infracon Pvt Ltd. <br/>Ledger Details</h3>
+     <button class="btnposummry"  onclick="printModal()">🖨️ Print</button>
+    <button class="btnposummry"  onclick="closeModal()">❌ Close</button>
+    <div id="modalContent"></div>
+  </div>
 
 
-<div class="footer">
-<label>Select Ledger:</label>
-<div id="dropdownDContainer" class="custom-dropdown" ></div>
-
-<label>Selecty V. Type:</label>
-<div id="dropdownBContainer" class="custom-dropdown"></div>
-
-<label>Select PO/REff No.:</label>
-<div id="dropdownFContainer" class="custom-dropdown"></div>
-
-<br><br>
-<input type="text" id="searchInput" placeholder="🔍 Search table..." style="width: 300px; padding: 6px;">
-<br><br>
-<span id="summaryTotals" ></span>
-</div>
-
-
-<table id="dataTable" ></table>
 
 <script>
-const apiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-const sheetId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
-const range = "LEDGER!A:L";
-let sheetData = [];
+const api123Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheet123Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
+const range123 = "POREFF!A:R";
 
-async function fetchSheetData() {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+const headerHTML = `
+  <tr>
+    <th>Progress %</th>
+   <th>Status</th> <th>Ledger</th><th>PO/Reff No</th><th>PO Amount</th><th>Billing Amount</th><th>Balance</th>
+    <th>PO Weight</th><th>Billing Weight</th><th>Balance</th><th>PO Pdf.</th><th>User</th><th>Order By</th>
+  </tr>`;
+
+const visibleIndexes = [7,16, 6, 8, 12, 14, 9, 13, 15, 11, 1, 2];
+let fullTableData = [];
+
+// Fetch and sort Google Sheet data
+async function fetch123Data() {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet123Id}/values/${range123}?key=${api123Key}`;
   const response = await fetch(url);
   const data = await response.json();
-  sheetData = data.values;
+  const rows = data.values || [];
 
-  populateDropdownD();
-  updateDropdownB();
-  updateDropdownF();
-  renderTable();
-  updateSummaryTotals();
+  const header = rows[0];
+  const dataRows = rows.slice(1);
+
+  // Sort by column 12 (Billing Amount) descending
+  dataRows.sort((a, b) => (parseFloat(b[13]) || 0) - (parseFloat(a[13]) || 0));
+
+  fullTableData = [header, ...dataRows];
+
+  renderPOSUMMRYTable(fullTableData);
+  setupSearch(fullTableData);
 }
+//****
 
 
-function createSearchableDropdown(id, values, onChange) {
-  const container = document.getElementById(id + "Container");
-  container.innerHTML = '';
-
-  const input = document.createElement("input");
-  input.type = "text";
-  input.placeholder = "Search...";
-  input.className = "dropdown-search";
-
-  const dropdown = document.createElement("div");
-  dropdown.className = "dropdown-options";
-  dropdown.style.display = "none"; // 🔴 Hide initially
-
-  container.appendChild(input);
-  container.appendChild(dropdown);
-
-  const uniqueValues = Array.from(new Set(values)).filter(Boolean).sort();
-  let currentOptions = [];
-
-  function renderOptions(filter = "") {
-    dropdown.innerHTML = "";
-    currentOptions = [];
-
-    const filtered = uniqueValues.filter(v => v.toLowerCase().includes(filter.toLowerCase()));
-    const finalList = ["All", ...filtered];
-
-    finalList.forEach(val => {
-      const option = document.createElement("div");
-      option.textContent = val;
-      option.addEventListener("click", () => {
-        input.value = val === "All" ? "" : val;
-        onChange(input.value);
-        dropdown.style.display = "none"; // 🔴 Hide after selecting
-      });
-      dropdown.appendChild(option);
-      currentOptions.push(option);
-    });
-
-    dropdown.style.display = "block"; // ✅ Show only when rendering options
-  }
-
-  input.addEventListener("input", () => {
-    renderOptions(input.value);
-  });
-
-  input.addEventListener("focus", () => {
-    renderOptions(input.value);
-  });
-
-  document.addEventListener("click", (e) => {
-    if (!container.contains(e.target)) {
-      dropdown.style.display = "none"; // 🔴 Hide when clicked outside
-    }
-  });
-
-  // No need to call renderOptions() initially here
-}
 
 
-function populateDropdownD() {
-  const dValues = sheetData.slice(1).map(r => r[3]);
-  createSearchableDropdown("dropdownD", dValues, () => {
-    updateDropdownB();
-    updateDropdownF();
-    renderTable();
-    updateSummaryTotals();
-  });
-}
-
-function updateDropdownB() {
-  const selectedD = document.querySelector('#dropdownDContainer input').value;
-  const bValues = [];
-
-  for (let i = 1; i < sheetData.length; i++) {
-    const dVal = sheetData[i][3];
-    const bVal = sheetData[i][1];
-    if (!selectedD || dVal === selectedD) bValues.push(bVal);
-  }
-
-  createSearchableDropdown("dropdownB", bValues, renderTable);
-}
-
-function updateDropdownF() {
-  const selectedD = document.querySelector('#dropdownDContainer input').value;
-  const fValues = [];
-
-  for (let i = 1; i < sheetData.length; i++) {
-    const dVal = sheetData[i][3];
-    const fVal = sheetData[i][5];
-    if (!selectedD || dVal === selectedD) fValues.push(fVal);
-  }
-
-  createSearchableDropdown("dropdownF", fValues, renderTable);
-}
-
-function renderTable() {
-  const selectedD = document.querySelector('#dropdownDContainer input').value;
-  const selectedB = document.querySelector('#dropdownBContainer input').value;
-  const selectedF = document.querySelector('#dropdownFContainer input').value;
-  const searchQuery = document.getElementById("searchInput").value.trim().toLowerCase();
+function renderPOSUMMRYTable(data) {
+ 
 
   const table = document.getElementById("dataTable");
   table.innerHTML = "";
 
-  const headers = sheetData[0];
-  const headerRow = document.createElement("tr");
-  headers.forEach(h => {
-    const th = document.createElement("th");
-    th.textContent = h;
-    headerRow.appendChild(th);
-  });
-  table.appendChild(headerRow);
+  // Add static header
+  const thead = document.createElement("thead");
+  thead.innerHTML = headerHTML;
+  table.appendChild(thead);
 
-  for (let i = 1; i < sheetData.length; i++) {
-    const row = sheetData[i];
-    const dVal = row[3];
-    const bVal = row[1];
-    const fVal = row[5];
+  const tbody = document.createElement("tbody");
 
-    let showRow = false;
-    if (searchQuery) {
-      showRow = row.some(cell => cell && cell.toLowerCase().includes(searchQuery));
-    } else {
-      const matchesD = !selectedD || dVal === selectedD;
-      const matchesB = !selectedB || bVal === selectedB;
-      const matchesF = !selectedF || fVal === selectedF;
-      showRow = matchesD && matchesB && matchesF;
+  for (let i = 1; i < data.length; i++) {
+    const row = document.createElement("tr");
+
+
+
+
+    // Progress Calculation
+    const poAmount = parseFloat(data[i][8]) || 0;
+    const billingAmount = parseFloat(data[i][12]) || 0;
+    let progress = 0;
+    let label = "---";
+
+    if (poAmount !== 0) {
+      progress = (billingAmount / poAmount) * 100;
+      label = progress <= 100
+        ? `${progress.toFixed()}% work complete`
+        : `${(progress - 100).toFixed()}% work extra`;
     }
 
-    if (showRow) {
-      const tr = document.createElement("tr");
-      const value = (row[1] || "").trim().toUpperCase();
-      if (value === "BANK") tr.style.color = "red";
-      else if (value === "CREDIT NOTE") tr.style.color = "blue";
+    const progressCell = document.createElement("td");
+    progressCell.textContent = label;
 
-      row.forEach((cell, index) => {
-        const td = document.createElement(index === 0 ? 'th' : 'td');
-        if (cell && (cell.startsWith("http") || cell.startsWith("www"))) {
-          const a = document.createElement("a");
-          a.href = cell.startsWith("http") ? cell : "http://" + cell;
-          a.innerHTML = "&#128221";
-          a.target = "_blank";
-          td.appendChild(a);
-        } else {
-          if (searchQuery && cell && cell.toLowerCase().includes(searchQuery)) {
-            td.classList.add("highlight");
-          }
-          td.textContent = cell || "";
-        }
-        tr.appendChild(td);
-      });
+    // Progress color
+    if (progress > 100) progressCell.classList.add("orange-bg");
+    else if (progress >= 60) progressCell.classList.add("blue-bg");
+    else if (progress >= 30) progressCell.classList.add("pink-bg");
+    else progressCell.classList.add("green-bg");
 
-      table.appendChild(tr);
-    }
-  }
+    row.appendChild(progressCell);
+
+    // Add other visible columns
+    visibleIndexes.forEach(colIndex => {
+      const td = document.createElement("td");
+      const cellValue = data[i][colIndex] || "";
+
+      if (colIndex === 6) {
+        td.style.cursor = "pointer";
+        td.style.color = "#2980b9";
+        td.style.fontSize = "16PX";
+        td.style.textDecoration = "underline";
+        td.addEventListener("click", () => {
+          const jobNo = cellValue;
+          const ledgerName = data[i][16] || "---";
+          const ledgerAddress = data[i][17] || "---";
+          fetchReffNo(jobNo, ledgerName, ledgerAddress);
+        });
+      }
+
+      if (typeof cellValue === 'string' && (cellValue.startsWith("http") || cellValue.startsWith("www"))) {
+        const a = document.createElement("a");
+        a.href = cellValue.startsWith("http") ? cellValue : "https://" + cellValue;
+        a.innerHTML = "&#128221;";
+        a.target = "_blank";
+        td.appendChild(a);
+      } else {
+        td.textContent = cellValue;
+
+// ✅ Apply formatting ONLY to column 7 (status column)
+if (colIndex === 7) {
+  td.style.fontWeight = "bold";
+  td.style.fontSize = "13px";
+
+  if (cellValue === "CANCELED") td.style.color = "#dc7633";
+  else if (cellValue === "COMPLETED") td.style.color = "#48c9b0";
+  else if (cellValue === "RUNNING") td.style.color = "#808b96";
+  else if (cellValue === "PENDING") td.style.color = "#5dade2";
 }
-function updateSummaryTotals() {
-  const selectedD = document.querySelector('#dropdownDContainer input').value;
-  const selectedB = document.querySelector('#dropdownBContainer input').value;
-  const selectedF = document.querySelector('#dropdownFContainer input').value;
-  const searchQuery = document.getElementById("searchInput").value.trim().toLowerCase();
 
-  let totalTaxInvoice = 0;
-  let totalBank = 0;
-  let totalCreditNote = 0;
-  let totalWeight = 0;
 
-  for (let i = 1; i < sheetData.length; i++) {
-    const row = sheetData[i];
-    const dVal = row[3];
-    const bVal = (row[1] || "").trim().toUpperCase();
-    const fVal = row[5];
-    const colE = parseFloat(row[4]) || 0;
-    const colG = parseFloat(row[6]) || 0;
-    const colH = parseFloat(row[7]) || 0;
 
-    let showRow = false;
+      }
 
-    // Show based on search OR dropdowns
-    if (searchQuery) {
-      showRow = row.some(cell => cell && cell.toLowerCase().includes(searchQuery));
-    } else {
-      const matchesD = !selectedD || dVal === selectedD;
-      const matchesB = !selectedB || bVal === selectedB;
-      const matchesF = !selectedF || fVal === selectedF;
-      showRow = matchesD && matchesB && matchesF;
-    }
+      // Highlight red for negative balances
+      const col5Val = parseFloat(data[i][14]) || 0;
+      const col8Val = parseFloat(data[i][15]) || 0;
+      if (col5Val < 0 && colIndex === 14) td.classList.add("red-bg");
+      if (col8Val < 0 && colIndex === 15) td.classList.add("red-bg");
 
-    if (showRow) {
-      if (bVal === "TAX INVOICE") totalTaxInvoice += colG;
-      if (bVal === "BANK") totalBank += colE;
-      if (bVal === "CREDIT NOTE") totalCreditNote += colG;
-      totalWeight += colH;
-    }
+      row.appendChild(td);
+    });
+
+    tbody.appendChild(row);
   }
 
-  const summaryDiv = document.getElementById("summaryTotals");
+  table.appendChild(tbody);
+
+  // ✅ Show status summary
+  displayporeffResults(data);
+}
+
+
+
+
+
+function displayporeffResults(entries) {
+  const summaryDiv = document.getElementById("poSummaryBox");
+  summaryDiv.innerHTML = "";
+
+  if (!entries || entries.length <= 1) {
+    summaryDiv.innerHTML = "<p>No matching records found.</p>";
+    return;
+  }
+
+  // Count statuses in column index 14 (visible index 14 = actual index 9 or 13?)
+  let completed = 0, pending = 0, canceled = 0, running = 0;
+
+  entries.slice(1).forEach(row => {
+    const status = (row[7] || "").toLowerCase();
+    if (status === "completed") completed++;
+    else if (status === "pending") pending++;
+    else if (status === "canceled") canceled++;
+    else if (status === "running") running++;
+  });
+
   summaryDiv.innerHTML = `
-    <b>Total Tax Invoice:</b> ₹${totalTaxInvoice.toFixed()} |
-    <b>Bank:</b> ₹${totalBank.toFixed()} |
-    <b>Credit Note:</b> ₹${totalCreditNote.toFixed()} |
-    <b>Weight:</b> ${totalWeight.toFixed()} kg
+    ✅ Completed: <span class="complete">${completed}</span> |
+    ⏳ Pending: <span class="pending">${pending}</span> |
+    ❌ Canceled: <span class="canceled">${canceled}</span> |
+    🔄 Running: <span class="running">${running}</span>
   `;
 }
 
 
-document.getElementById("searchInput").addEventListener("input", () => {
-  renderTable();
-  updateSummaryTotals();
-  // fetchSheetData();
-});
- fetchSheetData();
+// Search functionality
+function setupSearch(data) {
+  const searchInput = document.getElementById("search123Input");
+  searchInput.addEventListener("input", () => {
+    const text = searchInput.value.toLowerCase();
+    const filtered = data.filter((row, i) => {
+      if (i === 0) return true;
+      return row.some(cell => (cell || "").toLowerCase().includes(text));
+    });
+    renderPOSUMMRYTable(filtered);
+  });
+}
+
+// Modal handling
+function openModal(htmlContent) {
+  document.getElementById("modalContent").innerHTML = htmlContent;
+  document.getElementById("dataModal").style.display = "block";
+  document.getElementById("overlay").style.display = "block";
+}
+
+function closeModal() {
+  document.getElementById("dataModal").style.display = "none";
+  document.getElementById("overlay").style.display = "none";
+}
+
+
+function printModal() {
+  const content = document.getElementById("modalContent").innerHTML;
+
+  const printWindow = window.open('', '', 'height=800,width=1000');
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print</title>
+
+        <body>
+
+           <span style="color:rgb(246, 156, 156);font-size:130%;font-family:Magneto;">eS |</span> 
+  <span style="color:#a0d0f0;font-size:130%;font-family:Magneto;">MTally</span>
+            <h4>Multitech Infracon Pvt. Ltd.</h4>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+          }
+
+          table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e0e0e0;
+  padding: 10px 14px;
+  text-align: left;
+}
+
+th {
+  background-color: #004d80;
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+
+        </style>
+      </head>
+      <body>
+        ${content}
+      </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+}
+
+
+// Show Ledger Modal
+async function fetchReffNo(jobNo, ledgerName = "---", ledgerAddress = "---") {
+ 
+  const range124 = "LEDGER!B:L";
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet123Id}/values/${range124}?key=${api123Key}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  const rows = data.values || [];
+
+  const headers = rows[0];
+  const matched = rows.slice(1).filter(r => r[4] === jobNo); // Column F
+
+  if (matched.length === 0) {
+    openModal("<p>No Match Found</p>");
+    return;
+  }
+
+  let totalG = 0;
+  let totalH = 0;
+  matched.forEach(row => {
+    totalG += parseFloat(row[5]) || 0;
+    totalH += parseFloat(row[6]) || 0;
+  });
+
+  let html = `
+   <p>
+  <strong>Ledger Name:</strong> ${ledgerName}<br>
+  <strong>Address:</strong> ${ledgerAddress}<br>
+
+  <span style="color: rgb(1, 107, 37); font-weight: bold; font-size: 18px;">Total Billng :-</span> Rs.  ${totalG.toFixed()} /
+  <span style="color: blue; font-weight: bold; font-size: 18px;">Total Weight:-</span>  ${totalH.toFixed()} Kg.
+</p>
+
+    <table border='1'><tr>`;
+
+  headers.forEach(h => html += `<th>${h}</th>`);
+  html += `</tr>`;
+
+  matched.forEach(row => {
+    const isCredit = (row[0] || "").toLowerCase().includes("credit note");
+    const rowStyle = isCredit ? ` style="color: red;"` : "";
+    html += `<tr${rowStyle}>`;
+
+    headers.forEach((_, i) => {
+      const cell = row[i] || "";
+      if (typeof cell === "string" && (cell.startsWith("http") || cell.startsWith("www"))) {
+        const href = cell.startsWith("http") ? cell : "https://" + cell;
+        html += `<td><a href="${href}" target="_blank">&#128221;</a></td>`;
+      } else {
+        const overrideStyle = isCredit && i === 0 ? ` style="color: black;"` : "";
+        html += `<td${overrideStyle}>${cell}</td>`;
+      }
+    });
+
+    html += `</tr>`;
+  });
+
+  html += `</table>`;
+  openModal(html);
+}
+
+// Init load
+fetch123Data();
 </script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Modal Overlay + Box -->
+
+
+<style>
+  /* Modal styles */
+  #daybookModal {
+    display: none;
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgb(230, 231, 231);
+    padding: 20px;
+    z-index: 1000;
+    max-height: 75%;
+    overflow: auto;
+    width: 90%;
+    max-width: 1600px;
+    border: 10px solid #013355;
+    border-radius: 20px;
+  }
+
+  /* Make the internal content scrollable if too tall */
+  #daybookModal > div {
+    background: #f4fcfb;
+    padding: 20px;
+    border-radius: 10px;
+    overflow: auto;
+    height: 100%;
+    box-sizing: border-box;
+    position: relative;
+  }
+
+  /* Ensure daybookContainer fits within modal body */
+  #daybookContainer {
+    max-height: 1200px;
+    overflow: auto;
+    width: 100%;
+    box-sizing: border-box;
+  }
+</style>
+
+
+<div id="daybookModal">
+  <div>
+    <button class="btnposummry"  onclick="closeDaybookModal()">❌ Close</button>
+    <h3>📋 Daybook Summary</h3>
+    
+    <div>
+      <label>Search:</label>
+      <input type="text" id="search125Input" placeholder="🔍 Search..." />
+    </div>
+<br/>
+    <div id="daybookContainer">
+      <!-- Your dynamic content (table etc.) will go here -->
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+const api125Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheet125Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
+
+let originalBodyRows = []; // Global variable to store all rows
+
+// Function to fetch and render Daybook in popup
+async function fetchDaybook() {
+  const range = "LEDGER!A:L";
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet125Id}/values/${range}?key=${api125Key}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  const rows = data.values || [];
+
+  if (rows.length <= 1) {
+    document.getElementById("daybookContainer").innerHTML = "<p>No data to display.</p>";
+    return;
+  }
+
+  const header = rows[0];
+  originalBodyRows = rows.slice(1)
+    .filter(r => r[2] !== undefined && r[2] !== "")
+    .sort((a, b) => {
+      const valA = a[0];
+      const valB = b[0];
+      const numA = parseFloat(valA);
+      const numB = parseFloat(valB);
+      if (!isNaN(numA) && !isNaN(numB)) return numB - numA;
+      const dateA = new Date(valA);
+      const dateB = new Date(valB);
+      if (!isNaN(dateA) && !isNaN(dateB)) return dateB - dateA;
+      return valB.localeCompare(valA);
+    });
+
+  renderDaybookTable(header, originalBodyRows);
+
+  // Show modal
+  document.getElementById("daybookModal").style.display = "block";
+}
+
+// Render function with search-filtered rows
+function renderDaybookTable(header, rows) {
+  let html = `<table style="width:100%; border-collapse:collapse; font-size:14px;">`;
+  html += `<thead><tr>${header.map(h => `<th style="border:1px solid #ccc; padding:6px; background:#004d80; color:white;">${h}</th>`).join("")}</tr></thead>`;
+
+  html += `<tbody>${rows.map(r => {
+    // 🟢 Set row text color based on column index 1 value
+    const type = (r[1] || "").toLowerCase();
+    let rowStyle = "";
+
+    if (type.includes("bank")) rowStyle = ' style="color:red;"';
+    else if (type.includes("credit note")) rowStyle = ' style="color:blue;"';
+    else if (type.includes("tds")) rowStyle = ' style="color:green;"';
+
+    return `<tr${rowStyle}>${r.map(cell => {
+      if (typeof cell === "string" && (cell.startsWith("http") || cell.startsWith("www"))) {
+        const href = cell.startsWith("http") ? cell : "https://" + cell;
+        return `<td style="border:1px solid #ddd; padding:6px;"><a href="${href}" target="_blank">&#128221;</a></td>`;
+      } else {
+        return `<td style="border:1px solid #ddd; padding:6px;">${cell || ""}</td>`;
+      }
+    }).join("")}</tr>`;
+  }).join("")}</tbody></table>`;
+
+  document.getElementById("daybookContainer").innerHTML = html;
+}
+
+
+// Search input event listener
+document.getElementById("search125Input").addEventListener("input", function () {
+  const searchTerm = this.value.toLowerCase();
+  const filteredRows = originalBodyRows.filter(row =>
+    row.some(cell => (cell || "").toLowerCase().includes(searchTerm))
+  );
+  const header = ["SNo", "Type", "Date", "Ledger", "VNo", "Reff", "Amount", "Weight", "Rate", "Narration", "Voucher", "PDF"]; // fallback header
+  renderDaybookTable(header, filteredRows);
+});
+
+// Close the Daybook popup
+function closeDaybookModal() {
+  document.getElementById("daybookModal").style.display = "none";
+}
+
+// Attach to button
+document.querySelector(".btnposummry").addEventListener("click", fetchDaybook);
+</script>
