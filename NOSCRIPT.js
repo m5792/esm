@@ -1,3 +1,4 @@
+
 const api123Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheet123Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
 const range123 = "POREFF!A:R";
@@ -32,8 +33,7 @@ async function fetch123Data() {
 }
 //****
 
-
-  function renderPOSUMMRYTable(data) {
+function renderPOSUMMRYTable(data) {
   const table = document.getElementById("dataTable");
   table.innerHTML = "";
 
@@ -45,7 +45,6 @@ async function fetch123Data() {
   const tbody = document.createElement("tbody");
 
   for (let i = 1; i < data.length; i++) {
-    // ✅ Filter to show only rows where User column (index 1) === "LESHANT"
     if ((data[i][2] || "").toUpperCase() !== "LESHANT") continue;
 
     const row = document.createElement("tr");
@@ -66,7 +65,6 @@ async function fetch123Data() {
     const progressCell = document.createElement("td");
     progressCell.textContent = label;
 
-    // Progress color
     if (progress > 100) progressCell.classList.add("orange-bg");
     else if (progress >= 60) progressCell.classList.add("blue-bg");
     else if (progress >= 30) progressCell.classList.add("pink-bg");
@@ -74,7 +72,6 @@ async function fetch123Data() {
 
     row.appendChild(progressCell);
 
-    // Add other visible columns
     visibleIndexes.forEach(colIndex => {
       const td = document.createElement("td");
       const cellValue = data[i][colIndex] || "";
@@ -92,19 +89,18 @@ async function fetch123Data() {
         });
       }
 
-//@@@@@@@
-if (colIndex === 6) { // Ledger column
-  td.style.cursor = "pointer";
-  td.style.color = "#2980b9";
-  td.style.fontSize = "16px";
-  td.style.textDecoration = "underline";
-  td.addEventListener("click", () => {
-    const ledgerName = cellValue;
-    const ledgerAddress = data[i][17] || "---"; // Assuming address is index 17
-    fetchLedgerByLedgerName(ledgerName, ledgerAddress);
-  });
-}
-//@@@@
+      if (colIndex === 6) {
+        td.style.cursor = "pointer";
+        td.style.color = "#2980b9";
+        td.style.fontSize = "16px";
+        td.style.textDecoration = "underline";
+        td.addEventListener("click", () => {
+          const ledgerName = cellValue;
+          const ledgerAddress = data[i][17] || "---";
+          fetchLedgerByLedgerName(ledgerName, ledgerAddress);
+        });
+      }
+
       if (typeof cellValue === 'string' && (cellValue.startsWith("http") || cellValue.startsWith("www"))) {
         const a = document.createElement("a");
         a.href = cellValue.startsWith("http") ? cellValue : "https://" + cellValue;
@@ -114,7 +110,6 @@ if (colIndex === 6) { // Ledger column
       } else {
         td.textContent = cellValue;
 
-        // ✅ Status formatting
         if (colIndex === 7) {
           td.style.fontWeight = "bold";
           td.style.fontSize = "13px";
@@ -126,7 +121,6 @@ if (colIndex === 6) { // Ledger column
         }
       }
 
-      // Highlight red for negative balances
       const col5Val = parseFloat(data[i][14]) || 0;
       const col8Val = parseFloat(data[i][15]) || 0;
       if (col5Val < 0 && colIndex === 14) td.classList.add("red-bg");
@@ -140,9 +134,8 @@ if (colIndex === 6) { // Ledger column
 
   table.appendChild(tbody);
 
-  // ✅ Filtered data passed to summary
-  const filteredForSummary = data.filter((row, index) => index === 0 || (row[1] || "").toUpperCase() === "LESHANT");
-  displayporeffResults(entries);
+  // ✅ Fixed line:
+  displayporeffResults(data); // 👈 Pass data instead of undefined 'entries'
 }
 
 
