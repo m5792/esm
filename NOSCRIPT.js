@@ -23,8 +23,18 @@ async function fetch123Data() {
   const header = rows[0];
   const dataRows = rows.slice(1);
 
-  // Sort by column 12 (Billing Amount) descending
-  dataRows.sort((a, b) => (parseFloat(b[13]) || 0) - (parseFloat(a[13]) || 0));
+ // Sort by column 16 (Billing Amount) dcending (sort by numeric number base)
+//   dataRows.sort((a, b) => (parseFloat(b[12]) || 0) - (parseFloat(a[12]) || 0));
+
+// Sort by column 16 (text, A–Z) sort by alphanumeric base
+dataRows.sort((a, b) => {
+  const textA = (a[16] || "").toString().toLowerCase();
+  const textB = (b[16] || "").toString().toLowerCase();
+  return textA.localeCompare(textB);
+});
+
+//
+
 
   fullTableData = [header, ...dataRows];
 
@@ -136,6 +146,11 @@ function renderPOSUMMRYTable(data) {
 
   // ✅ Fixed line:
   displayporeffResults(data); // 👈 Pass data instead of undefined 'entries'
+
+  // ✅ Filter only "LESHANT" data for summary
+const filteredForSummary = [data[0], ...data.slice(1).filter(r => (r[2] || "").toUpperCase() === "LESHANT")];
+displayporeffResults(filteredForSummary);
+
 }
 
 
@@ -322,7 +337,7 @@ matched.forEach(row => {
 
     // Apply row color: red (bank) overrides blue (credit)
     let rowColor = "";
-    if (isBank) rowColor = "red";
+    if (isBank) rowColor = "#e74c3c";
     else if (isCredit) rowColor = "blue";
 
     let rowStyle = rowColor ? ` style="color: ${rowColor};"` : "";
