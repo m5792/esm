@@ -2403,11 +2403,17 @@ setInterval(displayCurrentDateTime, 1000);
 
   function parseDate(input) {
     const parts = input.split("-");
-    if (parts.length !== 3) return null;
-    const day = parseInt(parts[0]);
-    const month = new Date(Date.parse(parts[1] + " 1, 2000")).getMonth();
-    const year = parts[2].length === 2 ? parseInt("20" + parts[2]) : parseInt(parts[2]);
-    return new Date(year, month, day);
+    if (parts.length === 3) {
+      const day = parseInt(parts[0]);
+      const month = new Date(Date.parse(parts[1] + " 1, 2000")).getMonth();
+      const year = parts[2].length === 2 ? parseInt("20" + parts[2]) : parseInt(parts[2]);
+      return new Date(year, month, day);
+    } else if (parts.length === 2) {
+      const day = parseInt(parts[0]);
+      const month = new Date(Date.parse(parts[1] + " 1, 2000")).getMonth();
+      return new Date(today.getFullYear(), month, day);
+    }
+    return null;
   }
 
   function showPopup(content) {
@@ -2459,27 +2465,36 @@ setInterval(displayCurrentDateTime, 1000);
       const eventDate = parseDate(dateStr);
       if (!eventDate) return;
 
-      const eventMonthDay = `${eventDate.getMonth()}-${eventDate.getDate()}`;
+      const eventDay = eventDate.getDate();
+      const eventMonth = eventDate.getMonth();
       let li = null;
 
       for (let i = 0; i <= 5; i++) {
         const futureDate = new Date(today);
         futureDate.setDate(today.getDate() + i);
-        const futureMonthDay = `${futureDate.getMonth()}-${futureDate.getDate()}`;
+        const fDay = futureDate.getDate();
+        const fMonth = futureDate.getMonth();
 
-        if (eventMonthDay === futureMonthDay) {
-          if (i === 0) {
-            li = document.createElement("li");
-            li.textContent = `Today:- ${title}`;
-            li.classList.add("today");
-          } else {
-            const label = type.toLowerCase();
-            if (label === "monthly" || label === "yearly") {
-              li = document.createElement("li");
-              li.textContent = `${label.charAt(0).toUpperCase() + label.slice(1)}:- ${title} Due on ${eventDate.getDate()}-${eventDate.getMonth() + 1}`;
-              li.classList.add(label);
-            }
-          }
+        const label = type.toLowerCase();
+
+        if (label === "monthly" && fDay === eventDay) {
+          li = document.createElement("li");
+          li.textContent = i === 0 ? `Today:- ${title}` : `Monthly:- ${title} Due on ${fDay}-${fMonth + 1}`;
+          li.classList.add(i === 0 ? "today" : "monthly");
+          break;
+        }
+
+        if (label === "yearly" && fDay === eventDay && fMonth === eventMonth) {
+          li = document.createElement("li");
+          li.textContent = i === 0 ? `Today:- ${title}` : `Yearly:- ${title} Due on ${fDay}-${fMonth + 1}`;
+          li.classList.add(i === 0 ? "today" : "yearly");
+          break;
+        }
+
+        if (i === 0 && eventDate.toDateString() === today.toDateString()) {
+          li = document.createElement("li");
+          li.textContent = `Today:- ${title}`;
+          li.classList.add("today");
           break;
         }
       }
@@ -2493,19 +2508,24 @@ setInterval(displayCurrentDateTime, 1000);
         });
       }
 
-      window.originalEvents.push({ li, row }); // Save row also for full search
+      window.originalEvents.push({ li, row });
       allList.appendChild(li);
     });
   }
 
-  // 🔍 Full-sheet Search Functionality (live from Google Sheets)
   document.getElementById("searchInput").addEventListener("input", async function () {
     const query = this.value.trim().toLowerCase();
     const ul = document.querySelector("#allEvents ul");
     ul.innerHTML = "";
 
     if (!query) {
-      // Reset to previously loaded events
+  // 👇 Just reload original list when input is blank
+  loadReminder();
+  return;
+}
+
+
+    if (!query) {
       window.originalEvents.forEach((obj) => ul.appendChild(obj.li));
     } else {
       const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetEVENTId}/values/${rangeEVENT}?key=${apiEVENTKey}`;
@@ -2535,6 +2555,7 @@ setInterval(displayCurrentDateTime, 1000);
 
   loadReminder();
 </script>
+
 </body>
 </html>
 
