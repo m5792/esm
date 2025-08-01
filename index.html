@@ -119,7 +119,7 @@
       top: 20px;
       display: none;
       padding: 10px;
-      min-height: 100vh;
+      min-height: 90vh;
       background-color: rgb(255, 255, 255);
     }
 
@@ -288,8 +288,8 @@ tr:nth-child(even) {
 }
 
 table tr:hover {
-  background-color: #004d80;
-  color: white;
+  background-color: #f8c304;
+  color: rgb(1, 20, 37);
   transition: background-color 0.3s ease, color 0.3s ease;
  
 }
@@ -673,23 +673,6 @@ async function fetchGlobalMessage() {
 
 
 
-  <style>
-    #monthDropdown {
-        width: 1in; /* 1 inch width */
-        padding: 5px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 14px;
-        background-color: white;
-        appearance: none; /* for custom styling on some browsers */
-        -webkit-appearance: none;
-        -moz-appearance: none;
-    }
-  </style> 
- <div style="display: flex; align-items: center; gap: 10px;">
-    <select id="monthDropdown"></select>
-    <div id="monthlyTotals">Please Wait!</div>
-</div>
 
   <!-- daybook filter and serchbar code start hare -->
  
@@ -717,11 +700,12 @@ async function fetchGlobalMessage() {
 
     </div>
  <!-- daybook filter and serchbar code stop hare -->
+<div  style="max-height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 5px; border-radius: 6px;background-color: #dfe2e2;">
+<table id="miplTable" class="hidden" style="background-color: rgb(255, 255, 255);"> </table>
+</div>
+ <!-- daybook table -->
 
-
- <table id="miplTable" class="hidden" style="background-color: #fdfef9;"></table>   <!-- daybook table -->
-
- <div class="multidivbar" style="background-color: #f8fafa;">
+<div  style="max-height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 5px; border-radius: 6px;background-color: #dfe2e2;">
   <table id="myTable" style="background-color: rgb(245, 243, 243);"> </table>  <!-- Address bar Table -->
   </div>
  
@@ -733,17 +717,82 @@ async function fetchGlobalMessage() {
  <!-- daybook serchbar body stop -->
 
 
- <!-- event & reminder  body start -->
 
- <div class="event-section" id="allEvents">
+ <!-- card div code and css start///////////////////////////////////////////// -->
+ 
+<style>
 
-  <span style="font-size: 20px;font-weight: bold;color: #000;">📅 Event Reminders</span>
-   <input type="text" id="searchInput" placeholder="🔍 Search events..." style="padding: 4px 8px; width: 98%; max-width: 300px; margin-bottom: 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;">
-  <ul></ul>
+  .homesection {
+      padding: 20px 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+      .services {
+      display: flex;
+      justify-content: space-around;
+    }
+ 
+
+</style>
+
+
+
+  <section class="homesection" > <div class="services">
+ <!-- card 1 -->
+      <div style="width: 850px; height: 150px;border-radius: 8px;margin: 10px; padding: 20px;background: #e5f6fb;" >
+
+         <!-- event & reminder  body start -->
+
+<div class="event-section" id="allEvents" style="max-height: 350px; overflow-y: auto; border: 3px solid #011632; padding: 10px; border-radius: 6px; padding: 10px; border-radius: 6px;">
+  <span style="font-size: 20px; font-weight: bold; color: #000;">📅 Event Reminders</span>
+  
+  <input type="text" id="searchInput" placeholder="🔍 Search events..." 
+         style="padding: 4px 8px; width: 98%; max-width: 300px; margin-bottom: 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;background-color: #f6e0e0;">
+  
+  <ul style="list-style-type: none; padding-left: 0; margin: 0;"></ul>
 </div>
- <!-- event & reminder  body stop -->
 
-  <br/><br/><br/><br/><br/><br/><br/><br/>
+ <!-- event & reminder  body stop -->
+      </div>
+
+
+ <!-- card 2 -->
+      <div style="width: 300px; height: 150px;border-radius: 8px;margin: 10px; padding: 20px;background: #e5f6fb;" >
+      
+        
+  <style>
+    #monthDropdown {
+        width: 1in; /* 1 inch width */
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        background-color: white;
+        appearance: none; /* for custom styling on some browsers */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+  </style> 
+ 
+    <select id="monthDropdown"></select> <br/><br/>
+    <div id="monthlyTotals">Please Wait!</div>
+    <br/>
+    <div  style="max-height: 200px;  border: 3px solid #011632; padding: 10px; border-radius: 6px; background-color: #ffffff;">
+       <span  style="color: rgb(1, 26, 116); font-size: 16px; font-weight: bold;">Notice Board:</span><br/>
+      <span id="globalMessage" style="color: rgb(16, 15, 15); font-size: 16px;"></span>
+    </div>
+
+      </div>
+
+     
+
+    </div></section>
+ <!-- card div code and css stop///////////////////////////////////////////// -->
+
+
+
+  <br/>
 
 <!-- यह एक नोट है, vertical Two Part Div (30-70) right content stop -->
 </div> </div>  <!-- यह एक नोट है, vertical Two Part Div (30-70) container content stop  Heare ((CODE501)) -->
@@ -1904,7 +1953,7 @@ document.addEventListener("DOMContentLoaded", function () {
   <div class="footer">   <!-- footer div start---- -->
 
 
- <marquee behavior="scroll" direction="left"  scrollamount="3"> <span id="globalMessage" style="color: white; font-size: 16px;"></span> </marquee>
+
 
 
 
@@ -3196,7 +3245,7 @@ loadSheet();
         
         function updateMonthlyTotalsDisplay(totals) {
             const totalsElement = document.getElementById('monthlyTotals');
-            totalsElement.innerHTML = `<span style="color: #002c2c ;font-size:100%;font-family:Arial Black;">Total Receipt : Rs. ${totals.bank.toFixed()}</span> | <span style="color: #002c2c ;font-size:100%;font-family:Arial Black;">Total Sale : Rs. ${totals.taxInvoice.toFixed()}</span> `;
+            totalsElement.innerHTML = `<span style="color: #034F3B ;font-size:100%;font-family:Arial Black;">Total Receipt : Rs. ${totals.bank.toFixed()}</span> <br/> <span style="color: #8B0836 ;font-size:100%;font-family:Arial Black;">Total Sale : Rs. ${totals.taxInvoice.toFixed()}</span> `;
         }
         
         function filterTablemonth() {
