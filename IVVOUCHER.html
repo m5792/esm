@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PIN Based Login</title>
+   <style>
+   #mainContent {
+  padding: 20px;
+  border: 1px solid #ccc;
+  max-width: 1200px;
+  margin: 40px auto;
+  font-family: Arial;
+  background: #f9f9f9;
+  border-radius: 10px;
+    }
+
+
+  
+
+    label {
+      font-weight: bold;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    tr.receipt { background-color: #ffe6e6; color: #a10404; }
+    tr.bill { background-color: #e6f3ff; color: #1d03c6; }
+    .runningBalance { font-weight: bold; }
+
+    
+ 
+/* Base table style */
+ table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+
+}
+
+th, td {
+  border: 1px solid #e0e0e0;
+  padding: 10px 14px;
+  text-align: left;
+}
+
+th {
+  background-color: #004d80;
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+table tr:hover {
+  background-color: #f8c304;
+  color: rgb(1, 20, 37);
+  transition: background-color 0.3s ease, color 0.3s ease;
+ 
+}
+  </style>
+</head>
+<body>
+<div id="mainContent" style="height: 100%; overflow: hidden; background-color: #d4edfd;">
+  <div class="userDropdown" style="padding: 20px; text-align: center;">
+    <label style="font-size: 18px; color: #013aac;">User Name:</label>
+    <select id="ivuser"></select>
+
+    <label style="font-size: 18px; color: #013aac; margin-left: 20px;">Searchbar:</label>
+    <input type="text" id="ivcrGlobalSearch" placeholder=" Type to filter table..." oninput="filterIVCRTableGlobally()">
+  </div>
+
+  <!-- ✅ ONLY THIS PART SCROLLS -->
+  <div style="
+    height: calc(100% - 100px);  /* adjust based on your top content */
+    overflow-y: auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    height: 1300px;
+    background-color: white;
+  ">
+    <button onclick="refreshIVCRTable()" style="margin-bottom: 10px;"> Refresh Table</button>
+    <table id="myIVCRTable" style="width: 100%; border-collapse: collapse;"></table>
+  </div>
+</div>
+
+    <p>Multitech Infracon Pvt. Ltd.</p>
+
+
+
+
+
+
+
+
+
+
+  <!-- floating DROPDOWN OPTION-btn WITH FORM FORM form div script START hare -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>es|Mtally</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .floating-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #013aac;
+      color: white;
+      padding: 12px 18px;
+      border: 5px solid #f5b82a;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
+
+    .floatingdropdown {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      background-color: #bde2fa;
+      border: 5px solid #004d80;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 1000;
+      color: black;
+    }
+
+    .floatingdropdown button {
+      background: none;
+      border: none;
+      padding: 2px 8px;
+      width: 100%;
+      text-align: justify;
+      cursor: pointer;
+    }
+
+    .floatingdropdown button:hover {
+      background-color: #81c3ee;
+      color: rgb(247, 244, 244);
+    }
+
+    .form-container {
+      position: fixed;
+      top: 200px;
+      right: 300px;
+      width: 4in;
+      height: 7.8in;
+      background-color: #dddedf;
+      border: 5px solid #004d80;
+      padding: 10px;
+      display: none;
+      z-index: 99;
+      overflow-y: auto;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      border-radius: 8px;
+    }
+
+    .form-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .form-header h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: #555;
+    }
+
+    .close-btn:hover {
+      color: red;
+    }
+
+
+
+
+
+
+    
+           /* Form Inputs */
+input, select {
+    width: 100%;
+    padding: 6px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+/* Light Gray Background for Inputs */
+input[type="text"], input[type="number"], input[type="date"], select {
+    background-color: #f9f9f9;
+}
+
+/* Submit and Button Styling */
+input[type="submit"] {
+    background-color: #080808;
+    color: rgb(246, 246, 248);
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+input[type="submit"]:hover, button:hover {
+    background-color: #575555;
+    transform: translateY(-2px);
+}
+      
+
+.dropdown-container {
+    position: relative;
+    margin-top: 20px;
+  }
+
+  #dropdownIVCRSearch {
+    width: 3in;
+  }
+
+  ul.dropdownCSSlist {
+    display: none;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ccc;
+    max-height: 8in; /* ✅ 8-inch height */
+    overflow-y: auto;
+    background: rgb(148, 2, 2);
+    color: white;
+    position: absolute;
+    z-index: 10;
+    width: 3in;
+  }
+
+  ul.dropdownCSSlist li {
+    padding: 5px;
+    cursor: pointer;
+  }
+
+  ul.dropdownCSSlist li:hover {
+    background-color: #f58787;
+  }
+
+  </style>
+</head>
+<body>
+
+  <!-- Floating Button -->
+  <button class="floating-btn" onclick="formContainer()">+</button>
+
+
+
+  <!-- Right Form Section -->
+  <div class="form-container" id="formContainer">
+    <div class="form-header">
+    
+      <button class="close-btn" onclick="closeForm()" style="color: red;font-weight: bold;">Close</button>
+    </div>
+
+
+  
+<form id="mainIVCRForm">
+  <input type="hidden" name="SNo" id="sNo" />
+
+   <label style="color: rgb(1, 23, 64);font-weight: bold;">User</label>
+  <select id="voucherType" class="userDropdown" name="Voucher" required style="font-size: 16px; text-align: center;">
+
+</select>
+
+
+
+
+          <label >Select Tr. Type</label>
+         <select id="ivcr0" name="Type" required>
+           <option value="PAYMENT" style="color: green;">Payment</option>
+           <option value="RECEIPT" style="color: red;">Receipt</option>
+          
+         </select>
+           <label >Date</label>
+         <input type="date" id="ivcr1" name="Date" required>
+
+
+          <!-- (VCN- 111) dropdown div start -->
+         <div class="dropdown-container" >
+            <label >Serch IV Ledger</label>
+            <input type="text" id="dropdownIVCRSearch" placeholder=" Search..." oninput="filterIVCRDropdown()" name="Ledger" required>
+            <ul id="dropdownIVCRList" class="dropdownCSSlist" >
+                <!-- The dropdown options will be populated here -->
+            </ul>
+        </div>
+ <!-- (VCN- 111) dropdown div stop -->
+        
+
+         <label >Amount</label>
+         <input type="number" id="ivcr2" name="Amount" required placeholder="Amount">
+          <label >Narration</label>
+         <input type="text" id="ivcr3" name="Narration" placeholder="Narration"style="text-transform: uppercase;">
+
+         <input type="hidden" name="Timestamp" id="timestampIVCR">
+         <input type="submit" id="submitIVCRButton" value="Submit">
+       </form>
+   
+     <!-- Form for Fetching and Modifying Entries -->
+    <form id="modifyIVCRForm">
+      <input type="hidden" id="formModeIVCR" name="formModeIVCR" value="new">
+        <input type="number" id="searchIVCRSNo" placeholder="Enter S.No. to Modify Entry" >
+        <button type="button" class="fetchbtn" onclick="fetchIVCRDetails()"  style="background-color: black; color: white; font-size: 12px; ">Fetch Details</button>
+        <button type="button" class="fetchbtn" id="modifyIVCRButton" onclick="modifyIVCREntry()" style="display:none;">Modify Entry</button>
+
+
+
+        <!-- Wait message div -->
+<div id="waitIVCRMessage" style="display:none; color:red; font-size:16px; font-weight:bold;"></div>
+       </form>
+
+    <br/>
+        <span style="color:rgb(129, 1, 1);font-size:130%;font-family:Magneto;">eS |</span> 
+        <span style="color:#004d80;font-size:130%;font-family:Magneto;">MTally</span>
+</div> 
+
+
+
+<script>
+  function formContainer() {
+    document.getElementById("formContainer").style.display = "block";
+  }
+
+  function closeForm() {
+    document.getElementById("formContainer").style.display = "none";
+  }
+</script>
+
+
+</body>
+</html>
+
+
+<!-- floating DROPDOWN OPTION-btn WITH FORM FORM form div script STOP hare -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+  <script>
+    const userApiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+    const userSheetId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
+    const userRange = 'USER!K:N';
+
+    const ivcrSheetId = "1h3uC_0Ji4-NUhqrN0aIR-XwLZL5VdgilCBlIzC--SDA";
+    const ivcrRange = 'IVCR!W:AD';
+
+    let users = [];
+    let fulivcrData = [];
+
+    async function fetchUsers() {
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${userSheetId}/values/${userRange}?key=${userApiKey}`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        const rows = data.values;
+
+        if (!rows || rows.length < 2) {
+          alert("No data found.");
+          return;
+        }
+
+        users = rows.slice(1).map(row => ({
+          code: row[0]?.trim() || "",
+          pin: row[1]?.trim() || "",
+          status: row[2]?.trim() || "",
+          name: row[3]?.trim() || ""
+        }));
+
+        askForPIN();
+      } catch (err) {
+        console.error("Fetch error:", err);
+        alert("Failed to fetch user data.");
+      }
+    }
+
+    function askForPIN() {
+      let matchedUser = null;
+
+      while (!matchedUser) {
+        const pinInput = prompt("Enter your PIN:");
+        if (!pinInput) continue;
+
+        matchedUser = users.find(user => user.pin === pinInput.trim());
+        if (!matchedUser) alert("Invalid PIN. Please try again.");
+      }
+
+      processUser(matchedUser);
+    }
+
+    function processUser(user) {
+      const status = user.status.trim().toLowerCase();
+      const today = new Date();
+
+      if (status === "locked") {
+        alert("YOUR ID IS LOCKED. PLEASE CONTACT YOUR ADMIN.");
+        return;
+      }
+
+      if (status === "unlocked") {
+        fillDropdown(user);
+        return;
+      }
+
+      const expiry = new Date(user.status);
+      if (isNaN(expiry)) {
+        alert("Invalid status format. Not a valid date or unlock/locked.");
+        return;
+      }
+
+      const diffTime = expiry - today;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays < 0) {
+        alert("YOUR LICENSE EXPIRED. PLEASE CONTACT ADMIN.");
+      } else {
+        if (diffDays <= 5) {
+          alert(`YOUR LICENSE IS EXPIRING IN ${diffDays} DAY(S) ON ${user.status}`);
+        }
+        fillDropdown(user);
+      }
+    }
+
+    function fillDropdown(user) {
+      const select1 = document.getElementById("ivuser");
+      const select2 = document.getElementById("voucherType");
+      const optionHTML = `<option value="${user.code}">${user.name}</option>`;
+      select1.innerHTML = optionHTML;
+      select2.innerHTML = optionHTML;
+
+      select1.style.display = "block";
+      select2.style.display = "block";
+
+      select1.addEventListener("change", updateIVCRTableAndDropdown);
+
+      updateIVCRTableAndDropdown();
+    }
+
+    async function loadIVCRSheet() {
+      try {
+        const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${ivcrSheetId}/values/${ivcrRange}?key=${userApiKey}`);
+        const data = await response.json();
+        if (data.values) {
+          fulivcrData = data.values;
+        }
+      } catch (err) {
+        console.error("Error fetching IVCR data:", err);
+      }
+    }
+function updateIVCRTableAndDropdown() {
+  const selectedVoucher = document.getElementById('ivuser').value;
+  const filteredData = fulivcrData.filter((row, i) => i === 0 || row[1] === selectedVoucher);
+  populateIVCRTable(filteredData);
+  populateDropdownList(filteredData); // 👈 Add this line
+}
+
+
+    function populateIVCRTable(data) {
+      const table = document.getElementById("myIVCRTable");
+      table.innerHTML = '';
+
+      data.forEach((row, index) => {
+        const tr = document.createElement("tr");
+
+        if (index === 0) {
+          row.forEach(cell => {
+            const th = document.createElement("th");
+            th.textContent = cell;
+            tr.appendChild(th);
+          });
+
+          const th = document.createElement("th");
+          th.textContent = "Balance";
+          tr.appendChild(th);
+        } else {
+          row.forEach((cell, idx) => {
+            const td = document.createElement("td");
+            td.textContent = cell;
+            tr.appendChild(td);
+
+            if (idx === 2) {
+              const type = cell.trim().toLowerCase();
+              if (type === 'receipt') tr.classList.add('receipt');
+              if (type === 'bill') tr.classList.add('bill');
+            }
+          });
+
+          const td = document.createElement("td");
+          td.className = "runningBalance";
+          tr.appendChild(td);
+        }
+
+        table.appendChild(tr);
+      });
+
+      calculateIVCRRunningBalance();
+    }
+
+    function calculateIVCRRunningBalance() {
+      const rows = Array.from(document.querySelectorAll("#myIVCRTable tr")).slice(1);
+      if (rows.length === 0) return;
+
+      let balance = 0;
+
+      for (let i = rows.length - 1; i >= 0; i--) {
+        const row = rows[i];
+        const tds = row.querySelectorAll('td');
+        const amt = parseFloat(tds[5]?.textContent || "0");
+        const typ = tds[2]?.textContent.trim().toLowerCase();
+
+        if (!isNaN(amt)) {
+          if (typ === 'receipt' || typ === 'salary') {
+            balance += amt;
+          } else if (typ === 'payment' || typ === 'bill') {
+            balance -= amt;
+          }
+        }
+
+        tds[tds.length - 1].textContent = balance.toFixed();
+      }
+    }
+
+async function refreshIVCRTable() {
+  await loadIVCRSheet();
+  updateIVCRTableAndDropdown();
+}
+
+
+    // table serch bar
+    function filterIVCRTableGlobally() {
+  const input = document.getElementById("ivcrGlobalSearch").value.toLowerCase();
+  const table = document.getElementById("myIVCRTable");
+  const rows = table.querySelectorAll("tr");
+
+  rows.forEach((row, index) => {
+    if (index === 0) return; // Skip header row
+
+    const cells = row.querySelectorAll("td");
+    const match = Array.from(cells).some(td => td.textContent.toLowerCase().includes(input));
+    row.style.display = match ? "" : "none";
+  });
+}
+
+    //
+
+    function populateDropdownList(data) {
+  const ul = document.getElementById("dropdownIVCRList");
+  ul.innerHTML = '';
+  const uniqueValues = [...new Set(data.slice(1).map(row => row[4]))].filter(v => v);
+
+  uniqueValues.forEach(value => {
+    const li = document.createElement("li");
+    li.textContent = value;
+    li.style.padding = "6px 10px";
+    li.style.cursor = "pointer";
+
+    li.onclick = () => {
+      document.getElementById('dropdownIVCRSearch').value = value;
+      ul.style.display = "none";
+      // Optional: Filter table based on dropdown selection
+      filterTableByLedger(value);
+    };
+
+    ul.appendChild(li);
+  });
+}
+
+function filterIVCRDropdown() {
+  const searchInput = document.getElementById("dropdownIVCRSearch");
+  const list = document.getElementById("dropdownIVCRList");
+  const searchVal = searchInput.value.toLowerCase();
+
+  const items = list.querySelectorAll("li");
+  let found = false;
+
+  items.forEach(item => {
+    const match = item.textContent.toLowerCase().includes(searchVal);
+    item.style.display = match ? "block" : "none";
+    if (match) found = true;
+  });
+
+  list.style.display = found && searchVal !== "" ? "block" : "none";
+}
+//
+
+
+
+    window.onload = async function () {
+      await loadIVCRSheet();
+      fetchUsers();
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <!-- IVCR form div script start hare -->
+<script>
+  const scriptIVCRURL = 'https://script.google.com/macros/s/AKfycbz-lyd06EKKSO4xVaTSRWoIgMWS0C9nZvzipEP59K25TZSOSdL5CMpYJNPgmF1nyyGrXg/exec';
+
+  document.addEventListener("submit", async function (e) {
+    const form = e.target;
+    if (form.id !== "mainIVCRForm") return;
+
+    e.preventDefault();
+     const formMode = document.getElementById("formModeIVCR").value; //****
+    const submitIVCRButton = document.getElementById("submitIVCRButton");
+    submitIVCRButton.disabled = true;
+    submitIVCRButton.value = "Wait..";
+
+    const now = new Date();
+    document.getElementById('timestampIVCR').value = `${now.getMonth()+1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+
+    const formInputs = form.querySelectorAll('input, textarea');
+    formInputs.forEach(input => {
+      if (input.type === 'text' || input.type === 'textarea') {
+        input.value = input.value.toUpperCase();
+      }
+    });
+
+    //****
+    
+    if (formMode === "modify") {
+      await modifyIVCREntry();
+    } else {
+      await submitIVCREntry(form);
+    }
+
+    submitIVCRButton.disabled = false;
+    submitIVCRButton.value = "Submit";
+  });
+
+  async function submitIVCREntry(form) {
+    const formData = new FormData(form);
+    try {
+      const response = await fetch(scriptIVCRURL, { method: 'POST', body: formData });
+      const result = await response.json();
+
+      if (result.result === 'success') {
+        alert('Entry saved successfully!');
+        form.reset(); // FORM RESET
+        document.getElementById("formModeIVCR").value = "new";
+        // ✅ Reload data from sheet
+  await loadIVCRSheet();
+
+  // ✅ Refresh table using latest data and selected user
+  updateIVCRTableAndDropdown();
+       
+        
+        
+
+           // ✅ Remove DLT option after submit
+        const voucherDropdown = document.getElementById("voucherType");
+        const dltOption = [...voucherDropdown.options].find(opt => opt.value === "DLT");
+        if (dltOption) {
+          voucherDropdown.removeChild(dltOption);
+        }
+        //
+      } else {
+        alert(`Error: ${result.error || 'Unknown error occurred.'}`);
+      }
+    } catch (error) {
+      alert(`Error submitting the form: ${error.message}`);
+    }
+  }
+    //****
+   
+
+  async function fetchIVCRDetails() {
+    const sNo = document.getElementById("searchIVCRSNo").value;
+    const waitMessage = document.getElementById("waitIVCRMessage");
+    waitMessage.innerText = "Fetching data... Please wait...";
+    waitMessage.style.display = 'block';
+
+
+
+    //**** option value ke base par data fetch krna
+
+    try {
+  const response = await fetch(`${scriptIVCRURL}?sNo=${sNo}`);
+  const data = await response.json(); // ✅ You need this line!
+
+const voucherTypeDropdown = document.getElementById("voucherType");
+const selectedIVVoucher = voucherTypeDropdown.value;
+
+if (data.result !== "error" && data.Voucher === selectedIVVoucher) {
+    
+    document.getElementById("sNo").value = data.SNo;
+        document.getElementById("voucherType").value = data.Voucher;
+        document.getElementById("ivcr0").value = data.Type;
+        document.getElementById("ivcr1").value = data.Date;
+        document.getElementById("dropdownIVCRSearch").value = data.Ledger;
+        document.getElementById("ivcr2").value = data.Amount;
+        document.getElementById("ivcr3").value = data.Narration;
+      //  document.getElementById("modifyIVCRButton").style.display = "inline-block";
+
+
+       // ✅ Add "DLT - delete" option if it doesn't exist already
+const voucherDropdown = document.getElementById("voucherType");
+if (![...voucherDropdown.options].some(opt => opt.value === "DLT")) {
+  const deleteOption = document.createElement("option");
+  deleteOption.value = "DLT";
+  deleteOption.text = "Delete";
+  deleteOption.style.color = "red";
+  deleteOption.style.backgroundColor = "blue";
+  voucherDropdown.appendChild(deleteOption);
+}
+
+       document.getElementById("formModeIVCR").value = "modify"; // ✅ Set to modify
+    //    document.getElementById("modifyIVCRButton").style.display = "inline-block";
+
+    // ✅ Show alert after successful data fetch
+      alert(" Select Delete Option in User Section For Delete Entry");
+
+      } else {
+        alert("No record found for the given S.No.");
+      }
+    } catch (error) {
+      console.error("Error fetching details:", error);
+      alert("Please reconcile details or contact admin.");
+    } finally {
+      setTimeout(() => waitMessage.style.display = 'none', 2000);
+    }
+  }
+
+  async function modifyIVCREntry() {
+    const waitMessage = document.getElementById("waitIVCRMessage");
+    waitMessage.innerText = "Please wait...";
+    waitMessage.style.display = "block";
+
+
+    const form = document.getElementById('mainIVCRForm');
+
+    // ✅ Set new timestamp
+    const now = new Date();
+    document.getElementById('timestampIVCR').value = `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+
+    const formData = new FormData(form);
+    formData.set('SNo', document.getElementById('sNo').value);
+
+    try {
+      const response = await fetch(scriptIVCRURL, { method: 'POST', body: formData });
+      const result = await response.json();
+
+      if (result.result === 'success') {
+        alert('Entry modified successfully!');
+        form.reset();
+        document.getElementById("formModeIVCR").value = "new"; // ✅ Reset to new
+     // ✅ Reload data from sheet
+  await loadIVCRSheet();
+
+  // ✅ Refresh table using latest data and selected user
+  updateIVCRTableAndDropdown();
+   
+   
+       
+        document.getElementById("submitIVCRButton").style.display = "inline-block";
+        document.getElementById("modifyIVCRButton").style.display = "none";
+
+          // ✅ Remove DLT option after modify
+        const voucherDropdown = document.getElementById("voucherType");
+        const dltOption = [...voucherDropdown.options].find(opt => opt.value === "DLT");
+        if (dltOption) {
+          voucherDropdown.removeChild(dltOption);
+        }
+        //
+      } else {
+        alert(`Error modifying entry: ${result.error}`);
+      }
+    } catch (error) {
+      alert(`Error: ${error.message}`);
+    } finally {
+      setTimeout(() => waitMessage.style.display = 'none', 2000);
+    }
+  }
+
+    //*****
+</script>
+<!-- IVCR form div script stop hare -->
+
+
