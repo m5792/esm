@@ -882,6 +882,12 @@ async function fetchGlobalMessage() {
 
   <br/>
 
+<span style="color: #002044; font-weight: bold;font-size: 16px;">Loading Summrry</span>
+<table id="noticeBoard">  <thead><tr> <th>Type</th><th>Date</th> <th>Name</th><th>Vehicle No.</th><th>Job No.</th> <th>Status</th> </tr></thead><tbody></tbody></table>
+
+  <br/>  <br/>  <br/>
+
+
 <!-- यह एक नोट है, vertical Two Part Div (30-70) right content stop -->
 </div> </div>  <!-- यह एक नोट है, vertical Two Part Div (30-70) container content stop  Heare ((CODE501)) -->
 
@@ -5480,9 +5486,11 @@ function showLastFiveTaxInvoiceAndBankEntries() {
     const tr = document.createElement("tr");
 
     // 🔴 If type is BANK, apply red text
-    if (row[1]?.toUpperCase() === "BANK") {
-      tr.style.color = "Maroon";
-    }
+  if (row[1]?.toUpperCase() === "BANK") {
+    tr.style.color = "#036B2B";
+    tr.style.backgroundColor = "#EDFAF2"; // pure blue
+}
+
 
     dataHeader.forEach((_, index) => {
       const td = document.createElement("td");
@@ -7415,6 +7423,7 @@ table tr:hover {
       loadSheet();  // DAYBOOK SUMMRY
       loadIVCRSheet();   // IVCR ENTRY FORM TABLE
       loadusrAdminSheet();  // ADMIN USER 
+      loadNoticeBoard();  // loding summry notice board
     }
 
 
@@ -8895,3 +8904,124 @@ function displayJOBNOSummary() {
     }
   });
 </script>
+
+
+
+
+
+
+
+
+
+
+
+<!-- loading summry  script start hare -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Notice Board</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+   
+    .status-loading {
+      background-color: #ff4d4d;
+      color: white;
+      font-weight: bold;
+    }
+    .status-complete {
+      background-color: #28a745;
+      color: white;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<script>
+const apiNBKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheetNBId = "1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4";
+const rangeNB = "DATABASE!K:R";
+
+async function loadNoticeBoard() {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetNBId}/values/${rangeNB}?key=${apiNBKey}`;
+  const response = await fetch(url);
+  const data = await response.json();
+  
+  const rows = data.values;
+  const tbody = document.querySelector("#noticeBoard tbody");
+  tbody.innerHTML = "";
+
+  if (!rows || rows.length <= 1) {
+    tbody.innerHTML = `<tr><td colspan="6">No Data Found</td></tr>`;
+    return;
+  }
+
+  const today = new Date();
+  const todayStr = formatDateToYYYYMMDD(today); // Current date in YYYY-MM-DD
+
+  rows.forEach((row, index) => {
+    if (index === 0) return; // skip header
+
+    const dateInL = row[1]; // Column L
+    if (dateInL && formatCustomDate(dateInL) === todayStr) {
+      const tr = document.createElement("tr");
+
+      for (let i = 0; i <= 5; i++) {
+        const td = document.createElement("td");
+        td.textContent = row[i] || "";
+
+        // Status color coding
+        if (i === 5) {
+          if ((row[i] || "").toUpperCase() === "LOADING") {
+            td.classList.add("status-loading");
+          } else if ((row[i] || "").toUpperCase() === "COMPLETE") {
+            td.classList.add("status-complete");
+          }
+        }
+        tr.appendChild(td);
+      }
+
+      tbody.appendChild(tr);
+    }
+  });
+}
+
+// Format today's date to YYYY-MM-DD
+function formatDateToYYYYMMDD(dateObj) {
+  const y = dateObj.getFullYear();
+  const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+  const d = String(dateObj.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+// Convert "13-Aug-2025" to YYYY-MM-DD
+function formatCustomDate(dateStr) {
+  const months = {
+    Jan: "01", Feb: "02", Mar: "03", Apr: "04", May: "05", Jun: "06",
+    Jul: "07", Aug: "08", Sep: "09", Oct: "10", Nov: "11", Dec: "12"
+  };
+  const parts = dateStr.split("-");
+  if (parts.length === 3) {
+    const day = parts[0].padStart(2, "0");
+    const month = months[parts[1]];
+    const year = parts[2];
+    return `${year}-${month}-${day}`;
+  }
+  return "";
+}
+
+loadNoticeBoard();
+</script>
+
+</body>
+</html>
+<!-- loading summry  script stop hare -->
