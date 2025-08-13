@@ -795,39 +795,27 @@ async function fetchGlobalMessage() {
  <!-- address table -->
 
 <div  style="max-height: 550px; overflow-y: auto; border: 3px solid #013342; padding: 5px; border-radius: 6px;background-color: #fbfbfb;">
+  <div style="display: flex; align-items: center; background: rgb(236, 236, 236); padding: 10px; gap: 10px;">
+    <select id="monthDropdown" style="padding: 5px; font-size: 16px;"></select>
+    <div id="monthlyTotals" style="color: white; font-size: 16px;">Please Wait!</div>
+</div>
+
+
   <table id="myTable" style="background-color: rgb(245, 243, 243);"> </table>  <!-- Address bar Table -->
    <div id="taxBankContainer"></div>  <!-- daybook summry -->
   </div>
  
 
+  
 
 
+ <div class="container2">  <div class="leftdiv" >
+<table id="noticeBoard">  <thead><tr> <th>Type</th><th>Date</th> <th>Name</th><th>Vehicle No.</th><th>Job No.</th> <th>Status</th> </tr></thead><tbody></tbody></table>
+<span style="color: #002044; font-weight: bold;font-size: 16px;">Loading Status</span>
+</div>
 
-
-
-<style>
-
-  .homesection {
-      padding: 20px 20px;
-      max-width: 1200px;
-      margin: auto;
-    }
-
-      .services {
-      display: flex;
-      justify-content: space-around;
-    }
- 
-
-</style>
-
-
-
-  <section class="homesection" > <div class="services">
- <!-- card 1 -->
-      <div style="width: 850px; height: 150px;border-radius: 8px;margin: 10px; padding: 20px;background: #e2f375;" >
-
-         <!-- event & reminder  body start -->
+<div class="rightdiv" >
+ <!-- event & reminder  body start -->
 
 <div class="event-section" id="allEvents" style="max-height: 210px; overflow-y: auto; border: 3px solid #011632; padding: 10px; border-radius: 6px; padding: 10px; border-radius: 6px;">
   <span style="font-size: 20px; font-weight: bold; color: #000;">📅 Event Reminders</span>
@@ -839,53 +827,15 @@ async function fetchGlobalMessage() {
 </div>
 
  <!-- event & reminder  body stop -->
-      </div>
 
-
- <!-- card 2 -->
-      <div style="width: 300px; height: 150px;border-radius: 8px;margin: 10px; padding: 20px;background: #b5e4f2;" >
-      
-        
-  <style>
-    #monthDropdown {
-        width: 1in; /* 1 inch width */
-        padding: 5px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 14px;
-        background-color: white;
-        appearance: none; /* for custom styling on some browsers */
-        -webkit-appearance: none;
-        -moz-appearance: none;
-    }
-  </style> 
- 
-    <select id="monthDropdown"></select> <br/><br/>
-    <div id="monthlyTotals">Please Wait!</div>
-    <br/>
-    <div  style="max-height: 200px;  border: 3px solid #011632; padding: 10px; border-radius: 6px; background-color: #ffffff;">
-       <span  style="color: rgb(1, 26, 116); font-size: 16px; font-weight: bold;">Notice Board:</span><br/>
+  <span  style="color: rgb(1, 26, 116); font-size: 16px; font-weight: bold;">Notice Board:</span><br/>
       <span id="globalMessage" style="color: rgb(16, 15, 15); font-size: 16px;"></span>
-    </div>
-
-      </div>
-
-     
-
-    </div></section>
-
-
  
- <!-- dialog box div code and css stop///////////////////////////////////////////// -->
+
+</div></div>
 
 
 
-  <br/>
-
-<span style="color: #002044; font-weight: bold;font-size: 16px;">Loading Summrry</span>
-<table id="noticeBoard">  <thead><tr> <th>Type</th><th>Date</th> <th>Name</th><th>Vehicle No.</th><th>Job No.</th> <th>Status</th> </tr></thead><tbody></tbody></table>
-
-  <br/>  <br/>  <br/>
 
 
 <!-- यह एक नोट है, vertical Two Part Div (30-70) right content stop -->
@@ -2464,6 +2414,40 @@ setInterval(displayCurrentDateTime, 1000);
     overflow: auto; /* Scroll content if it overflows */
 }
     </style>
+
+
+ <style>
+        .container2 {
+            display: flex;
+           
+
+            flex-direction: row; /* Arrange child divs side-by-side (flex-direction: column;) */
+
+          /*  flex-direction: column;  Arrange child divs vertically */
+            height: 25vh; /* Full viewport height */
+        }
+      .leftdiv {
+    flex: 5; /* 70% */
+    background-color: #dddedf;
+      border: 3px solid #004d80;
+      padding: 10px;
+      z-index: 99;
+      overflow-y: auto;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      border-radius: 8px;
+   
+}
+
+.rightdiv {
+    flex: 5; /* 30% */
+    background-color: #eaeaea;
+    border: 3px solid #004d80;
+      padding: 10px;
+      z-index: 99;
+    overflow: auto; /* Scroll content if it overflows */
+    border-radius: 8px;
+}
+    </style>
 </head>
 <body>
 </body> </html>
@@ -3333,7 +3317,7 @@ loadSheet();
         
         function updateMonthlyTotalsDisplay(totals) {
             const totalsElement = document.getElementById('monthlyTotals');
-            totalsElement.innerHTML = `<span style="color: #034F3B ;font-size:100%;font-family:Arial Black;">Total Receipt : Rs. ${totals.bank.toFixed()}</span> <br/> <span style="color: #8B0836 ;font-size:100%;font-family:Arial Black;">Total Sale : Rs. ${totals.taxInvoice.toFixed()}</span> `;
+            totalsElement.innerHTML = `<span style="color: #034F3B ;font-size:100%;font-family:Arial Black;">Total Receipt : Rs. ${totals.bank.toFixed()}</span>  <span style="color: #8B0836 ;font-size:100%;font-family:Arial Black;">Total Sale : Rs. ${totals.taxInvoice.toFixed()}</span> `;
         }
         
         function filterTablemonth() {
@@ -5455,7 +5439,7 @@ if (![...SALEDropdown.options].some(opt => opt.value === "DLT")) {
 //
 function showLastFiveTaxInvoiceAndBankEntries() {
   const container = document.getElementById("taxBankContainer");
-  container.innerHTML = "<h4>Daybook Summary</h4>";
+//  container.innerHTML = "<h4>Daybook Summary</h4>";
 
   const entries = rawData.filter(row => {
     const type = row[1]?.toUpperCase();
@@ -5487,8 +5471,8 @@ function showLastFiveTaxInvoiceAndBankEntries() {
 
     // 🔴 If type is BANK, apply red text
   if (row[1]?.toUpperCase() === "BANK") {
-    tr.style.color = "#036B2B";
-    tr.style.backgroundColor = "#EDFAF2"; // pure blue
+    tr.style.color = "#C92606";
+  //  tr.style.backgroundColor = "#EDFAF2"; // pure blue
 }
 
 
