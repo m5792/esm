@@ -8892,59 +8892,25 @@ function displayJOBNOSummary() {
 
 
 
-
-
-
-
-
-
-
 <!-- loading summry  script start hare -->
 
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Notice Board</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f8f9fa;
-      padding: 20px;
-    }
-    h2 {
-      text-align: center;
-      color: #333;
-    }
-   
-    .status-loading {
-      background-color: #ff4d4d;
-      color: white;
-      font-weight: bold;
-    }
-     .status-processing {
-      background-color: #ff4d4d;
-      color: white;
-      font-weight: bold;
-    }
-    .status-processed {
-      background-color: #28a745;
-      color: white;
-      font-weight: bold;
-    }
-    .status-complete {
-      background-color: #28a745;
-      color: white;
-      font-weight: bold;
-    }
-      .status-unloading {
-      background-color: #39b3d8;
-      color: white;
-      font-weight: bold;
-    }
-  </style>
-</head>
-<body>
 <script>
+// ===== CSS injected via JS (no <style> tag used) =====
+const css = `
+   /* Status Colors */
+  .status-loading    { background-color: #ff4d4d; color: #fff; font-weight: bold; }
+  .status-processing { background-color: #fd2222; color: #fff; font-weight: bold; }
+  .status-processed  { background-color: #28a745; color: #fff; font-weight: bold; }
+  .status-complete   { background-color: #28a745; color: #fff; font-weight: bold; }
+  .status-unloading  { background-color: #39b3d8; color: #fff; font-weight: bold; }
+`;
+(function applyCSS(c){
+  const s = document.createElement('style');
+  s.textContent = c;
+  document.head.appendChild(s);
+})(css);
+
+// ===== Notice Board Script =====
 const apiNBKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheetNBId = "1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4";
 const rangeNB = "DATABASE!K:R";
@@ -8959,16 +8925,18 @@ async function loadNoticeBoard() {
   tbody.innerHTML = "";
 
   if (!rows || rows.length <= 1) {
-    tbody.innerHTML = `<tr><td colspan="6">No Data Found</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7">No Data Found</td></tr>`;
     return;
   }
 
+  // Last 3 days range
   const today = new Date();
-  const yesterday = new Date();
-  yesterday.setDate(today.getDate() - 1);
-
-  const todayStr = formatDateToYYYYMMDD(today);
-  const yesterdayStr = formatDateToYYYYMMDD(yesterday);
+  let allowedDates = [];
+  for (let i = 0; i < 3; i++) {
+    let d = new Date();
+    d.setDate(today.getDate() - i);
+    allowedDates.push(formatDateToYYYYMMDD(d));
+  }
 
   rows.forEach((row, index) => {
     if (index === 0) return; // skip header
@@ -8976,8 +8944,7 @@ async function loadNoticeBoard() {
     const dateInL = row[1]; // Column L
     const formattedDate = dateInL ? formatCustomDate(dateInL) : "";
 
-    // Show only if date matches today or yesterday
-    if (formattedDate === todayStr || formattedDate === yesterdayStr) {
+    if (allowedDates.includes(formattedDate)) {
       const tr = document.createElement("tr");
 
       for (let i = 0; i <= 6; i++) {
@@ -8986,21 +8953,12 @@ async function loadNoticeBoard() {
 
         // Status color coding
         if (i === 5) {
-       if ((row[i] || "").toUpperCase() === "LOADING") {
-  td.classList.add("status-loading");
-}
-  else if ((row[i] || "").toUpperCase() === "PROCESSING") {   //processing
-  td.classList.add("status-processing");
-} 
-  else if ((row[i] || "").toUpperCase() === "PROCESSED") {   //Processed
-  td.classList.add("status-processed");
-} 
-else if ((row[i] || "").toUpperCase() === "UNLOADING") {
-  td.classList.add("status-unloading");
-} else if ((row[i] || "").toUpperCase() === "COMPLETE") {
-  td.classList.add("status-complete");
-}
-
+          const status = (row[i] || "").toUpperCase();
+          if (status === "LOADING") td.classList.add("status-loading");
+          else if (status === "PROCESSING") td.classList.add("status-processing");
+          else if (status === "PROCESSED") td.classList.add("status-processed");
+          else if (status === "UNLOADING") td.classList.add("status-unloading");
+          else if (status === "COMPLETE") td.classList.add("status-complete");
         }
         tr.appendChild(td);
       }
@@ -9036,7 +8994,4 @@ function formatCustomDate(dateStr) {
 
 loadNoticeBoard();
 </script>
-
-</body>
-</html>
 <!-- loading summry  script stop hare -->
