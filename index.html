@@ -810,7 +810,7 @@ async function fetchGlobalMessage() {
 
 
  <div class="container2">  <div class="leftdiv" >
-<table id="noticeBoard">  <thead><tr> <th>Type</th><th>Date</th> <th>Name</th><th>Vehicle No.</th><th>Job No.</th> <th>Status</th> </tr></thead><tbody></tbody></table>
+<table id="noticeBoard">  <thead><tr> <th>Type</th><th>Date</th> <th>Name</th><th>Vehicle No.</th><th>Job No.</th> <th>Status</th> <th>Inv. No.</th></tr></thead><tbody></tbody></table>
 <span style="color: #002044; font-weight: bold;font-size: 16px;">Loading Status</span>
 </div>
 
@@ -8921,15 +8921,29 @@ function displayJOBNOSummary() {
       color: white;
       font-weight: bold;
     }
+     .status-processing {
+      background-color: #ff4d4d;
+      color: white;
+      font-weight: bold;
+    }
+    .status-processed {
+      background-color: #28a745;
+      color: white;
+      font-weight: bold;
+    }
     .status-complete {
       background-color: #28a745;
+      color: white;
+      font-weight: bold;
+    }
+      .status-unloading {
+      background-color: #39b3d8;
       color: white;
       font-weight: bold;
     }
   </style>
 </head>
 <body>
-
 <script>
 const apiNBKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheetNBId = "1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4";
@@ -8950,26 +8964,43 @@ async function loadNoticeBoard() {
   }
 
   const today = new Date();
-  const todayStr = formatDateToYYYYMMDD(today); // Current date in YYYY-MM-DD
+  const yesterday = new Date();
+  yesterday.setDate(today.getDate() - 1);
+
+  const todayStr = formatDateToYYYYMMDD(today);
+  const yesterdayStr = formatDateToYYYYMMDD(yesterday);
 
   rows.forEach((row, index) => {
     if (index === 0) return; // skip header
 
     const dateInL = row[1]; // Column L
-    if (dateInL && formatCustomDate(dateInL) === todayStr) {
+    const formattedDate = dateInL ? formatCustomDate(dateInL) : "";
+
+    // Show only if date matches today or yesterday
+    if (formattedDate === todayStr || formattedDate === yesterdayStr) {
       const tr = document.createElement("tr");
 
-      for (let i = 0; i <= 5; i++) {
+      for (let i = 0; i <= 6; i++) {
         const td = document.createElement("td");
         td.textContent = row[i] || "";
 
         // Status color coding
         if (i === 5) {
-          if ((row[i] || "").toUpperCase() === "LOADING") {
-            td.classList.add("status-loading");
-          } else if ((row[i] || "").toUpperCase() === "COMPLETE") {
-            td.classList.add("status-complete");
-          }
+       if ((row[i] || "").toUpperCase() === "LOADING") {
+  td.classList.add("status-loading");
+}
+  else if ((row[i] || "").toUpperCase() === "PROCESSING") {   //processing
+  td.classList.add("status-processing");
+} 
+  else if ((row[i] || "").toUpperCase() === "PROCESSED") {   //Processed
+  td.classList.add("status-processed");
+} 
+else if ((row[i] || "").toUpperCase() === "UNLOADING") {
+  td.classList.add("status-unloading");
+} else if ((row[i] || "").toUpperCase() === "COMPLETE") {
+  td.classList.add("status-complete");
+}
+
         }
         tr.appendChild(td);
       }
@@ -8979,7 +9010,7 @@ async function loadNoticeBoard() {
   });
 }
 
-// Format today's date to YYYY-MM-DD
+// Format date to YYYY-MM-DD
 function formatDateToYYYYMMDD(dateObj) {
   const y = dateObj.getFullYear();
   const m = String(dateObj.getMonth() + 1).padStart(2, "0");
