@@ -794,12 +794,16 @@ async function fetchGlobalMessage() {
 
  <!-- address table -->
 
-<div  style="max-height: 550px; overflow-y: auto; border: 3px solid #013342; padding: 5px; border-radius: 6px;background-color: #fbfbfb;">
-  <div style="display: flex; align-items: center; background: rgb(236, 236, 236); padding: 10px; gap: 10px;">
+<div  style="max-height: 600px; overflow-y: auto; border: 3px solid #013342; padding: 5px; border-radius: 6px;background-color: #f3f9f8;">
+
+<span style="color: #0515f0; font-weight: bold;font-size: 16px;">Loading Status</span>
+<table id="noticeBoard">  <thead ><tr> <th>Type</th><th>Date</th> <th>Name</th><th>Vehicle No.</th><th>Job No.</th> <th>Status</th> <th>Inv. No.</th></tr></thead><tbody></tbody></table>
+
+
+  <div style="display: flex; align-items: center; background: rgb(10, 10, 10); padding: 10px; gap: 10px;">
     <select id="monthDropdown" style="padding: 5px; font-size: 16px;"></select>
     <div id="monthlyTotals" style="color: white; font-size: 16px;">Please Wait!</div>
 </div>
-
 
   <table id="myTable" style="background-color: rgb(245, 243, 243);"> </table>  <!-- Address bar Table -->
    <div id="taxBankContainer"></div>  <!-- daybook summry -->
@@ -810,14 +814,15 @@ async function fetchGlobalMessage() {
 
 
  <div class="container2">  <div class="leftdiv" >
-<table id="noticeBoard">  <thead><tr> <th>Type</th><th>Date</th> <th>Name</th><th>Vehicle No.</th><th>Job No.</th> <th>Status</th> <th>Inv. No.</th></tr></thead><tbody></tbody></table>
-<span style="color: #002044; font-weight: bold;font-size: 16px;">Loading Status</span>
+
+   <span  style="color: rgb(1, 26, 116); font-size: 16px; font-weight: bold;">Notice Board:</span><br/>
+      <span id="globalMessage" style="color: rgb(16, 15, 15); font-size: 16px;"></span>
 </div>
 
 <div class="rightdiv" >
  <!-- event & reminder  body start -->
 
-<div class="event-section" id="allEvents" style="max-height: 210px; overflow-y: auto; border: 3px solid #011632; padding: 10px; border-radius: 6px; padding: 10px; border-radius: 6px;">
+<div class="event-section" id="allEvents" style="max-height: 210px; overflow-y: auto; border: 3px solid #011632; padding: 10px; border-radius: 6px; padding: 10px; border-radius: 6px; background-color: #fcfbeb;">
   <span style="font-size: 20px; font-weight: bold; color: #000;">📅 Event Reminders</span>
   
   <input type="text" id="searchInput" placeholder="🔍 Search events..." 
@@ -828,10 +833,7 @@ async function fetchGlobalMessage() {
 
  <!-- event & reminder  body stop -->
 
-  <span  style="color: rgb(1, 26, 116); font-size: 16px; font-weight: bold;">Notice Board:</span><br/>
-      <span id="globalMessage" style="color: rgb(16, 15, 15); font-size: 16px;"></span>
  
-
 </div></div>
 
 
@@ -2424,11 +2426,11 @@ setInterval(displayCurrentDateTime, 1000);
             flex-direction: row; /* Arrange child divs side-by-side (flex-direction: column;) */
 
           /*  flex-direction: column;  Arrange child divs vertically */
-            height: 25vh; /* Full viewport height */
+            height: 18vh; /* Full viewport height */
         }
       .leftdiv {
-    flex: 5; /* 70% */
-    background-color: #dddedf;
+    flex: 3; /* 70% */
+    background-color: #e7eef5;
       border: 3px solid #004d80;
       padding: 10px;
       z-index: 99;
@@ -2439,7 +2441,7 @@ setInterval(displayCurrentDateTime, 1000);
 }
 
 .rightdiv {
-    flex: 5; /* 30% */
+    flex: 7; /* 30% */
     background-color: #eaeaea;
     border: 3px solid #004d80;
       padding: 10px;
@@ -3317,7 +3319,7 @@ loadSheet();
         
         function updateMonthlyTotalsDisplay(totals) {
             const totalsElement = document.getElementById('monthlyTotals');
-            totalsElement.innerHTML = `<span style="color: #034F3B ;font-size:100%;font-family:Arial Black;">Total Receipt : Rs. ${totals.bank.toFixed()}</span>  <span style="color: #8B0836 ;font-size:100%;font-family:Arial Black;">Total Sale : Rs. ${totals.taxInvoice.toFixed()}</span> `;
+            totalsElement.innerHTML = `<span style="color: #85B8FF ;font-size:100%;font-family:Arial Black;">Total Receipt : Rs. ${totals.bank.toFixed()}</span>   | <span style="color: #A2F467 ;font-size:100%;font-family:Arial Black;">Total Sale : Rs. ${totals.taxInvoice.toFixed()}</span> `;
         }
         
         function filterTablemonth() {
@@ -8994,4 +8996,6 @@ function formatCustomDate(dateStr) {
 
 loadNoticeBoard();
 </script>
+<!-- loading summry  script stop hare -->
+
 <!-- loading summry  script stop hare -->
