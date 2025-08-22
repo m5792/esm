@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PIN Based Login</title>
+   <style>
+   #mainContent {
+  padding: 20px;
+  border: 1px solid #ccc;
+  max-width: 1200px;
+  margin: 40px auto;
+  font-family: Arial;
+  background: #f9f9f9;
+  border-radius: 10px;
+    }
+
+
+  
+
+    label {
+      font-weight: bold;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    tr.receipt { background-color: #ffe6e6; color: #a10404; }
+    tr.bill { background-color: #e6f3ff; color: #1d03c6; }
+    .runningBalance { font-weight: bold; }
+
+    
+ 
+/* Base table style */
+ table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+
+}
+
+th, td {
+  border: 1px solid #e0e0e0;
+  padding: 10px 14px;
+  text-align: left;
+}
+
+th {
+  background-color: #004d80;
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+table tr:hover {
+  background-color: #f8c304;
+  color: rgb(1, 20, 37);
+  transition: background-color 0.3s ease, color 0.3s ease;
+ 
+}
+  </style>
+</head>
+<body>
+<div id="mainContent" style="height: 100%; overflow: hidden; background-color: #d4edfd;">
+ 
+  <div id="searchSRContainer">
+    <!-- Filter controls (optional) -->
+     <label>Ledger:
+        <select id="filterSRColumn4"></select>
+    </label>
+   
+    <label>Vcr Type:
+        <select id="filterSRColumn2"></select>
+    </label>
+   <label>Status:
+        <select id="filterSRColumn1"></select>
+    </label>
+    <label>Start Date:
+        <input type="date" id="startDate">
+    </label>
+    <label>End Date:
+        <input type="date" id="endDate">
+    </label>
+
+    </div>
+
+  <!-- ✅ ONLY THIS PART SCROLLS -->
+  <div style="
+    height: calc(100% - 100px);  /* adjust based on your top content */
+    overflow-y: auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    height: 1300px;
+    background-color: white;
+  ">
+  
+    <!-- Button 1 Divs -->  <!-- Button 1 Divs 1st start -->
+<div id="btn1-div1" class="content">
+   
+<!-- Table -->
+    <div id="tableSRContainer">
+        <table id="myTable">
+            <thead>
+                <tr>
+                    <th>SNo</th>
+                    <th>User</th>
+                    <th>Date</th>
+                    <th>Party</th>
+                    <th>Type</th>
+                    <th>Type</th>
+                    <th>Doc No.</th>
+                    <th>Weight</th>
+                    <th>Item Details</th>
+                    <th>Vehicle No.</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <br/><br/><br/><br/><br/><br/><br/>
+    </div>
+  </div>   <!-- Button 1 Divs 1st stop -->
+
+  </div>
+</div>
+
+    <p>Multitech Infracon Pvt. Ltd.</p>
+
+
+
+
+
+
+
+
+
+<!-- voucher floating-button with Sscript and DP Ledger Serch Code start Heare -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floating Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .floating-button {
+     position: fixed;
+ bottom: 40px;
+ right: 40px;
+ background-color: #013aac;
+ color: white;
+ padding: 12px 18px;
+ border: 5px solid #f5632a;
+ border-radius: 50%;
+ font-size: 20px;
+ cursor: pointer;
+ z-index: 1000;
+ box-shadow: 0 0 12px #f5b82a;
+ animation: glowPulse 2s infinite alternate;
+}
+
+@keyframes glowPulse {
+ 0% {
+   box-shadow: 0 0 12px #2ab5f5, 0 0 24px #2af5a7;
+ }
+ 100% {
+   box-shadow: 0 0 12px #990101, 0 0 24px #e4e017;
+ }
+
+}
+
+
+.form-container {
+    top: 250px;
+    display: none;
+    position: fixed;
+    bottom: 80px;
+    right: 150px;
+    width: 5in;
+    height: 8.5in;
+    background: #d8e7fa;
+    padding: 10px;
+    border-radius: 8px;
+    border: 5px solid rgb(9, 3, 176); /* 🔴 Red border added */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-container input, .form-container select {
+            margin-bottom: 8px;
+            padding: 5px;
+        }
+        .close-button {
+            background-color: RED;
+            color: rgb(252, 252, 250);
+            border: none;
+            padding: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .dropdown-container {
+            position: relative;
+            width: 250px;
+        }
+        #dropdownSearch {
+            width: 3.5in;
+            margin-bottom: 8px;
+            padding: 5px;
+            bottom: 80px;
+            right: 20px;
+            border: 1px solid #ccc;
+            border-radius: 2px;
+        }
+        .dropdown-list {
+            position: absolute;
+            width: 3.5in;
+            margin-bottom: 8px;
+            padding: 5px;
+            background: white;
+            border: 1px solid #ccc;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+            list-style: none;
+            margin: 0;
+        }
+        .dropdown-list.show {
+            display: block;
+        }
+        .dropdown-list li {
+            padding: 8px;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
+        }
+        .dropdown-list li:hover {
+            background: #f0f0f0;
+        }
+        .dropdown-list li:last-child {
+            border-bottom: none;
+        }
+
+
+
+        /* Submit and Button Styling */
+input[type="submit"], button {
+    background-color: #080808;
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+input[type="submit"]:hover, button:hover {
+    background-color: #575555;
+    transform: translateY(-2px);
+}
+    </style>
+</head>
+<body>
+    <button class="floating-button" onclick="toggleForm()">+</button>
+    <div class="form-container" id="formContainer">
+       
+          <!-- Hidden Form -->
+          <div class="formdiv">
+ 
+  
+             <form id="mainIVMAForm">
+              <input type="hidden" name="SNo" id="sNo" />
+
+             
+             <input type="text" id="msaf1" name="User" value="STORE" readonly>
+
+
+              <label  style="color:#0a0a0a;font-size:90%;font-family:Arial;">Select Date*</label>
+  <input type="date" id="msaf2" name="Date" required>
+
+  <!-- (VCN- 111) dropdown div start -->
+<div class="dropdown-container">
+<label for="dropdownSearch" style="color:#0c0c0c;font-size:90%;font-family:Arial;" >Search Ledger*</label><br/>
+<input type="text" id="dropdownSearch" placeholder="Search..." oninput="filterLDGRDropdown()" name="Ledger" required autocomplete="off">
+<ul id="dropdownList" class="dropdown-list">
+<!-- The dropdown options will be populated here -->
+</ul>
+</div>
+<!-- (VCN- 111) dropdown div stop -->
+
+  <select id="msaf3" name="cl1" required>
+              <option value="">--Select Type--</option>
+                <option value="IN">IN</option>
+                <option value="OUT">OUT</option>
+                <option value="OTHER">OTHER</option>
+              </select>
+
+              <select id="msaf4" name="cl2" required>
+                <option value="">--Select Type--</option>
+                <option value="P">PURCHASE</option>
+                <option value="S">SALE</option>
+                <option value="RGP">RGP</option>
+                 <option value="NRGP">NRGP</option>
+                  <option value="C">CHALLAN</option>
+                   <option value="O">OTHER</option>
+              </select>
+
+               <label  style="color:#0c0c0c;font-size:90%;font-family:Arial;" >Enter Document No.</label><br/>
+          <input type="text" id="msaf5" name="cl3" placeholder="Enter Document No." >
+
+                <label  style="color:#0c0c0c;font-size:90%;font-family:Arial;" >Enter Weight*</label><br/>
+                <input type="number" id="msaf6" name="cl4" placeholder="Enter Weight" required>
+                <label  style="color:#0c0c0c;font-size:90%;font-family:Arial;" >Item Discription</label><br/>
+                <input type="text" id="msaf7" name="cl5" placeholder="Enter Item Discription" required>
+                 <label  style="color:#0c0c0c;font-size:90%;font-family:Arial;" >Vehicle No.</label><br/>
+                <input type="text" id="msaf8" name="cl6" placeholder="Enter Vehicle No." >
+                 
+               <select id="msaf9" name="cl7" required>
+                <option value="">--Select Status--</option>
+               <option value="LOAD">LOADING</option>
+                <option value="UNLOAD">UNLOADING</option>
+                <option value="---">COMPLETE</option>
+                <option value="O">OTHER</option>
+              </select>
+           
+            
+
+
+              <input type="hidden" name="Timestamp" id="timestamp">
+              <input type="submit" id="submitButton" value="Submit">
+            </form>
+        
+    <!-- Wait message div -->
+    <div id="waitIVMAMessage" style="display:none; color:red; font-size:16px; font-weight:bold;"></div>
+
+            <form id="modifyIVMAForm">
+              <input type="number" id="searchSNo" placeholder="Enter S.No. to Modify Entry" required />
+              <button type="button" onclick="fetchIVMADetails()">Fetch Details</button>
+              <button type="button" id="modifyButton" onclick="modifyIVMAEntry()" style="display:none;">Modify Entry</button>
+    </form>
+  <br/>
+
+    <button class="close-button" onclick="toggleForm()">Close</button>
+</div>
+
+
+<div id="closingBalanceDiv" style="font-size: 18px; color:rgb(222, 236, 248);font-weight: bold; margin-top: 20px;"></div>
+
+<span style="color:#0d8bd4;font-size:130%;font-family:Magneto;text-align: center;">eS |</span> 
+<span style="color:#9e1503;font-size:130%;font-family:Magneto;text-align: center;">MTally</span>
+
+    <script>
+        function toggleForm() {
+            var formContainer = document.getElementById("formContainer");
+            if (formContainer.style.display === "none" || formContainer.style.display === "") {
+                formContainer.style.display = "block";
+            } else {
+                formContainer.style.display = "none";
+            }
+        }
+    </script>
+
+
+
+
+</style>
+
+
+</style>
+             <!-- IVMA form div script start hare -->
+             <script>
+                const scriptIVMAURL = 'https://script.google.com/macros/s/AKfycbxNCtOS7UZu2mw_Zuwkx-KHdORL1DATDoSp0Gv2Q5EQw6CKJOSPowawczVE_7uYHQw_/exec';
+              
+                document.addEventListener("submit", async function (e) {
+                  const form = e.target;
+                  if (form.id !== "mainIVMAForm") return;
+              
+                  e.preventDefault();
+                  const submitButton = document.getElementById("submitButton");
+                  submitButton.disabled = true;
+                  submitButton.value = "Wait..";
+              
+                  const now = new Date();
+                  document.getElementById('timestamp').value = `${now.getMonth()+1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+              
+                  const formInputs = form.querySelectorAll('input, textarea');
+                  formInputs.forEach(input => {
+                    if (input.type === 'text' || input.type === 'textarea') {
+                      input.value = input.value.toUpperCase();
+                    }
+                  });
+              
+                  const formData = new FormData(form);
+                  try {
+                    const response = await fetch(scriptIVMAURL, { method: 'POST', body: formData });
+                    const result = await response.json();
+              
+                    if (result.result === 'success') {
+                      alert('Entry saved successfully!');
+                      window.location.reload();
+                    } else {
+                      alert(`Error: ${result.error || 'Unknown error occurred.'}`);
+                    }
+                  } catch (error) {
+                    alert(`Error submitting the form: ${error.message}`);
+                  } finally {
+                    submitButton.disabled = false;
+                    submitButton.value = "Submit";
+                  }
+                });
+              
+                async function fetchIVMADetails() {
+                  const sNo = document.getElementById("searchSNo").value;
+                  const waitMessage = document.getElementById("waitIVMAMessage");
+                  waitMessage.innerText = "Fetching data... Please wait...";
+                  waitMessage.style.display = 'block';
+              
+                  try {
+                    const response = await fetch(`${scriptIVMAURL}?sNo=${sNo}`);
+                    const data = await response.json();
+              
+                   if (data.result !== "error" &&
+        ["LOAD", "UNLOAD", "O","---"].includes((data.cl7 || "").toUpperCase()))
+                    {
+                      document.getElementById("sNo").value = data.SNo;
+                      document.getElementById("msaf1").value = data.User;
+                      document.getElementById("dropdownSearch").value = data.Ledger;
+                      document.getElementById("msaf2").value = data.Date;
+                      document.getElementById("msaf3").value = data.cl1;
+                      document.getElementById("msaf4").value = data.cl2;
+                      document.getElementById("msaf5").value = data.cl3;
+                      document.getElementById("msaf6").value = data.cl4;
+                      document.getElementById("msaf7").value = data.cl5;
+                      document.getElementById("msaf8").value = data.cl6;
+                      document.getElementById("msaf9").value = data.cl7;
+                     
+                      document.getElementById("modifyIVMAButton").style.display = "inline-block";
+                    } else {
+                      alert("You are not authorized to change this Entry. Please contact admin.");
+                    }
+                  } catch (error) {
+                    console.error("Error fetching details:", error);
+                    alert("Please reconcile details or contact admin.");
+                  } finally {
+                    setTimeout(() => waitMessage.style.display = 'none', 2000);
+                  }
+                }
+              
+                async function modifyIVMAEntry() {
+                  const formData = new FormData(document.getElementById('mainIVMAForm'));
+                  formData.set('SNo', document.getElementById('sNo').value);
+              
+                  const response = await fetch(scriptIVMAURL, { method: 'POST', body: formData });
+                  const result = await response.json();
+              
+                  if (result.result === 'success') {
+                    alert('Entry modified successfully!');
+                    window.location.reload();
+                  } else {
+                    alert(`Error modifying entry: ${result.error}`);
+                  }
+                }
+              </script>
+ <!-- mainIVMAForm body code stop hare -->
+
+
+<script>
+  const apiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+  const sheetId = "1wvsPdAQA57HxhTxA3cCcQvUEz93IWkBre_Ix-qvzwss";
+  const range = "FORM!A:L";
+
+  let column4Data = [];
+
+  // Fetch Google Sheet Data
+  async function fetchSheetData() {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.values && data.values.length > 1) {
+        column4Data = data.values
+          .slice(1)
+          .map(row => row[3])
+          .filter(item => item && item.trim()); // avoid empty/null
+
+        // Optional: Remove duplicates
+        column4Data = [...new Set(column4Data)];
+
+        populateLDGRDropdown(column4Data);
+      }
+    } catch (error) {
+      console.error("Error fetching sheet data:", error);
+    }
+  }
+
+  // Populate the dropdown list
+  function populateLDGRDropdown(data) {
+    const dropdownList = document.getElementById("dropdownList");
+    dropdownList.innerHTML = ""; // Clear existing items
+
+    data.forEach(item => {
+      const li = document.createElement("li");
+      li.textContent = item;
+      li.onclick = () => {
+        document.getElementById("dropdownSearch").value = item;
+        dropdownList.style.display = "none";
+      };
+      dropdownList.appendChild(li);
+    });
+  }
+
+  // Filter dropdown based on input
+  function filterLDGRDropdown() {
+    const input = document.getElementById("dropdownSearch").value.toLowerCase();
+    const dropdownList = document.getElementById("dropdownList");
+    const items = dropdownList.getElementsByTagName("li");
+
+    dropdownList.style.display = "block";
+
+    let anyVisible = false;
+    for (let i = 0; i < items.length; i++) {
+      const txtValue = items[i].textContent || items[i].innerText;
+      if (txtValue.toLowerCase().includes(input)) {
+        items[i].style.display = "";
+        anyVisible = true;
+      } else {
+        items[i].style.display = "none";
+      }
+    }
+
+    if (!anyVisible) {
+      dropdownList.style.display = "none";
+    }
+  }
+
+  // Hide dropdown when clicking outside
+  document.addEventListener("click", function (event) {
+    const dropdown = document.getElementById("dropdownList");
+    const searchInput = document.getElementById("dropdownSearch");
+    if (!searchInput.contains(event.target) && !dropdown.contains(event.target)) {
+      dropdown.style.display = "none";
+    }
+  });
+
+  // Initialize on page load
+ // window.onload = () => {
+   // fetchSheetData();
+//  };
+</script>
+
+<!-- voucher floating-button with Sscript and DP Ledger Serch Code stop Heare -->
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>STORE RAGISTER</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0 20px;
+        }
+
+        #tableSRContainer {
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+
+          #searchSRContainer {
+            
+            top: 2px;
+            background: #c7e2fc;
+            color: #023748;
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+           
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            position: sticky;
+            top: 0;
+            padding: 5px;
+            background-color: #024762;
+            font-size: 18px;
+            color: white;
+            border: 1px solid #ccc;
+            z-index: 1;
+        }
+
+        th, td {
+           
+            padding: 3px;
+            border: 1px solid #a0a0a0;
+            text-align: left;
+        }
+
+         table tr:hover {
+            background-color: #f3f710 ; color: rgb(12, 12, 12);
+        }
+        tr.hidden {
+            display: none;
+        }
+
+        tr.red {
+            background-color: #f6cdcc;
+            color: rgb(123, 3, 3);
+            font-weight: bold;
+            
+        }
+
+        tr.blue {
+            background-color: #bff9ee;
+            color: #01473b;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        tr.bill {
+            background-color: #f1f1f1;
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    <script>
+      async function loadSRSheet() {
+    const apiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+    const sheetId = "1wvsPdAQA57HxhTxA3cCcQvUEz93IWkBre_Ix-qvzwss";
+    const range = 'FORM!A:K';
+
+    try {
+        const response = await fetch(
+            `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`
+        );
+        const data = await response.json();
+
+        if (data.values && data.values.length > 1) {
+            const headers = data.values[0];
+            const rows = data.values.slice(1);
+
+            // Filter where column 1 is 'store'
+            const storeRows = rows.filter(row => row[1]?.toLowerCase() === 'store');
+
+            // Sort by column 0 (numeric), in descending order
+            storeRows.sort((a, b) => {
+                const valA = parseInt(a[0]) || 0;
+                const valB = parseInt(b[0]) || 0;
+                return valB - valA;
+            });
+
+            const filteredData = [headers, ...storeRows];
+
+            populateSRTable(filteredData);
+            populateSRDropdowns(filteredData);
+        } else {
+            console.error("No data found in the specified range.");
+        }
+    } catch (error) {
+        console.error("Error fetching data from Google Sheets:", error);
+    }
+}
+
+
+        function populateSRTable(data) {
+            const tbody = document.querySelector('#myTable tbody');
+            tbody.innerHTML = '';
+
+            data.slice(1).forEach((row) => {
+                const tr = document.createElement('tr');
+
+                row.forEach((cell, cellIndex) => {
+                    const td = document.createElement('td');
+                    td.textContent = cell;
+                    tr.appendChild(td);
+
+                    if (cellIndex === 10) {
+                        const type = cell.toLowerCase().trim();
+                        if (type === "load") tr.classList.add('blue');
+                        else if (type === "unload") tr.classList.add('blue');
+                        else if (type === "x") tr.classList.add('red');
+                    }
+                });
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        function populateSRDropdowns(data) {
+            const dropdown1 = document.getElementById('filterSRColumn1');
+            const dropdown2 = document.getElementById('filterSRColumn2');
+            const dropdown4 = document.getElementById('filterSRColumn4');
+
+            const uniqueValues1 = [...new Set(data.slice(1).map(row => row[10]))];
+            const uniqueValues2 = [...new Set(data.slice(1).map(row => row[5]))];
+            const uniqueValues4 = [...new Set(data.slice(1).map(row => row[3]))];
+
+            populateSRDropdown(dropdown1, uniqueValues1);
+            populateSRDropdown(dropdown2, uniqueValues2);
+            populateSRDropdown(dropdown4, uniqueValues4);
+
+            $(dropdown4).select2({
+                placeholder: "-- Select --",
+                allowClear: true,
+                width: 'resolve'
+            });
+
+            $(dropdown4).on('change', filterSRTable);
+        }
+
+        function populateSRDropdown(dropdown, values) {
+            dropdown.innerHTML = '<option value="">-- Select --</option>';
+            values.forEach(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = value;
+                dropdown.appendChild(option);
+            });
+        }
+
+        function filterSRTable() {
+            const filter1 = document.getElementById('filterSRColumn1').value.toLowerCase();
+            const filter2 = document.getElementById('filterSRColumn2').value.toLowerCase();
+            const filter4 = $('#filterSRColumn4').val()?.toLowerCase();
+            const startDate = new Date(document.getElementById("startDate").value);
+            const endDate = new Date(document.getElementById("endDate").value);
+
+            const rows = document.querySelectorAll('#myTable tbody tr');
+            let visibleRows = 0;
+
+            rows.forEach((row) => {
+                const cells = row.querySelectorAll('td');
+                const date = new Date(cells[2]?.textContent.trim());
+
+                let dateMatches = true;
+                if (startDate && date < startDate) dateMatches = false;
+                if (endDate && date > endDate) dateMatches = false;
+
+                const matchesFilter1 = !filter1 || cells[10]?.textContent.toLowerCase() === filter1;
+                const matchesFilter2 = !filter2 || cells[5]?.textContent.toLowerCase() === filter2;
+                const matchesFilter4 = !filter4 || cells[3]?.textContent.toLowerCase() === filter4;
+
+                if (matchesFilter1 && matchesFilter2 && matchesFilter4 && dateMatches) {
+                    row.classList.remove('hidden');
+                    visibleRows++;
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+
+            displayNoResultsSRMessage(visibleRows);
+        }
+
+        function displayNoResultsSRMessage(visibleRows) {
+            const noResultsMessage = document.getElementById('noResultsMessage');
+            if (!visibleRows) {
+                if (!noResultsMessage) {
+                    const message = document.createElement('p');
+                    message.id = 'noResultsMessage';
+                    message.textContent = 'No matching results found.';
+                    document.body.appendChild(message);
+                }
+            } else if (noResultsMessage) {
+                noResultsMessage.remove();
+            }
+        }
+
+        window.onload = () => {
+            loadSRSheet();
+            document.getElementById('filterSRColumn1').addEventListener('change', filterSRTable);
+            document.getElementById('filterSRColumn2').addEventListener('change', filterSRTable);
+            document.getElementById('startDate').addEventListener('change', filterSRTable);
+            document.getElementById('endDate').addEventListener('change', filterSRTable);
+
+            //
+            //
+            //
+           fetchSheetData();
+             
+        };
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
