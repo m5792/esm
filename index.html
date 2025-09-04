@@ -255,9 +255,8 @@
 
 
 
-
-
-  /* Table container */
+ 
+ /* Table container */
 table{
     width: 100%;
     border-collapse: collapse;
@@ -293,6 +292,10 @@ th {
     letter-spacing: 0.5px;
   }
 
+  tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
   /* Row hover effect */
   tr:hover td {
     background: #fce303;
@@ -305,7 +308,6 @@ th {
   }
 
  
-
 
 /* Form Styling Scoped to .form-container */
 .form-container input,
@@ -382,7 +384,7 @@ th {
 
 
 
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<br/>
 <h3>
         <span style="color:rgb(250, 218, 218);font-size:130%;font-family:Magneto;">eS | <span style="color:#e0f5f5;font-size:130%;font-family:Magneto;">MTally</span></span> 
        </h3> 
@@ -617,26 +619,14 @@ async function fetchGlobalMessage() {
    
       
 <!-- यह एक नोट है, vertical Two Part Div (30-70) container content start  Heare ((CODE501)) -->
-    <div class="container">  <div class="left" style="background-color: #ecf6f7; border: none;">   <!-- यह एक नोट है, vertical Two Part Div (30-70) left content start -->
-
-
-        <blink> <span style="color:#131c3b;font-size:120%;font-family:Arial Black;">Home</span> </blink> <br/>   
-
-        <!-- यह एक नोट है, events Event script Start Heare -->
-
-
-
-<!-- यह एक नोट है,  Event script stop Here -->
-
-
-<br/>
+    <div class="container">  <div class="left" style="background-color: #f5f5f5; border: none;">   <!-- यह एक नोट है, vertical Two Part Div (30-70) left content start -->
 
 <style>
   .voucher-button-panel {
-    background-color: #e3f3fc;
+    background-color: #cfcfcf;
     border: 2px solid #b0d4ec;
     border-radius: 10px;
-    padding: 20px;
+    padding: 5px;
     width: 300px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     font-family: 'Eras Bold ITC', sans-serif;
@@ -647,9 +637,9 @@ async function fetchGlobalMessage() {
     background-color: #035e97;
     color: rgb(248, 249, 250);
     border: none;
-    font-size: 18px;
+    font-size: 15px;
     font-weight: bold;
-    margin: 8px 0;
+    margin: 4px 0;
     width: 100%;
     padding: 10px 15px;
     border-radius: 6px;
@@ -681,7 +671,7 @@ async function fetchGlobalMessage() {
 
 
 <!-- यह एक नोट है, ADDRESS BAR SERCH BAR OPTION START  -->
- <blink><span style="color:#011136;font-size:120%;font-family:Arial Black;">Address & Purchase Order</span> </blink><br/>
+ <blink><span style="color:#011136;font-size:100%;font-family:Arial Black;">Address & Purchase Order</span> </blink><br/>
            <div id="searchCon">
           <input type="text" id="searchtab" placeholder="🔍 Search Party Name, Purchase Order, Address, GSTIN ..." />
           </div>
@@ -694,203 +684,31 @@ async function fetchGlobalMessage() {
 
 
 
- <!-- dialog box div code and css start///////////////////////////////////////////// -->
-
-<!-- ✅ Fullscreen Overlay/Backdrop -->
-<div id="dialogBackdrop" style="
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(233, 115, 115, 0.8);  /* 50% black dim */
-  z-index: 1000;
-"></div>
-
-<!-- ✅ Dialog Box -->
-<div id="daybookDialog" style="
-  display: none;
-  position: fixed;
-  top: 46%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 20in;
-  height: 8.2in;
-  background-color: white;
-  border: 10px solid #913300;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  z-index: 1000;
-">
-
-  <!-- Header 1 -->
-  <div style="
-    background-color: #090909;
-    color: white;
-    padding: 10px 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  
-    font-weight: bold;
-  ">
-    <span style="color: red;">📘 Daybook</span>
-   
-
-      <div id="difference" style="background: #080808;color: white; border: none;">  </div>
-
-  
-       <button id="printButton" style="background: #080808;color: white; border: none;">Print</button>
-     <span style="cursor: pointer; font-size: 18px;" onclick="closeDialog()">❌</span>
-  </div>
-
-
-    <!-- Header 2 -->
-  <div style="
-    background-color: #e7e8ea;
-    color: rgb(12, 12, 12);
-    padding: 10px 15px;
-    display: flex;
-    
-    align-items: center;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    font-weight: bold;
-  ">
-       
-        <label style="color: #000d1d ;font-size:90%;">Search </label>&nbsp;
-        <input type="text" id="searchBar" placeholder="🔍 Search for Ledger, Job No., Vehicle No.,Narration.." /> 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <label style="color: #000d1d ;font-size:90%;">Select Day:</label>&nbsp;
-        <input type="date" id="dateFilter" />
-  </div>
-
-     <div id="totals">
-           <span style="color: #680268 ;font-size:90%;">Invoice Amt:</span>  	Rs.	<span id="totalInvoice">0.00</span> |
-           <span style="color: #037e71 ;font-size:90%;">Weight:</span>  		Kg. 	<span id="totalWeight">0.00</span>  |
-           <span style="color: #8f3f02 ;font-size:90%;">Receipt:</span> 		Rs. 	<span id="totalBankInvoice">0.00</span> |
-           <span style="color: blue ;font-size:90%;">TDS:</span>  		Rs.	<span id="totalTdsInvoice">0.00</span>
-   </div>
-
-  <!-- Content -->
-  <div style="
-    padding: 20px;
-    overflow-y: auto;
-    height: calc(100% - 60px);
-    font-family: Arial, sans-serif;
-    font-size: 15px;
-  ">
-
- 
-    <table id="miplTable" class="hidden" style="background-color: rgb(255, 255, 255);height: 560px; overflow-y: auto;"> </table>
-    <p style="color: #002044;">Search Ledger, Job No., Bank & Invoice Entry content table or inputs here.</p>
-  </div>
-</div>
-
-
-<script>
-  function openDialog() {
-    document.getElementById("dialogBackdrop").style.display = "block";
-    document.getElementById("daybookDialog").style.display = "block";
-
-    // Optional: Lock body scroll
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeDialog() {
-    document.getElementById("dialogBackdrop").style.display = "none";
-    document.getElementById("daybookDialog").style.display = "none";
-
-    // Restore body scroll
-    document.body.style.overflow = 'auto';
-  }
-</script>
-
-
-  <!-- daybook filter and serchbar code stop hare -->
-    <!-- dialog box div code and css stop///////////////////////////////////////////// -->
 
 
 
- <!-- address table -->
+ <div class="container2">  
+  <div class="leftdiv"  style="max-height: 600px;width: 800px; overflow-y: auto; border: 3px solid #013342; padding: 5px; border-radius: 6px;background-color: #f3f9f8;" >
 
-<div  style="max-height: 600px; overflow-y: auto; border: 3px solid #013342; padding: 5px; border-radius: 6px;background-color: #f3f9f8;">
-
-<span style="color: #0515f0; font-weight: bold;font-size: 16px;">Loading Status</span>
+  <span style="color: #0515f0; font-weight: bold;font-size: 16px;">Loading Status</span>
 <table id="noticeBoard">  <thead ><tr> <th>Type</th><th>Date</th> <th>Name</th><th>Vehicle No.</th><th>Job No.</th> <th>Status</th> <th>Inv. No.</th></tr></thead><tbody></tbody></table>
 
 
-  <div style="display: flex; align-items: center; background: rgb(10, 10, 10); padding: 10px; gap: 10px;">
+  <div style="display: flex; align-items: center; background: rgb(234, 235, 235); padding: 10px; gap: 10px;">
     <select id="monthDropdown" style="padding: 5px; font-size: 16px;"></select>
     <div id="monthlyTotals" style="color: white; font-size: 16px;">Please Wait!</div>
        <!-- Add this button in HTML where you want -->
-<button onclick="searchInvoice()" style="background-color: black; color: red;">Click to Search Invoice</button>
+<button onclick="searchInvoice()" style="background-color: rgb(234, 235, 235); color: rgb(9, 9, 9);">Click to Search Invoice</button>
 </div>
 
-  <table id="myTable" style="background-color: rgb(245, 243, 243);"> </table>  <!-- Address bar Table -->
-  <!-- Table -->
-
-  <style>
-  /* Table container */
-  #MIPLDATATABLE {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
-    font-size: 14px;
-    background: #ffffff;
-    box-shadow: 0px 2px 8px rgba(0,0,0,0.15);
-    border-radius: 8px;
-    overflow: hidden;
-    table-layout: fixed; /* columns fixed width */
-  }
-
-  /* Table border & cell style */
-  #MIPLDATATABLE th, 
-  #MIPLDATATABLE td {
-    border: 1px solid #dcdcdc;
-    padding: 8px 10px;
-    text-align: left;
-    white-space: nowrap;     /* wrap disable */
-    overflow: hidden;
-    text-overflow: ellipsis; /* show ... if text overflow */
-    vertical-align: middle;
-    font-size: clamp(10px, 1vw, 14px); /* auto shrink text */
-  }
-
-  /* Header design */
-  #MIPLDATATABLE th {
-    background: linear-gradient(135deg, #007b83, #004d4f);
-    color: #fff;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 13px;
-    letter-spacing: 0.5px;
-  }
-
-  /* Row hover effect */
-  #MIPLDATATABLE tr:hover td {
-    background: #f3b303;
-    transition: background 0.2s ease-in-out;
-  }
-</style>
-<table id="MIPLDATATABLE" border="1"></table>
-
-   
-  </div>
  
-
-
-
-
- <div class="container2">  <div class="leftdiv" >
-
-   <span  style="color: rgb(1, 26, 116); font-size: 16px; font-weight: bold;">Notice Board:</span><br/>
-      <span id="globalMessage" style="color: rgb(16, 15, 15); font-size: 16px;"></span>
+   
 </div>
 
 <div class="rightdiv" >
  <!-- event & reminder  body start -->
 
-<div class="event-section" id="allEvents" style="max-height: 210px; overflow-y: auto; border: 3px solid #011632; padding: 10px; border-radius: 6px; padding: 10px; border-radius: 6px; background-color: #fcfbeb;">
+<div class="event-section" id="allEvents" style="max-height: 300px; overflow-y: auto; border: 3px solid #011632; padding: 10px; border-radius: 6px; padding: 10px; border-radius: 6px; background-color: #fcfbeb;">
   <span style="font-size: 20px; font-weight: bold; color: #000;">📅 Event Reminders</span>
   
   <input type="text" id="searchInput" placeholder="🔍 Search events..." 
@@ -900,7 +718,8 @@ async function fetchGlobalMessage() {
 </div>
 
  <!-- event & reminder  body stop -->
-
+<span  style="color: rgb(1, 26, 116); font-size: 16px; font-weight: bold;">Notice Board:</span><br/>
+      <span id="globalMessage" style="color: rgb(16, 15, 15); font-size: 16px;"></span>
  
 </div></div>
 
@@ -2040,7 +1859,7 @@ document.addEventListener("DOMContentLoaded", function () {
     width: 100%;
     background-color: #5c0a02;
     color: white;
-    font-weight: bold;
+   
     text-align: center;
     padding: 0; /* Remove padding */
     font-size: 14px;
@@ -2070,6 +1889,120 @@ document.addEventListener("DOMContentLoaded", function () {
   <div class="footer">   <!-- footer div start---- -->
 
 
+ <!-- dialog box div code and css start///////////////////////////////////////////// -->
+
+<!-- ✅ Fullscreen Overlay/Backdrop -->
+<div id="dialogBackdrop" style="
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(233, 115, 115, 0.8);  /* 50% black dim */
+  z-index: 1000;
+"></div>
+
+<!-- ✅ Dialog Box -->
+<div id="daybookDialog" style="
+  display: none;
+  position: fixed;
+  top: 46%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20in;
+  height: 8.2in;
+  background-color: white;
+  border: 10px solid #913300;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  z-index: 1000;
+">
+
+  <!-- Header 1 -->
+  <div style="
+    background-color: #090909;
+    color: white;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  
+    font-weight: bold;
+  ">
+    <span style="color: red;">📘 Daybook</span>
+   
+
+      <div id="difference" style="background: #080808;color: white; border: none;">  </div>
+
+  
+       <button id="printButton" style="background: #080808;color: white; border: none;">Print</button>
+     <span style="cursor: pointer; font-size: 18px;" onclick="closeDialog()">❌</span>
+  </div>
+
+
+    <!-- Header 2 -->
+  <div style="
+    background-color: #e7e8ea;
+    color: rgb(12, 12, 12);
+    padding: 10px 15px;
+    display: flex;
+    
+    align-items: center;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    font-weight: bold;
+  ">
+       
+        <label style="color: #000d1d ;font-size:90%;">Search </label>&nbsp;
+        <input type="text" id="searchBar" placeholder="🔍 Search for Ledger, Job No., Vehicle No.,Narration.." /> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <label style="color: #000d1d ;font-size:90%;">Select Day:</label>&nbsp;
+        <input type="date" id="dateFilter" />
+  </div>
+
+     <div id="totals">
+           <span style="color: #680268 ;font-size:90%;">Invoice Amt:</span>  	Rs.	<span id="totalInvoice">0.00</span> |
+           <span style="color: #037e71 ;font-size:90%;">Weight:</span>  		Kg. 	<span id="totalWeight">0.00</span>  |
+           <span style="color: #8f3f02 ;font-size:90%;">Receipt:</span> 		Rs. 	<span id="totalBankInvoice">0.00</span> |
+           <span style="color: blue ;font-size:90%;">TDS:</span>  		Rs.	<span id="totalTdsInvoice">0.00</span>
+   </div>
+
+  <!-- Content -->
+  <div style="
+    padding: 20px;
+    overflow-y: auto;
+    height: calc(100% - 60px);
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+  ">
+
+ 
+    <table id="miplTable" class="hidden" style="background-color: rgb(255, 255, 255);height: 560px; overflow-y: auto;"> </table>
+    <p style="color: #002044;">Search Ledger, Job No., Bank & Invoice Entry content table or inputs here.</p>
+  </div>
+</div>
+
+
+<script>
+  function openDialog() {
+    document.getElementById("dialogBackdrop").style.display = "block";
+    document.getElementById("daybookDialog").style.display = "block";
+
+    // Optional: Lock body scroll
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDialog() {
+    document.getElementById("dialogBackdrop").style.display = "none";
+    document.getElementById("daybookDialog").style.display = "none";
+
+    // Restore body scroll
+    document.body.style.overflow = 'auto';
+  }
+</script>
+
+
+  <!-- daybook filter and serchbar code stop hare -->
+
 
 
 
@@ -2080,11 +2013,57 @@ document.addEventListener("DOMContentLoaded", function () {
 <div id="section1b" class="section hidden" style="background-color: rgb(1, 51, 92);border: none;">
 
 
-  
+<div style="height:30vh; overflow-y:auto; overflow-x:auto; border:1px solid #ccc; padding:8px;">
 
+   <table id="myTable" style="background-color: rgb(245, 243, 243); color: blue;"> </table>  <!-- Address bar Table -->
+  <style>
+  /* Table container */
+  #MIPLDATATABLE {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    font-size: 14px;
+    background: #ffffff;
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.15);
+    border-radius: 8px;
+    overflow: hidden;
+    table-layout: fixed; /* columns fixed width */
+  }
 
+  /* Table border & cell style */
+  #MIPLDATATABLE th, 
+  #MIPLDATATABLE td {
+    border: 1px solid #dcdcdc;
+    padding: 8px 10px;
+    text-align: left;
+    white-space: nowrap;     /* wrap disable */
+    overflow: hidden;
+    text-overflow: ellipsis; /* show ... if text overflow */
+    vertical-align: middle;
+    font-size: clamp(10px, 1vw, 14px); /* auto shrink text */
+  }
+
+  /* Header design */
+  #MIPLDATATABLE th {
+    background: linear-gradient(135deg, #007b83, #004d4f);
+    color: #fff;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+  }
+
+  /* Row hover effect */
+  #MIPLDATATABLE tr:hover td {
+    background: #f3b303;
+    transition: background 0.2s ease-in-out;
+  }
+</style>
+<table id="MIPLDATATABLE" border="1"></table>
+
+</div>
     
-  
+ 
 <table style="background-color:#011d30 ;text-align: center; color:WHITE; border: none;">
 
 <td style="text-align: center; color:WHITE; border: none;">
@@ -2097,7 +2076,7 @@ document.addEventListener("DOMContentLoaded", function () {
     <a href="https://mail.google.com/mail/u/0/" target="_blank"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjpEIz6vZxfKx_cLh8Y6tDWalIuwi08MCggUEXk8cXLAy8NUilIHwNgrsjtFIxgEWCWAE&usqp=CAU" alt="You Tube" width="50" height="50" /></a>
     </td>
     <td style="text-align: center; color:WHITE;border: none;">
-    <a href="https://netpnb.com/" target="_blank"><img src="https://cracku.in/latest-govt-jobs/wp-content/uploads/2021/01/PNB-Logo.png" alt="Google" width="50" height="50" /></a>
+    <a href="https://ibanking.pnb.bank.in/" target="_blank"><img src="https://cracku.in/latest-govt-jobs/wp-content/uploads/2021/01/PNB-Logo.png" alt="Google" width="50" height="50" /></a>
     </td>
     <td style="text-align: center; color:WHITE;border: none;">
     <a href="https://retail.onlinesbi.sbi/retail/login.htm" target="_blank"><img src="https://image3.mouthshut.com/images/ImagesR/2015/12/State-Bank-Anywhere-925771560-7182350-1.png" width="50" height="50" /></a>
@@ -2497,10 +2476,10 @@ setInterval(displayCurrentDateTime, 1000);
             flex-direction: row; /* Arrange child divs side-by-side (flex-direction: column;) */
 
           /*  flex-direction: column;  Arrange child divs vertically */
-            height: 18vh; /* Full viewport height */
+            height: 48vh; /* Full viewport height */
         }
       .leftdiv {
-    flex: 3; /* 70% */
+    flex: 5.4; /* 70% */
     background-color: #e7eef5;
       border: 3px solid #004d80;
       padding: 10px;
@@ -2512,7 +2491,7 @@ setInterval(displayCurrentDateTime, 1000);
 }
 
 .rightdiv {
-    flex: 7; /* 30% */
+    flex: 4.6; /* 30% */
     background-color: #eaeaea;
     border: 3px solid #004d80;
       padding: 10px;
@@ -2896,16 +2875,16 @@ setInterval(displayCurrentDateTime, 1000);
         #searchCon {
             position: sticky;
             top: 0;
-            background: #015757;
-            padding: 10px;
-            border-bottom: 2px solid #ccc;
+            background: #c3c4c4;
+            padding: 5px;
+            border-bottom: 1px solid #ccc;
             z-index: 1000; /* Ensure it stays above the table */
         }
         #searchtab {
             padding: 8px;
             width: 100%;
             box-sizing: border-box;
-            border: 2px solid #ccc;
+            border: 1px solid #ccc;
             border-radius: 4px;
         }
 
@@ -3113,7 +3092,7 @@ setInterval(displayCurrentDateTime, 1000);
         
         function updateMonthlyTotalsDisplay(totals) {
             const totalsElement = document.getElementById('monthlyTotals');
-            totalsElement.innerHTML = `<span style="color: #85B8FF ;font-size:100%;font-family:Arial Black;">Total Receipt : Rs. ${totals.bank.toFixed()}</span>   | <span style="color: #A2F467 ;font-size:100%;font-family:Arial Black;">Total Sale : Rs. ${totals.taxInvoice.toFixed()}</span> `;
+            totalsElement.innerHTML = `<span style="color: #4067DD ;font-size:100%;font-family:Arial Black;">Total Receipt : Rs. ${totals.bank.toFixed()}</span>   | <span style="color: #08BF36 ;font-size:100%;font-family:Arial Black;">Total Sale : Rs. ${totals.taxInvoice.toFixed()}</span> `;
         }
         
         function filterTablemonth() {
@@ -4826,7 +4805,7 @@ function filterPEBTable() {
         form.reset(); // FORM RESET
         document.getElementById("formModeBANK").value = "new";
        fetchData();  // ✅ Refresh dropdowns or UI
-        loadSheet();
+        refreshAll();
 
            // ✅ Remove DLT option after submit
         const BANKDropdown = document.getElementById("msaf7");
@@ -4920,7 +4899,7 @@ if (![...BANKDropdown.options].some(opt => opt.value === "DLT")) {
         form.reset();
         document.getElementById("formModeBANK").value = "new"; // ✅ Reset to new
        fetchData();  // ✅ Refresh dropdowns or UI
-        loadSheet();
+        refreshAll();
         document.getElementById("submitBANKButton").style.display = "inline-block";
         document.getElementById("modifyBANKButton").style.display = "none";
 
@@ -4995,7 +4974,7 @@ if (![...BANKDropdown.options].some(opt => opt.value === "DLT")) {
         form.reset(); // FORM RESET
         document.getElementById("formModeVCR").value = "new";
        fetchData();  // ✅ Refresh dropdowns or UI
-        loadSheet();
+        refreshAll();
 
            // ✅ Remove DLT option after submit
         const SALEDropdown = document.getElementById("msaf21");
@@ -5093,7 +5072,7 @@ if (![...SALEDropdown.options].some(opt => opt.value === "DLT")) {
         form.reset();
         document.getElementById("formModeVCR").value = "new"; // ✅ Reset to new
        fetchData();  // ✅ Refresh dropdowns or UI
-        loadSheet();
+        refreshAll();
         document.getElementById("submitVCRButton").style.display = "inline-block";
         document.getElementById("modifyVCRButton").style.display = "none";
 
@@ -7194,7 +7173,7 @@ table tr:hover {
     function refreshAll() {
       filterDp();  // SRR TABLE 
       loadMonth();  //SALE PURCHSHAE MONTHLY SUMMRY
-     // loadSheet();  // DAYBOOK SUMMRY
+ 
       loadDATAMIPLTABLE();
       loadIVCRSheet();   // IVCR ENTRY FORM TABLE
       loadusrAdminSheet();  // ADMIN USER 
@@ -7323,6 +7302,7 @@ fetch(`https://gnews.io/api/v4/top-headlines?lang=hi&country=in&max=10&token=${a
     <button class="btnposummry"  onclick="closeModal()">❌ Close</button>
     <div id="modalContent"></div>
   </div>
+
 
 
 <script>
@@ -9037,54 +9017,9 @@ document.addEventListener("DOMContentLoaded", () => {
 <head>
   <meta charset="UTF-8">
   <title>Invoice Table with PDF Open</title>
-  <style>
 
-
-    /* Suggestion Box Styles */
-    .input-container {
-      position: relative; /* dropdown के लिए जरूरी */
-      width: 300px;
-      margin-bottom: 10px;
-    }
-    .suggestion-box {
-      border: 1px solid #151414;
-      max-height: 200px;
-      overflow-y: auto;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      background: rgb(228,246,251);
-      width: 100%;
-      display: none;
-      z-index: 1000;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      border-radius: 4px;
-    }
-    .suggestion-box div {
-      padding: 6px 10px;
-      cursor: pointer;
-    }
-    .suggestion-box div:hover {
-      background: #020c90;
-      color: white;
-    }
-    .ldgrDropdown:focus {
-      outline: none;
-      border: 2px solid #020c90;
-    }
-  </style>
 </head>
 <body>
-
-<h2>Invoice Records</h2>
-
-<!-- Ledger Input with Suggestion Box -->
-<div class="input-container">
-  <label style="color: red; font-size: 16px; font-weight: bold;">Search & Select Ledger:*</label>
-  <input type="text" class="ldgrDropdown" placeholder="Enter Ledger" autocomplete="off" />
-  <div id="DropdownSuggestions" class="suggestion-box"></div>
-</div>
-
 
 
 <script>
@@ -9113,13 +9048,16 @@ async function loadDATAMIPLTABLE() {
     allTableData = data.values;
     renderDATAMIPLTABLE(allTableData);
     attachInvoiceClickEvents();
-  
-    
+
+    // 🔥 अब data load हो चुका है → collectDataFromMainTable call करो
+    collectDataFromMainTable();
+
   } catch (err) {
     console.error(err);
     table.innerHTML = "<tr><td>Error loading data</td></tr>";
   }
 }
+
 
 // -------------------- Render Table --------------------
 function renderDATAMIPLTABLE(data) {
@@ -9223,4 +9161,3 @@ document.addEventListener("DOMContentLoaded", loadDATAMIPLTABLE);
 </html>
 
 <!---------------------------- DATAMIPLTABLE SCRIPT START STOP ---------------------------------------- -->
-
