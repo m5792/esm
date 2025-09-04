@@ -7325,22 +7325,23 @@ fetch(`https://gnews.io/api/v4/top-headlines?lang=hi&country=in&max=10&token=${a
   </div>
 
 
-
 <script>
 const api123Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheet123Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
 const range123 = "POREFF!A:R";
-const api103Url = "https://script.google.com/macros/s/AKfycbzBXPXYoX9xp2IqWYXvVYMPhgERM41XQ8CyhOBWtpnFQy2SZIkQqBPlHTfl9-Z3nn8rXg/exec"; // 🔗 replace with your actual API url
+const api103Url = "https://script.google.com/macros/s/AKfycbzBXPXYoX9xp2IqWYXvVYMPhgERM41XQ8CyhOBWtpnFQy2SZIkQqBPlHTfl9-Z3nn8rXg/exec"; 
+const apiPOUrl = "https://script.google.com/macros/s/AKfycbxqXzSs-JOBPEUWqrI0-SUVmtGzRJKBoR3srraxO_peECS7ELm-xxZqOUQisJjCwrPW4A/exec"; // नया API
 
 const headerHTML = `
   <tr>
+    <th>PO Link</th>
     <th>Progress %</th>
     <th>JOB NO.</th><th>Ledger</th><th>PO/Reff No</th><th>PO Amount</th>
     <th>Billing Amount</th><th>Balance</th><th>PO Weight</th><th>Billing Weight</th>
-    <th>Balance</th><th>PO Pdf.</th><th>Status</th><th>User</th><th>Order By</th>
+    <th>Balance</th><th>Status</th><th>User</th><th>Order By</th>
   </tr>`;
 
-const visibleIndexes = [0,16, 6, 8, 12, 14, 9, 13, 15, 11, 7, 1, 2];
+const visibleIndexes = [0,16, 6, 8, 12, 14, 9, 13, 15, 7, 1, 2];
 let fullTableData = [];
 
 // -------------------- Fetch & Render Main Table --------------------
@@ -7353,7 +7354,7 @@ async function fetch123Data() {
   const header = rows[0];
   const dataRows = rows.slice(1);
 
-  // Sort by PO Amount (col 0 numeric desc)
+  // Sorting
   dataRows.sort((a, b) => (parseFloat(b[0]) || 0) - (parseFloat(a[0]) || 0));
 
   fullTableData = [header, ...dataRows];
@@ -7375,7 +7376,42 @@ function renderPOSUMMRYTable(data) {
   for (let i = 1; i < data.length; i++) {
     const row = document.createElement("tr");
 
-    // Progress Calculation
+    // --- नया कॉलम (PO Link) ---
+    const poNo = data[i][6] || "";
+    const poCell = document.createElement("td");
+
+    if (poNo) {
+      // पहले default "---" डाल देंगे
+      poCell.textContent = "---";
+
+      // फिर API hit करेंगे
+      fetch(apiPOUrl + "?invoice=" + encodeURIComponent(poNo))
+
+        .then(res => res.text())
+        .then(url => {
+          if (url && url !== "NOT_FOUND") {
+            poCell.textContent = "View PO";
+            poCell.style.color = "red";
+            poCell.style.textDecoration = "underline";
+            poCell.style.cursor = "pointer";
+            poCell.onclick = () => window.open(url, "_blank");
+          } else {
+            poCell.textContent = "---"; // अगर match न मिले
+            poCell.removeAttribute("style");
+            poCell.onclick = null;
+          }
+        })
+        .catch(() => {
+          poCell.textContent = "---"; // error में भी "---"
+          poCell.removeAttribute("style");
+          poCell.onclick = null;
+        });
+    } else {
+      poCell.textContent = "---";
+    }
+    row.appendChild(poCell);
+
+    // --- Progress % ---
     const poAmount = parseFloat(data[i][8]) || 0;
     const billingAmount = parseFloat(data[i][12]) || 0;
     let progress = 0;
@@ -7394,10 +7430,9 @@ function renderPOSUMMRYTable(data) {
     else if (progress >= 60) progressCell.classList.add("blue-bg");
     else if (progress >= 30) progressCell.classList.add("pink-bg");
     else progressCell.classList.add("green-bg");
-
     row.appendChild(progressCell);
 
-    // Other visible columns
+    // --- बाकी Columns ---
     visibleIndexes.forEach(colIndex => {
       const td = document.createElement("td");
       const cellValue = data[i][colIndex] || "";
@@ -7505,7 +7540,6 @@ function closeModal() {
 }
 
 // -------------------- Invoice Click → PDF --------------------
-
 function attachInvoiceClickREFF(tableId, invoiceColIndex = 3) {
   const table = document.getElementById(tableId);
   if (!table) return;
@@ -7524,15 +7558,10 @@ function attachInvoiceClickREFF(tableId, invoiceColIndex = 3) {
       .then(res => res.text())
       .then(url => {
         if (url && url !== "NOT_FOUND") {
-          // ✅ clickable link look
           cell.style.color = "blue";
           cell.style.cursor = "pointer";
           cell.style.textDecoration = "underline";
-
-          // ✅ remove previous event listener if any
           cell.onclick = null;
-
-          // ✅ add new event
           cell.addEventListener("click", () => {
             window.open(url, "_blank");
           });
@@ -7550,8 +7579,6 @@ function attachInvoiceClickREFF(tableId, invoiceColIndex = 3) {
       });
   }
 }
-
-
 
 // -------------------- Fetch Ledger → Modal --------------------
 async function fetchReffNo(jobNo, ledgerName = "---", ledgerAddress = "---") {
@@ -7609,7 +7636,6 @@ async function fetchReffNo(jobNo, ledgerName = "---", ledgerAddress = "---") {
   html += `</table>`;
   openModal(html);
 
-  // ✅ Enable invoice click inside modal
   attachInvoiceClickREFF("modalLedgerTable", 3);
 }
 
@@ -9197,3 +9223,4 @@ document.addEventListener("DOMContentLoaded", loadDATAMIPLTABLE);
 </html>
 
 <!---------------------------- DATAMIPLTABLE SCRIPT START STOP ---------------------------------------- -->
+
