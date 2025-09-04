@@ -37,43 +37,67 @@
     }
 
     
-/* Base table style */
- table {
+/* Container to control table width and responsiveness */
+.table-container {
   width: 100%;
-  margin-top: 20px;
-  border-collapse: collapse;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 14px;
+  overflow-x: auto;
 }
 
-th, td {
-  border: 1px solid #e0e0e0;
-  padding: 10px 14px;
-  text-align: left;
-}
 
+
+ 
+ /* Table container */
+table{
+    width: 100%;
+    border-collapse: collapse;
+    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    font-size: 14px;
+    background: #ffffff;
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.15);
+    border-radius: 8px;
+    overflow: hidden;
+    table-layout: fixed; /* columns fixed width */
+  }
+
+  /* Table border & cell style */
+th, 
+ td {
+    border: 1px solid #dcdcdc;
+    padding: 8px 10px;
+    text-align: left;
+    white-space: nowrap;     /* wrap disable */
+    overflow: hidden;
+    text-overflow: ellipsis; /* show ... if text overflow */
+    vertical-align: middle;
+    font-size: clamp(10px, 1vw, 14px); /* auto shrink text */
+  }
+
+  /* Header design */
 th {
-  background-color: #004d80;
-  color: white;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
+    background: linear-gradient(135deg, #070707, #616161);
+    color: #fff;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+  }
 
-tr:nth-child(even) {
+  tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
-table tr:hover {
-  background-color: #f2ea08;
-  color: rgb(3, 18, 93);
+  /* Row hover effect */
+  tr:hover td {
+    background: #fce303;
+    transition: background 0.2s ease-in-out;  }
+    
+    table tr:hover {
+  background-color: #f81404;
+  color: rgb(1, 20, 37);
   transition: background-color 0.3s ease, color 0.3s ease;
- 
-}
+  }
 
+ 
         
     #search123Input {
       margin-bottom: 10px;
@@ -148,24 +172,26 @@ table tr:hover {
     <div id="modalContent"></div>
   </div>
 
-
-
 <script>
 const api123Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheet123Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
 const range123 = "POREFF!A:R";
+const api103Url = "https://script.google.com/macros/s/AKfycbzBXPXYoX9xp2IqWYXvVYMPhgERM41XQ8CyhOBWtpnFQy2SZIkQqBPlHTfl9-Z3nn8rXg/exec"; 
+const apiPOUrl = "https://script.google.com/macros/s/AKfycbxqXzSs-JOBPEUWqrI0-SUVmtGzRJKBoR3srraxO_peECS7ELm-xxZqOUQisJjCwrPW4A/exec"; // नया API
 
 const headerHTML = `
   <tr>
+    <th>PO Link</th>
     <th>Progress %</th>
-    <th>JOB NO.</th><th>Ledger</th><th>PO/Reff No</th><th>PO Amount</th><th>Billing Amount</th><th>Balance</th>
-    <th>PO Weight</th><th>Billing Weight</th><th>Balance</th><th>PO Pdf.</th><th>Status</th><th>User</th><th>Order By</th>
+    <th>JOB NO.</th><th>Ledger</th><th>PO/Reff No</th><th>PO Amount</th>
+    <th>Billing Amount</th><th>Balance</th><th>PO Weight</th><th>Billing Weight</th>
+    <th>Balance</th><th>Status</th><th>User</th><th>Order By</th>
   </tr>`;
 
-const visibleIndexes = [0,16, 6, 8, 12, 14, 9, 13, 15, 11, 7, 1, 2];
+const visibleIndexes = [0,16, 6, 8, 12, 14, 9, 13, 15, 7, 1, 2];
 let fullTableData = [];
 
-// Fetch and sort Google Sheet data
+// -------------------- Fetch & Render Main Table --------------------
 async function fetch123Data() {
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet123Id}/values/${range123}?key=${api123Key}`;
   const response = await fetch(url);
@@ -175,38 +201,19 @@ async function fetch123Data() {
   const header = rows[0];
   const dataRows = rows.slice(1);
 
- // Sort by column 16 (Billing Amount) dcending (sort by numeric number base)
-   dataRows.sort((a, b) => (parseFloat(b[0]) || 0) - (parseFloat(a[0]) || 0));
-
-// Sort by column 16 (text, A–Z) sort by alphanumeric base
-   // dataRows.sort((a, b) => {
- //   const textA = (a[16] || "").toString().toLowerCase();
-//   const textB = (b[16] || "").toString().toLowerCase();
-//  return textA.localeCompare(textB);
-//  });
-
-//
-
+  // Sorting
+  dataRows.sort((a, b) => (parseFloat(b[0]) || 0) - (parseFloat(a[0]) || 0));
 
   fullTableData = [header, ...dataRows];
 
   renderPOSUMMRYTable(fullTableData);
   setupSearch(fullTableData);
 }
-//****
-
-
-
-
-
 
 function renderPOSUMMRYTable(data) {
- 
-
   const table = document.getElementById("dataTable");
   table.innerHTML = "";
 
-  // Add static header
   const thead = document.createElement("thead");
   thead.innerHTML = headerHTML;
   table.appendChild(thead);
@@ -216,10 +223,42 @@ function renderPOSUMMRYTable(data) {
   for (let i = 1; i < data.length; i++) {
     const row = document.createElement("tr");
 
+    // --- नया कॉलम (PO Link) ---
+    const poNo = data[i][6] || "";
+    const poCell = document.createElement("td");
 
+    if (poNo) {
+      // पहले default "---" डाल देंगे
+      poCell.textContent = "---";
 
+      // फिर API hit करेंगे
+      fetch(apiPOUrl + "?invoice=" + encodeURIComponent(poNo))
 
-    // Progress Calculation
+        .then(res => res.text())
+        .then(url => {
+          if (url && url !== "NOT_FOUND") {
+            poCell.textContent = "View PO";
+            poCell.style.color = "red";
+            poCell.style.textDecoration = "underline";
+            poCell.style.cursor = "pointer";
+            poCell.onclick = () => window.open(url, "_blank");
+          } else {
+            poCell.textContent = "---"; // अगर match न मिले
+            poCell.removeAttribute("style");
+            poCell.onclick = null;
+          }
+        })
+        .catch(() => {
+          poCell.textContent = "---"; // error में भी "---"
+          poCell.removeAttribute("style");
+          poCell.onclick = null;
+        });
+    } else {
+      poCell.textContent = "---";
+    }
+    row.appendChild(poCell);
+
+    // --- Progress % ---
     const poAmount = parseFloat(data[i][8]) || 0;
     const billingAmount = parseFloat(data[i][12]) || 0;
     let progress = 0;
@@ -234,20 +273,18 @@ function renderPOSUMMRYTable(data) {
 
     const progressCell = document.createElement("td");
     progressCell.textContent = label;
-
-    // Progress color
     if (progress > 100) progressCell.classList.add("orange-bg");
     else if (progress >= 60) progressCell.classList.add("blue-bg");
     else if (progress >= 30) progressCell.classList.add("pink-bg");
     else progressCell.classList.add("green-bg");
-
     row.appendChild(progressCell);
 
-    // Add other visible columns
+    // --- बाकी Columns ---
     visibleIndexes.forEach(colIndex => {
       const td = document.createElement("td");
       const cellValue = data[i][colIndex] || "";
 
+      // PO No. click → fetchReffNo
       if (colIndex === 6) {
         td.style.cursor = "pointer";
         td.style.color = "#2980b9";
@@ -261,6 +298,7 @@ function renderPOSUMMRYTable(data) {
         });
       }
 
+      // Link formatting
       if (typeof cellValue === 'string' && (cellValue.startsWith("http") || cellValue.startsWith("www"))) {
         const a = document.createElement("a");
         a.href = cellValue.startsWith("http") ? cellValue : "https://" + cellValue;
@@ -270,22 +308,18 @@ function renderPOSUMMRYTable(data) {
       } else {
         td.textContent = cellValue;
 
-// ✅ Apply formatting ONLY to column 7 (status column)
-if (colIndex === 7) {
-  td.style.fontWeight = "bold";
-  td.style.fontSize = "13px";
-
-  if (cellValue === "CANCELED") td.style.color = "#dc7633";
-  else if (cellValue === "COMPLETED") td.style.color = "#48c9b0";
-  else if (cellValue === "RUNNING") td.style.color = "#808b96";
-  else if (cellValue === "PENDING") td.style.color = "#5dade2";
-}
-
-
-
+        // Status formatting
+        if (colIndex === 7) {
+          td.style.fontWeight = "bold";
+          td.style.fontSize = "13px";
+          if (cellValue === "CANCELED") td.style.color = "#dc7633";
+          else if (cellValue === "COMPLETED") td.style.color = "#48c9b0";
+          else if (cellValue === "RUNNING") td.style.color = "#808b96";
+          else if (cellValue === "PENDING") td.style.color = "#5dade2";
+        }
       }
 
-      // Highlight red for negative balances
+      // Red highlight for negative balance
       const col5Val = parseFloat(data[i][14]) || 0;
       const col8Val = parseFloat(data[i][15]) || 0;
       if (col5Val < 0 && colIndex === 14) td.classList.add("red-bg");
@@ -298,14 +332,10 @@ if (colIndex === 7) {
   }
 
   table.appendChild(tbody);
-
-  // ✅ Show status summary
   displayporeffResults(data);
 }
 
-
-
-
+// -------------------- Status Summary --------------------
 function displayporeffResults(entries) {
   const summaryDiv = document.getElementById("poSummaryBox");
   summaryDiv.innerHTML = "";
@@ -315,9 +345,7 @@ function displayporeffResults(entries) {
     return;
   }
 
-  // Count statuses in column index 14 (visible index 14 = actual index 9 or 13?)
   let completed = 0, pending = 0, canceled = 0, running = 0;
-
   entries.slice(1).forEach(row => {
     const status = (row[7] || "").toLowerCase();
     if (status === "completed") completed++;
@@ -334,8 +362,7 @@ function displayporeffResults(entries) {
   `;
 }
 
-
-// Search functionality
+// -------------------- Search --------------------
 function setupSearch(data) {
   const searchInput = document.getElementById("search123Input");
   searchInput.addEventListener("input", () => {
@@ -348,17 +375,117 @@ function setupSearch(data) {
   });
 }
 
-// Modal handling
+// -------------------- Modal --------------------
 function openModal(htmlContent) {
   document.getElementById("modalContent").innerHTML = htmlContent;
   document.getElementById("dataModal").style.display = "block";
   document.getElementById("overlay").style.display = "block";
 }
-
 function closeModal() {
   document.getElementById("dataModal").style.display = "none";
   document.getElementById("overlay").style.display = "none";
 }
+
+// -------------------- Invoice Click → PDF --------------------
+function attachInvoiceClickREFF(tableId, invoiceColIndex = 3) {
+  const table = document.getElementById(tableId);
+  if (!table) return;
+
+  for (let i = 1; i < table.rows.length; i++) {
+    const row = table.rows[i];
+    const cell = row.cells[invoiceColIndex];
+    if (!cell) continue;
+
+    const invoiceNo = cell.textContent.trim();
+    if (!invoiceNo) continue;
+
+    const invoiceKey = invoiceNo.replace("/", "_");
+
+    fetch(api103Url + "?invoice=" + encodeURIComponent(invoiceKey))
+      .then(res => res.text())
+      .then(url => {
+        if (url && url !== "NOT_FOUND") {
+          cell.style.color = "blue";
+          cell.style.cursor = "pointer";
+          cell.style.textDecoration = "underline";
+          cell.onclick = null;
+          cell.addEventListener("click", () => {
+            window.open(url, "_blank");
+          });
+        } else {
+          cell.style.color = "black";
+          cell.style.cursor = "default";
+          cell.style.textDecoration = "none";
+        }
+      })
+      .catch(err => {
+        console.error("Invoice fetch error:", err);
+        cell.style.color = "black";
+        cell.style.cursor = "default";
+        cell.style.textDecoration = "none";
+      });
+  }
+}
+
+// -------------------- Fetch Ledger → Modal --------------------
+async function fetchReffNo(jobNo, ledgerName = "---", ledgerAddress = "---") {
+  const range124 = "LEDGER!B:K";
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet123Id}/values/${range124}?key=${api123Key}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  const rows = data.values || [];
+
+  const headers = rows[0];
+  const matched = rows.slice(1).filter(r => r[4] === jobNo);
+
+  if (matched.length === 0) {
+    openModal("<p>No Match Found</p>");
+    return;
+  }
+
+  let totalG = 0, totalH = 0;
+  matched.forEach(row => {
+    totalG += parseFloat(row[5]) || 0;
+    totalH += parseFloat(row[6]) || 0;
+  });
+
+  let html = `
+   <p>
+    <strong>Ledger Name:</strong> ${ledgerName}<br>
+    <strong>Address:</strong> ${ledgerAddress}<br>
+    <span style="color: rgb(1, 107, 37); font-weight: bold; font-size: 18px;">Total Billng :-</span> Rs. ${totalG.toFixed()} /
+    <span style="color: blue; font-weight: bold; font-size: 18px;">Total Weight:-</span> ${totalH.toFixed()} Kg.
+   </p>
+   <table id="modalLedgerTable" border="1"><tr>`;
+
+  headers.forEach(h => html += `<th>${h}</th>`);
+  html += `</tr>`;
+
+  matched.forEach(row => {
+    const isCredit = (row[0] || "").toLowerCase().includes("credit note");
+    const rowStyle = isCredit ? ` style="color: red;"` : "";
+    html += `<tr${rowStyle}>`;
+
+    headers.forEach((_, i) => {
+      const cell = row[i] || "";
+      if (typeof cell === "string" && (cell.startsWith("http") || cell.startsWith("www"))) {
+        const href = cell.startsWith("http") ? cell : "https://" + cell;
+        html += `<td><a href="${href}" target="_blank">&#128221;</a></td>`;
+      } else {
+        const overrideStyle = isCredit && i === 0 ? ` style="color: black;"` : "";
+        html += `<td${overrideStyle}>${cell}</td>`;
+      }
+    });
+
+    html += `</tr>`;
+  });
+
+  html += `</table>`;
+  openModal(html);
+
+  attachInvoiceClickREFF("modalLedgerTable", 3);
+}
+
 
 
 function printModal() {
@@ -424,71 +551,10 @@ tr:nth-child(even) {
   printWindow.print();
 }
 
-
-// Show Ledger Modal
-async function fetchReffNo(jobNo, ledgerName = "---", ledgerAddress = "---") {
- 
-  const range124 = "LEDGER!B:L";
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet123Id}/values/${range124}?key=${api123Key}`;
-  const res = await fetch(url);
-  const data = await res.json();
-  const rows = data.values || [];
-
-  const headers = rows[0];
-  const matched = rows.slice(1).filter(r => r[4] === jobNo); // Column F
-
-  if (matched.length === 0) {
-    openModal("<p>No Match Found</p>");
-    return;
-  }
-
-  let totalG = 0;
-  let totalH = 0;
-  matched.forEach(row => {
-    totalG += parseFloat(row[5]) || 0;
-    totalH += parseFloat(row[6]) || 0;
-  });
-
-  let html = `
-   <p>
-  <strong>Ledger Name:</strong> ${ledgerName}<br>
-  <strong>Address:</strong> ${ledgerAddress}<br>
-
-  <span style="color: rgb(1, 107, 37); font-weight: bold; font-size: 18px;">Total Billng :-</span> Rs.  ${totalG.toFixed()} /
-  <span style="color: blue; font-weight: bold; font-size: 18px;">Total Weight:-</span>  ${totalH.toFixed()} Kg.
-</p>
-
-    <table border='1'><tr>`;
-
-  headers.forEach(h => html += `<th>${h}</th>`);
-  html += `</tr>`;
-
-  matched.forEach(row => {
-    const isCredit = (row[0] || "").toLowerCase().includes("credit note");
-    const rowStyle = isCredit ? ` style="color: red;"` : "";
-    html += `<tr${rowStyle}>`;
-
-    headers.forEach((_, i) => {
-      const cell = row[i] || "";
-      if (typeof cell === "string" && (cell.startsWith("http") || cell.startsWith("www"))) {
-        const href = cell.startsWith("http") ? cell : "https://" + cell;
-        html += `<td><a href="${href}" target="_blank">&#128221;</a></td>`;
-      } else {
-        const overrideStyle = isCredit && i === 0 ? ` style="color: black;"` : "";
-        html += `<td${overrideStyle}>${cell}</td>`;
-      }
-    });
-
-    html += `</tr>`;
-  });
-
-  html += `</table>`;
-  openModal(html);
-}
-
-// Init load
+// -------------------- Init --------------------
 fetch123Data();
 </script>
+
 
 </body>
 </html>
