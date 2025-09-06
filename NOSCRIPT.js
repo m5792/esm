@@ -1,3 +1,5 @@
+
+
 const api123Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheet123Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
 const range123 = "POREFF!A:R";
@@ -425,11 +427,6 @@ tr:nth-child(even) {
 
 
 fetch123Data();
-</script>
-
-
-</body>
-</html>
 
 
 
@@ -448,112 +445,3 @@ fetch123Data();
 
 
 
-
-
-
-
-
-
-
-
-
-
-<!-- loading summry poup box start  script start hare +++++++++++++++++++++++++++++++++++++++++++++-->
-
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>4x6 inch Popup</title>
-  <style>
-    :root{
-      --popup-bg:#ffffff;
-      --popup-text:#111827;
-      --popup-border:#e5e7eb;
-      --popup-shadow:0 12px 30px rgba(0,0,0,.15);
-      --popup-radius:14px;
-    }
-
-    .popup {
-      position: fixed;
-      left: 16px;
-      bottom: 60px;
-      width: 900px;   /* 6 inch */
-      height: 450px;  /* 4 inch */
-      background: var(--popup-bg);
-      color: var(--popup-text);
-      border: 1px solid var(--popup-border);
-      border-radius: var(--popup-radius);
-      box-shadow: var(--popup-shadow);
-      overflow: hidden;
-      opacity: 0;
-      transform: translateY(20px);
-      pointer-events: none;
-      transition: opacity .25s ease, transform .25s ease;
-      z-index: 9999;
-    }
-
-    .popup.show {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
-    }
-
-    .popup__header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:10px 12px;
-      background: #d2d2d2;
-      border-bottom:1px solid var(--popup-border);
-    }
-    .popup__title{
-      margin:0;
-      font-size: 15px;
-      font-weight: 600;
-    }
-    .popup__close{
-      border:1px solid var(--popup-border);
-      background:#fff;
-      border-radius:10px;
-      width:30px;
-      height:30px;
-      cursor:pointer;
-      font-size:18px;
-    }
-    .popup__close:hover{ background:#f3f4f6; }
-
-    .popup__body{
-      padding:12px;
-      font-size:14px;
-      height: calc(100% - 52px); /* header ke niche bacha hua area */
-      overflow:auto; /* scroll agar zyada content ho */
-      background-color: #f8ebe0;
-    }
-  </style>
-</head>
-<body>
-
-  <div id="bottomLeftPopup" class="popup">
-    <div class="popup__header">
-      <h3 class="popup__title">Loading Status</h3>
-      <button class="popup__close" id="popupCloseBtn">&times;</button>
-    </div>
-    <div class="popup__body">
-   
-     
-      
-     
-<table id="noticeBoard">  <thead ><tr> <th>Type</th><th>Date</th> <th>Name</th><th>Vehicle No.</th><th>Job No.</th> <th>Status</th> <th>Inv. No.</th></tr></thead><tbody></tbody></table>
-
-
-    </div>
-  </div>
-
-  <script>
-    const popup = document.getElementById('bottomLeftPopup');
-    const closeBtn = document.getElementById('popupCloseBtn');
-
-    window.addEventListener('load', ()=> popup.classList.add('show'));
-    closeBtn.addEventListener('click', ()=> popup.classList.remove('show'));
