@@ -1,11 +1,11 @@
 
 
 
-  <table id="dataTable"> </table><br/><br/><br/>
+  <table id="dataTable"></table><br/><br/><br/>
 
 <footer class="footer">
   <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-    <div id="poSummaryBox" style="color: white; padding-left: 10px;">Office Noida MIPL</div>
+    <div id="poSummaryBox" style="color: white; padding-left: 10px;">Summary</div>
 
     <div style="display: flex; align-items: center; gap: 8px; padding-right: 10px;">
       <label for="search123Input" style="color: white;">Search:</label>
@@ -26,7 +26,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>PO/REFF NO</title>
+  <title>Daybook MIPL</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -34,9 +34,18 @@
     }
 
     
-/* Base table style */
- table {
+/* Container to control table width and responsiveness */
+.table-container {
   width: 100%;
+  overflow-x: auto;
+}
+
+
+
+ 
+ /* Table container */
+table{
+      width: 100%;
   margin-top: 20px;
   border-collapse: collapse;
   border-radius: 8px;
@@ -44,33 +53,47 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 14px;
-}
+  }
 
-th, td {
-  border: 1px solid #e0e0e0;
-  padding: 10px 14px;
-  text-align: left;
-}
+  /* Table border & cell style */
+th, 
+ td {
+    border: 1px solid #dcdcdc;
+    padding: 8px 10px;
+    text-align: left;
+     /*   white-space: nowrap;   wrap disable */
+    overflow: hidden;
+    text-overflow: ellipsis; /* show ... if text overflow */
+    vertical-align: middle;
+    font-size: clamp(10px, 1vw, 14px); /* auto shrink text */
+  }
 
+  /* Header design */
 th {
-  background-color: #004d80;
-  color: white;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
+    background: linear-gradient(135deg, #070707, #616161);
+    color: #fff;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+  }
 
-tr:nth-child(even) {
+  tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
-table tr:hover {
-  background-color: #383838;
-  color: white;
+  /* Row hover effect */
+  tr:hover td {
+    background: #fce303;
+    transition: background 0.2s ease-in-out;  }
+    
+    table tr:hover {
+  background-color: #f81404;
+  color: rgb(1, 20, 37);
   transition: background-color 0.3s ease, color 0.3s ease;
- 
-}
+  }
 
+ 
         
     #search123Input {
       margin-bottom: 10px;
@@ -142,16 +165,123 @@ table tr:hover {
     <h3>Multitech Infracon Pvt Ltd. <br/>Ledger Details</h3>
      <button class="btnposummry"  onclick="printModal()">🖨️ Print</button>
     <button class="btnposummry"  onclick="closeModal()">❌ Close</button>
-    <div id="modalContent"></div> <br/> <br/> <br/> <br/>
+    <div id="modalContent"></div>
   </div>
 
 
 
-<script src="NOSCRIPT.js"></script>
 
+
+
+
+
+  
+
+
+<!-- loading summry poup box start  script start hare +++++++++++++++++++++++++++++++++++++++++++++-->
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>4x6 inch Popup</title>
+  <style>
+    :root{
+      --popup-bg:#ffffff;
+      --popup-text:#111827;
+      --popup-border:#e5e7eb;
+      --popup-shadow:0 12px 30px rgba(0,0,0,.15);
+      --popup-radius:14px;
+    }
+
+    .popup {
+      position: fixed;
+      left: 16px;
+      bottom: 60px;
+      width: 900px;   /* 6 inch */
+      height: 450px;  /* 4 inch */
+      background: var(--popup-bg);
+      color: var(--popup-text);
+      border: 1px solid var(--popup-border);
+      border-radius: var(--popup-radius);
+      box-shadow: var(--popup-shadow);
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(20px);
+      pointer-events: none;
+      transition: opacity .25s ease, transform .25s ease;
+      z-index: 9999;
+    }
+
+    .popup.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .popup__header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:10px 12px;
+      background: #d2d2d2;
+      border-bottom:1px solid var(--popup-border);
+    }
+    .popup__title{
+      margin:0;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .popup__close{
+      border:1px solid var(--popup-border);
+      background:#fff;
+      border-radius:10px;
+      width:30px;
+      height:30px;
+      cursor:pointer;
+      font-size:18px;
+    }
+    .popup__close:hover{ background:#f3f4f6; }
+
+    .popup__body{
+      padding:12px;
+      font-size:14px;
+      height: calc(100% - 52px); /* header ke niche bacha hua area */
+      overflow:auto; /* scroll agar zyada content ho */
+      background-color: #f8ebe0;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="bottomLeftPopup" class="popup">
+    <div class="popup__header">
+      <h3 class="popup__title">Loading Status</h3>
+      <button class="popup__close" id="popupCloseBtn">&times;</button>
+    </div>
+    <div class="popup__body">
+   
+     
+      
+     
+<table id="noticeBoard">  <thead ><tr> <th>Type</th><th>Date</th> <th>Name</th><th>Vehicle No.</th><th>Job No.</th> <th>Status</th> <th>Inv. No.</th></tr></thead><tbody></tbody></table>
+
+
+    </div>
+  </div>
+
+  <script>
+    const popup = document.getElementById('bottomLeftPopup');
+    const closeBtn = document.getElementById('popupCloseBtn');
+
+    window.addEventListener('load', ()=> popup.classList.add('show'));
+    closeBtn.addEventListener('click', ()=> popup.classList.remove('show'));
+  </script>
 </body>
 </html>
 
+<!-- loading summry poup box start  script stop hare +++++++++++++++++++++++++++++++++++++++++++++-->
 
 
 
@@ -159,8 +289,108 @@ table tr:hover {
 
 
 
+<!-- loading summry  script start hare -->
 
+<script>
+// ===== CSS injected via JS (no <style> tag used) =====
+const css = `
+   /* Status Colors */
+  .status-loading    { background-color: #ff4d4d; color: #fff; font-weight: bold; }
+  .status-processing { background-color: #fd2222; color: #fff; font-weight: bold; }
+  .status-processed  { background-color: #28a745; color: #fff; font-weight: bold; }
+  .status-complete   { background-color: #28a745; color: #fff; font-weight: bold; }
+  .status-unloading  { background-color: #39b3d8; color: #fff; font-weight: bold; }
+`;
+(function applyCSS(c){
+  const s = document.createElement('style');
+  s.textContent = c;
+  document.head.appendChild(s);
+})(css);
 
+// ===== Notice Board Script =====
+const apiNBKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheetNBId = "1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4";
+const rangeNB = "DATABASE!K:R";
 
+async function loadNoticeBoard() {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetNBId}/values/${rangeNB}?key=${apiNBKey}`;
+  const response = await fetch(url);
+  const data = await response.json();
+  
+  const rows = data.values;
+  const tbody = document.querySelector("#noticeBoard tbody");
+  tbody.innerHTML = "";
 
+  if (!rows || rows.length <= 1) {
+    tbody.innerHTML = `<tr><td colspan="7">No Data Found</td></tr>`;
+    return;
+  }
 
+  // Last 3 days range
+  const today = new Date();
+  let allowedDates = [];
+  for (let i = 0; i < 3; i++) {
+    let d = new Date();
+    d.setDate(today.getDate() - i);
+    allowedDates.push(formatDateToYYYYMMDD(d));
+  }
+
+  rows.forEach((row, index) => {
+    if (index === 0) return; // skip header
+
+    const dateInL = row[1]; // Column L
+    const formattedDate = dateInL ? formatCustomDate(dateInL) : "";
+
+    if (allowedDates.includes(formattedDate)) {
+      const tr = document.createElement("tr");
+
+      for (let i = 0; i <= 6; i++) {
+        const td = document.createElement("td");
+        td.textContent = row[i] || "";
+
+        // Status color coding
+        if (i === 5) {
+          const status = (row[i] || "").toUpperCase();
+          if (status === "LOADING") td.classList.add("status-loading");
+          else if (status === "PROCESSING") td.classList.add("status-processing");
+          else if (status === "PROCESSED") td.classList.add("status-processed");
+          else if (status === "UNLOADING") td.classList.add("status-unloading");
+          else if (status === "COMPLETE") td.classList.add("status-complete");
+        }
+        tr.appendChild(td);
+      }
+
+      tbody.appendChild(tr);
+    }
+  });
+}
+
+// Format date to YYYY-MM-DD
+function formatDateToYYYYMMDD(dateObj) {
+  const y = dateObj.getFullYear();
+  const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+  const d = String(dateObj.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+// Convert "13-Aug-2025" to YYYY-MM-DD
+function formatCustomDate(dateStr) {
+  const months = {
+    Jan: "01", Feb: "02", Mar: "03", Apr: "04", May: "05", Jun: "06",
+    Jul: "07", Aug: "08", Sep: "09", Oct: "10", Nov: "11", Dec: "12"
+  };
+  const parts = dateStr.split("-");
+  if (parts.length === 3) {
+    const day = parts[0].padStart(2, "0");
+    const month = months[parts[1]];
+    const year = parts[2];
+    return `${year}-${month}-${day}`;
+  }
+  return "";
+}
+
+loadNoticeBoard();
+</script>
+<!-- loading summry  script stop hare -->
+
+<!-- loading summry  script stop hare -->
