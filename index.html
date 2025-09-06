@@ -275,7 +275,7 @@ th,
     border: 1px solid #dcdcdc;
     padding: 8px 10px;
     text-align: left;
-    white-space: wrap;     /* wrap disable */
+   
     overflow: hidden;
     text-overflow: ellipsis; /* show ... if text overflow */
     vertical-align: middle;
@@ -697,8 +697,7 @@ async function fetchGlobalMessage() {
   <div style="display: flex; align-items: center; background: rgb(234, 235, 235); padding: 10px; gap: 10px;">
     <select id="monthDropdown" style="padding: 5px; font-size: 16px;"></select>
     <div id="monthlyTotals" style="color: white; font-size: 16px;">Please Wait!</div>
-       <!-- Add this button in HTML where you want -->
-<button onclick="searchInvoice()" style="background-color: rgb(234, 235, 235); color: rgb(9, 9, 9);">Click to Search Invoice</button>
+
 </div>
 
  
@@ -1886,7 +1885,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <body>
 
 
-  <div class="footer">   <!-- footer div start---- -->
+  <div class="footer" >   <!-- footer div start---- -->
 
 
  <!-- dialog box div code and css start///////////////////////////////////////////// -->
@@ -1931,10 +1930,12 @@ document.addEventListener("DOMContentLoaded", function () {
     <span style="color: red;">📘 Daybook</span>
    
 
-      <div id="difference" style="background: #080808;color: white; border: none;">  </div>
+      <div id="balance" style="background: #080808;color: white; border: none;">  </div>
 
-  
-       <button id="printButton" style="background: #080808;color: white; border: none;">Print</button>
+    
+        <button id="printdaybook" onclick="printdaybook()" style="background: #080808;color: white; border: none; cursor: pointer;">Print</button>
+    
+
      <span style="cursor: pointer; font-size: 18px;" onclick="closeDialog()">❌</span>
   </div>
 
@@ -1964,6 +1965,7 @@ document.addEventListener("DOMContentLoaded", function () {
            <span style="color: #037e71 ;font-size:90%;">Weight:</span>  		Kg. 	<span id="totalWeight">0.00</span>  |
            <span style="color: #8f3f02 ;font-size:90%;">Receipt:</span> 		Rs. 	<span id="totalBankInvoice">0.00</span> |
            <span style="color: blue ;font-size:90%;">TDS:</span>  		Rs.	<span id="totalTdsInvoice">0.00</span>
+           
    </div>
 
   <!-- Content -->
@@ -2060,54 +2062,54 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 </style>
 <table id="MIPLDATATABLE" border="1"></table>
-
 </div>
     
+
  
 <table style="background-color:#011d30 ;text-align: center; color:WHITE; border: none;">
 
-<td style="text-align: center; color:WHITE; border: none;">
+<td style="text-align: center; color:WHITE; border: none; background-color: #011d30;">
     <a href="https://www.google.co.in/" target="_blank"><img src="https://cdn.dribbble.com/users/1717214/screenshots/4124610/g-logo.gif" alt="Gmail" width="50" height="50" /></a>
     </td>
-    <td style="text-align: center; color:WHITE;border: none;">
+    <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
     <a href="https://accounts.zoho.in/signin?servicename=VirtualOffice&signupurl=https://www.zoho.com/mail/zohomail-pricing.html&serviceurl=https://mail.zoho.in" target="_blank"><img src="https://zenatta.com/wp-content/uploads/2020/08/mail-256-300x300.png" alt="Gmail" width="60" height="60" /></a>
     </td>
     <td style="text-align: center; color:WHITE;border: none;">
     <a href="https://mail.google.com/mail/u/0/" target="_blank"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjpEIz6vZxfKx_cLh8Y6tDWalIuwi08MCggUEXk8cXLAy8NUilIHwNgrsjtFIxgEWCWAE&usqp=CAU" alt="You Tube" width="50" height="50" /></a>
     </td>
-    <td style="text-align: center; color:WHITE;border: none;">
+    <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
     <a href="https://ibanking.pnb.bank.in/" target="_blank"><img src="https://cracku.in/latest-govt-jobs/wp-content/uploads/2021/01/PNB-Logo.png" alt="Google" width="50" height="50" /></a>
     </td>
-    <td style="text-align: center; color:WHITE;border: none;">
+    <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
     <a href="https://retail.onlinesbi.sbi/retail/login.htm" target="_blank"><img src="https://image3.mouthshut.com/images/ImagesR/2015/12/State-Bank-Anywhere-925771560-7182350-1.png" width="50" height="50" /></a>
     </td>
-    <td style="text-align: center; color:WHITE;border: none;">
+    <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
     <a href="https://netbanking.hdfcbank.com/netbanking/"  target="_blank"><img src="https://p.kindpng.com/picc/s/284-2843275_online-donation-shri-ramakrishna-ashrama-rajkot-using-hdfc.png" alt="You Tube" width="50" height="50" /></a>
     </td>
     
-    <td style="text-align: center; color:WHITE;border: none;">
+    <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
     <a href="https://www.youtube.com/" target="_blank"><img src="http://3d-sprinter.ru/pictures/youtube256-2-on.gif" alt="You Tube" width="50" height="50" /></a>
     </td>
     
-    <td style="text-align: center; color:WHITE;border: none;">
+    <td style="text-align: center; color:WHITE;border: none; background-color: #011d30; ">
     <a href="https://www.facebook.com/" target="_blank"><img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNTZuaHQ1ZjdnajNwMWtrZHVhN3Q4djdwMDZmYWZuYzRoYTA0Ymx4MiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/IeRI0TleieCJ6ytPUr/giphy.gif" alt="You Tube" width="50" height="50" /></a>
      </td>
     
-    <td style="text-align: center; color:WHITE;border: none;">
+    <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
       <a href="https://web.whatsapp.com/" target="_blank"><img src="https://cliply.co/wp-content/uploads/2021/08/372108180_WHATSAPP_ICON_400.gif" alt="You Tube" width="50" height="50" /></a>
         </td>
 
 
-              <td style="text-align: center; color:WHITE;border: none;">
+              <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
                 <a href="https://ssp.elcom.digital/" target="_blank"><img src="https://tallyerp9download.com/wp-content/uploads/2020/11/tally-prime-server-1-300x56.jpg" alt="You Tube" width="100" height="30" /></a>
                   </td>
                 
 
-                      <td style="text-align: center; color:WHITE;border: none;">
+                      <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
                         <a href="https://chatgpt.com/" target="_blank"><img src="https://static.vecteezy.com/system/resources/previews/022/841/114/original/chatgpt-logo-transparent-background-free-png.png" alt="You Tube" width="60" height="50" /></a>
                           </td>
 
-                      <td style="text-align: center; color:WHITE;border: none;">
+                      <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
                         
 
 
@@ -2115,20 +2117,26 @@ document.addEventListener("DOMContentLoaded", function () {
                                     <span style="color:#cacacc;font-size:130%;font-family:Magneto;">MTally</span> 
                        </td>
 
-                       <td style="text-align: center; color:WHITE;border: none;">
+                       <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
                         <a href="https://services.gst.gov.in/services/login" target="_blank"><img src="https://cdn.uxhack.co/product_logos/gstn_logo.jpg" alt="You Tube" width="60" height="60" /></a>
                           </td>
 
-                          <td style="text-align: center; color:WHITE;border: none;">
+                          <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
                             <a href="https://ewaybillgst.gov.in/Login.aspx" target="_blank"><img src="https://bizdesk.in/wp-content/uploads/2019/11/E-Way-Bills-as-Per-New-GST-Rules.png" alt="You Tube" width="60" height="60" /></a>
                               </td>
-                              <td style="text-align: center; color:WHITE;border: none;">
+                              <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
                                 <a href="https://einvoice1.gst.gov.in/Others/GetPinCodeDistance" target="_blank"><img src="https://www.shutterstock.com/image-vector/distance-pin-icon-flat-style-260nw-1416511856.jpg" alt="You Tube" width="60" height="60" /></a>
                                   </td>
-                                  <td style="text-align: center; color:WHITE;border: none;">
+                                  <td style="text-align: center; color:WHITE;border: none;background-color: #011d30;">
                                 <a href="https://m5792.github.io/esm/" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/1197/1197396.png" alt="You Tube" width="60" height="60" /></a>
                                   </td>
+
+   <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">    
+    <label style="color: white;"> Daybook Search :</label>                            <!-- Search Box -->
+<input type="text" id="DATASEARCMIPL" placeholder="🔍 Search Ledger, Invoice, Reff, Vehicle No...." style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width:200px; width: 4in; background-color: rgb(241, 212, 212);" />
+</td>
 </table>
+
  </div>  <!-- section1B content stop hare *********************************************************************************************************-->
 
 
@@ -7298,7 +7306,7 @@ fetch(`https://gnews.io/api/v4/top-headlines?lang=hi&country=in&max=10&token=${a
   <div id="overlay" onclick="closeModal()"></div>
   <div id="dataModal">
     <h3>Multitech Infracon Pvt Ltd. <br/>Ledger Details</h3>
-     <button class="btnposummry"  onclick="printModal()">🖨️ Print</button>
+     <button class="btnposummry"  onclick="printModal()" >🖨️ Print</button>
     <button class="btnposummry"  onclick="closeModal()">❌ Close</button>
     <div id="modalContent"></div>
   </div>
@@ -8819,8 +8827,7 @@ loadNoticeBoard();
 
 
 
-
-<!-- DAYBOOK SECTION TABLE SCRIPT HARE START---------------------------------------- -->
+<!-- DAYBOOK SECTION TABLE SCRIPT START---------------------------------------- -->
 <script>
 let val = []; // Original data store
 
@@ -8834,16 +8841,13 @@ function collectDataFromMainTable() {
     const row = [];
     for (let j = 0; j < mainTable.rows[i].cells.length; j++) {
       const cell = mainTable.rows[i].cells[j];
-      row.push({
-        text: cell.innerText.trim()
-      });
+      row.push({ text: cell.innerText.trim() });
     }
     val.push(row);
   }
 
   if (val.length > 0) {
-    // --- Load initially only by dateFilter value ---
-    applyDateOnlyFilter();
+    applyDateOnlyFilter(); // initial load
   }
 }
 
@@ -8862,18 +8866,13 @@ function renderMiplTable(data) {
       tr.appendChild(td);
     });
 
-    // ---------- Row Color Based on Column 2 ----------
+    // Row color based on column 2
     if (rowIndex !== 0) {
       const type = row[1]?.text?.toUpperCase() || "";
-      if (type === "BANK") {
-        tr.style.color = "red"; 
-      } else if (type === "CHALLAN") {
-        tr.style.color = "grey";
-      } else if (type === "CREDIT NOTE") {
-        tr.style.color = "green";
-      } else {
-        tr.style.color = "black";
-      }
+      if (type === "BANK") tr.style.color = "red";
+      else if (type === "CHALLAN") tr.style.color = "grey";
+      else if (type === "CREDIT NOTE") tr.style.color = "green";
+      else tr.style.color = "black";
     }
 
     miplTable.appendChild(tr);
@@ -8885,7 +8884,7 @@ function calculateTotals(data) {
   let totalInvoice = 0, totalWeight = 0, totalBank = 0, totalTds = 0;
 
   data.forEach((row, i) => {
-    if (i === 0) return;
+    if (i === 0) return; // skip header
 
     const invoiceAmt = parseFloat(row[6]?.text || 0);
     const weight = parseFloat(row[7]?.text || 0);
@@ -8899,11 +8898,18 @@ function calculateTotals(data) {
     if (type === "tds" && !isNaN(tds)) totalTds += tds;
   });
 
+  // ✅ अब balance calculate करो (totals के बाद)
+  const balance = totalInvoice - totalBank - totalTds;
+
+  // ✅ Values को DOM में डालो
   document.getElementById("totalInvoice").textContent = totalInvoice.toFixed();
   document.getElementById("totalWeight").textContent = totalWeight.toFixed();
   document.getElementById("totalBankInvoice").textContent = totalBank.toFixed();
   document.getElementById("totalTdsInvoice").textContent = totalTds.toFixed();
+ document.getElementById("balance").textContent = "Balance: Rs. " + balance.toFixed();
+
 }
+
 
 // ---------------- Date Formatter ----------------
 function formatDate(inputDate) {
@@ -8936,7 +8942,6 @@ function setupSearchFilter() {
   function applyFilters() {
     const searchText = searchInput.value.toLowerCase();
     if (searchText) {
-      // --- Search across FULL val, ignore date filter ---
       const filtered = val.filter((row, index) => {
         if (index === 0) return true;
         const rowText = row.map(c => c.text.toLowerCase()).join(" ");
@@ -8945,7 +8950,6 @@ function setupSearchFilter() {
       renderMiplTable(filtered);
       calculateTotals(filtered);
     } else {
-      // --- If search empty → fallback to date filter ---
       applyDateOnlyFilter();
     }
   }
@@ -8954,36 +8958,133 @@ function setupSearchFilter() {
   dateInput.addEventListener("change", applyDateOnlyFilter);
 }
 
-// ---------------- Print Current Mipl Table ----------------
-document.getElementById("printButton").addEventListener("click", () => {
-  const miplTable = document.getElementById("miplTable");
-  if (!miplTable) return;
+// ---------------- Invoice Click → PDF ----------------
+const apidaybookUrl = "https://script.google.com/macros/s/AKfycbzBXPXYoX9xp2IqWYXvVYMPhgERM41XQ8CyhOBWtpnFQy2SZIkQqBPlHTfl9-Z3nn8rXg/exec";
 
-  const printWindow = window.open("", "_blank");
+// Event delegation: click only triggers fetch for clicked cell
+document.getElementById("miplTable").addEventListener("click", function(e) {
+  const clickedCell = e.target;
+  const row = clickedCell.parentElement;
+  const cells = row.cells;
+  if (!cells || cells.length < 5) return;
+  if (clickedCell.cellIndex !== 4) return; // only invoice column
+
+  const typeText = cells[1].innerText.trim().toUpperCase();
+  const invoiceNo = clickedCell.innerText.trim();
+  if (typeText !== "TAX INVOICE" || !invoiceNo) return;
+
+  // Styling
+  clickedCell.style.color = "blue";
+  clickedCell.style.cursor = "pointer";
+  clickedCell.style.textDecoration = "underline";
+  clickedCell.title = "Click to open PDF";
+
+  const invoiceKey = invoiceNo.replace("/", "_"); // match folder naming
+  fetch(apidaybookUrl + "?invoice=" + encodeURIComponent(invoiceKey))
+    .then(res => res.text())
+    .then(url => {
+      if (url === "NOT_FOUND") {
+        alert("PDF not found for Invoice: " + invoiceNo);
+      } else {
+        window.open(url, "_blank");
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Error fetching PDF link.");
+    });
+});
+
+// ---------------- Print Current Mipl Table ----------------
+// ---------------- Print Current Mipl Table ----------------
+function printdaybook() {
+  const table = document.getElementById("miplTable");
+  if (!table) return;
+
+  // ---- Totals Calculate ----
+  let totalInvoice = 0, totalWeight = 0, totalBank = 0, totalTds = 0;
+
+  for (let i = 1; i < table.rows.length; i++) { // skip header
+    const row = table.rows[i];
+    const inv = parseFloat(row.cells[6]?.innerText.replace(/,/g, "")) || 0;
+    const wgt = parseFloat(row.cells[7]?.innerText.replace(/,/g, "")) || 0;
+    const rec = parseFloat(row.cells[8]?.innerText.replace(/,/g, "")) || 0;
+    const tds = parseFloat(row.cells[9]?.innerText.replace(/,/g, "")) || 0;
+
+    totalInvoice += inv;
+    totalWeight += wgt;
+    totalBank += rec;
+    totalTds += tds;
+  }
+
+  const balance = totalInvoice - totalBank - totalTds;
+
+  // ---- Table HTML ----
+  const content = table.outerHTML;
+
+  // ---- Open Print Window ----
+  const printWindow = window.open('', '', 'height=800,width=1000');
   printWindow.document.write(`
     <html>
       <head>
-        <title>Print Table</title>
+        <title>Print</title>
         <style>
-          table { border-collapse: collapse; width: 100%; }
-          th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
-          th { background-color: #f2f2f2; }
+          body { font-family: Arial, sans-serif; margin: 20px; color:#333; }
+          h4 { margin: 0; }
+          
+          /* Ledger Style */
+          table { width: 100%; margin-top: 15px; border-collapse: collapse;
+                  border-radius: 8px; overflow: hidden;
+                  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                  font-size: 13px; }
+          th, td { border: 1px solid #cfcfcf; padding: 8px 12px; text-align: left; }
+          th { background: linear-gradient(#004d80, #0066aa);
+               color: white; font-weight: bold; text-transform: uppercase; }
+          tr:nth-child(even) { background-color: #f9f9f9; }
+          tr:hover { background-color: #eef7ff; }
+
+          /* Totals Box */
+          #totals { margin-top: 12px; padding: 10px; font-size: 14px;
+                    border: 1px solid #ccc; border-radius: 6px;
+                    background: #fafafa; font-weight: 600; }
+          #totals span { margin-right: 15px; }
+          .amt { color: #680268; }
+          .wgt { color: #037e71; }
+          .rec { color: #8f3f02; }
+          .tds { color: blue; }
+          .bal { color: green; font-weight: bold; }
         </style>
       </head>
       <body>
-        ${miplTable.outerHTML}
+        <span style="color:rgb(246, 156, 156);font-size:130%;font-family:Magneto;">eS |</span> 
+        <span style="color:#a0d0f0;font-size:130%;font-family:Magneto;">MTally</span>
+        <h4>Multitech Infracon Pvt. Ltd.</h4>
+
+        <!-- Totals Summary -->
+        <div id="totals">
+           <span class="amt">Invoice Amt: Rs. ${totalInvoice.toFixed()}</span> |
+           <span class="wgt">Weight: ${totalWeight.toFixed()} Kg</span> |
+           <span class="rec">Receipt: Rs. ${totalBank.toFixed()}</span> |
+           <span class="tds">TDS: Rs. ${totalTds.toFixed()}</span> |
+           <span class="bal">Balance: Rs. ${balance.toFixed()}</span>
+        </div>
+
+        <!-- Ledger Table -->
+        ${content}
       </body>
     </html>
   `);
+
   printWindow.document.close();
   printWindow.focus();
   printWindow.print();
-  printWindow.close();
-});
+}
+
+
 
 // ---------------- Init ----------------
 document.addEventListener("DOMContentLoaded", () => {
-  // --- Auto set dateFilter to today's date ---
   const dateInput = document.getElementById("dateFilter");
   const today = new Date();
   dateInput.value = today.toISOString().slice(0, 10);
@@ -8997,9 +9098,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
+<!-- DAYBOOK SECTION TABLE SCRIPT STOP---------------------------------------- -->
 
-
-<!-- DAYBOOK SECTION TABLE SCRIPT HARE STOP---------------------------------------- -->
 
 
 
@@ -9132,22 +9232,45 @@ function attachInvoiceClickEvents() {
         cell.style.textDecoration = "none";
       });
   }
+
+
 }
 
-// -------------------- Search Invoice Function --------------------
-function searchInvoice() {
-  const invoiceNo = prompt("Enter Invoice Number to search:");
-  if (!invoiceNo) return;
+// -------------------- Search bar Function --------------------
+document.getElementById("DATASEARCMIPL").addEventListener("input", searchDataMIPL);
 
-  const filtered = allTableData.filter((row, index) => 
-    index === 0 || (row[4] && row[4].toString().toLowerCase() === invoiceNo.toLowerCase())
-  );
-
-  if (filtered.length > 1) {
-    renderDATAMIPLTABLE(filtered);
+function searchDataMIPL() {
+  const query = document.getElementById("DATASEARCMIPL").value.trim().toLowerCase();
+  if (!query) {
+    renderDATAMIPLTABLE(allTableData); // reset table
     attachInvoiceClickEvents();
-  } else {
-    alert("Invoice not found!");
+    return;
+  }
+
+  // Filtered rows where at least one cell matches
+  const filtered = allTableData.filter((row, rowIndex) => {
+    if (rowIndex === 0) return true; // always keep header
+    return row.some(cell => cell && cell.toString().toLowerCase().includes(query));
+  });
+
+  // Render filtered table
+  renderDATAMIPLTABLE(filtered);
+  attachInvoiceClickEvents();
+
+  // Highlight matched text in table
+  const table = document.getElementById("MIPLDATATABLE");
+  if (table) {
+    for (let i = 1; i < table.rows.length; i++) { // skip header
+      for (let j = 0; j < table.rows[i].cells.length; j++) {
+        const cell = table.rows[i].cells[j];
+        const text = cell.textContent;
+        if (text.toLowerCase().includes(query)) {
+          // highlight match in blue
+          const regex = new RegExp(`(${query})`, "gi");
+          cell.innerHTML = text.replace(regex, `<span style="background:yellow; font-weight:bold;">$1</span>`);
+        }
+      }
+    }
   }
 }
 
