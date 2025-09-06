@@ -1,19 +1,21 @@
-
 const api123Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheet123Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
 const range123 = "POREFF!A:R";
+const api103Url = "https://script.google.com/macros/s/AKfycbzBXPXYoX9xp2IqWYXvVYMPhgERM41XQ8CyhOBWtpnFQy2SZIkQqBPlHTfl9-Z3nn8rXg/exec"; 
+const apiPOUrl = "https://script.google.com/macros/s/AKfycbxqXzSs-JOBPEUWqrI0-SUVmtGzRJKBoR3srraxO_peECS7ELm-xxZqOUQisJjCwrPW4A/exec";
 
 const headerHTML = `
   <tr>
+    <th>PO Link</th>
     <th>Progress %</th>
-   <th>Status</th> <th>Ledger</th><th>PO/Reff No</th><th>PO Amount</th><th>Billing Amount</th><th>Balance</th>
-    <th>PO Weight</th><th>Billing Weight</th><th>Balance</th><th>PO Pdf.</th><th>User</th><th>Order By</th>
+    <th>JOB NO.</th><th>Ledger</th><th>PO/Reff No</th><th>PO Amount</th>
+    <th>Billing Amount</th><th>Balance</th><th>PO Weight</th><th>Billing Weight</th>
+    <th>Balance</th><th>Status</th><th>User</th><th>Order By</th>
   </tr>`;
 
-const visibleIndexes = [7,16, 6, 8, 12, 14, 9, 13, 15, 11, 1, 2];
+const visibleIndexes = [0,16, 6, 8, 12, 14, 9, 13, 15, 7, 1, 2];
 let fullTableData = [];
 
-// Fetch and sort Google Sheet data
 async function fetch123Data() {
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet123Id}/values/${range123}?key=${api123Key}`;
   const response = await fetch(url);
@@ -22,91 +24,103 @@ async function fetch123Data() {
 
   const header = rows[0];
   const dataRows = rows.slice(1);
-
- // Sort by column 16 (Billing Amount) dcending (sort by numeric number base)
-//   dataRows.sort((a, b) => (parseFloat(b[12]) || 0) - (parseFloat(a[12]) || 0));
-
-// Sort by column 16 (text, A–Z) sort by alphanumeric base
-dataRows.sort((a, b) => {
-  const textA = (a[16] || "").toString().toLowerCase();
-  const textB = (b[16] || "").toString().toLowerCase();
-  return textA.localeCompare(textB);
-});
-
-//
-
-
+  dataRows.sort((a, b) => (parseFloat(b[0]) || 0) - (parseFloat(a[0]) || 0));
   fullTableData = [header, ...dataRows];
 
   renderPOSUMMRYTable(fullTableData);
   setupSearch(fullTableData);
 }
-//****
 
 function renderPOSUMMRYTable(data) {
   const table = document.getElementById("dataTable");
   table.innerHTML = "";
-
-  // Add static header
   const thead = document.createElement("thead");
   thead.innerHTML = headerHTML;
   table.appendChild(thead);
-
   const tbody = document.createElement("tbody");
 
-  for (let i = 1; i < data.length; i++) {
-    if ((data[i][2] || "").toUpperCase() !== "LESHANT") continue;
+  // 🔴 Filter rows where column[2] === "LESHANT"
+  const filteredData = [data[0], ...data.slice(1).filter(row => (row[2] || "").toUpperCase() === "LESHANT")];
 
+  for (let i = 1; i < filteredData.length; i++) {
+    const dataRow = filteredData[i];
     const row = document.createElement("tr");
 
-    // Progress Calculation
-    const poAmount = parseFloat(data[i][8]) || 0;
-    const billingAmount = parseFloat(data[i][12]) || 0;
-    let progress = 0;
-    let label = "---";
+    // --- PO Link ---
+    const poNo = dataRow[6] || "";
+    const poCell = document.createElement("td");
 
+    if (poNo) {
+      poCell.textContent = "---";
+      fetch(apiPOUrl + "?invoice=" + encodeURIComponent(poNo))
+        .then(res => res.text())
+        .then(url => {
+          if (url && url !== "NOT_FOUND") {
+            poCell.textContent = "View PO";
+            poCell.style.color = "red";
+            poCell.style.textDecoration = "underline";
+            poCell.style.cursor = "pointer";
+            poCell.onclick = () => window.open(url, "_blank");
+          } else {
+            poCell.textContent = "---";
+            poCell.removeAttribute("style");
+            poCell.onclick = null;
+          }
+        })
+        .catch(() => {
+          poCell.textContent = "---";
+          poCell.removeAttribute("style");
+          poCell.onclick = null;
+        });
+    } else {
+      poCell.textContent = "---";
+    }
+    row.appendChild(poCell);
+
+    // --- Progress % ---
+    const poAmount = parseFloat(dataRow[8]) || 0;
+    const billingAmount = parseFloat(dataRow[12]) || 0;
+    let progress = 0, label = "---";
     if (poAmount !== 0) {
       progress = (billingAmount / poAmount) * 100;
       label = progress <= 100
         ? `${progress.toFixed()}% work complete`
         : `${(progress - 100).toFixed()}% work extra`;
     }
-
     const progressCell = document.createElement("td");
     progressCell.textContent = label;
-
     if (progress > 100) progressCell.classList.add("orange-bg");
     else if (progress >= 60) progressCell.classList.add("blue-bg");
     else if (progress >= 30) progressCell.classList.add("pink-bg");
     else progressCell.classList.add("green-bg");
-
     row.appendChild(progressCell);
 
+    // --- Visible Columns ---
     visibleIndexes.forEach(colIndex => {
       const td = document.createElement("td");
-      const cellValue = data[i][colIndex] || "";
-
-      if (colIndex === 16) {
-        td.style.cursor = "pointer";
-        td.style.color = "#2980b9";
-        td.style.fontSize = "16px";
-        td.style.textDecoration = "underline";
-        td.addEventListener("click", () => {
-          const jobNo = cellValue;
-          const ledgerName = data[i][16] || "---";
-          const ledgerAddress = data[i][17] || "---";
-          fetchReffNo(jobNo, ledgerName, ledgerAddress);
-        });
-      }
+      const cellValue = dataRow[colIndex] || "";
 
       if (colIndex === 6) {
         td.style.cursor = "pointer";
         td.style.color = "#2980b9";
-        td.style.fontSize = "16px";
+        td.style.fontSize = "16PX";
+        td.style.textDecoration = "underline";
+        td.addEventListener("click", () => {
+          const jobNo = cellValue;
+          const ledgerName = dataRow[16] || "---";
+          const ledgerAddress = dataRow[17] || "---";
+          fetchReffNo(jobNo, ledgerName, ledgerAddress);
+        });
+      }
+
+      if (colIndex === 16) {
+        td.style.cursor = "pointer";
+        td.style.color = "#d35400";
+        td.style.fontWeight = "bold";
         td.style.textDecoration = "underline";
         td.addEventListener("click", () => {
           const ledgerName = cellValue;
-          const ledgerAddress = data[i][17] || "---";
+          const ledgerAddress = dataRow[17] || "---";
           fetchLedgerByLedgerName(ledgerName, ledgerAddress);
         });
       }
@@ -123,16 +137,18 @@ function renderPOSUMMRYTable(data) {
         if (colIndex === 7) {
           td.style.fontWeight = "bold";
           td.style.fontSize = "13px";
-
-          if (cellValue === "CANCELED") td.style.color = "#dc7633";
-          else if (cellValue === "COMPLETED") td.style.color = "#48c9b0";
-          else if (cellValue === "RUNNING") td.style.color = "#808b96";
-          else if (cellValue === "PENDING") td.style.color = "#5dade2";
+          const colorMap = {
+            "CANCELED": "#dc7633",
+            "COMPLETED": "#48c9b0",
+            "RUNNING": "#808b96",
+            "PENDING": "#5dade2"
+          };
+          td.style.color = colorMap[cellValue] || "black";
         }
       }
 
-      const col5Val = parseFloat(data[i][14]) || 0;
-      const col8Val = parseFloat(data[i][15]) || 0;
+      const col5Val = parseFloat(dataRow[14]) || 0;
+      const col8Val = parseFloat(dataRow[15]) || 0;
       if (col5Val < 0 && colIndex === 14) td.classList.add("red-bg");
       if (col8Val < 0 && colIndex === 15) td.classList.add("red-bg");
 
@@ -144,18 +160,9 @@ function renderPOSUMMRYTable(data) {
 
   table.appendChild(tbody);
 
-  // ✅ Fixed line:
-  displayporeffResults(data); // 👈 Pass data instead of undefined 'entries'
-
-  // ✅ Filter only "LESHANT" data for summary
-const filteredForSummary = [data[0], ...data.slice(1).filter(r => (r[2] || "").toUpperCase() === "LESHANT")];
-displayporeffResults(filteredForSummary);
-
+  // ✅ Call summary function ONLY for filtered LESHANT data
+  displayporeffResults(filteredData);
 }
-
-
-
-
 
 
 function displayporeffResults(entries) {
@@ -167,9 +174,7 @@ function displayporeffResults(entries) {
     return;
   }
 
-  // Count statuses in column index 14 (visible index 14 = actual index 9 or 13?)
   let completed = 0, pending = 0, canceled = 0, running = 0;
-
   entries.slice(1).forEach(row => {
     const status = (row[7] || "").toLowerCase();
     if (status === "completed") completed++;
@@ -186,8 +191,6 @@ function displayporeffResults(entries) {
   `;
 }
 
-
-// Search functionality
 function setupSearch(data) {
   const searchInput = document.getElementById("search123Input");
   searchInput.addEventListener("input", () => {
@@ -200,17 +203,161 @@ function setupSearch(data) {
   });
 }
 
-// Modal handling
 function openModal(htmlContent) {
   document.getElementById("modalContent").innerHTML = htmlContent;
   document.getElementById("dataModal").style.display = "block";
   document.getElementById("overlay").style.display = "block";
 }
-
 function closeModal() {
   document.getElementById("dataModal").style.display = "none";
   document.getElementById("overlay").style.display = "none";
 }
+
+
+// ***************  INVOICE PDF OPEN BY CLICK TO INVOICE NO ****************
+
+function attachInvoiceClickREFF(tableId, invoiceColIndex = 3) {
+  const table = document.getElementById(tableId);
+  if (!table) return;
+
+  for (let i = 1; i < table.rows.length; i++) {
+    const row = table.rows[i];
+    const cell = row.cells[invoiceColIndex];
+    if (!cell) continue;
+
+    const invoiceNo = cell.textContent.trim();
+    if (!invoiceNo) continue;
+
+    const invoiceKey = invoiceNo.replace("/", "_");
+
+    fetch(api103Url + "?invoice=" + encodeURIComponent(invoiceKey))
+      .then(res => res.text())
+      .then(url => {
+        if (url && url !== "NOT_FOUND") {
+          cell.style.color = "blue";
+          cell.style.cursor = "pointer";
+          cell.style.textDecoration = "underline";
+          cell.onclick = () => window.open(url, "_blank");
+        }
+      });
+  }
+}
+
+
+// ***************  TABLE PO NO BY INVOICE TABLE MODEL 1 ****************
+async function fetchReffNo(jobNo, ledgerName = "---", ledgerAddress = "---") {
+  const range124 = "LEDGER!B:K";
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet123Id}/values/${range124}?key=${api123Key}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  const rows = data.values || [];
+  const headers = rows[0];
+  const matched = rows.slice(1).filter(r => r[4] === jobNo);
+
+  if (matched.length === 0) {
+    openModal("<p>No Match Found</p>");
+    return;
+  }
+
+  let totalG = 0, totalH = 0;
+  matched.forEach(row => {
+    totalG += parseFloat(row[5]) || 0;
+    totalH += parseFloat(row[6]) || 0;
+  });
+
+  let html = `
+   <p><strong>Ledger Name:</strong> ${ledgerName}<br>
+   <strong>Address:</strong> ${ledgerAddress}<br>
+   <span style="color: green; font-weight: bold;">Total Billing:</span> Rs. ${totalG.toFixed()} /
+   <span style="color: blue; font-weight: bold;">Total Weight:</span> ${totalH.toFixed()} Kg.</p>
+   <table id="modalLedgerTable" border="1"><tr>`;
+  headers.forEach(h => html += `<th>${h}</th>`);
+  html += `</tr>`;
+
+  matched.forEach(row => {
+    const isCredit = (row[0] || "").toLowerCase().includes("credit note");
+    const rowStyle = isCredit ? ` style="color: red;"` : "";
+    html += `<tr${rowStyle}>`;
+    headers.forEach((_, i) => {
+      const cell = row[i] || "";
+      if (typeof cell === "string" && (cell.startsWith("http") || cell.startsWith("www"))) {
+        const href = cell.startsWith("http") ? cell : "https://" + cell;
+        html += `<td><a href="${href}" target="_blank">&#128221;</a></td>`;
+      } else {
+        html += `<td>${cell}</td>`;
+      }
+    });
+    html += `</tr>`;
+  });
+
+  html += `</table>`;
+  openModal(html);
+  attachInvoiceClickREFF("modalLedgerTable", 3);
+}
+
+
+// ***************  LEDGER SERCH BY LEDGER MODAL 2 ****************
+async function fetchLedgerByLedgerName(ledgerName = "---", ledgerAddress = "---") {
+  const range124 = "LEDGER!B:K"; // Expanded to column L for full data
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet123Id}/values/${range124}?key=${api123Key}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  const rows = data.values || [];
+  const headers = rows[0];
+  const matched = rows.slice(1).filter(r => r[2] === ledgerName);
+
+  if (matched.length === 0) {
+    openModal("<p>No Match Found</p>");
+    return;
+  }
+
+  let totalG = 0, totalH = 0, totalD = 0;
+  matched.forEach(row => {
+    totalG += parseFloat(row[5]) || 0;
+    totalH += parseFloat(row[6]) || 0;
+    const type = (row[0] || "").toUpperCase();
+    if (type.includes("BANK") || type.includes("TDS")) {
+      totalD += parseFloat(row[3]) || 0;
+    }
+  });
+
+  let html = `
+   <p>
+    <strong>Ledger Name:</strong> ${ledgerName}<br>
+    <strong>Address:</strong> ${ledgerAddress}<br>
+    <span style="color: green; font-weight: bold;">Total Billing:</span> Rs. ${totalG.toFixed()} /
+    <span style="color: blue; font-weight: bold;">Total Weight:</span> ${totalH.toFixed()} Kg. /
+    <span style="color: red; font-weight: bold;">Receipt (BANK/TDS):</span> Rs. ${totalD.toFixed()}
+   </p>
+   <table id="modalLedgerTable" border="1"><tr>`;  // Added ID to table
+  headers.forEach(h => html += `<th>${h}</th>`);
+  html += `</tr>`;
+
+  matched.forEach(row => {
+    const type = (row[0] || "").toLowerCase();
+    const color = type.includes("bank") ? "red" : type.includes("credit") ? "blue" : "";
+    html += `<tr style="color: ${color};">`;
+    headers.forEach((_, i) => {
+      const cell = row[i] || "";
+      if (typeof cell === "string" && (cell.startsWith("http") || cell.startsWith("www"))) {
+        const href = cell.startsWith("http") ? cell : "https://" + cell;
+        html += `<td><a href="${href}" target="_blank">&#128221;</a></td>`;
+      } else {
+        html += `<td>${cell}</td>`;
+      }
+    });
+    html += `</tr>`;
+  });
+
+  html += `</table>`;
+  openModal(html);
+
+  // ✅ Attach click listener to invoice column (index 3) after rendering modal table
+  attachInvoiceClickREFF("modalLedgerTable", 3);
+}
+
+
+// ****************PRINT FUNCTION BOTH TABLE ************
 
 
 function printModal() {
@@ -277,166 +424,136 @@ tr:nth-child(even) {
 }
 
 
-// Show Ledger Modal
-// Show Ledger Modal
-async function fetchReffNo(jobNo, ledgerName = "---", ledgerAddress = "---") {
-  const range124 = "LEDGER!B:L";
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet123Id}/values/${range124}?key=${api123Key}`;
-  const res = await fetch(url);
-  const data = await res.json();
-  const rows = data.values || [];
-
-  const headers = rows[0];
-  const matched = rows.slice(1).filter(r => r[2] === jobNo); // Column D = Job No
-
-  if (matched.length === 0) {
-    openModal("<p>No Match Found</p>");
-    return;
-  }
-
-  // total coloums
- let totalG = 0;
-let totalH = 0;
-let totalD = 0;
-
-matched.forEach(row => {
-  totalG += parseFloat(row[5]) || 0; // Billing Amount
-  totalH += parseFloat(row[6]) || 0; // Billing Weight
-
-  const type = (row[0] || "").toUpperCase();
-  if (type.includes("BANK") || type.includes("TDS")) {
-    totalD += parseFloat(row[3]) || 0; // Column D = index 2 (A=0, B=1, C=2, D=3)
-  }
-});
-
-
-  let html = `
-    <p>
-      <strong>Ledger Name:</strong> ${ledgerName}<br>
-      <strong>Address:</strong> ${ledgerAddress}<br><br>
-
-      <span style="color: rgb(1, 107, 37); font-weight: bold; font-size: 18px;">Total Billing:</span> Rs. ${totalG.toFixed()} /
-      <span style="color: blue; font-weight: bold; font-size: 18px;">Total Weight:</span> ${totalH.toFixed()} Kg. /
-    
-<span style="color: red; font-weight: bold; font-size: 18px;">Receipt (BANK/TDS):</span> Rs. ${totalD.toFixed()}
-
-    </p>
-
-    <table border='1'><tr>`;
-
-  // Table Headers
-  headers.forEach(h => {
-    html += `<th>${h}</th>`;
-  });
-  html += `</tr>`;
-
-  // Table Rows
-  matched.forEach(row => {
-    const isCredit = (row[0] || "").toLowerCase().includes("credit note");
-    const isBank = (row[0] || "").toLowerCase().includes("bank");
-
-    // Apply row color: red (bank) overrides blue (credit)
-    let rowColor = "";
-    if (isBank) rowColor = "#e74c3c";
-    else if (isCredit) rowColor = "blue";
-
-    let rowStyle = rowColor ? ` style="color: ${rowColor};"` : "";
-    html += `<tr${rowStyle}>`;
-
-    headers.forEach((_, i) => {
-      const cell = row[i] || "";
-
-      // Detect links
-      if (typeof cell === "string" && (cell.startsWith("http") || cell.startsWith("www"))) {
-        const href = cell.startsWith("http") ? cell : "https://" + cell;
-        html += `<td><a href="${href}" target="_blank">&#128221;</a></td>`;
-      } else {
-        // Override first column in credit notes to ensure visibility
-        const overrideStyle = isCredit && i === 0 ? ` style="color: black;"` : "";
-        html += `<td${overrideStyle}>${cell}</td>`;
-      }
-    });
-
-    html += `</tr>`;
-  });
-
-  html += `</table>`;
-
-  // Show in modal
-  openModal(html);
-}
-
-//@@@@@@
-
-async function fetchLedgerByLedgerName(ledgerName = "---", ledgerAddress = "---") {
-  const range124 = "LEDGER!B:L";
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet123Id}/values/${range124}?key=${api123Key}`;
-  const res = await fetch(url);
-  const data = await res.json();
-  const rows = data.values || [];
-
-  const headers = rows[0];
-  const matched = rows.slice(1).filter(r => (r[4] || "").toUpperCase() === ledgerName.toUpperCase()); // Column F = Ledger
-
-  if (matched.length === 0) {
-    openModal("<p>No Match Found</p>");
-    return;
-  }
-
-  let totalG = 0;
-  let totalH = 0;
-  matched.forEach(row => {
-    totalG += parseFloat(row[5]) || 0; // Billing Amount
-    totalH += parseFloat(row[6]) || 0; // Billing Weight
-  });
-
-  let html = `
-    <p>
-      <strong>Ledger Name:</strong> ${ledgerName}<br>
-      <strong>Address:</strong> ${ledgerAddress}<br><br>
-
-      <span style="color: rgb(1, 107, 37); font-weight: bold; font-size: 18px;">Total Billing:</span> Rs. ${totalG.toFixed()} /
-      <span style="color: blue; font-weight: bold; font-size: 18px;">Total Weight:</span> ${totalH.toFixed()} Kg.
-    </p>
-
-    <table border='1'><tr>`;
-
-  headers.forEach(h => {
-    html += `<th>${h}</th>`;
-  });
-  html += `</tr>`;
-
-  matched.forEach(row => {
-    const isCredit = (row[0] || "").toLowerCase().includes("credit note");
-    const isBank = (row[0] || "").toLowerCase().includes("bank");
-
-    let rowColor = "";
-    if (isBank) rowColor = "red";
-    else if (isCredit) rowColor = "blue";
-
-    let rowStyle = rowColor ? ` style="color: ${rowColor};"` : "";
-    html += `<tr${rowStyle}>`;
-
-    headers.forEach((_, i) => {
-      const cell = row[i] || "";
-      if (typeof cell === "string" && (cell.startsWith("http") || cell.startsWith("www"))) {
-        const href = cell.startsWith("http") ? cell : "https://" + cell;
-        html += `<td><a href="${href}" target="_blank">&#128221;</a></td>`;
-      } else {
-        const overrideStyle = isCredit && i === 0 ? ` style="color: black;"` : "";
-        html += `<td${overrideStyle}>${cell}</td>`;
-      }
-    });
-
-    html += `</tr>`;
-  });
-
-  html += `</table>`;
-
-  openModal(html);
-}
-//@@@@@
-
-
-// Init load
 fetch123Data();
+</script>
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- loading summry poup box start  script start hare +++++++++++++++++++++++++++++++++++++++++++++-->
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>4x6 inch Popup</title>
+  <style>
+    :root{
+      --popup-bg:#ffffff;
+      --popup-text:#111827;
+      --popup-border:#e5e7eb;
+      --popup-shadow:0 12px 30px rgba(0,0,0,.15);
+      --popup-radius:14px;
+    }
+
+    .popup {
+      position: fixed;
+      left: 16px;
+      bottom: 60px;
+      width: 900px;   /* 6 inch */
+      height: 450px;  /* 4 inch */
+      background: var(--popup-bg);
+      color: var(--popup-text);
+      border: 1px solid var(--popup-border);
+      border-radius: var(--popup-radius);
+      box-shadow: var(--popup-shadow);
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(20px);
+      pointer-events: none;
+      transition: opacity .25s ease, transform .25s ease;
+      z-index: 9999;
+    }
+
+    .popup.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .popup__header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:10px 12px;
+      background: #d2d2d2;
+      border-bottom:1px solid var(--popup-border);
+    }
+    .popup__title{
+      margin:0;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .popup__close{
+      border:1px solid var(--popup-border);
+      background:#fff;
+      border-radius:10px;
+      width:30px;
+      height:30px;
+      cursor:pointer;
+      font-size:18px;
+    }
+    .popup__close:hover{ background:#f3f4f6; }
+
+    .popup__body{
+      padding:12px;
+      font-size:14px;
+      height: calc(100% - 52px); /* header ke niche bacha hua area */
+      overflow:auto; /* scroll agar zyada content ho */
+      background-color: #f8ebe0;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="bottomLeftPopup" class="popup">
+    <div class="popup__header">
+      <h3 class="popup__title">Loading Status</h3>
+      <button class="popup__close" id="popupCloseBtn">&times;</button>
+    </div>
+    <div class="popup__body">
+   
+     
+      
+     
+<table id="noticeBoard">  <thead ><tr> <th>Type</th><th>Date</th> <th>Name</th><th>Vehicle No.</th><th>Job No.</th> <th>Status</th> <th>Inv. No.</th></tr></thead><tbody></tbody></table>
+
+
+    </div>
+  </div>
+
+  <script>
+    const popup = document.getElementById('bottomLeftPopup');
+    const closeBtn = document.getElementById('popupCloseBtn');
+
+    window.addEventListener('load', ()=> popup.classList.add('show'));
+    closeBtn.addEventListener('click', ()=> popup.classList.remove('show'));
