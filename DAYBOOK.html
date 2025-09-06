@@ -173,11 +173,12 @@ th {
   </div>
 
 <script>
+
 const api123Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheet123Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
 const range123 = "POREFF!A:R";
 const api103Url = "https://script.google.com/macros/s/AKfycbzBXPXYoX9xp2IqWYXvVYMPhgERM41XQ8CyhOBWtpnFQy2SZIkQqBPlHTfl9-Z3nn8rXg/exec"; 
-const apiPOUrl = "https://script.google.com/macros/s/AKfycbxqXzSs-JOBPEUWqrI0-SUVmtGzRJKBoR3srraxO_peECS7ELm-xxZqOUQisJjCwrPW4A/exec"; // नया API
+const apiPOUrl = "https://script.google.com/macros/s/AKfycbxqXzSs-JOBPEUWqrI0-SUVmtGzRJKBoR3srraxO_peECS7ELm-xxZqOUQisJjCwrPW4A/exec";
 
 const headerHTML = `
   <tr>
@@ -191,7 +192,6 @@ const headerHTML = `
 const visibleIndexes = [0,16, 6, 8, 12, 14, 9, 13, 15, 7, 1, 2];
 let fullTableData = [];
 
-// -------------------- Fetch & Render Main Table --------------------
 async function fetch123Data() {
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet123Id}/values/${range123}?key=${api123Key}`;
   const response = await fetch(url);
@@ -200,10 +200,7 @@ async function fetch123Data() {
 
   const header = rows[0];
   const dataRows = rows.slice(1);
-
-  // Sorting
   dataRows.sort((a, b) => (parseFloat(b[0]) || 0) - (parseFloat(a[0]) || 0));
-
   fullTableData = [header, ...dataRows];
 
   renderPOSUMMRYTable(fullTableData);
@@ -213,27 +210,25 @@ async function fetch123Data() {
 function renderPOSUMMRYTable(data) {
   const table = document.getElementById("dataTable");
   table.innerHTML = "";
-
   const thead = document.createElement("thead");
   thead.innerHTML = headerHTML;
   table.appendChild(thead);
-
   const tbody = document.createElement("tbody");
 
-  for (let i = 1; i < data.length; i++) {
+  // 🔴 Filter rows where column[2] === "LESHANT"
+//  const filteredData = [data[0], ...data.slice(1).filter(row => (row[2] || "").toUpperCase() === "LESHANT")];
+
+  for (let i = 1; i < filteredData.length; i++) {
+    const dataRow = filteredData[i];
     const row = document.createElement("tr");
 
-    // --- नया कॉलम (PO Link) ---
-    const poNo = data[i][6] || "";
+    // --- PO Link ---
+    const poNo = dataRow[6] || "";
     const poCell = document.createElement("td");
 
     if (poNo) {
-      // पहले default "---" डाल देंगे
       poCell.textContent = "---";
-
-      // फिर API hit करेंगे
       fetch(apiPOUrl + "?invoice=" + encodeURIComponent(poNo))
-
         .then(res => res.text())
         .then(url => {
           if (url && url !== "NOT_FOUND") {
@@ -243,13 +238,13 @@ function renderPOSUMMRYTable(data) {
             poCell.style.cursor = "pointer";
             poCell.onclick = () => window.open(url, "_blank");
           } else {
-            poCell.textContent = "---"; // अगर match न मिले
+            poCell.textContent = "---";
             poCell.removeAttribute("style");
             poCell.onclick = null;
           }
         })
         .catch(() => {
-          poCell.textContent = "---"; // error में भी "---"
+          poCell.textContent = "---";
           poCell.removeAttribute("style");
           poCell.onclick = null;
         });
@@ -259,18 +254,15 @@ function renderPOSUMMRYTable(data) {
     row.appendChild(poCell);
 
     // --- Progress % ---
-    const poAmount = parseFloat(data[i][8]) || 0;
-    const billingAmount = parseFloat(data[i][12]) || 0;
-    let progress = 0;
-    let label = "---";
-
+    const poAmount = parseFloat(dataRow[8]) || 0;
+    const billingAmount = parseFloat(dataRow[12]) || 0;
+    let progress = 0, label = "---";
     if (poAmount !== 0) {
       progress = (billingAmount / poAmount) * 100;
       label = progress <= 100
         ? `${progress.toFixed()}% work complete`
         : `${(progress - 100).toFixed()}% work extra`;
     }
-
     const progressCell = document.createElement("td");
     progressCell.textContent = label;
     if (progress > 100) progressCell.classList.add("orange-bg");
@@ -279,12 +271,11 @@ function renderPOSUMMRYTable(data) {
     else progressCell.classList.add("green-bg");
     row.appendChild(progressCell);
 
-    // --- बाकी Columns ---
+    // --- Visible Columns ---
     visibleIndexes.forEach(colIndex => {
       const td = document.createElement("td");
-      const cellValue = data[i][colIndex] || "";
+      const cellValue = dataRow[colIndex] || "";
 
-      // PO No. click → fetchReffNo
       if (colIndex === 6) {
         td.style.cursor = "pointer";
         td.style.color = "#2980b9";
@@ -292,13 +283,24 @@ function renderPOSUMMRYTable(data) {
         td.style.textDecoration = "underline";
         td.addEventListener("click", () => {
           const jobNo = cellValue;
-          const ledgerName = data[i][16] || "---";
-          const ledgerAddress = data[i][17] || "---";
+          const ledgerName = dataRow[16] || "---";
+          const ledgerAddress = dataRow[17] || "---";
           fetchReffNo(jobNo, ledgerName, ledgerAddress);
         });
       }
 
-      // Link formatting
+      if (colIndex === 16) {
+        td.style.cursor = "pointer";
+        td.style.color = "#d35400";
+        td.style.fontWeight = "bold";
+        td.style.textDecoration = "underline";
+        td.addEventListener("click", () => {
+          const ledgerName = cellValue;
+          const ledgerAddress = dataRow[17] || "---";
+          fetchLedgerByLedgerName(ledgerName, ledgerAddress);
+        });
+      }
+
       if (typeof cellValue === 'string' && (cellValue.startsWith("http") || cellValue.startsWith("www"))) {
         const a = document.createElement("a");
         a.href = cellValue.startsWith("http") ? cellValue : "https://" + cellValue;
@@ -308,20 +310,21 @@ function renderPOSUMMRYTable(data) {
       } else {
         td.textContent = cellValue;
 
-        // Status formatting
         if (colIndex === 7) {
           td.style.fontWeight = "bold";
           td.style.fontSize = "13px";
-          if (cellValue === "CANCELED") td.style.color = "#dc7633";
-          else if (cellValue === "COMPLETED") td.style.color = "#48c9b0";
-          else if (cellValue === "RUNNING") td.style.color = "#808b96";
-          else if (cellValue === "PENDING") td.style.color = "#5dade2";
+          const colorMap = {
+            "CANCELED": "#dc7633",
+            "COMPLETED": "#48c9b0",
+            "RUNNING": "#808b96",
+            "PENDING": "#5dade2"
+          };
+          td.style.color = colorMap[cellValue] || "black";
         }
       }
 
-      // Red highlight for negative balance
-      const col5Val = parseFloat(data[i][14]) || 0;
-      const col8Val = parseFloat(data[i][15]) || 0;
+      const col5Val = parseFloat(dataRow[14]) || 0;
+      const col8Val = parseFloat(dataRow[15]) || 0;
       if (col5Val < 0 && colIndex === 14) td.classList.add("red-bg");
       if (col8Val < 0 && colIndex === 15) td.classList.add("red-bg");
 
@@ -332,10 +335,12 @@ function renderPOSUMMRYTable(data) {
   }
 
   table.appendChild(tbody);
-  displayporeffResults(data);
+
+  // ✅ Call summary function ONLY for filtered LESHANT data
+  displayporeffResults(filteredData);
 }
 
-// -------------------- Status Summary --------------------
+
 function displayporeffResults(entries) {
   const summaryDiv = document.getElementById("poSummaryBox");
   summaryDiv.innerHTML = "";
@@ -362,7 +367,6 @@ function displayporeffResults(entries) {
   `;
 }
 
-// -------------------- Search --------------------
 function setupSearch(data) {
   const searchInput = document.getElementById("search123Input");
   searchInput.addEventListener("input", () => {
@@ -375,7 +379,6 @@ function setupSearch(data) {
   });
 }
 
-// -------------------- Modal --------------------
 function openModal(htmlContent) {
   document.getElementById("modalContent").innerHTML = htmlContent;
   document.getElementById("dataModal").style.display = "block";
@@ -386,7 +389,9 @@ function closeModal() {
   document.getElementById("overlay").style.display = "none";
 }
 
-// -------------------- Invoice Click → PDF --------------------
+
+// ***************  INVOICE PDF OPEN BY CLICK TO INVOICE NO ****************
+
 function attachInvoiceClickREFF(tableId, invoiceColIndex = 3) {
   const table = document.getElementById(tableId);
   if (!table) return;
@@ -408,33 +413,20 @@ function attachInvoiceClickREFF(tableId, invoiceColIndex = 3) {
           cell.style.color = "blue";
           cell.style.cursor = "pointer";
           cell.style.textDecoration = "underline";
-          cell.onclick = null;
-          cell.addEventListener("click", () => {
-            window.open(url, "_blank");
-          });
-        } else {
-          cell.style.color = "black";
-          cell.style.cursor = "default";
-          cell.style.textDecoration = "none";
+          cell.onclick = () => window.open(url, "_blank");
         }
-      })
-      .catch(err => {
-        console.error("Invoice fetch error:", err);
-        cell.style.color = "black";
-        cell.style.cursor = "default";
-        cell.style.textDecoration = "none";
       });
   }
 }
 
-// -------------------- Fetch Ledger → Modal --------------------
+
+// ***************  TABLE PO NO BY INVOICE TABLE MODEL 1 ****************
 async function fetchReffNo(jobNo, ledgerName = "---", ledgerAddress = "---") {
   const range124 = "LEDGER!B:K";
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet123Id}/values/${range124}?key=${api123Key}`;
   const res = await fetch(url);
   const data = await res.json();
   const rows = data.values || [];
-
   const headers = rows[0];
   const matched = rows.slice(1).filter(r => r[4] === jobNo);
 
@@ -450,14 +442,11 @@ async function fetchReffNo(jobNo, ledgerName = "---", ledgerAddress = "---") {
   });
 
   let html = `
-   <p>
-    <strong>Ledger Name:</strong> ${ledgerName}<br>
-    <strong>Address:</strong> ${ledgerAddress}<br>
-    <span style="color: rgb(1, 107, 37); font-weight: bold; font-size: 18px;">Total Billng :-</span> Rs. ${totalG.toFixed()} /
-    <span style="color: blue; font-weight: bold; font-size: 18px;">Total Weight:-</span> ${totalH.toFixed()} Kg.
-   </p>
+   <p><strong>Ledger Name:</strong> ${ledgerName}<br>
+   <strong>Address:</strong> ${ledgerAddress}<br>
+   <span style="color: green; font-weight: bold;">Total Billing:</span> Rs. ${totalG.toFixed()} /
+   <span style="color: blue; font-weight: bold;">Total Weight:</span> ${totalH.toFixed()} Kg.</p>
    <table id="modalLedgerTable" border="1"><tr>`;
-
   headers.forEach(h => html += `<th>${h}</th>`);
   html += `</tr>`;
 
@@ -465,27 +454,86 @@ async function fetchReffNo(jobNo, ledgerName = "---", ledgerAddress = "---") {
     const isCredit = (row[0] || "").toLowerCase().includes("credit note");
     const rowStyle = isCredit ? ` style="color: red;"` : "";
     html += `<tr${rowStyle}>`;
-
     headers.forEach((_, i) => {
       const cell = row[i] || "";
       if (typeof cell === "string" && (cell.startsWith("http") || cell.startsWith("www"))) {
         const href = cell.startsWith("http") ? cell : "https://" + cell;
         html += `<td><a href="${href}" target="_blank">&#128221;</a></td>`;
       } else {
-        const overrideStyle = isCredit && i === 0 ? ` style="color: black;"` : "";
-        html += `<td${overrideStyle}>${cell}</td>`;
+        html += `<td>${cell}</td>`;
       }
     });
+    html += `</tr>`;
+  });
 
+  html += `</table>`;
+  openModal(html);
+  attachInvoiceClickREFF("modalLedgerTable", 3);
+}
+
+
+// ***************  LEDGER SERCH BY LEDGER MODAL 2 ****************
+async function fetchLedgerByLedgerName(ledgerName = "---", ledgerAddress = "---") {
+  const range124 = "LEDGER!B:K"; // Expanded to column L for full data
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet123Id}/values/${range124}?key=${api123Key}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  const rows = data.values || [];
+  const headers = rows[0];
+  const matched = rows.slice(1).filter(r => r[2] === ledgerName);
+
+  if (matched.length === 0) {
+    openModal("<p>No Match Found</p>");
+    return;
+  }
+
+  let totalG = 0, totalH = 0, totalD = 0;
+  matched.forEach(row => {
+    totalG += parseFloat(row[5]) || 0;
+    totalH += parseFloat(row[6]) || 0;
+    const type = (row[0] || "").toUpperCase();
+    if (type.includes("BANK") || type.includes("TDS")) {
+      totalD += parseFloat(row[3]) || 0;
+    }
+  });
+
+  let html = `
+   <p>
+    <strong>Ledger Name:</strong> ${ledgerName}<br>
+    <strong>Address:</strong> ${ledgerAddress}<br>
+    <span style="color: green; font-weight: bold;">Total Billing:</span> Rs. ${totalG.toFixed()} /
+    <span style="color: blue; font-weight: bold;">Total Weight:</span> ${totalH.toFixed()} Kg. /
+    <span style="color: red; font-weight: bold;">Receipt (BANK/TDS):</span> Rs. ${totalD.toFixed()}
+   </p>
+   <table id="modalLedgerTable" border="1"><tr>`;  // Added ID to table
+  headers.forEach(h => html += `<th>${h}</th>`);
+  html += `</tr>`;
+
+  matched.forEach(row => {
+    const type = (row[0] || "").toLowerCase();
+    const color = type.includes("bank") ? "red" : type.includes("credit") ? "blue" : "";
+    html += `<tr style="color: ${color};">`;
+    headers.forEach((_, i) => {
+      const cell = row[i] || "";
+      if (typeof cell === "string" && (cell.startsWith("http") || cell.startsWith("www"))) {
+        const href = cell.startsWith("http") ? cell : "https://" + cell;
+        html += `<td><a href="${href}" target="_blank">&#128221;</a></td>`;
+      } else {
+        html += `<td>${cell}</td>`;
+      }
+    });
     html += `</tr>`;
   });
 
   html += `</table>`;
   openModal(html);
 
+  // ✅ Attach click listener to invoice column (index 3) after rendering modal table
   attachInvoiceClickREFF("modalLedgerTable", 3);
 }
 
+
+// ****************PRINT FUNCTION BOTH TABLE ************
 
 
 function printModal() {
@@ -551,7 +599,7 @@ tr:nth-child(even) {
   printWindow.print();
 }
 
-// -------------------- Init --------------------
+
 fetch123Data();
 </script>
 
@@ -954,3 +1002,4 @@ loadNoticeBoard();
 <!-- loading summry  script stop hare -->
 
 <!-- loading summry  script stop hare -->
+
