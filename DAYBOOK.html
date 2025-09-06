@@ -210,16 +210,22 @@ async function fetch123Data() {
 function renderPOSUMMRYTable(data) {
   const table = document.getElementById("dataTable");
   table.innerHTML = "";
+
   const thead = document.createElement("thead");
   thead.innerHTML = headerHTML;
   table.appendChild(thead);
+
   const tbody = document.createElement("tbody");
+  const filteredData = []; // ✅ keep only rows that pass condition
 
-  // 🔴 Filter rows where column[2] === "LESHANT"
-//  const filteredData = [data[0], ...data.slice(1).filter(row => (row[2] || "").toUpperCase() === "LESHANT")];
+  for (let i = 1; i < data.length; i++) {
+    const dataRow = data[i]; // ✅ FIX: define dataRow for this row
 
-  for (let i = 1; i < filteredData.length; i++) {
-    const dataRow = filteredData[i];
+    // --- Filter rows (only LESHANT, remove this line to show all)
+//    if ((dataRow[2] || "").toUpperCase() !== "LESHANT") continue;
+
+    filteredData.push(dataRow);
+
     const row = document.createElement("tr");
 
     // --- PO Link ---
@@ -257,18 +263,22 @@ function renderPOSUMMRYTable(data) {
     const poAmount = parseFloat(dataRow[8]) || 0;
     const billingAmount = parseFloat(dataRow[12]) || 0;
     let progress = 0, label = "---";
+
     if (poAmount !== 0) {
       progress = (billingAmount / poAmount) * 100;
       label = progress <= 100
         ? `${progress.toFixed()}% work complete`
         : `${(progress - 100).toFixed()}% work extra`;
     }
+
     const progressCell = document.createElement("td");
     progressCell.textContent = label;
+
     if (progress > 100) progressCell.classList.add("orange-bg");
     else if (progress >= 60) progressCell.classList.add("blue-bg");
     else if (progress >= 30) progressCell.classList.add("pink-bg");
     else progressCell.classList.add("green-bg");
+
     row.appendChild(progressCell);
 
     // --- Visible Columns ---
@@ -279,7 +289,7 @@ function renderPOSUMMRYTable(data) {
       if (colIndex === 6) {
         td.style.cursor = "pointer";
         td.style.color = "#2980b9";
-        td.style.fontSize = "16PX";
+        td.style.fontSize = "16px";
         td.style.textDecoration = "underline";
         td.addEventListener("click", () => {
           const jobNo = cellValue;
@@ -301,7 +311,8 @@ function renderPOSUMMRYTable(data) {
         });
       }
 
-      if (typeof cellValue === 'string' && (cellValue.startsWith("http") || cellValue.startsWith("www"))) {
+      if (typeof cellValue === "string" &&
+          (cellValue.startsWith("http") || cellValue.startsWith("www"))) {
         const a = document.createElement("a");
         a.href = cellValue.startsWith("http") ? cellValue : "https://" + cellValue;
         a.innerHTML = "&#128221;";
@@ -336,9 +347,10 @@ function renderPOSUMMRYTable(data) {
 
   table.appendChild(tbody);
 
-  // ✅ Call summary function ONLY for filtered LESHANT data
+  // ✅ Now filteredData is available
   displayporeffResults(filteredData);
 }
+
 
 
 function displayporeffResults(entries) {
@@ -1002,4 +1014,5 @@ loadNoticeBoard();
 <!-- loading summry  script stop hare -->
 
 <!-- loading summry  script stop hare -->
+
 
