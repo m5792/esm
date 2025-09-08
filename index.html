@@ -8829,7 +8829,7 @@ loadNoticeBoard();
 
 <!-- DAYBOOK SECTION TABLE SCRIPT START---------------------------------------- -->
 <script>
-let val = []; // Original data store
+let val = [];
 
 // ---------------- Collect Data from MIPLDATATABLE ----------------
 function collectDataFromMainTable() {
@@ -8847,7 +8847,7 @@ function collectDataFromMainTable() {
   }
 
   if (val.length > 0) {
-    applyDateOnlyFilter(); // initial load
+    applyFilters(); // Apply both date + search filters
   }
 }
 
@@ -8860,13 +8860,12 @@ function renderMiplTable(data) {
   data.forEach((row, rowIndex) => {
     const tr = document.createElement("tr");
 
-    row.forEach((cell, colIndex) => {
+    row.forEach((cell) => {
       const td = document.createElement(rowIndex === 0 ? "th" : "td");
       td.textContent = cell.text;
       tr.appendChild(td);
     });
 
-    // Row color based on column 2
     if (rowIndex !== 0) {
       const type = row[1]?.text?.toUpperCase() || "";
       if (type === "BANK") tr.style.color = "red";
@@ -8877,6 +8876,8 @@ function renderMiplTable(data) {
 
     miplTable.appendChild(tr);
   });
+
+  highlightInvoiceCells();
 }
 
 // ---------------- Totals Calculation ----------------
@@ -8886,28 +8887,31 @@ function calculateTotals(data) {
   data.forEach((row, i) => {
     if (i === 0) return; // skip header
 
-    const invoiceAmt = parseFloat(row[6]?.text || 0);
-    const weight = parseFloat(row[7]?.text || 0);
-    const type = (row[1]?.text || "").toLowerCase();
-    const bank = parseFloat(row[4]?.text || 0);
-    const tds = parseFloat(row[4]?.text || 0);
+    const type = (row[1]?.text || "").toUpperCase(); // column 2
+    const invoiceAmt = parseFloat(row[6]?.text || 0); // column 7
+    const weight = parseFloat(row[7]?.text || 0);     // column 8
 
     if (!isNaN(invoiceAmt)) totalInvoice += invoiceAmt;
     if (!isNaN(weight)) totalWeight += weight;
-    if (type === "bank" && !isNaN(bank)) totalBank += bank;
-    if (type === "tds" && !isNaN(tds)) totalTds += tds;
+
+    if (type === "BANK") {
+      const bank = parseFloat(row[4]?.text || 0); // column 5
+      if (!isNaN(bank)) totalBank += bank;
+    }
+
+    if (type === "TDS") {
+      const tds = parseFloat(row[4]?.text || 0); // column 5
+      if (!isNaN(tds)) totalTds += tds;
+    }
   });
 
-  // ✅ अब balance calculate करो (totals के बाद)
   const balance = totalInvoice - totalBank - totalTds;
 
-  // ✅ Values को DOM में डालो
   document.getElementById("totalInvoice").textContent = totalInvoice.toFixed();
   document.getElementById("totalWeight").textContent = totalWeight.toFixed();
   document.getElementById("totalBankInvoice").textContent = totalBank.toFixed();
   document.getElementById("totalTdsInvoice").textContent = totalTds.toFixed();
- document.getElementById("balance").textContent = "Balance: Rs. " + balance.toFixed();
-
+  document.getElementById("balance").textContent = "Balance: Rs. " + balance.toFixed();
 }
 
 
@@ -8918,68 +8922,94 @@ function formatDate(inputDate) {
   return `${date.getDate()}-${months[date.getMonth()]}-${date.getFullYear()}`;
 }
 
-// ---------------- Date Only Filter ----------------
-function applyDateOnlyFilter() {
+// ---------------- Combined Filter ----------------
+function applyFilters() {
+  const searchInput = document.getElementById("searchBar");
   const dateInput = document.getElementById("dateFilter");
+
+  const searchText = searchInput.value.toLowerCase();
   const dateValue = dateInput.value;
   const formattedDate = dateValue ? formatDate(dateValue) : null;
 
-  const filtered = val.filter((row, index) => {
-    if (index === 0) return true;
-    const rowDate = row[2]?.text;
-    return !formattedDate || rowDate === formattedDate;
-  });
+  let filtered;
+
+  if (searchText) {
+    // ✅ Search over entire table (no date filter)
+    filtered = val.filter((row, index) => {
+      if (index === 0) return true;
+      const rowText = row.map(c => c.text.toLowerCase()).join(" ");
+      return rowText.includes(searchText);
+    });
+  } else {
+    // ✅ No search — apply only date filter
+    filtered = val.filter((row, index) => {
+      if (index === 0) return true;
+      const rowDate = row[2]?.text;
+      return !formattedDate || rowDate === formattedDate;
+    });
+  }
 
   renderMiplTable(filtered);
   calculateTotals(filtered);
 }
 
-// ---------------- Search + Date Filter ----------------
+// ---------------- Setup Filters ----------------
 function setupSearchFilter() {
   const searchInput = document.getElementById("searchBar");
   const dateInput = document.getElementById("dateFilter");
 
-  function applyFilters() {
-    const searchText = searchInput.value.toLowerCase();
-    if (searchText) {
-      const filtered = val.filter((row, index) => {
-        if (index === 0) return true;
-        const rowText = row.map(c => c.text.toLowerCase()).join(" ");
-        return rowText.includes(searchText);
-      });
-      renderMiplTable(filtered);
-      calculateTotals(filtered);
-    } else {
-      applyDateOnlyFilter();
-    }
-  }
-
   searchInput.addEventListener("input", applyFilters);
-  dateInput.addEventListener("change", applyDateOnlyFilter);
+  dateInput.addEventListener("change", applyFilters);
 }
 
-// ---------------- Invoice Click → PDF ----------------
+// ---------------- Highlight Invoices ----------------
+function highlightInvoiceCells() {
+  const table = document.getElementById("miplTable");
+  if (!table) return;
+
+  const rows = table.getElementsByTagName("tr");
+
+  for (let row of rows) {
+    const cells = row.cells;
+    if (!cells || cells.length < 5) continue;
+
+    const typeText = cells[1].innerText.trim().toUpperCase();
+    const invoiceCell = cells[4];
+    const invoiceNo = invoiceCell.innerText.trim();
+
+    if (typeText === "TAX INVOICE" && invoiceNo) {
+      invoiceCell.style.color = "#2B6AF3"; // COLOER CODE
+      invoiceCell.style.cursor = "pointer";
+      invoiceCell.title = "Click to open PDF";
+
+      invoiceCell.addEventListener("mouseover", () => {
+        invoiceCell.style.textDecoration = "underline";
+      });
+      invoiceCell.addEventListener("mouseout", () => {
+        invoiceCell.style.textDecoration = "none";
+      });
+    }
+  }
+}
+
+// ---------------- PDF on Invoice Click ----------------
 const apidaybookUrl = "https://script.google.com/macros/s/AKfycbzBXPXYoX9xp2IqWYXvVYMPhgERM41XQ8CyhOBWtpnFQy2SZIkQqBPlHTfl9-Z3nn8rXg/exec";
 
-// Event delegation: click only triggers fetch for clicked cell
 document.getElementById("miplTable").addEventListener("click", function(e) {
   const clickedCell = e.target;
   const row = clickedCell.parentElement;
   const cells = row.cells;
   if (!cells || cells.length < 5) return;
-  if (clickedCell.cellIndex !== 4) return; // only invoice column
+  if (clickedCell.cellIndex !== 4) return;
 
   const typeText = cells[1].innerText.trim().toUpperCase();
   const invoiceNo = clickedCell.innerText.trim();
   if (typeText !== "TAX INVOICE" || !invoiceNo) return;
 
-  // Styling
-  clickedCell.style.color = "blue";
-  clickedCell.style.cursor = "pointer";
+  clickedCell.style.color = "#0BCBAE"; // COLOER CODE
   clickedCell.style.textDecoration = "underline";
-  clickedCell.title = "Click to open PDF";
 
-  const invoiceKey = invoiceNo.replace("/", "_"); // match folder naming
+  const invoiceKey = invoiceNo.replace("/", "_");
   fetch(apidaybookUrl + "?invoice=" + encodeURIComponent(invoiceKey))
     .then(res => res.text())
     .then(url => {
@@ -8995,34 +9025,37 @@ document.getElementById("miplTable").addEventListener("click", function(e) {
     });
 });
 
-// ---------------- Print Current Mipl Table ----------------
-// ---------------- Print Current Mipl Table ----------------
+// ---------------- Print Table ----------------
 function printdaybook() {
   const table = document.getElementById("miplTable");
   if (!table) return;
 
-  // ---- Totals Calculate ----
   let totalInvoice = 0, totalWeight = 0, totalBank = 0, totalTds = 0;
 
-  for (let i = 1; i < table.rows.length; i++) { // skip header
+  for (let i = 1; i < table.rows.length; i++) { // Skip header row
     const row = table.rows[i];
-    const inv = parseFloat(row.cells[6]?.innerText.replace(/,/g, "")) || 0;
-    const wgt = parseFloat(row.cells[7]?.innerText.replace(/,/g, "")) || 0;
-    const rec = parseFloat(row.cells[8]?.innerText.replace(/,/g, "")) || 0;
-    const tds = parseFloat(row.cells[9]?.innerText.replace(/,/g, "")) || 0;
+
+    const type = row.cells[1]?.innerText.trim().toUpperCase(); // column 2
+    const inv = parseFloat(row.cells[6]?.innerText.replace(/,/g, "")) || 0; // column 7
+    const wgt = parseFloat(row.cells[7]?.innerText.replace(/,/g, "")) || 0; // column 8
 
     totalInvoice += inv;
     totalWeight += wgt;
-    totalBank += rec;
-    totalTds += tds;
+
+    if (type === "BANK") {
+      const bank = parseFloat(row.cells[4]?.innerText.replace(/,/g, "")) || 0;
+      totalBank += bank;
+    }
+
+    if (type === "TDS") {
+      const tds = parseFloat(row.cells[4]?.innerText.replace(/,/g, "")) || 0;
+      totalTds += tds;
+    }
   }
 
   const balance = totalInvoice - totalBank - totalTds;
-
-  // ---- Table HTML ----
   const content = table.outerHTML;
 
-  // ---- Open Print Window ----
   const printWindow = window.open('', '', 'height=800,width=1000');
   printWindow.document.write(`
     <html>
@@ -9031,8 +9064,6 @@ function printdaybook() {
         <style>
           body { font-family: Arial, sans-serif; margin: 20px; color:#333; }
           h4 { margin: 0; }
-          
-          /* Ledger Style */
           table { width: 100%; margin-top: 15px; border-collapse: collapse;
                   border-radius: 8px; overflow: hidden;
                   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -9044,7 +9075,6 @@ function printdaybook() {
           tr:nth-child(even) { background-color: #f9f9f9; }
           tr:hover { background-color: #eef7ff; }
 
-          /* Totals Box */
           #totals { margin-top: 12px; padding: 10px; font-size: 14px;
                     border: 1px solid #ccc; border-radius: 6px;
                     background: #fafafa; font-weight: 600; }
@@ -9061,7 +9091,6 @@ function printdaybook() {
         <span style="color:#a0d0f0;font-size:130%;font-family:Magneto;">MTally</span>
         <h4>Multitech Infracon Pvt. Ltd.</h4>
 
-        <!-- Totals Summary -->
         <div id="totals">
            <span class="amt">Invoice Amt: Rs. ${totalInvoice.toFixed()}</span> |
            <span class="wgt">Weight: ${totalWeight.toFixed()} Kg</span> |
@@ -9070,7 +9099,6 @@ function printdaybook() {
            <span class="bal">Balance: Rs. ${balance.toFixed()}</span>
         </div>
 
-        <!-- Ledger Table -->
         ${content}
       </body>
     </html>
@@ -9080,7 +9108,6 @@ function printdaybook() {
   printWindow.focus();
   printWindow.print();
 }
-
 
 
 // ---------------- Init ----------------
@@ -9097,6 +9124,7 @@ document.addEventListener("DOMContentLoaded", () => {
   observer.observe(targetNode, { childList: true, subtree: true });
 });
 </script>
+
 
 <!-- DAYBOOK SECTION TABLE SCRIPT STOP---------------------------------------- -->
 
