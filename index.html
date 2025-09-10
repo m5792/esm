@@ -3470,68 +3470,69 @@ function populateuserDropdown(dropdown, values) {
 
     
         function filteruserTable() {
-            const filter1 = document.getElementById('filterusrColumn1').value.toLowerCase();
-            const filter2 = document.getElementById('filteruserColumn2').value.toLowerCase();
-            const filter4 = $('#filteruserColumn4').val()?.toLowerCase();
-            const starusertDate = new Date(document.getElementById("starusertDate").value);
-            const enduserDate = new Date(document.getElementById("enduserDate").value);
-    
-            const rows = document.querySelectorAll('#myuserTable tr');
-            let visibleRows = 0;
-            let totaluserPayment = 0, totaluserReceipt = 0, totaluserBilldr = 0,totaluserBillcr = 0, totaluserSalary = 0;
+    const filter1 = document.getElementById('filterusrColumn1').value.toLowerCase();
+    const filter2 = document.getElementById('filteruserColumn2').value.toLowerCase();
+    const filter4 = $('#filteruserColumn4').val()?.toLowerCase();
 
-             
-    
-            rows.forEach((row, index) => {
-                if (index === 0) return; // Skip header row
-    
-                const cells = row.querySelectorAll('td');
-                const date = new Date(cells[3]?.textContent.trim());
-                const type = cells[2]?.textContent.trim().toUpperCase();
-                const amount = parseFloat(cells[5]?.textContent.trim()) || 0;
-    
-                // Date filter check
-                let dateMatches = true;
-                if (starusertDate && date < starusertDate) dateMatches = false;
-                if (enduserDate && date > enduserDate) dateMatches = false;
-    
-                // Filter checks
-                const matchesFilter1 = !filter1 || cells[1]?.textContent.toLowerCase() === filter1;
-                const matchesFilter2 = !filter2 || cells[2]?.textContent.toLowerCase() === filter2;
-                const matchesFilter4 = !filter4 || cells[4]?.textContent.toLowerCase() === filter4;
-    
-                if (matchesFilter1 && matchesFilter2 && matchesFilter4 && dateMatches) {
-                    row.classList.remove('hidden');
-                    visibleRows++;
-    
-                    // Update totals based on type
-                    if (type === "PAYMENT") {
-                        totaluserPayment += amount;
-                    } else if (type === "RECEIPT") {
-                        totaluserReceipt += amount;
-                    } else if (type === "BILLDR") {
-                        totaluserBilldr += amount;
-                    } else if (type === "SALARY") {
-                        totaluserSalary += amount;
-                    }
-                    else if (type === "BILLCR") {
-                        totaluserBillcr -= amount;
-                    }
-                } else {
-                    row.classList.add('hidden');
-                }
-            });
-    
-            displayNoResultsMessage(visibleRows);
-            updateuserTotals(totaluserPayment, totaluserReceipt, totaluserBilldr,totaluserBillcr, totaluserSalary);
+    const starusertDateInput = document.getElementById("starusertDate").value;
+    const enduserDateInput = document.getElementById("enduserDate").value;
 
-           
-           // running balance show after latest filter table 
-            // Filtering logic here...
-            calculateuserRunningBalance(); // Recalculate running balance after filtering
+    // ---- Convert input to pure date (ignore time) ----
+    const starusertDate = starusertDateInput ? new Date(starusertDateInput + "T00:00:00") : null;
+    const enduserDate = enduserDateInput ? new Date(enduserDateInput + "T23:59:59") : null;
 
+    const rows = document.querySelectorAll('#myuserTable tr');
+    let visibleRows = 0;
+    let totaluserPayment = 0, totaluserReceipt = 0, totaluserBilldr = 0, totaluserBillcr = 0, totaluserSalary = 0;
 
+    rows.forEach((row, index) => {
+        if (index === 0) return; // Skip header row
+
+        const cells = row.querySelectorAll('td');
+        const rowDateStr = cells[3]?.textContent.trim();
+        const date = rowDateStr ? new Date(rowDateStr) : null;
+
+        const type = cells[2]?.textContent.trim().toUpperCase();
+        const amount = parseFloat(cells[5]?.textContent.trim()) || 0;
+
+        // ---- Date filter check ----
+        let dateMatches = true;
+        if (starusertDate && date && date < starusertDate) dateMatches = false;
+        if (enduserDate && date && date > enduserDate) dateMatches = false;
+
+        // ---- Other filters ----
+        const matchesFilter1 = !filter1 || cells[1]?.textContent.toLowerCase() === filter1;
+        const matchesFilter2 = !filter2 || cells[2]?.textContent.toLowerCase() === filter2;
+        const matchesFilter4 = !filter4 || cells[4]?.textContent.toLowerCase() === filter4;
+
+        if (matchesFilter1 && matchesFilter2 && matchesFilter4 && dateMatches) {
+            row.classList.remove('hidden');
+            visibleRows++;
+
+            // ---- Totals update ----
+            if (type === "PAYMENT") {
+                totaluserPayment += amount;
+            } else if (type === "RECEIPT") {
+                totaluserReceipt += amount;
+            } else if (type === "BILLDR") {
+                totaluserBilldr += amount;
+            } else if (type === "SALARY") {
+                totaluserSalary += amount;
+            } else if (type === "BILLCR") {
+                totaluserBillcr -= amount;
+            }
+        } else {
+            row.classList.add('hidden');
         }
+    });
+
+    displayNoResultsMessage(visibleRows);
+    updateuserTotals(totaluserPayment, totaluserReceipt, totaluserBilldr, totaluserBillcr, totaluserSalary);
+
+    // Recalculate running balance after filtering
+    calculateuserRunningBalance();
+}
+
     
         function displayNoResultsMessage(visibleRows) {
             const noResultsMessage = document.getElementById('noResultsMessage');
@@ -4362,7 +4363,7 @@ tr:nth-child(even) {
         async function loadpebSheet() {
     const apiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM"; // Replace with your API key
     const sheetId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
-    const range = 'LEDGER!B:L';
+    const range = 'LEDGER!B:K';
 
     try {
         const response = await fetch(
@@ -4593,8 +4594,13 @@ function filterPEBTable() {
     const filter1 = document.getElementById('filterColumn1').value.toLowerCase();
     const filter2 = $('#filterColumn2').val()?.toLowerCase();
     const filter4 = $('#filterColumn4').val()?.toLowerCase();
-    const startDate = new Date(document.getElementById("startDate").value);
-    const endDate = new Date(document.getElementById("endDate").value);
+
+    const startDateInput = document.getElementById("startDate").value;
+    const endDateInput = document.getElementById("endDate").value;
+
+    // ---- Convert input to pure date (ignore time) ----
+    const startDate = startDateInput ? new Date(startDateInput + "T00:00:00") : null;
+    const endDate = endDateInput ? new Date(endDateInput + "T23:59:59") : null;
 
     const rows = document.querySelectorAll('#myPEBTable tr');
     let visibleRows = 0;
@@ -4604,16 +4610,20 @@ function filterPEBTable() {
         if (index === 0) return; // Skip header row
 
         const cells = row.querySelectorAll('td');
-        const date = new Date(cells[1]?.textContent.trim());
+        const rowDateStr = cells[1]?.textContent.trim();
+        const date = rowDateStr ? new Date(rowDateStr) : null;
+
         const type = cells[0]?.textContent.trim().toUpperCase();
         const amount = parseFloat(cells[5]?.textContent.trim()) || 0;
         const weight = parseFloat(cells[6]?.textContent.trim()) || 0;
         const receipt = parseFloat(cells[3]?.textContent.trim()) || 0;
 
+        // ---- Date filter check (inclusive) ----
         let dateMatches = true;
-        if (startDate && date < startDate) dateMatches = false;
-        if (endDate && date > endDate) dateMatches = false;
+        if (startDate && date && date < startDate) dateMatches = false;
+        if (endDate && date && date > endDate) dateMatches = false;
 
+        // ---- Other filters ----
         const matchesFilter1 = !filter1 || cells[0]?.textContent.toLowerCase() === filter1;
         const matchesFilter2 = !filter2 || cells[4]?.textContent.toLowerCase() === filter2;
         const matchesFilter4 = !filter4 || cells[2]?.textContent.toLowerCase() === filter4;
@@ -4643,8 +4653,8 @@ function filterPEBTable() {
 
     // Update dropdown4 dynamically based on filtered table
     updateDropdown4Options();
-    //
 }
+
 
     
         function displayNoResultsMessage(visibleRows) {
@@ -5543,65 +5553,70 @@ function populateIVDropdown(dropdown, values) {
 
 
         function filterIVTable() {
-            const filter1 = document.getElementById('filterIVColumn1').value.toLowerCase();
-            const filter2 = document.getElementById('filterIVColumn2').value.toLowerCase();
-            const filter4 = $('#filterIVColumn4').val()?.toLowerCase();
-            const starIVtDate = new Date(document.getElementById("starIVtDate").value);
-            const endIVDate = new Date(document.getElementById("endIVDate").value);
-    
-            const rows = document.querySelectorAll('#myIVTable tr');
-            let visibleRows = 0;
-            let totalIVPayment = 0, totalIVReceipt = 0, totalIVBill = 0, totalIVSalary = 0;
+    const filter1 = document.getElementById('filterIVColumn1').value.toLowerCase();
+    const filter2 = document.getElementById('filterIVColumn2').value.toLowerCase();
+    const filter4 = $('#filterIVColumn4').val()?.toLowerCase();
 
-             
-    
-            rows.forEach((row, index) => {
-                if (index === 0) return; // Skip header row
-    
-                const cells = row.querySelectorAll('td');
-                const date = new Date(cells[3]?.textContent.trim());
-                const type = cells[2]?.textContent.trim().toUpperCase();
-                const amount = parseFloat(cells[5]?.textContent.trim()) || 0;
-    
-                // Date filter check
-                let dateMatches = true;
-                if (starIVtDate && date < starIVtDate) dateMatches = false;
-                if (endIVDate && date > endIVDate) dateMatches = false;
-    
-                // Filter checks
-                const matchesFilter1 = !filter1 || cells[1]?.textContent.toLowerCase() === filter1;
-                const matchesFilter2 = !filter2 || cells[2]?.textContent.toLowerCase() === filter2;
-                const matchesFilter4 = !filter4 || cells[4]?.textContent.toLowerCase() === filter4;
-    
-                if (matchesFilter1 && matchesFilter2 && matchesFilter4 && dateMatches) {
-                    row.classList.remove('hidden');
-                    visibleRows++;
-    
-                    // Update totalsIV based on type
-                    if (type === "PAYMENT") {
-                        totalIVPayment += amount;
-                    } else if (type === "RECEIPT") {
-                        totalIVReceipt += amount;
-                    } else if (type === "BILL") {
-                        totalIVBill += amount;
-                    } else if (type === "SALARY") {
-                        totalIVSalary += amount;
-                    }
-                } else {
-                    row.classList.add('hidden');
-                }
-            });
-    
-            displayIVNoResultsMessage(visibleRows);
-            updateIVTotals(totalIVPayment, totalIVReceipt, totalIVBill, totalIVSalary);
+    const starIVtDateInput = document.getElementById("starIVtDate").value;
+    const endIVDateInput = document.getElementById("endIVDate").value;
 
-           
-           // running balance show after latest filter table 
-            // Filtering logic here...
-            calculateIVRunningBalance(); // Recalculate running balance after filtering
+    // ---- Convert input to pure date (ignore time) ----
+    const starIVtDate = starIVtDateInput ? new Date(starIVtDateInput + "T00:00:00") : null;
+    const endIVDate = endIVDateInput ? new Date(endIVDateInput + "T23:59:59") : null;
 
+    const rows = document.querySelectorAll('#myIVTable tr');
+    let visibleRows = 0;
+    let totalIVPayment = 0, totalIVReceipt = 0, totalIVBill = 0, totalIVSalary = 0;
 
+    rows.forEach((row, index) => {
+        if (index === 0) return; // Skip header row
+
+        const cells = row.querySelectorAll('td');
+        const rowDateStr = cells[3]?.textContent.trim();
+        const date = rowDateStr ? new Date(rowDateStr) : null;
+
+        const type = cells[2]?.textContent.trim().toUpperCase();
+        const amount = parseFloat(cells[5]?.textContent.trim()) || 0;
+
+        // ---- Date filter check (inclusive) ----
+        let dateMatches = true;
+        if (date && !isNaN(date)) {
+            if (starIVtDate && date < starIVtDate) dateMatches = false;
+            if (endIVDate && date > endIVDate) dateMatches = false;
         }
+        // Agar date column blank/invalid hai → filter skip karega (row dikhegi)
+
+        // ---- Other filters ----
+        const matchesFilter1 = !filter1 || cells[1]?.textContent.toLowerCase() === filter1;
+        const matchesFilter2 = !filter2 || cells[2]?.textContent.toLowerCase() === filter2;
+        const matchesFilter4 = !filter4 || cells[4]?.textContent.toLowerCase() === filter4;
+
+        if (matchesFilter1 && matchesFilter2 && matchesFilter4 && dateMatches) {
+            row.classList.remove('hidden');
+            visibleRows++;
+
+            // ---- Totals update ----
+            if (type === "PAYMENT") {
+                totalIVPayment += amount;
+            } else if (type === "RECEIPT") {
+                totalIVReceipt += amount;
+            } else if (type === "BILL") {
+                totalIVBill += amount;
+            } else if (type === "SALARY") {
+                totalIVSalary += amount;
+            }
+        } else {
+            row.classList.add('hidden');
+        }
+    });
+
+    displayIVNoResultsMessage(visibleRows);
+    updateIVTotals(totalIVPayment, totalIVReceipt, totalIVBill, totalIVSalary);
+
+    // Recalculate running balance after filtering
+    calculateIVRunningBalance();
+}
+
     
         function displayIVNoResultsMessage(visibleRows) {
             const noResultsMessage = document.getElementById('noResultsMessage');
@@ -6949,32 +6964,36 @@ margin: 0;
                                   }
                               }
                           
-                              function filterSKHRByDate() {
-                                  const fromDate = document.getElementById("fromDate").value;
-                                  const toDate = document.getElementById("toDate").value;
-                          
-                                  if (!fromDate || !toDate) {
-                                      alert("Please select both From and To dates.");
-                                      return;
-                                  }
-                          
-                                  const from = new Date(fromDate);
-                                  const to = new Date(toDate);
-                          
-                                  const filtered = allShekherData.filter(item => {
-                                      const rowDateStr = item.row[2];
-                                      if (!rowDateStr) return false;
-                                      const rowDate = new Date(rowDateStr);
-                                      return rowDate >= from && rowDate <= to;
-                                  });
-                          
-                                  if (filtered.length === 0) {
-                                      document.getElementById("tableSKHRDiv").innerHTML = "<p>No records found for selected date range.</p>";
-                                  } else {
-                                      tableSKHRData = filtered; // Update tableSKHRData if needed elsewhere
-                                      renderFilteredSKHRTable(filtered);
-                                  }
-                              }
+                             function filterSKHRByDate() {
+    const fromDate = document.getElementById("fromDate").value;
+    const toDate = document.getElementById("toDate").value;
+
+    if (!fromDate || !toDate) {
+        alert("Please select both From and To dates.");
+        return;
+    }
+
+    // ---- Convert to inclusive range ----
+    const from = new Date(fromDate + "T00:00:00");
+    const to = new Date(toDate + "T23:59:59");
+
+    const filtered = allShekherData.filter(item => {
+        const rowDateStr = item.row[2];
+        if (!rowDateStr) return true; // agar date blank hai to row ko skip na kare (show kare)
+        const rowDate = new Date(rowDateStr);
+        if (isNaN(rowDate)) return true; // invalid date bhi show kare
+
+        return rowDate >= from && rowDate <= to;
+    });
+
+    if (filtered.length === 0) {
+        document.getElementById("tableSKHRDiv").innerHTML = "<p>No records found for selected date range.</p>";
+    } else {
+        tableSKHRData = filtered; // Update tableSKHRData if needed elsewhere
+        renderFilteredSKHRTable(filtered);
+    }
+}
+
                           
                               function renderFilteredSKHRTable(dataArray) {
   const tableSKHRDiv = document.getElementById("tableSKHRDiv");
@@ -9064,14 +9083,9 @@ function printdaybook() {
         <style>
           body { font-family: Arial, sans-serif; margin: 20px; color:#333; }
           h4 { margin: 0; }
-          table { width: 100%; margin-top: 15px; border-collapse: collapse;
-                  border-radius: 8px; overflow: hidden;
-                  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-                  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                  font-size: 13px; }
-          th, td { border: 1px solid #cfcfcf; padding: 8px 12px; text-align: left; }
-          th { background: linear-gradient(#004d80, #0066aa);
-               color: white; font-weight: bold; text-transform: uppercase; }
+          table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 12px; text-align: left; }
+            table th, table td { border: 1px solid #ddd; padding: 5px; }
+            table th { background-color: #f4f4f4; font-weight: bold; }
           tr:nth-child(even) { background-color: #f9f9f9; }
           tr:hover { background-color: #eef7ff; }
 
