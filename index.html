@@ -2018,7 +2018,9 @@ document.addEventListener("DOMContentLoaded", function () {
 <div style="height:30vh; overflow-y:auto; overflow-x:auto; border:1px solid #ccc; padding:8px;">
 
    <table id="myTable" style="background-color: rgb(245, 243, 243); color: blue;"> </table>  <!-- Address bar Table -->
-  <style>
+ 
+
+   <style>
   /* Table container */
   #MIPLDATATABLE {
     width: 100%;
@@ -2026,6 +2028,7 @@ document.addEventListener("DOMContentLoaded", function () {
     font-family: "Segoe UI", Tahoma, Arial, sans-serif;
     font-size: 14px;
     background: #ffffff;
+    color: black;
     box-shadow: 0px 2px 8px rgba(0,0,0,0.15);
     border-radius: 8px;
     overflow: hidden;
@@ -2038,7 +2041,6 @@ document.addEventListener("DOMContentLoaded", function () {
     border: 1px solid #dcdcdc;
     padding: 8px 10px;
     text-align: left;
-    white-space: nowrap;     /* wrap disable */
     overflow: hidden;
     text-overflow: ellipsis; /* show ... if text overflow */
     vertical-align: middle;
@@ -2047,7 +2049,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* Header design */
   #MIPLDATATABLE th {
-    background: linear-gradient(135deg, #007b83, #004d4f);
+    background: linear-gradient(135deg, #620101, #f03838);
     color: #fff;
     font-weight: 600;
     text-transform: uppercase;
@@ -2055,13 +2057,25 @@ document.addEventListener("DOMContentLoaded", function () {
     letter-spacing: 0.5px;
   }
 
+  /* Alternate row coloring */
+  #MIPLDATATABLE tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
   /* Row hover effect */
   #MIPLDATATABLE tr:hover td {
-    background: #f3b303;
+    background: #fce303;
     transition: background 0.2s ease-in-out;
   }
+
+  #MIPLDATATABLE tr:hover {
+    background-color: #f81404;
+    color: rgb(1, 20, 37);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
 </style>
-<table id="MIPLDATATABLE" border="1"></table>
+
+<table id="MIPLDATATABLE"></table>
 </div>
     
 
@@ -8858,7 +8872,8 @@ function collectDataFromMainTable() {
   val = [];
   for (let i = 0; i < mainTable.rows.length; i++) {
     const row = [];
-    for (let j = 0; j < mainTable.rows[i].cells.length; j++) {
+    const lastIndex = mainTable.rows[i].cells.length - 1; // last col skip
+    for (let j = 0; j < lastIndex; j++) {
       const cell = mainTable.rows[i].cells[j];
       row.push({ text: cell.innerText.trim() });
     }
@@ -8879,7 +8894,8 @@ function renderMiplTable(data) {
   data.forEach((row, rowIndex) => {
     const tr = document.createElement("tr");
 
-    row.forEach((cell) => {
+    // Skip last column (Action)
+    row.forEach((cell, colIndex) => {
       const td = document.createElement(rowIndex === 0 ? "th" : "td");
       td.textContent = cell.text;
       tr.appendChild(td);
@@ -8898,6 +8914,7 @@ function renderMiplTable(data) {
 
   highlightInvoiceCells();
 }
+
 
 // ---------------- Totals Calculation ----------------
 function calculateTotals(data) {
@@ -9012,7 +9029,8 @@ function highlightInvoiceCells() {
 }
 
 // ---------------- PDF on Invoice Click ----------------
-const apidaybookUrl = "https://script.google.com/macros/s/AKfycbzBXPXYoX9xp2IqWYXvVYMPhgERM41XQ8CyhOBWtpnFQy2SZIkQqBPlHTfl9-Z3nn8rXg/exec";
+const apidaybookUrl = "https://script.google.com/macros/s/AKfycbwRAHlS8JeIXSEbPVjUNVrXkpfVOmNc2z95OZsygdzebtk-sgLV-86eWyZ20jVHspYe/exec";
+//https://script.google.com/macros/s/AKfycbzBXPXYoX9xp2IqWYXvVYMPhgERM41XQ8CyhOBWtpnFQy2SZIkQqBPlHTfl9-Z3nn8rXg/exec
 
 document.getElementById("miplTable").addEventListener("click", function(e) {
   const clickedCell = e.target;
@@ -9140,6 +9158,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 
+
 <!-- DAYBOOK SECTION TABLE SCRIPT STOP---------------------------------------- -->
 
 
@@ -9163,12 +9182,11 @@ document.addEventListener("DOMContentLoaded", () => {
 </head>
 <body>
 
-
 <script>
 const api101Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheet101Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
 const range101 = 'LEDGER!A:K';
-const api101Url = "https://script.google.com/macros/s/AKfycbzBXPXYoX9xp2IqWYXvVYMPhgERM41XQ8CyhOBWtpnFQy2SZIkQqBPlHTfl9-Z3nn8rXg/exec";
+const api101Url = "https://script.google.com/macros/s/AKfycbwRAHlS8JeIXSEbPVjUNVrXkpfVOmNc2z95OZsygdzebtk-sgLV-86eWyZ20jVHspYe/exec";
 
 let allTableData = [];
 
@@ -9189,10 +9207,6 @@ async function loadDATAMIPLTABLE() {
 
     allTableData = data.values;
     renderDATAMIPLTABLE(allTableData);
-    attachInvoiceClickEvents();
-
-    // 🔥 अब data load हो चुका है → collectDataFromMainTable call करो
-    collectDataFromMainTable();
 
   } catch (err) {
     console.error(err);
@@ -9200,116 +9214,158 @@ async function loadDATAMIPLTABLE() {
   }
 }
 
-
-// -------------------- Render Table --------------------
-function renderDATAMIPLTABLE(data) {
+// -------------------- Render Table with Actions --------------------
+// -------------------- Render Table with Actions --------------------
+function renderDATAMIPLTABLE(dataArray) {
   const table = document.getElementById("MIPLDATATABLE");
   table.innerHTML = "";
 
-  data.forEach((row, rowIndex) => {
+  const thead = document.createElement("thead");
+  const tbody = document.createElement("tbody");
+
+  dataArray.forEach((row, rowIndex) => {
     const tr = document.createElement("tr");
 
-    row.forEach((cell, cellIndex) => {
-      const td = document.createElement(rowIndex === 0 ? "th" : "td");
-      td.textContent = cell;
-      tr.appendChild(td);
+    row.forEach(cell => {
+      if (rowIndex === 0) {
+        const th = document.createElement("th");
+        th.textContent = cell || "";
+        tr.appendChild(th);
+      } else {
+        const td = document.createElement("td");
+        td.textContent = cell || "";
+        tr.appendChild(td);
+      }
     });
 
-    // ---------- Row Color Based on Column 2 ----------
-    if (rowIndex !== 0) { // skip header
-      const type = row[1]?.toUpperCase(); // column index 1
-      if (type === "BANK") {
-        tr.style.color = "red"; 
-      } else if (type === "CHALLAN") {
+    // ---------------- Row color condition ----------------
+    if (rowIndex > 0) {
+      const typeCell = row[1]?.toUpperCase().trim();
+      if (typeCell === "BANK") {
+        tr.style.color = "red";
+      } else if (typeCell === "CREDIT NOTE") {
         tr.style.color = "grey";
-      } else if (type === "CREDIT NOTE") {
+      } else if (typeCell === "CHALLAN") {
         tr.style.color = "green";
-      } else {
-        tr.style.color = "black";
       }
     }
 
-    table.appendChild(tr);
+    // ---------------- Actions column ----------------
+    if (rowIndex === 0) {
+      const th = document.createElement("th");
+      th.textContent = "Actions";
+      tr.appendChild(th);
+      thead.appendChild(tr);
+    } else {
+      const actionTd = document.createElement("td");
+
+      const typeCell = row[1]?.toUpperCase().trim();
+      const invoiceNo = row[4]?.trim();
+
+      if (invoiceNo && typeCell === "TAX INVOICE") {
+        const invoiceKey = invoiceNo.replace("/", "_");
+        const packingKey = invoiceNo;
+
+        const container = document.createElement("div");
+        container.style.display = "flex";
+        container.style.gap = "12px";
+
+        // --- BILL button ---
+        const viewInvoiceBtn = document.createElement("button");
+        viewInvoiceBtn.textContent = "BILL";
+        viewInvoiceBtn.style.color = "white";
+        viewInvoiceBtn.style.background = "#1F39FF";
+        viewInvoiceBtn.style.border = "none";
+        viewInvoiceBtn.style.padding = "3px 8px";
+        viewInvoiceBtn.style.cursor = "pointer";
+        viewInvoiceBtn.style.borderRadius = "4px";
+
+        viewInvoiceBtn.addEventListener("click", () => {
+          fetch(api101Url + "?invoice=" + encodeURIComponent(invoiceKey))
+            .then(res => res.text())
+            .then(url => {
+              if (url !== "NOT_FOUND") {
+                window.open(url, "_blank");
+              } else {
+                alert("Invoice not found!");
+              }
+            })
+            .catch(err => {
+              console.error(err);
+              alert("Error fetching invoice");
+            });
+        });
+
+        // --- PL LIST button ---
+        const viewPackingBtn = document.createElement("button");
+        viewPackingBtn.textContent = "PL LIST";
+        viewPackingBtn.style.color = "white";
+        viewPackingBtn.style.background = "#28A745";
+        viewPackingBtn.style.border = "none";
+        viewPackingBtn.style.padding = "3px 8px";
+        viewPackingBtn.style.cursor = "pointer";
+        viewPackingBtn.style.borderRadius = "4px";
+
+        viewPackingBtn.addEventListener("click", () => {
+          fetch(api101Url + "?invoice=" + encodeURIComponent(packingKey))
+            .then(res => res.text())
+            .then(url => {
+              if (url !== "NOT_FOUND") {
+                window.open(url, "_blank");
+              } else {
+                alert("Packing list not found!");
+              }
+            })
+            .catch(err => {
+              console.error(err);
+              alert("Error fetching packing list");
+            });
+        });
+
+        container.appendChild(viewInvoiceBtn);
+        container.appendChild(viewPackingBtn);
+        actionTd.appendChild(container);
+      }
+
+      tr.appendChild(actionTd);
+      tbody.appendChild(tr);
+    }
   });
+
+  table.appendChild(thead);
+  table.appendChild(tbody);
 }
 
 
-
-// -------------------- Invoice Click → PDF Open --------------------
-function attachInvoiceClickEvents() {
-  const table = document.getElementById("MIPLDATATABLE");
-  if (!table) return;
-
-  for (let i = 1; i < table.rows.length; i++) { 
-    const row = table.rows[i];
-    const cell = row.cells[4]; // Invoice column index 4
-    if (!cell) continue;
-
-    const invoiceNo = cell.innerText.trim();
-    if (!invoiceNo) continue;
-
-    const invoiceKey = invoiceNo.replace("/", "_");
-
-    fetch(api101Url + "?invoice=" + encodeURIComponent(invoiceKey))
-      .then(res => res.text())
-      .then(url => {
-        if (url !== "NOT_FOUND") {
-          cell.style.color = "#1F39FF";
-          cell.style.cursor = "pointer";
-          cell.style.textDecoration = "underline";
-
-          cell.addEventListener("click", () => {
-            window.open(url, "_blank");
-          });
-        } else {
-          cell.style.color = "black";
-          cell.style.cursor = "default";
-          cell.style.textDecoration = "none";
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        cell.style.color = "black";
-        cell.style.cursor = "default";
-        cell.style.textDecoration = "none";
-      });
-  }
-
-
-}
 
 // -------------------- Search bar Function --------------------
-document.getElementById("DATASEARCMIPL").addEventListener("input", searchDataMIPL);
-
 function searchDataMIPL() {
   const query = document.getElementById("DATASEARCMIPL").value.trim().toLowerCase();
+
   if (!query) {
-    renderDATAMIPLTABLE(allTableData); // reset table
-    attachInvoiceClickEvents();
+    renderDATAMIPLTABLE(allTableData);
     return;
   }
 
-  // Filtered rows where at least one cell matches
   const filtered = allTableData.filter((row, rowIndex) => {
-    if (rowIndex === 0) return true; // always keep header
+    if (rowIndex === 0) return true; // header keep
     return row.some(cell => cell && cell.toString().toLowerCase().includes(query));
   });
 
-  // Render filtered table
   renderDATAMIPLTABLE(filtered);
-  attachInvoiceClickEvents();
 
-  // Highlight matched text in table
+  // Highlight matched text
   const table = document.getElementById("MIPLDATATABLE");
   if (table) {
-    for (let i = 1; i < table.rows.length; i++) { // skip header
-      for (let j = 0; j < table.rows[i].cells.length; j++) {
+    for (let i = 1; i < table.rows.length; i++) {
+      for (let j = 0; j < table.rows[i].cells.length - 1; j++) { // last column skip (Actions)
         const cell = table.rows[i].cells[j];
-        const text = cell.textContent;
-        if (text.toLowerCase().includes(query)) {
-          // highlight match in blue
+        const originalText = filtered[i]?.[j] || "";
+        if (originalText.toLowerCase().includes(query)) {
           const regex = new RegExp(`(${query})`, "gi");
-          cell.innerHTML = text.replace(regex, `<span style="background:yellow; font-weight:bold;">$1</span>`);
+          cell.innerHTML = originalText.replace(regex, `<span style="background:yellow; font-weight:bold;">$1</span>`);
+        } else {
+          cell.textContent = originalText;
         }
       }
     }
@@ -9317,7 +9373,13 @@ function searchDataMIPL() {
 }
 
 // -------------------- Init --------------------
-document.addEventListener("DOMContentLoaded", loadDATAMIPLTABLE);
+document.addEventListener("DOMContentLoaded", () => {
+  loadDATAMIPLTABLE();
+  const searchInput = document.getElementById("DATASEARCMIPL");
+  if (searchInput) {
+    searchInput.addEventListener("keyup", searchDataMIPL);
+  }
+});
 </script>
 
 
