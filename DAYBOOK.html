@@ -7,7 +7,9 @@
   <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
     <div id="poSummaryBox" style="color: white; padding-left: 10px;">Summary</div>
 
-    <button class="btnposummry">DAYBOOK</button>
+    <!-- Button to open modal -->
+<button onclick="openDaybookModal()">DAYBOOK</button>
+
 
 
     <div style="display: flex; align-items: center; gap: 8px; padding-right: 10px;">
@@ -48,7 +50,7 @@
  
  /* Table container */
 table{
-    width: 100%;
+     width: 100%;
   margin-top: 20px;
   border-collapse: collapse;
   border-radius: 8px;
@@ -171,8 +173,8 @@ th {
     <div id="modalContent"></div>
   </div>
 
-<script>
 
+<script>
 const api123Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheet123Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
 const range123 = "POREFF!A:R";
@@ -615,177 +617,9 @@ fetch123Data();
 </script>
 
 
+
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- Modal Overlay + Box -->
-
-
-<style>
-  /* Modal styles */
-  #daybookModal {
-    display: none;
-    position: fixed;
-    top: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgb(230, 231, 231);
-    padding: 20px;
-    z-index: 1000;
-    max-height: 75%;
-    overflow: auto;
-    width: 90%;
-    max-width: 1600px;
-    border: 10px solid #013355;
-    border-radius: 20px;
-  }
-
-  /* Make the internal content scrollable if too tall */
-  #daybookModal > div {
-    background: #f4fcfb;
-    padding: 20px;
-    border-radius: 10px;
-    overflow: auto;
-    height: 100%;
-    box-sizing: border-box;
-    position: relative;
-  }
-
-  /* Ensure daybookContainer fits within modal body */
-  #daybookContainer {
-    max-height: 1200px;
-    overflow: auto;
-    width: 100%;
-    box-sizing: border-box;
-  }
-</style>
-
-
-<div id="daybookModal">
-  <div>
-    <button class="btnposummry"  onclick="closeDaybookModal()">❌ Close</button>
-    <h3>📋 Daybook Summary</h3>
-    
-    <div>
-      <label>Search:</label>
-      <input type="text" id="search125Input" placeholder="🔍 Search..." />
-    </div>
-<br/>
-    <div id="daybookContainer">
-      <!-- Your dynamic content (table etc.) will go here -->
-    </div>
-  </div>
-</div>
-
-
-
-<script>
-const api125Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-const sheet125Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
-
-let originalBodyRows = []; // Global variable to store all rows
-
-// Function to fetch and render Daybook in popup
-async function fetchDaybook() {
-  const range = "LEDGER!A:L";
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet125Id}/values/${range}?key=${api125Key}`;
-  const res = await fetch(url);
-  const data = await res.json();
-  const rows = data.values || [];
-
-  if (rows.length <= 1) {
-    document.getElementById("daybookContainer").innerHTML = "<p>No data to display.</p>";
-    return;
-  }
-
-  const header = rows[0];
-  originalBodyRows = rows.slice(1)
-    .filter(r => r[2] !== undefined && r[2] !== "")
-    .sort((a, b) => {
-      const valA = a[0];
-      const valB = b[0];
-      const numA = parseFloat(valA);
-      const numB = parseFloat(valB);
-      if (!isNaN(numA) && !isNaN(numB)) return numB - numA;
-      const dateA = new Date(valA);
-      const dateB = new Date(valB);
-      if (!isNaN(dateA) && !isNaN(dateB)) return dateB - dateA;
-      return valB.localeCompare(valA);
-    });
-
-  renderDaybookTable(header, originalBodyRows);
-
-  // Show modal
-  document.getElementById("daybookModal").style.display = "block";
-}
-
-// Render function with search-filtered rows
-function renderDaybookTable(header, rows) {
-  let html = `<table style="width:100%; border-collapse:collapse; font-size:14px;">`;
-  html += `<thead><tr>${header.map(h => `<th style="border:1px solid #ccc; padding:6px; background:#004d80; color:white;">${h}</th>`).join("")}</tr></thead>`;
-
-  html += `<tbody>${rows.map(r => {
-    // 🟢 Set row text color based on column index 1 value
-    const type = (r[1] || "").toLowerCase();
-    let rowStyle = "";
-
-    if (type.includes("bank")) rowStyle = ' style="color:red;"';
-    else if (type.includes("credit note")) rowStyle = ' style="color:blue;"';
-    else if (type.includes("tds")) rowStyle = ' style="color:green;"';
-
-    return `<tr${rowStyle}>${r.map(cell => {
-      if (typeof cell === "string" && (cell.startsWith("http") || cell.startsWith("www"))) {
-        const href = cell.startsWith("http") ? cell : "https://" + cell;
-        return `<td style="border:1px solid #ddd; padding:6px;"><a href="${href}" target="_blank">&#128221;</a></td>`;
-      } else {
-        return `<td style="border:1px solid #ddd; padding:6px;">${cell || ""}</td>`;
-      }
-    }).join("")}</tr>`;
-  }).join("")}</tbody></table>`;
-
-  document.getElementById("daybookContainer").innerHTML = html;
-}
-
-
-// Search input event listener
-document.getElementById("search125Input").addEventListener("input", function () {
-  const searchTerm = this.value.toLowerCase();
-  const filteredRows = originalBodyRows.filter(row =>
-    row.some(cell => (cell || "").toLowerCase().includes(searchTerm))
-  );
-  const header = ["SNo", "Type", "Date", "Ledger", "VNo", "Reff", "Amount", "Weight", "Rate", "Narration", "Voucher", "PDF"]; // fallback header
-  renderDaybookTable(header, filteredRows);
-});
-
-// Close the Daybook popup
-function closeDaybookModal() {
-  document.getElementById("daybookModal").style.display = "none";
-}
-
-// Attach to button
-document.querySelector(".btnposummry").addEventListener("click", fetchDaybook);
-</script>
-
-
-
-
-
-
 
 
 
@@ -1016,3 +850,665 @@ loadNoticeBoard();
 
 
 
+
+
+
+
+
+
+
+
+
+
+<!-- ------------------  daybook, id password modal box and script sectio area -------------------------------------- -->
+
+<style>
+  :root {
+    --card-bg: #ffffff;
+    --border: #e5e7eb;
+  }
+  body {
+    font-family: system-ui, Arial, sans-serif;
+    margin: 0;
+    background:#f7f7f8;
+  }
+
+  /* Background overlay */
+  .modal-overlay {
+    display: none; /* hidden by default */
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.5);
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* modal box */
+  .modalvcr { 
+    width: min(1950px, 95%);
+    max-height: 95vh;
+    background: var(--card-bg); 
+    border-radius: 20px;
+    border:1px solid var(--border);
+    box-shadow: 0 12px 30px rgba(0,0,0,.25);
+    display:flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .modalvcr-header { 
+    display:flex; 
+    align-items:center; 
+    justify-content:space-between; 
+    padding:16px 18px; 
+    border-bottom:1px solid var(--border);
+    background-color: #caf7e9; 
+  }
+  .modalvcr-title { font-size: 1.05rem; font-weight:700; }
+
+  .modalvcr-body { 
+    display: grid; 
+    grid-template-rows: 15vh 54vh;
+    min-height: 70vh; 
+  }
+  .panelvcr { padding: 16px; overflow:auto; }
+  .panelvcr + .panelvcr { border-top:1px solid var(--border); }
+  .panelvcr h3 { margin: 4px 0 12px; font-size: 1rem; }
+
+  .modalvcr-footer { 
+    display:flex; justify-content:flex-start; 
+    padding:12px 16px; 
+    border-top:1px solid var(--border);
+    background-color: #cadff7; 
+  }
+
+  /* Inputs & table */
+  #inputArea, #DATASEARCMIPL {
+    padding:8px;
+    border-radius:6px;
+    border:1px solid #d1d5db;
+    margin:6px 0;
+    width: 4in;
+    background:#f1d4d4;
+  }
+  #m1000lTable, #MIPLDATATABLE {
+    width:100%; border-collapse: collapse; margin-top:8px;
+  }
+  #m1000lTable th, #m1000lTable td,
+  #MIPLDATATABLE th, #MIPLDATATABLE td {
+    border:1px solid #ccc; padding:6px; text-align:left;
+  }
+  #MIPLDATATABLE th {
+    background: linear-gradient(135deg, #620101, #f03838);
+    color:#fff;
+  }
+</style>
+
+
+<!-- Button to open modal -->
+
+
+
+<!-- Modal overlay -->
+<div id="daybookModal" class="modal-overlay">
+  <div class="modalvcr">   
+    <div class="modalvcr-header">
+      <div>
+        <div class="modalvcr-title">
+          <span class="CMNYNAME" style="color: rgb(0, 48, 46); font-weight: bold;">eS|MTally</span>
+        </div>
+        <div class="muted">ID/Password, Daybook Search</div>
+      </div>
+      <button onclick="closeDaybookModal()" style="background:none;border:none;font-size:20px;cursor:pointer;">❌</button>
+    </div>
+
+    <div class="modalvcr-body">
+      <!-- Upper panelvcr -->
+      <section class="panelvcr">
+        <h3>User:- Mukhtiyar Ahamad</h3>
+        <label style="font-size: 16px; font-weight: bold;">Select Option:</label>
+        <select onchange="showDiv(this.value)" style="width: 4in; height: 3vh;">
+          <option value="">Select an option</option>
+          <option value="1">ID | Password </option>
+          <option value="2">Daybook</option>
+        </select>
+      </section>
+
+      <!-- Lower panelvcr -->
+      <section class="panelvcr">
+    
+
+        <!-- Panel 1 -->
+        <div id="1" class="content">
+          <span style="font-size: 120%; font-weight: bold;">ID Password Search bar</span><br>
+          <input type="text" id="inputArea" placeholder="🔍 Search here..." />
+          <table id="m1000lTable"></table>
+        </div>
+
+        <!-- Panel 2 -->
+        <div id="2" class="content">
+          <span style="font-size: 120%; font-weight: bold;">Daybook Searchbar</span><br>
+          <input type="text" id="DATASEARCMIPL" placeholder="🔍 Search Ledger, Invoice..." />
+          <table id="MIPLDATATABLE"></table>
+        </div>
+
+      </section>
+    </div>
+
+    <div class="modalvcr-footer">
+      <small>Footer actions can go here</small>
+    </div>
+  </div>
+</div>
+
+
+<script>
+function openDaybookModal() {
+  document.getElementById("daybookModal").style.display = "flex";
+}
+function closeDaybookModal() {
+  document.getElementById("daybookModal").style.display = "none";
+}
+function showDiv(id){
+  document.querySelectorAll(".content").forEach(div => div.style.display="none");
+  if(id) document.getElementById(id).style.display="block";
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <!-- multi div selection script start -->
+       <style>
+        .content {
+            display: none;
+        }
+    </style>
+    <script>
+        function showDiv(selectedValue) {
+            // सभी div को छिपाना
+            const divs = document.querySelectorAll('.content');
+            divs.forEach(div => div.style.display = 'none');
+            
+            // चयनित div को दिखाना
+            const selectedDiv = document.getElementById(selectedValue);
+            if (selectedDiv) {
+                selectedDiv.style.display = 'block';
+            }
+        }
+    </script>
+ <!-- multi div selection script stop -->
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+  .highlight { background: yellow; font-weight: 600; }
+  .hidden { display: none; }
+  #noResultsMessage { color: red; display: none; margin-top: 8px; }
+</style>
+
+<script>
+/* --------- PASSWORD SEARCH MODULE (NO window.onload) --------- */
+
+let m1000Data = null;      // raw values array from sheet
+let m1000Loaded = false;   // flag so we fetch only once
+
+function escapeRegExp(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/* Fetch data from Google Sheet and render base table (no highlights) */
+async function M1000LoadData() {
+  const apiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+  const sheetId = "1EOO0QzwNaPhwIfZN_DCLlhQB9yeC-j-GpmtM_6JMRmw";
+  const range = 'PASSWORD!A:E';
+  try {
+    const resp = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`);
+    const data = await resp.json();
+    m1000Data = data.values || [];
+    renderM1000Table();
+    m1000Loaded = true;
+  } catch (err) {
+    console.error("M1000LoadData error:", err);
+  }
+}
+
+/* Render table rows from m1000Data; keep table hidden initially */
+function renderM1000Table() {
+  const table = document.getElementById('m1000lTable');
+  if (!table) return;
+  table.innerHTML = '';
+
+  if (!m1000Data || m1000Data.length === 0) {
+    // no data - show headerless empty table
+    table.style.display = 'none';
+    return;
+  }
+
+  m1000Data.forEach((row, index) => {
+    const tr = document.createElement('tr');
+
+    if (index === 0) {
+      // header row
+      row.forEach(cell => {
+        const th = document.createElement('th');
+        th.textContent = cell || '';
+        tr.appendChild(th);
+      });
+    } else {
+      // data rows
+      row.forEach((cell, cellIndex) => {
+        const td = document.createElement('td');
+
+        // detect url and make link
+        if (typeof cell === 'string' && (cell.startsWith('http') || cell.startsWith('www'))) {
+          const a = document.createElement('a');
+          a.href = cell.startsWith('http') ? cell : `http://${cell}`;
+          a.target = "_blank";
+          a.rel = "noopener";
+          a.innerHTML = "&#128221;"; // icon
+          td.appendChild(a);
+        } else {
+          td.textContent = cell ?? '';
+        }
+
+        // optional row class based on first column (apply to tr)
+        if (cellIndex === 0) {
+          const low = (String(cell || '')).toLowerCase();
+          if (low === "credit note") tr.classList.add('blue');
+          else if (low === "bank") tr.classList.add('red');
+        }
+
+        tr.appendChild(td);
+      });
+    }
+
+    table.appendChild(tr);
+  });
+
+  // hide table until a search returns results
+  table.style.display = 'none';
+
+  // ensure "no results" element exists (once)
+  ensureNoResultsMessage();
+}
+
+/* Ensure there's a single #noResultsMessage element next to table (create if missing) */
+function ensureNoResultsMessage() {
+  let msg = document.getElementById('noResultsMessage');
+  if (!msg) {
+    msg = document.createElement('p');
+    msg.id = 'noResultsMessage';
+    msg.style.color = 'red';
+    msg.style.display = 'none';
+    const table = document.getElementById('m1000lTable');
+    if (table && table.parentNode) {
+      table.parentNode.insertBefore(msg, table.nextSibling);
+    } else {
+      document.body.appendChild(msg);
+    }
+  }
+}
+
+/* Search function — uses rendered DOM rows; highlights matches */
+function serchProfile() {
+  const input = document.getElementById('inputArea');
+  if (!input) return;
+  const queryRaw = (input.value || '').trim();
+  const query = queryRaw.toLowerCase();
+
+  const table = document.getElementById('m1000lTable');
+  if (!table) return;
+
+  // if no query -> hide all data rows and hide table
+  if (!query) {
+    Array.from(table.querySelectorAll('tr')).forEach((row, i) => {
+      if (i === 0) return; // keep header in DOM but hidden
+      row.style.display = 'none';
+      // reset cell text (remove previous highlights)
+      row.querySelectorAll('td').forEach(td => td.innerHTML = td.textContent);
+    });
+    table.style.display = 'none';
+    showNoResults(false);
+    return;
+  }
+
+  // build safe regex
+  const safe = escapeRegExp(query);
+  const regex = new RegExp(`(${safe})`, 'gi');
+
+  let visible = 0;
+  const rows = Array.from(table.querySelectorAll('tr'));
+  rows.forEach((row, i) => {
+    if (i === 0) return; // header row not counted in visible
+    const tds = Array.from(row.querySelectorAll('td'));
+    const rowText = tds.map(td => td.textContent.toLowerCase()).join(' ');
+    if (rowText.includes(query)) {
+      // show + highlight
+      row.style.display = '';
+      visible++;
+      tds.forEach(td => {
+        // replace & escape properly: use original textContent to avoid nested tags
+        const raw = td.textContent;
+        td.innerHTML = raw.replace(regex, '<span class="highlight">$1</span>');
+      });
+    } else {
+      // hide and reset if previously highlighted
+      row.style.display = 'none';
+      tds.forEach(td => td.innerHTML = td.textContent); 
+    }
+  });
+
+  table.style.display = visible > 0 ? 'table' : 'none';
+  showNoResults(visible === 0);
+}
+
+/* Show / hide no-results message */
+function showNoResults(show) {
+  ensureNoResultsMessage();
+  const msg = document.getElementById('noResultsMessage');
+  if (!msg) return;
+  msg.style.display = show ? 'block' : 'none';
+  if (show) msg.textContent = 'No matching results found.';
+}
+
+/* Public initializer — call when you want the module ready.
+   We do not call this on window.onload to avoid conflicts.
+   Instead we wire this to your dropdown showDiv or modal open. */
+async function ensureM1000Initialized() {
+  if (!m1000Loaded) {
+    await M1000LoadData();
+    // attach input listener (safe to attach once)
+    const input = document.getElementById('inputArea');
+    if (input) {
+      input.removeEventListener('input', serchProfile); // prevent duplicates
+      input.addEventListener('input', serchProfile);
+    }
+  }
+}
+
+/* -------------- Replace your earlier showDiv with this (or update it) --------------
+    When dropdown selects '1', this will both show the div and initialize the M1000 data.
+*/
+function showDiv(selectedValue) {
+  const divs = document.querySelectorAll('.content');
+  divs.forEach(div => div.style.display = 'none');
+
+  if (!selectedValue) return;
+
+  const selectedDiv = document.getElementById(selectedValue);
+  if (!selectedDiv) return;
+
+  // show the div
+  selectedDiv.style.display = 'block';
+
+  // If it's the ID/Password panel, initialize (lazy load) the sheet & search
+  if (String(selectedValue) === '1') {
+    ensureM1000Initialized().catch(err => console.error(err));
+  }
+}
+
+/* ---- Notes for integration:
+   - Remove previous window.onload block and old M1000/serchProfile definitions to avoid duplicates.
+   - This code does not auto-run on page load. It runs when showDiv('1') is called (e.g. when user selects option 1).
+   - If you prefer to load data when modal opens, call ensureM1000Initialized() from your modal open handler.
+*/
+</script>
+
+ <!-- id/password serch bar script stop  -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+<!---------------------------- DATAMIPLTABLE SCRIPT START HARE ---------------------------------------- -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Invoice Table with PDF Open</title>
+
+</head>
+<body>
+
+<script>
+const api101Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheet101Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
+const range101 = 'LEDGER!A:K';
+const api101Url = "https://script.google.com/macros/s/AKfycbwRAHlS8JeIXSEbPVjUNVrXkpfVOmNc2z95OZsygdzebtk-sgLV-86eWyZ20jVHspYe/exec";
+
+let allTableData = [];
+
+// -------------------- Fetch Table --------------------
+async function loadDATAMIPLTABLE() {
+  const table = document.getElementById("MIPLDATATABLE");
+  table.innerHTML = "<tr><th>Loading...</th></tr>";
+
+  try {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet101Id}/values/${range101}?key=${api101Key}`;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (!data.values || data.values.length === 0) {
+      table.innerHTML = "<tr><td>No data found</td></tr>";
+      return;
+    }
+
+    allTableData = data.values;
+    renderDATAMIPLTABLE(allTableData);
+
+  } catch (err) {
+    console.error(err);
+    table.innerHTML = "<tr><td>Error loading data</td></tr>";
+  }
+}
+
+// -------------------- Render Table with Actions --------------------
+// -------------------- Render Table with Actions --------------------
+function renderDATAMIPLTABLE(dataArray) {
+  const table = document.getElementById("MIPLDATATABLE");
+  table.innerHTML = "";
+
+  const thead = document.createElement("thead");
+  const tbody = document.createElement("tbody");
+
+  dataArray.forEach((row, rowIndex) => {
+    const tr = document.createElement("tr");
+
+    row.forEach(cell => {
+      if (rowIndex === 0) {
+        const th = document.createElement("th");
+        th.textContent = cell || "";
+        tr.appendChild(th);
+      } else {
+        const td = document.createElement("td");
+        td.textContent = cell || "";
+        tr.appendChild(td);
+      }
+    });
+
+    // ---------------- Row color condition ----------------
+    if (rowIndex > 0) {
+      const typeCell = row[1]?.toUpperCase().trim();
+      if (typeCell === "BANK") {
+        tr.style.color = "red";
+      } else if (typeCell === "CREDIT NOTE") {
+        tr.style.color = "grey";
+      } else if (typeCell === "CHALLAN") {
+        tr.style.color = "green";
+      }
+    }
+
+    // ---------------- Actions column ----------------
+    if (rowIndex === 0) {
+      const th = document.createElement("th");
+      th.textContent = "Actions";
+      tr.appendChild(th);
+      thead.appendChild(tr);
+    } else {
+      const actionTd = document.createElement("td");
+
+      const typeCell = row[1]?.toUpperCase().trim();
+      const invoiceNo = row[4]?.trim();
+
+      if (invoiceNo && typeCell === "TAX INVOICE") {
+        const invoiceKey = invoiceNo.replace("/", "_");
+        const packingKey = invoiceNo;
+
+        const container = document.createElement("div");
+        container.style.display = "flex";
+        container.style.gap = "12px";
+
+        // --- BILL button ---
+        const viewInvoiceBtn = document.createElement("button");
+        viewInvoiceBtn.textContent = "BILL";
+        viewInvoiceBtn.style.color = "white";
+        viewInvoiceBtn.style.background = "#1F39FF";
+        viewInvoiceBtn.style.border = "none";
+        viewInvoiceBtn.style.padding = "3px 8px";
+        viewInvoiceBtn.style.cursor = "pointer";
+        viewInvoiceBtn.style.borderRadius = "4px";
+
+        viewInvoiceBtn.addEventListener("click", () => {
+          fetch(api101Url + "?invoice=" + encodeURIComponent(invoiceKey))
+            .then(res => res.text())
+            .then(url => {
+              if (url !== "NOT_FOUND") {
+                window.open(url, "_blank");
+              } else {
+                alert("Invoice not found!");
+              }
+            })
+            .catch(err => {
+              console.error(err);
+              alert("Error fetching invoice");
+            });
+        });
+
+        // --- PL LIST button ---
+        const viewPackingBtn = document.createElement("button");
+        viewPackingBtn.textContent = "PL LIST";
+        viewPackingBtn.style.color = "white";
+        viewPackingBtn.style.background = "#28A745";
+        viewPackingBtn.style.border = "none";
+        viewPackingBtn.style.padding = "3px 8px";
+        viewPackingBtn.style.cursor = "pointer";
+        viewPackingBtn.style.borderRadius = "4px";
+
+        viewPackingBtn.addEventListener("click", () => {
+          fetch(api101Url + "?invoice=" + encodeURIComponent(packingKey))
+            .then(res => res.text())
+            .then(url => {
+              if (url !== "NOT_FOUND") {
+                window.open(url, "_blank");
+              } else {
+                alert("Packing list not found!");
+              }
+            })
+            .catch(err => {
+              console.error(err);
+              alert("Error fetching packing list");
+            });
+        });
+
+        container.appendChild(viewInvoiceBtn);
+        container.appendChild(viewPackingBtn);
+        actionTd.appendChild(container);
+      }
+
+      tr.appendChild(actionTd);
+      tbody.appendChild(tr);
+    }
+  });
+
+  table.appendChild(thead);
+  table.appendChild(tbody);
+}
+
+
+
+// -------------------- Search bar Function --------------------
+function searchDataMIPL() {
+  const query = document.getElementById("DATASEARCMIPL").value.trim().toLowerCase();
+
+  if (!query) {
+    renderDATAMIPLTABLE(allTableData);
+    return;
+  }
+
+  const filtered = allTableData.filter((row, rowIndex) => {
+    if (rowIndex === 0) return true; // header keep
+    return row.some(cell => cell && cell.toString().toLowerCase().includes(query));
+  });
+
+  renderDATAMIPLTABLE(filtered);
+
+  // Highlight matched text
+  const table = document.getElementById("MIPLDATATABLE");
+  if (table) {
+    for (let i = 1; i < table.rows.length; i++) {
+      for (let j = 0; j < table.rows[i].cells.length - 1; j++) { // last column skip (Actions)
+        const cell = table.rows[i].cells[j];
+        const originalText = filtered[i]?.[j] || "";
+        if (originalText.toLowerCase().includes(query)) {
+          const regex = new RegExp(`(${query})`, "gi");
+          cell.innerHTML = originalText.replace(regex, `<span style="background:yellow; font-weight:bold;">$1</span>`);
+        } else {
+          cell.textContent = originalText;
+        }
+      }
+    }
+  }
+}
+
+// -------------------- Init --------------------
+document.addEventListener("DOMContentLoaded", () => {
+  loadDATAMIPLTABLE();
+  const searchInput = document.getElementById("DATASEARCMIPL");
+  if (searchInput) {
+    searchInput.addEventListener("keyup", searchDataMIPL);
+  }
+});
+</script>
+
+
+
+</body>
+</html>
+
+<!---------------------------- DATAMIPLTABLE SCRIPT START STOP ---------------------------------------- -->
+
+
+
+<!-- ------------------  daybook, id password modal box and script sectio area stop -------------------------------------- -->
