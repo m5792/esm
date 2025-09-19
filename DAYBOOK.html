@@ -99,6 +99,15 @@ th {
   }
 
  
+
+   input,select {
+    padding:8px;
+    border-radius:6px;
+    border:1px solid #d1d5db;
+    margin:6px 0;
+    width: 4in;
+    background:#f0f1d4;
+  }
         
     #search123Input {
       margin-bottom: 10px;
@@ -909,8 +918,8 @@ loadNoticeBoard();
 
   .modalvcr-body { 
     display: grid; 
-    grid-template-rows: 15vh 104vh;
-    min-height: 120vh; 
+    grid-template-rows: 15vh 84vh;
+    min-height: 100vh; 
   }
   .panelvcr { padding: 16px; overflow:auto; }
   .panelvcr + .panelvcr { border-top:1px solid var(--border); }
@@ -921,6 +930,7 @@ loadNoticeBoard();
     padding:12px 16px; 
     border-top:1px solid var(--border);
     background-color: #cadff7; 
+    height: 2vh;
   }
 
   /* Inputs & table */
@@ -968,11 +978,45 @@ loadNoticeBoard();
       <section class="panelvcr">
         <h3>User:- Mukhtiyar Ahamad</h3>
         <label style="font-size: 16px; font-weight: bold;">Select Option:</label>
-        <select onchange="showDiv(this.value)" style="width: 4in; height: 3vh;">
+        <select onchange="show123Div(this.value)" style="width: 4in; height: 3vh;">
           <option value="">Select an option</option>
           <option value="1">ID | Password </option>
           <option value="2">Daybook</option>
+           <option value="3">Cash Ledger</option>
         </select>
+
+
+    <br/>  <br/>
+    <!-- Panel 1a -->
+        <div id="1a" class="content">
+          <span style="font-size: 120%; font-weight: bold;">ID Password Search bar</span>
+          <input type="text" id="inputArea" placeholder="🔍 Search here..." />
+          </div>
+
+
+              <!-- Panel 3a -->
+        <div id="2a" class="content">
+<span style="font-size: 120%; font-weight: bold;">Daybook Searchbar</span>
+          <input type="text" id="DATASEARCMIPL" placeholder="🔍 Search Ledger, Invoice..." />
+          </div>
+                     <!-- Panel 3a -->
+        <div id="3a" class="content">
+ 
+         <label style="font-size: 20px; font-weight: bold;">Select User Name:</label>
+<select id="cu123" required style="width: 3in; font-size: 16px; text-align: center; background-color: #014060;color: white;">
+<option value="MA"> Mukhtiyar-MA </option>
+<option value="TA">Tushar (MD)-TA</option>
+<option value="BANK">Bank</option>
+</select>
+
+  <label style="color: #014060; font-weight: bold;font-size: 18px;">Search MA,TA,JLN,Bank Entry.</label>
+    <input type="text" id="searchCLedger" placeholder="🔍 Search in Table..." />
+
+
+<button onclick="printCUSERTable()" style="border: none; background-color: white; color: rgb(0, 27, 37); font-weight: bold; font-size: 14px; cursor: pointer;">🖨️ Print Table</button>
+  
+</div>
+
       </section>
 
       <!-- Lower panelvcr -->
@@ -980,27 +1024,22 @@ loadNoticeBoard();
     
 
         <!-- Panel 1 -->
-        <div id="1" class="content">
-          <span style="font-size: 120%; font-weight: bold;">ID Password Search bar</span><br>
-          <input type="text" id="inputArea" placeholder="🔍 Search here..." />
-          <table id="m1000lTable"></table>
-        </div>
-
+        <div id="1" class="content"><table id="m1000lTable"></table></div>
         <!-- Panel 2 -->
-        <div id="2" class="content">
-          <span style="font-size: 120%; font-weight: bold;">Daybook Searchbar</span><br>
-          <input type="text" id="DATASEARCMIPL" placeholder="🔍 Search Ledger, Invoice..." />
-          <table id="MIPLDATATABLE"></table>
-        </div>
+        <div id="2" class="content"><table id="MIPLDATATABLE"></table></div>
+        <!-- Panel 3 -->
+        <div id="3" class="content"><div id="tableContainer" style="background-color: #fef8f6;"></div></div>
 
-      </section>
+</section>
     </div>
 
     <div class="modalvcr-footer">
-      <small>Footer actions can go here</small>
-    </div>
-  </div>
-</div>
+
+ Near PNB Bank, KUndeshwari Kashipur U.S.Nagar
+   
+   
+  </div> 
+  </div> </div>
 
 
 <script>
@@ -1027,26 +1066,32 @@ function showDiv(id){
 
 
 
+<!-- multi div selection script start -->
+<style>
+    .content {
+        display: none;
+    }
+</style>
 
- <!-- multi div selection script start -->
-       <style>
-        .content {
-            display: none;
-        }
-    </style>
-    <script>
-        function showDiv(selectedValue) {
-            // सभी div को छिपाना
-            const divs = document.querySelectorAll('.content');
-            divs.forEach(div => div.style.display = 'none');
+<script>
+    function show123Div(selectedValue) {
+        // पहले सभी content div hide कर दो
+        const divs = document.querySelectorAll('.content');
+        divs.forEach(div => div.style.display = 'none');
+
+        if (selectedValue) {
+            // जिन divs का id selected value से शुरू होता है (जैसे "2", "2a", "2b" ...)
+            const relatedDivs = document.querySelectorAll(`.content[id^="${selectedValue}"]`);
             
-            // चयनित div को दिखाना
-            const selectedDiv = document.getElementById(selectedValue);
-            if (selectedDiv) {
-                selectedDiv.style.display = 'block';
-            }
+            relatedDivs.forEach(div => {
+                div.style.display = 'block';
+            });
         }
-    </script>
+    }
+</script>
+
+
+
  <!-- multi div selection script stop -->
 
 
@@ -1060,221 +1105,182 @@ function showDiv(id){
 
 
 
-<style>
-  .highlight { background: yellow; font-weight: 600; }
-  .hidden { display: none; }
-  #noResultsMessage { color: red; display: none; margin-top: 8px; }
-</style>
+ <!-- यह एक नोट है, M1000 - ID/PASWORD OTHER DETAILS Start Heare -->
 
-<script>
-/* --------- PASSWORD SEARCH MODULE (NO window.onload) --------- */
+ <!DOCTYPE html>
+ <html>
+ <head>
+     <title>ID | PASSWORD ESS</title>
+     <style>
+         body {
+             margin: 0;
+             font-family: Arial, sans-serif;
+         }
+         #searchDiv {
+             position: sticky;
+             top: 0;
+             background: #f8f9fa;
+             padding: 10px;
+             border-bottom: 2px solid #ccc;
+             z-index: 1000; /* Ensure it stays above the table */
+         }
+         
+         tr.hidden {
+             display: none;
+         }
+         #noResultsMessage {
+             text-align: center;
+             margin-top: 10px;
+         }
+ 
+        
+         /* यह एक नोट है, Highlight the search value colour in table */
+         .highlight {
+     background-color: rgb(21, 215, 241);
+     font-weight: bold;
+ }
+     </style>
+     <script>
+        async function M1000() {
+            const apiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+            const sheetId = "1EOO0QzwNaPhwIfZN_DCLlhQB9yeC-j-GpmtM_6JMRmw";
+            const range = 'PASSWORD!A:E';
 
-let m1000Data = null;      // raw values array from sheet
-let m1000Loaded = false;   // flag so we fetch only once
+            try {
+                const response = await fetch(
+                    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`
+                );
+                const data = await response.json();
 
-function escapeRegExp(str) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
+                if (data.values) {
+                    const table = document.getElementById('m1000lTable');
+                    table.innerHTML = ''; // Clear existing table content
 
-/* Fetch data from Google Sheet and render base table (no highlights) */
-async function M1000LoadData() {
-  const apiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-  const sheetId = "1EOO0QzwNaPhwIfZN_DCLlhQB9yeC-j-GpmtM_6JMRmw";
-  const range = 'PASSWORD!A:E';
-  try {
-    const resp = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`);
-    const data = await resp.json();
-    m1000Data = data.values || [];
-    renderM1000Table();
-    m1000Loaded = true;
-  } catch (err) {
-    console.error("M1000LoadData error:", err);
-  }
-}
+                    data.values.forEach((row, index) => {
+                        const tr = document.createElement('tr');
 
-/* Render table rows from m1000Data; keep table hidden initially */
-function renderM1000Table() {
-  const table = document.getElementById('m1000lTable');
-  if (!table) return;
-  table.innerHTML = '';
+                        if (index === 0) {
+                            // Header row
+                            row.forEach((cell) => {
+                                const th = document.createElement('th');
+                                th.textContent = cell;
+                                tr.appendChild(th);
+                            });
+                        } else {
+                            // Data rows
+                            row.forEach((cell, cellIndex) => {
+                                const td = document.createElement('td');
 
-  if (!m1000Data || m1000Data.length === 0) {
-    // no data - show headerless empty table
-    table.style.display = 'none';
-    return;
-  }
+                                // Check if the cell contains a URL and create a clickable link
+                                if (typeof cell === 'string' && (cell.startsWith('http') || cell.startsWith('www'))) {
+                                    const a = document.createElement('a');
+                                    a.href = cell.startsWith('http') ? cell : `http://${cell}`; // Add http:// if missing
+                                    a.innerHTML = "&#128221; Click to View PO"; // Use icon as link text
+                                    a.target = "_blank";
+                                    td.appendChild(a);
+                                } else {
+                                    td.textContent = cell;
+                                }
 
-  m1000Data.forEach((row, index) => {
-    const tr = document.createElement('tr');
+                                // Highlight row based on column value
+                                if (cellIndex === 0) {
+                                    if (cell.toLowerCase() === "credit note") {
+                                        tr.classList.add('blue');
+                                    } else if (cell.toLowerCase() === "bank") {
+                                        tr.classList.add('red');
+                                    }
+                                }
 
-    if (index === 0) {
-      // header row
-      row.forEach(cell => {
-        const th = document.createElement('th');
-        th.textContent = cell || '';
-        tr.appendChild(th);
-      });
-    } else {
-      // data rows
-      row.forEach((cell, cellIndex) => {
-        const td = document.createElement('td');
-
-        // detect url and make link
-        if (typeof cell === 'string' && (cell.startsWith('http') || cell.startsWith('www'))) {
-          const a = document.createElement('a');
-          a.href = cell.startsWith('http') ? cell : `http://${cell}`;
-          a.target = "_blank";
-          a.rel = "noopener";
-          a.innerHTML = "&#128221;"; // icon
-          td.appendChild(a);
-        } else {
-          td.textContent = cell ?? '';
+                                tr.appendChild(td);
+                            });
+                        }
+                        table.appendChild(tr);
+                    });
+                } else {
+                    console.error("No data found in the specified range.");
+                }
+            } catch (error) {
+                console.error("Error fetching data from Google Sheets:", error);
+            }
         }
 
-        // optional row class based on first column (apply to tr)
-        if (cellIndex === 0) {
-          const low = (String(cell || '')).toLowerCase();
-          if (low === "credit note") tr.classList.add('blue');
-          else if (low === "bank") tr.classList.add('red');
+        function serchProfile() {
+            const query = document.getElementById('inputArea').value.toLowerCase();
+            const table = document.getElementById('m1000lTable');
+            const rows = document.querySelectorAll('#m1000lTable tr');
+            let visibleRows = 0; // Track the number of visible rows
+
+            rows.forEach((row, index) => {
+                if (index === 0) return; // Skip header row
+
+                // Remove previous highlights
+                row.querySelectorAll('td').forEach(cell => {
+                    cell.innerHTML = cell.textContent; // Reset any highlights
+                });
+
+                if (query.trim() === '') {
+                    row.classList.add('hidden'); // Hide all rows if search bar is blank
+                } else {
+                    const cells = row.querySelectorAll('td');
+                    const rowText = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join(' ');
+
+                    if (rowText.includes(query)) {
+                        row.classList.remove('hidden');
+                        visibleRows++;
+
+                        // Highlight the search term within the row
+                        cells.forEach(cell => {
+                            const cellText = cell.textContent;
+                            const regex = new RegExp(`(${query})`, 'gi');
+                            const highlightedText = cellText.replace(regex, '<span class="highlight">$1</span>');
+                            cell.innerHTML = highlightedText; // Apply highlighting
+                        });
+                    } else {
+                        row.classList.add('hidden');
+                    }
+                }
+            });
+
+            // Show the table if there are visible rows
+            if (visibleRows > 0) {
+                table.style.display = 'table';
+            } else {
+                table.style.display = 'none';
+            }
+
+            // Display a message if no rows are visible
+            const noResultsMessage = document.getElementById('noResultsMessage');
+            if (!visibleRows && query.trim() !== '') {
+                if (!noResultsMessage) {
+                    const message = document.createElement('p');
+                    message.id = 'noResultsMessage';
+                    message.textContent = 'No matching results found.';
+                    document.body.appendChild(message);
+                }
+            } else if (noResultsMessage) {
+                noResultsMessage.remove();
+            }
         }
 
-        tr.appendChild(td);
-      });
-    }
+        window.onload = () => {
+            // Hide table initially
+           document.getElementById('m1000lTable').style.display = 'none';
 
-    table.appendChild(tr);
-  });
-
-  // hide table until a search returns results
-  table.style.display = 'none';
-
-  // ensure "no results" element exists (once)
-  ensureNoResultsMessage();
-}
-
-/* Ensure there's a single #noResultsMessage element next to table (create if missing) */
-function ensureNoResultsMessage() {
-  let msg = document.getElementById('noResultsMessage');
-  if (!msg) {
-    msg = document.createElement('p');
-    msg.id = 'noResultsMessage';
-    msg.style.color = 'red';
-    msg.style.display = 'none';
-    const table = document.getElementById('m1000lTable');
-    if (table && table.parentNode) {
-      table.parentNode.insertBefore(msg, table.nextSibling);
-    } else {
-      document.body.appendChild(msg);
-    }
-  }
-}
-
-/* Search function — uses rendered DOM rows; highlights matches */
-function serchProfile() {
-  const input = document.getElementById('inputArea');
-  if (!input) return;
-  const queryRaw = (input.value || '').trim();
-  const query = queryRaw.toLowerCase();
-
-  const table = document.getElementById('m1000lTable');
-  if (!table) return;
-
-  // if no query -> hide all data rows and hide table
-  if (!query) {
-    Array.from(table.querySelectorAll('tr')).forEach((row, i) => {
-      if (i === 0) return; // keep header in DOM but hidden
-      row.style.display = 'none';
-      // reset cell text (remove previous highlights)
-      row.querySelectorAll('td').forEach(td => td.innerHTML = td.textContent);
-    });
-    table.style.display = 'none';
-    showNoResults(false);
-    return;
-  }
-
-  // build safe regex
-  const safe = escapeRegExp(query);
-  const regex = new RegExp(`(${safe})`, 'gi');
-
-  let visible = 0;
-  const rows = Array.from(table.querySelectorAll('tr'));
-  rows.forEach((row, i) => {
-    if (i === 0) return; // header row not counted in visible
-    const tds = Array.from(row.querySelectorAll('td'));
-    const rowText = tds.map(td => td.textContent.toLowerCase()).join(' ');
-    if (rowText.includes(query)) {
-      // show + highlight
-      row.style.display = '';
-      visible++;
-      tds.forEach(td => {
-        // replace & escape properly: use original textContent to avoid nested tags
-        const raw = td.textContent;
-        td.innerHTML = raw.replace(regex, '<span class="highlight">$1</span>');
-      });
-    } else {
-      // hide and reset if previously highlighted
-      row.style.display = 'none';
-      tds.forEach(td => td.innerHTML = td.textContent); 
-    }
-  });
-
-  table.style.display = visible > 0 ? 'table' : 'none';
-  showNoResults(visible === 0);
-}
-
-/* Show / hide no-results message */
-function showNoResults(show) {
-  ensureNoResultsMessage();
-  const msg = document.getElementById('noResultsMessage');
-  if (!msg) return;
-  msg.style.display = show ? 'block' : 'none';
-  if (show) msg.textContent = 'No matching results found.';
-}
-
-/* Public initializer — call when you want the module ready.
-   We do not call this on window.onload to avoid conflicts.
-   Instead we wire this to your dropdown showDiv or modal open. */
-async function ensureM1000Initialized() {
-  if (!m1000Loaded) {
-    await M1000LoadData();
-    // attach input listener (safe to attach once)
-    const input = document.getElementById('inputArea');
-    if (input) {
-      input.removeEventListener('input', serchProfile); // prevent duplicates
-      input.addEventListener('input', serchProfile);
-    }
-  }
-}
-
-/* -------------- Replace your earlier showDiv with this (or update it) --------------
-    When dropdown selects '1', this will both show the div and initialize the M1000 data.
-*/
-function showDiv(selectedValue) {
-  const divs = document.querySelectorAll('.content');
-  divs.forEach(div => div.style.display = 'none');
-
-  if (!selectedValue) return;
-
-  const selectedDiv = document.getElementById(selectedValue);
-  if (!selectedDiv) return;
-
-  // show the div
-  selectedDiv.style.display = 'block';
-
-  // If it's the ID/Password panel, initialize (lazy load) the sheet & search
-  if (String(selectedValue) === '1') {
-    ensureM1000Initialized().catch(err => console.error(err));
-  }
-}
-
-/* ---- Notes for integration:
-   - Remove previous window.onload block and old M1000/serchProfile definitions to avoid duplicates.
-   - This code does not auto-run on page load. It runs when showDiv('1') is called (e.g. when user selects option 1).
-   - If you prefer to load data when modal opens, call ensureM1000Initialized() from your modal open handler.
-*/
-</script>
-
- <!-- id/password serch bar script stop  -->
+            // Load data and set up search
+              M1000();
+           document.getElementById('inputArea').addEventListener('input', serchProfile);
+           };
+    </script>
+ </head>
+ <body>
+     
+ 
+    <!-- यह एक नोट है, multitab ke contain 3 me hai serch aur table likhi hai -->
+     
+    
+ </body>
+ </html>
+ <!-- यह एक नोट है, M1000 - ID/PASWORD OTHER DETAILS Start Heare -->
 
 
 
@@ -1511,5 +1517,207 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+
+
+
+<script>
+  const apiCLKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+  const sheetCLId = "1ECwXrxs8_FDWw1qAC6_qxEwP_HE3SGMM4qNKVZHlIS0";
+  const rangeCL = "DATAINDEX!A:G";
+
+  let fullData = [];
+  let filteredByAccount = [];
+
+  async function fetchSheetData() {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetCLId}/values/${rangeCL}?key=${apiCLKey}`;
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      return data.values || [];
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      return [];
+    }
+  }
+
+  function processRawData(rows) {
+    return rows.slice(1).map(row => ({
+      date: row[0],
+      cUser: row[1],
+      type: row[1],
+      dt: row[3] || "-",
+      drcr: row[2],
+      ldgr: row[4],
+      amount: parseFloat(row[5]) || 0,
+      narration: row[6] || "-"
+    }));
+  }
+
+  function renderTable(data) {
+    const tableContainer = document.getElementById("tableContainer");
+    if (!data || data.length === 0) {
+      tableContainer.innerHTML = "<p>No matching records found.</p>";
+      return;
+    }
+
+    let balance = 0;
+    const reversed = [...data].reverse();
+    const rowsWithBalance = reversed.map(row => {
+      const type = row.drcr.toLowerCase();
+      const isNegative = type === "payment" || type === "billdr";
+      const signed = isNegative ? -row.amount : row.amount;
+      balance += signed;
+      return { ...row, signedAmount: signed, running: balance };
+    }).reverse();
+
+    const table = document.createElement("table");
+    table.innerHTML = `
+      <thead>
+        <tr>
+          <th>T.No.</th>
+          <th>User</th>
+          <th>Type</th>
+          <th>Date</th>
+          <th>Ledger</th>
+          <th>Narration</th>
+          <th>Amount (₹)</th>
+          <th>Balance (₹)</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rowsWithBalance.map(row => `
+          <tr style="${row.drcr.toLowerCase() === 'receipt' ? 'color: RED; background-color: rgb(248, 229, 229);' : ''}">
+            <td>${row.date}</td>
+            <td>${row.cUser}</td>
+            <td>${row.drcr}</td>
+            <td>${row.dt}</td>
+            <td>${row.ldgr}</td>
+            <td>${row.narration}</td>
+            <td class="${row.signedAmount < 0 ? 'negative' : 'positive'}">${row.signedAmount.toFixed()}</td>
+            <td>${row.running.toFixed()}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    `;
+    tableContainer.innerHTML = "";
+    tableContainer.appendChild(table);
+  }
+
+  function filterAndRender(accountType, ledgerFilter = "") {
+    filteredByAccount = fullData.filter(row => row.type === accountType);
+    let visible = filteredByAccount;
+
+    if (ledgerFilter.trim() !== "") {
+      visible = filteredByAccount.filter(row =>
+        row.ldgr.toLowerCase().includes(ledgerFilter.toLowerCase())
+      );
+    }
+
+    renderTable(visible);
+  }
+
+  function setupAccountSelect() {
+    const select = document.getElementById("cu123");
+    select.addEventListener("change", () => {
+      const selected = select.value;
+      document.getElementById("searchCLedger").value = ""; // Clear global search
+      filterAndRender(selected);
+    });
+  }
+
+  function setupGlobalSearch() {
+    const input = document.getElementById("searchCLedger");
+    input.addEventListener("input", () => {
+      const query = input.value.trim().toLowerCase();
+
+      if (query === "") {
+        const selected = document.getElementById("cu123").value;
+        filterAndRender(selected);
+        return;
+      }
+
+      const results = fullData.filter(row => {
+        return Object.values(row).some(val =>
+          String(val).toLowerCase().includes(query)
+        );
+      });
+
+      renderTable(results);
+    });
+  }
+
+  // print table
+  function printCUSERTable() {
+    const tableHTML = document.getElementById("tableContainer").innerHTML;
+    const style = `
+      <style>
+        body { font-family: Arial; padding: 20px; }
+        table {
+          width: 100%;
+          margin-top: 20px;
+          border-collapse: collapse;
+          border-radius: 8px;
+          overflow: hidden;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          font-size: 14px;
+        }
+        th, td {
+          border: 1px solid #e0e0e0;
+          padding: 10px 14px;
+          text-align: left;
+        }
+        th {
+          background-color: #004d80;
+          color: white;
+          font-weight: bold;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+        tr:nth-child(even) {
+          background-color: #f9f9f9;
+        }
+        .negative { color: black; }
+        .positive { color: red; }
+      </style>
+    `;
+    const win = window.open("", "_blank");
+    win.document.write(`
+      <html>
+        <head>
+          <title>Print Table</title>
+          ${style}
+        </head>
+        <body>
+          <h2>MIPL Cash Ledger</h2>
+          ${tableHTML}
+          <script>
+            window.onload = function() {
+              window.print();
+              window.onafterprint = function() { window.close(); };
+            };
+          <\/script>
+        </body>
+      </html>
+    `);
+    win.document.close();
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    const raw = await fetchSheetData();
+    fullData = processRawData(raw);
+
+    setupAccountSelect();
+    setupGlobalSearch();
+
+    const defaultValue = document.getElementById("cu123").value;
+    if (defaultValue) {
+      filterAndRender(defaultValue);
+    }
+  });
+</script>
+
+
 <!-- ------------------  daybook, id password modal box and script sectio area stop -------------------------------------- -->
+
 
