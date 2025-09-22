@@ -983,6 +983,7 @@ loadNoticeBoard();
           <option value="1">ID | Password </option>
           <option value="2">Daybook</option>
            <option value="3">Cash Ledger</option>
+           <option value="4"> UPCL Bill Calculator</option>
         </select>
 
 
@@ -994,7 +995,7 @@ loadNoticeBoard();
           </div>
 
 
-              <!-- Panel 3a -->
+              <!-- Panel 2a -->
         <div id="2a" class="content">
 <span style="font-size: 120%; font-weight: bold;">Daybook Searchbar</span>
           <input type="text" id="DATASEARCMIPL" placeholder="🔍 Search Ledger, Invoice..." />
@@ -1007,8 +1008,6 @@ loadNoticeBoard();
 <option value="MA"> Mukhtiyar-MA </option>
 <option value="TA">Tushar (MD)-TA</option>
 <option value="BANK">Bank</option>
-  <option value="JLN">Journal</option>
-  <option value="DLT">Delete</option>
 </select>
 
   <label style="color: #014060; font-weight: bold;font-size: 18px;">Search MA,TA,JLN,Bank Entry.</label>
@@ -1018,6 +1017,19 @@ loadNoticeBoard();
 <button onclick="printCUSERTable()" style="border: none; background-color: white; color: rgb(0, 27, 37); font-weight: bold; font-size: 14px; cursor: pointer;">🖨️ Print Table</button>
   
 </div>
+
+
+  <!-- Panel 4a -->
+        <div id="4a" class="content">
+
+  
+
+  <label>Enter Your  Units: </label>
+  <input type="number" id="units" placeholder="Enter units">
+  <button onclick="calculateBill()">Calculate</button>
+  <button onclick="resetDefaults()">Reset Defaults</button>
+
+          </div>
 
       </section>
 
@@ -1031,6 +1043,82 @@ loadNoticeBoard();
         <div id="2" class="content"><table id="MIPLDATATABLE"></table></div>
         <!-- Panel 3 -->
         <div id="3" class="content"><div id="tableContainer" style="background-color: #fef8f6;"></div></div>
+  <!-- Panel 4 -->
+        <div id="4" class="content">
+          
+ <span style="max-width:300px; text-align:center; margin:10px 0 20px; font-size:22px; line-height:1.5; color: rgb(7, 7, 7);">
+   Uttarakhand Power Corporation Ltd. Energy Charge Calculator
+    </span>
+<br/>
+   <span style="max-width:300px; text-align:center; margin:10px 0 20px; font-size:16px; line-height:1.5; color: rgb(13, 2, 173);">
+     *All Rate & Amt only educational and calculation purpose. 
+    </span>
+<br/><br/>
+           <!-- ===== VALUE KO EDITABLE BANANE KE LYE <td> "contenteditable="true" class="editable"" add kro ===== -->
+  <table>
+    <tr>
+      <th>Description</th>
+      <th>Units</th>
+      <th>Rate</th>
+      <th>Amount</th>
+    </tr>
+    <tr>
+      <td>S1 (0–98.63)</td>
+      <td id="s1u">0</td>
+      <td contenteditable="true" class="editable" id="r1">3.65</td>
+      <td id="s1c">0</td>
+    </tr>
+    <tr>
+      <td>S2 (98.63–197.26)</td>
+      <td id="s2u">0</td>
+      <td contenteditable="true" class="editable" id="r2">5.25</td>
+      <td id="s2c">0</td>
+    </tr>
+    <tr>
+      <td>S3 (197.26–394.52)</td>
+      <td id="s3u">0</td>
+      <td contenteditable="true" class="editable" id="r3">7.15</td>
+      <td id="s3c">0</td>
+    </tr>
+    <tr>
+      <td>S4 (Above 394.52)</td>
+      <td id="s4u">0</td>
+      <td contenteditable="true" class="editable" id="r4">7.8</td>
+      <td id="s4c">0</td>
+    </tr>
+    <tr class="total">
+      <td colspan="3">Total Energy Charge</td>
+      <td id="totalEnergy">0</td>
+    </tr>
+    <tr>
+      <td>Fixed Charge (₹/kW) × Load</td>
+      
+      <td contenteditable="true" class="editable" id="fixedLoad" style="background-color: rgb(248, 202, 202);">3</td>
+      <td  id="fixedRate">85</td>
+      <td id="fixedAmt">0</td>
+    </tr>
+    <tr>
+      <td>Electricity Duty (/kWh)</td>
+      <td id="dutyUnits">0</td>
+      <td  id="dutyRate">0.15</td>
+      <td id="dutyAmt">0</td>
+    </tr>
+    <tr>
+      <td>Fuel Adjustment (/kWh)</td>
+      <td id="fuelUnits">0</td>
+      <td  id="fuelRate">0.14</td>
+      <td id="fuelAmt">0</td>
+    </tr>
+    <tr class="total">
+      <td colspan="3">TOTAL BILL AMOUNT</td>
+      <td id="grandTotal">0</td>
+    </tr>
+  </table>
+
+   <p style="max-width:300px; text-align:center; margin:10px 0 20px; font-size:14px; line-height:1.5; color: red;">
+     *All Rate as per Uttarakhand Power Corporation ltd Monthly Bill August 2025 
+    </p>
+        </div>
 
 </section>
     </div>
@@ -1720,7 +1808,114 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 
-<!-- ------------------  daybook, id password modal box and script sectio area stop -------------------------------------- -->
 
+
+<!-- ------------------  upcl bill calculator start -------------------------------------- -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Energy Charge Calculator</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background:#f4f6f9; }
+    h2 { color:#333; }
+    table { border-collapse: collapse; width: 75%; background:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
+    th, td { border:1px solid #ccc; padding:8px; text-align:center; }
+    th { background:#007bff; color:#fff; }
+    input { padding:5px; width:100px; }
+    .total { font-weight:bold; background:#e6f7ff; }
+    .editable { background:#fff8dc; }
+  </style>
+</head>
+<body>
+
+<script>
+  // Default Values
+  const defaults = {
+    r1: 3.65,
+    r2: 5.25,
+    r3: 7.15,
+    r4: 7.80,
+    fixedRate: 85,
+    fixedLoad: 3,
+    dutyRate: 0.15,
+    fuelRate: 0.14
+  };
+
+  // Reset function
+  function resetDefaults() {
+    for (let key in defaults) {
+      document.getElementById(key).innerText = defaults[key];
+    }
+    document.getElementById("units").value = "";
+    document.querySelectorAll("td[id$='u'], td[id$='c'], #totalEnergy, #grandTotal, #fixedAmt, #dutyAmt, #fuelAmt, #dutyUnits, #fuelUnits")
+      .forEach(el => el.innerText = "0");
+    document.getElementById("fixedLoad").innerText = defaults.fixedLoad;
+  }
+
+  // Calculation
+  function calculateBill() {
+    let units = parseFloat(document.getElementById("units").value) || 0;
+
+    let rate1 = parseFloat(document.getElementById("r1").innerText) || defaults.r1;
+    let rate2 = parseFloat(document.getElementById("r2").innerText) || defaults.r2;
+    let rate3 = parseFloat(document.getElementById("r3").innerText) || defaults.r3;
+    let rate4 = parseFloat(document.getElementById("r4").innerText) || defaults.r4;
+
+    let fixedRate = parseFloat(document.getElementById("fixedRate").innerText) || defaults.fixedRate;
+    let fixedLoad = parseFloat(document.getElementById("fixedLoad").innerText) || defaults.fixedLoad;
+    let dutyRate = parseFloat(document.getElementById("dutyRate").innerText) || defaults.dutyRate;
+    let fuelRate = parseFloat(document.getElementById("fuelRate").innerText) || defaults.fuelRate;
+
+    // Slabs
+    let s1 = Math.min(units, 98.63);
+    let s2 = (units > 98.63) ? Math.min(units - 98.63, 98.63) : 0;
+    let s3 = (units > 197.26) ? Math.min(units - 197.26, 197.26) : 0;
+    let s4 = (units > 394.52) ? (units - 394.52) : 0;
+
+    let c1 = s1 * rate1;
+    let c2 = s2 * rate2;
+    let c3 = s3 * rate3;
+    let c4 = s4 * rate4;
+
+    let totalEnergy = c1 + c2 + c3 + c4;
+    let fixed = fixedRate * fixedLoad;
+    let duty = units * dutyRate;
+    let fuel = units * fuelRate;
+    let grandTotal = totalEnergy + fixed + duty + fuel;
+
+    // Update table
+    document.getElementById("s1u").innerText = s1.toFixed(2);
+    document.getElementById("s2u").innerText = s2.toFixed(2);
+    document.getElementById("s3u").innerText = s3.toFixed(2);
+    document.getElementById("s4u").innerText = s4.toFixed(2);
+
+    document.getElementById("s1c").innerText = c1.toFixed(2);
+    document.getElementById("s2c").innerText = c2.toFixed(2);
+    document.getElementById("s3c").innerText = c3.toFixed(2);
+    document.getElementById("s4c").innerText = c4.toFixed(2);
+
+    document.getElementById("totalEnergy").innerText = totalEnergy.toFixed(2);
+
+    document.getElementById("fixedAmt").innerText = fixed.toFixed(2);
+    document.getElementById("dutyUnits").innerText = units.toFixed(2);
+    document.getElementById("dutyAmt").innerText = duty.toFixed(2);
+    document.getElementById("fuelUnits").innerText = units.toFixed(2);
+    document.getElementById("fuelAmt").innerText = fuel.toFixed(2);
+
+    document.getElementById("grandTotal").innerText = grandTotal.toFixed(2);
+  }
+
+  // Use DOMContentLoaded instead of window.onload
+  document.addEventListener("DOMContentLoaded", resetDefaults);
+</script>
+
+
+</body>
+</html>
+<!-- ------------------  upcl bill calculator stop -------------------------------------- -->
+
+
+<!-- ------------------  daybook, id password modal box and script sectio area stop -------------------------------------- -->
 
 
