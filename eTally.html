@@ -61,7 +61,59 @@
         <a href="#" onclick="showContent('rcard')">Ration Card</a>
         <a href="#" onclick="showContent('inventory')">Ledger Report</a>
         <a href="#" onclick="showReports()">ID/Password Report*</span></a>
-       
+
+
+
+		            <!-- यह एक नोट है, Dropdown URL  Script Start Heare -->
+            <!DOCTYPE html>
+            <html>
+            <head>
+            
+                <script>
+                    // Function to handle dropdown selection
+                    function handleDropdownChange() {
+                        const dropdown = document.getElementById('linkDropdown');
+                        const selectedOption = dropdown.options[dropdown.selectedIndex];
+            
+                        if (selectedOption.value) {
+                            // Open the link in a new tab
+                            window.open(selectedOption.value, '_blank');
+                        }
+                    }
+                </script>
+                
+            </head>
+            <body>
+            
+                <style>
+                    #linkDropdown {
+                        width: 2in; /* 1 inch width */
+                        padding: 5px;
+                        border: 1px solid #ccc;
+                        border-radius: 4px;
+                        font-size: 14px;
+                        background-color: white;
+                        appearance: none; /* for custom styling on some browsers */
+                        -webkit-appearance: none;
+                        -moz-appearance: none;
+                    }
+                </style> 
+                <select id="linkDropdown" onchange="handleDropdownChange()">
+                    <option value="">--Google Sheet Links --</option>
+                    <option value="https://docs.google.com/spreadsheets/d/1C4EeSbCDaVGmJjU3QY2VNfI_IEZn0tZsqXw0ss3G58k/edit?gid=0#gid=0">	INDEX SHEET (eTally Sheet)</option>
+                    <option value="https://docs.google.com/spreadsheets/d/1LJhx9QCLjinK6lvgtK32G_GwKiao5ExcrQVVHIaR-g8/edit?gid=739494111#gid=739494111">	Tally eSS (old Sheet)</option>
+					 <option value="https://m5792.github.io/esm/">	MIPL Dashboard</option>
+					 <option value="https://m5792.github.io/esmTally/emstools.html">	eSMTally Tools</option>
+                    <option value="https://m5792.github.io/esm/DAYBOOK.html">	MIPL Daybook</option>
+					<option value="https://m5792.github.io/BSA/">BSA Dashboard</option>
+					 <option value="https://tathya.uidai.gov.in/access/login?role=resident"> Adhar Download, Updates</option>
+					<option value="https://checkpost.parivahan.gov.in/checkpost/faces/public/payment/TaxCollection.xhtml#"> Chekpost Tax</option>
+				
+                </select>
+            </body>
+            </html>
+            
+            <!-- यह एक नोट है, Dropdown URL  Script Stop Heare -->
 
         <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
         <span style="color:#fcfcff;font-size:130%;font-family:Magneto;">eS |</span> 
@@ -271,56 +323,7 @@
             
             
             
-            <!-- यह एक नोट है, Dropdown URL  Script Start Heare -->
-            <!DOCTYPE html>
-            <html>
-            <head>
-            
-                <script>
-                    // Function to handle dropdown selection
-                    function handleDropdownChange() {
-                        const dropdown = document.getElementById('linkDropdown');
-                        const selectedOption = dropdown.options[dropdown.selectedIndex];
-            
-                        if (selectedOption.value) {
-                            // Open the link in a new tab
-                            window.open(selectedOption.value, '_blank');
-                        }
-                    }
-                </script>
-                
-            </head>
-            <body>
-            
-                <style>
-                    #linkDropdown {
-                        width: 2in; /* 1 inch width */
-                        padding: 5px;
-                        border: 1px solid #ccc;
-                        border-radius: 4px;
-                        font-size: 14px;
-                        background-color: white;
-                        appearance: none; /* for custom styling on some browsers */
-                        -webkit-appearance: none;
-                        -moz-appearance: none;
-                    }
-                </style> 
-                <select id="linkDropdown" onchange="handleDropdownChange()">
-                    <option value="">--Google Sheet Links --</option>
-                    <option value="https://docs.google.com/spreadsheets/d/1C4EeSbCDaVGmJjU3QY2VNfI_IEZn0tZsqXw0ss3G58k/edit?gid=0#gid=0">	INDEX SHEET (eTally Sheet)</option>
-                    <option value="https://docs.google.com/spreadsheets/d/1LJhx9QCLjinK6lvgtK32G_GwKiao5ExcrQVVHIaR-g8/edit?gid=739494111#gid=739494111">	Tally eSS (old Sheet)</option>
-					 <option value="https://m5792.github.io/esm/">	MIPL DASHBOARD</option>
-					 <option value="https://m5792.github.io/esmTally/emstools.html">	eSMTally Tools</option>
-                    <option value="https://m5792.github.io/esm/DAYBOOK.html">	MIPL Daybook</option>
-					<option value="https://m5792.github.io/esm/DAYBOOK.html">	MIPL Daybook</option>
-					 <option value="https://tathya.uidai.gov.in/access/login?role=resident"> Adhar Download, Updates</option>
-					<option value="https://checkpost.parivahan.gov.in/checkpost/faces/public/payment/TaxCollection.xhtml#"> Chekpost Tax</option>
-					<option value="https://m5792.github.io/esm/DAYBOOK.html">	MIPL Daybook</option>
-                </select>
-            </body>
-            </html>
-            
-            <!-- यह एक नोट है, Dropdown URL  Script Stop Heare -->
+
 
 
 
@@ -2648,4 +2651,5 @@ input[type="submit"]:hover, button:hover {
 </script>
 <!-- RECEIPT form div script stop hare -->
 <!-- floating DROPDOWN OPTION-btn WITH FORM FORM form div script STOP hare -->
+
 
