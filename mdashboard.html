@@ -1147,7 +1147,7 @@ function renderDATAMIPLTABLE(dataArray, limitTo10 = false) {
 
   // Rows to show
   let rowsToShow = dataArray.slice(1);
-  if (limitTo10) rowsToShow = rowsToShow.slice(0, 10);
+  if (limitTo10) rowsToShow = rowsToShow.slice(0, 15);
 
   rowsToShow.forEach(row => {
     const tr = document.createElement("tr");
@@ -1416,3 +1416,4 @@ loadNoticeBoard();
     setInterval(displayCurrentDateTime, 1000);
 </script>
  <!-- Current date and time will be displayed Stop -->
+
