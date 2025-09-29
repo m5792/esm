@@ -1,4 +1,4 @@
-<body style="background-color: rgb(1, 87, 115);"></body>
+<body style="background-color: rgb(115, 1, 9);"></body>
 
 
 <!DOCTYPE html>
@@ -6,7 +6,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Modal 8x10 inch 20/80 Panels</title>
+  <title>Daybook MIPL</title>
   <style>
     :root {
       --card-bg: #ffffff;
@@ -33,6 +33,7 @@
       border-radius: 20px; 
       overflow: hidden; 
       border: 1px solid var(--border);
+      
       box-shadow: 0 12px 30px rgba(0,0,0,.15);
       display: flex; 
       flex-direction: column;
@@ -199,7 +200,7 @@ table tr:hover {
         <select id="navDropdown" style="background-color: #323fcb; color: yellow; border: #323fcb;">
           <option value="">More Options</option>
           <option value="https://m5792.github.io/esm/DAYBOOK.html">Job/Reff View</option>
-          <option value="https://www.youtube.com">YouTube</option>
+          <option value="https://docs.google.com/spreadsheets/d/1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4/edit?gid=509691788#gid=509691788">MIPL Index File</option>
           <option value="https://www.wikipedia.org">Wikipedia</option>
           <option value="https://www.github.com">GitHub</option>
           <option value="https://www.openai.com">OpenAI</option>
@@ -219,8 +220,22 @@ table tr:hover {
     
 <table id="noticeBoard">  <thead ><tr> <th>Type</th><th>Date</th> <th>Name</th><th>Vehicle No.</th><th>Job No.</th> <th>Status</th> <th>Inv. No.</th></tr></thead><tbody></tbody></table>
 <br/>
-         <span style="font-size: 120%; font-weight: bold;">Daybook Searchbar</span>
-          <input type="text" id="DATASEARCMIPL" placeholder="🔍 Search Ledger, Invoice..." />
+         
+
+
+<span style="font-size: 120%; font-weight: bold;">Daybook Searchbar</span>
+
+<input type="text" id="DATASEARCMIPL" placeholder="Search..." />
+          <div>
+ <span style="color: #680268 ;font-size:90%;">Invoice Amt:</span>  	Rs. <span id="totalInvoice"></span> |
+ <span style="color: #037e71 ;font-size:90%;">Weight:</span>  		Kg.   <span id="totalWeight"></span> |
+ <span style="color: #8f3f02 ;font-size:90%;">Receipt:</span> 		Rs.   <span id="totalBankInvoice"></span> |
+  <span style="color: blue ;font-size:90%;">TDS:</span> <span id="totalTdsInvoice"></span> |
+  <span id="balance"></span>
+</div>
+
+
+
         </div>
 <!-- home btn top part stop --> 
 
@@ -1015,22 +1030,48 @@ loadAllData();
 
 
   <!---------------------------- daybook SCRIPT START HARE ---------------------------------------- -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Invoice Table with PDF Open</title>
-
-</head>
-<body>
 
 <script>
 const api101Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheet101Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
-const range101 = 'LEDGER!A:K';
+const range101 = 'FORM!A:K'; 
 const api101Url = "https://script.google.com/macros/s/AKfycbwRAHlS8JeIXSEbPVjUNVrXkpfVOmNc2z95OZsygdzebtk-sgLV-86eWyZ20jVHspYe/exec";
 
-let allTableData = [];
+let allTableData = [];   // form sheet ka data isme store hai sno. ke decending form me
+
+// ---------------- Totals Calculation ----------------
+function calculateTotals(data) {
+  let totalInvoice = 0, totalWeight = 0, totalBank = 0, totalTds = 0;
+
+  data.forEach((row, i) => {
+    if (i === 0) return; // skip header
+
+    const type = (row[1] || "").toUpperCase();
+    const invoiceAmt = parseFloat(row[6] || 0);
+    const weight = parseFloat(row[7] || 0);
+
+    if (!isNaN(invoiceAmt)) totalInvoice += invoiceAmt;
+    if (!isNaN(weight)) totalWeight += weight;
+
+    if (type === "BANK") {
+      const bank = parseFloat(row[4] || 0);
+      if (!isNaN(bank)) totalBank += bank;
+    }
+
+    if (type === "TDS") {
+      const tds = parseFloat(row[4] || 0);
+      if (!isNaN(tds)) totalTds += tds;
+    }
+  });
+
+  const balance = totalInvoice - totalBank - totalTds;
+
+  document.getElementById("totalInvoice").textContent = totalInvoice.toFixed();
+  document.getElementById("totalWeight").textContent = totalWeight.toFixed();
+  document.getElementById("totalBankInvoice").textContent = totalBank.toFixed();
+  document.getElementById("totalTdsInvoice").textContent = totalTds.toFixed();
+  document.getElementById("balance").textContent = "Balance: Rs. " + balance.toFixed();
+}
 
 // -------------------- Fetch Table --------------------
 async function loadDATAMIPLTABLE() {
@@ -1047,8 +1088,30 @@ async function loadDATAMIPLTABLE() {
       return;
     }
 
-    allTableData = data.values;
-    renderDATAMIPLTABLE(allTableData);
+    // Filter rows based on column K (index 10)
+    const header = data.values[0];
+    const filteredRows = data.values.slice(1).filter(row => {
+      const colK = row[10]?.toUpperCase().trim();
+      return colK === "SALE" || colK === "RECEIPT" || colK === "TDS";
+    });
+
+    // Sort descending by column A (index 0)
+    filteredRows.sort((a, b) => {
+      const valA = isNaN(a[0]) ? a[0] : Number(a[0]);
+      const valB = isNaN(b[0]) ? b[0] : Number(b[0]);
+      if (valA < valB) return 1;
+      if (valA > valB) return -1;
+      return 0;
+    });
+
+    // Store header + filtered sorted rows
+    allTableData = [header, ...filteredRows];
+
+    // Render table with last 10 entries initially
+    renderDATAMIPLTABLE(allTableData, true); 
+
+    // Calculate totals
+    calculateTotals(allTableData);
 
   } catch (err) {
     console.error(err);
@@ -1056,151 +1119,137 @@ async function loadDATAMIPLTABLE() {
   }
 }
 
-// -------------------- Render Table with Actions --------------------
-// -------------------- Render Table with Actions --------------------
-function renderDATAMIPLTABLE(dataArray) {
+// -------------------- Render Table --------------------
+function renderDATAMIPLTABLE(dataArray, limitTo10 = false) {
   const table = document.getElementById("MIPLDATATABLE");
   table.innerHTML = "";
+
+  if (!dataArray || dataArray.length === 0) {
+    table.innerHTML = "<tr><td>No data</td></tr>";
+    return;
+  }
 
   const thead = document.createElement("thead");
   const tbody = document.createElement("tbody");
 
-  dataArray.forEach((row, rowIndex) => {
+  // Header
+  const headerRow = dataArray[0];
+  const trHead = document.createElement("tr");
+  headerRow.forEach(cell => {
+    const th = document.createElement("th");
+    th.textContent = cell || "";
+    trHead.appendChild(th);
+  });
+  const thAction = document.createElement("th");
+  thAction.textContent = "Actions";
+  trHead.appendChild(thAction);
+  thead.appendChild(trHead);
+
+  // Rows to show
+  let rowsToShow = dataArray.slice(1);
+  if (limitTo10) rowsToShow = rowsToShow.slice(0, 10);
+
+  rowsToShow.forEach(row => {
     const tr = document.createElement("tr");
 
     row.forEach(cell => {
-      if (rowIndex === 0) {
-        const th = document.createElement("th");
-        th.textContent = cell || "";
-        tr.appendChild(th);
-      } else {
-        const td = document.createElement("td");
-        td.textContent = cell || "";
-        tr.appendChild(td);
-      }
+      const td = document.createElement("td");
+      td.textContent = cell || "";
+      tr.appendChild(td);
     });
 
-    // ---------------- Row color condition ----------------
-    if (rowIndex > 0) {
-      const typeCell = row[1]?.toUpperCase().trim();
-      if (typeCell === "BANK") {
-        tr.style.color = "red";
-      } else if (typeCell === "CREDIT NOTE") {
-        tr.style.color = "grey";
-      } else if (typeCell === "CHALLAN") {
-        tr.style.color = "green";
-      }
+    // Row color
+    const typeCell = row[1]?.toUpperCase().trim();
+    if (typeCell === "BANK") tr.style.color = "red";
+    else if (typeCell === "CREDIT NOTE") tr.style.color = "grey";
+    else if (typeCell === "CHALLAN") tr.style.color = "green";
+
+    // Actions
+    const invoiceNo = row[4]?.trim();
+    const actionTd = document.createElement("td");
+
+    if (invoiceNo && typeCell === "TAX INVOICE") {
+      const invoiceKey = invoiceNo.replace("/", "_");
+      const packingKey = invoiceNo;
+      const container = document.createElement("div");
+      container.style.display = "flex";
+      container.style.gap = "12px";
+
+      // BILL button
+      const viewInvoiceBtn = document.createElement("button");
+      viewInvoiceBtn.textContent = "BILL";
+      viewInvoiceBtn.style.color = "white";
+      viewInvoiceBtn.style.background = "#1F39FF";
+      viewInvoiceBtn.style.border = "none";
+      viewInvoiceBtn.style.padding = "3px 8px";
+      viewInvoiceBtn.style.cursor = "pointer";
+      viewInvoiceBtn.style.borderRadius = "4px";
+      viewInvoiceBtn.addEventListener("click", () => {
+        fetch(api101Url + "?invoice=" + encodeURIComponent(invoiceKey))
+          .then(res => res.text())
+          .then(url => {
+            if (url !== "NOT_FOUND") window.open(url, "_blank");
+            else alert("Invoice not found!");
+          })
+          .catch(err => { console.error(err); alert("Error fetching invoice"); });
+      });
+
+      // PL LIST button
+      const viewPackingBtn = document.createElement("button");
+      viewPackingBtn.textContent = "PL LIST";
+      viewPackingBtn.style.color = "white";
+      viewPackingBtn.style.background = "#28A745";
+      viewPackingBtn.style.border = "none";
+      viewPackingBtn.style.padding = "3px 8px";
+      viewPackingBtn.style.cursor = "pointer";
+      viewPackingBtn.style.borderRadius = "4px";
+      viewPackingBtn.addEventListener("click", () => {
+        fetch(api101Url + "?invoice=" + encodeURIComponent(packingKey))
+          .then(res => res.text())
+          .then(url => {
+            if (url !== "NOT_FOUND") window.open(url, "_blank");
+            else alert("Packing list not found!");
+          })
+          .catch(err => { console.error(err); alert("Error fetching packing list"); });
+      });
+
+      container.appendChild(viewInvoiceBtn);
+      container.appendChild(viewPackingBtn);
+      actionTd.appendChild(container);
     }
 
-    // ---------------- Actions column ----------------
-    if (rowIndex === 0) {
-      const th = document.createElement("th");
-      th.textContent = "Actions";
-      tr.appendChild(th);
-      thead.appendChild(tr);
-    } else {
-      const actionTd = document.createElement("td");
-
-      const typeCell = row[1]?.toUpperCase().trim();
-      const invoiceNo = row[4]?.trim();
-
-      if (invoiceNo && typeCell === "TAX INVOICE") {
-        const invoiceKey = invoiceNo.replace("/", "_");
-        const packingKey = invoiceNo;
-
-        const container = document.createElement("div");
-        container.style.display = "flex";
-        container.style.gap = "12px";
-
-        // --- BILL button ---
-        const viewInvoiceBtn = document.createElement("button");
-        viewInvoiceBtn.textContent = "BILL";
-        viewInvoiceBtn.style.color = "white";
-        viewInvoiceBtn.style.background = "#1F39FF";
-        viewInvoiceBtn.style.border = "none";
-        viewInvoiceBtn.style.padding = "3px 8px";
-        viewInvoiceBtn.style.cursor = "pointer";
-        viewInvoiceBtn.style.borderRadius = "4px";
-
-        viewInvoiceBtn.addEventListener("click", () => {
-          fetch(api101Url + "?invoice=" + encodeURIComponent(invoiceKey))
-            .then(res => res.text())
-            .then(url => {
-              if (url !== "NOT_FOUND") {
-                window.open(url, "_blank");
-              } else {
-                alert("Invoice not found!");
-              }
-            })
-            .catch(err => {
-              console.error(err);
-              alert("Error fetching invoice");
-            });
-        });
-
-        // --- PL LIST button ---
-        const viewPackingBtn = document.createElement("button");
-        viewPackingBtn.textContent = "PL LIST";
-        viewPackingBtn.style.color = "white";
-        viewPackingBtn.style.background = "#28A745";
-        viewPackingBtn.style.border = "none";
-        viewPackingBtn.style.padding = "3px 8px";
-        viewPackingBtn.style.cursor = "pointer";
-        viewPackingBtn.style.borderRadius = "4px";
-
-        viewPackingBtn.addEventListener("click", () => {
-          fetch(api101Url + "?invoice=" + encodeURIComponent(packingKey))
-            .then(res => res.text())
-            .then(url => {
-              if (url !== "NOT_FOUND") {
-                window.open(url, "_blank");
-              } else {
-                alert("Packing list not found!");
-              }
-            })
-            .catch(err => {
-              console.error(err);
-              alert("Error fetching packing list");
-            });
-        });
-
-        container.appendChild(viewInvoiceBtn);
-        container.appendChild(viewPackingBtn);
-        actionTd.appendChild(container);
-      }
-
-      tr.appendChild(actionTd);
-      tbody.appendChild(tr);
-    }
+    tr.appendChild(actionTd);
+    tbody.appendChild(tr);
   });
 
   table.appendChild(thead);
   table.appendChild(tbody);
 }
 
-
-
-// -------------------- Search bar Function --------------------
+// -------------------- Search --------------------
 function searchDataMIPL() {
   const query = document.getElementById("DATASEARCMIPL").value.trim().toLowerCase();
-
   if (!query) {
-    renderDATAMIPLTABLE(allTableData);
+    renderDATAMIPLTABLE(allTableData, true); // initial last 10
+    calculateTotals(allTableData);
     return;
   }
 
+  // Filter from stored allTableData
   const filtered = allTableData.filter((row, rowIndex) => {
-    if (rowIndex === 0) return true; // header keep
+    if (rowIndex === 0) return true; // header
     return row.some(cell => cell && cell.toString().toLowerCase().includes(query));
   });
 
-  renderDATAMIPLTABLE(filtered);
+  // Render all matching rows (no limit to 10)
+  renderDATAMIPLTABLE(filtered, false);
+  calculateTotals(filtered);
 
   // Highlight matched text
   const table = document.getElementById("MIPLDATATABLE");
   if (table) {
     for (let i = 1; i < table.rows.length; i++) {
-      for (let j = 0; j < table.rows[i].cells.length - 1; j++) { // last column skip (Actions)
+      for (let j = 0; j < table.rows[i].cells.length - 1; j++) { // skip Actions
         const cell = table.rows[i].cells[j];
         const originalText = filtered[i]?.[j] || "";
         if (originalText.toLowerCase().includes(query)) {
@@ -1218,16 +1267,10 @@ function searchDataMIPL() {
 document.addEventListener("DOMContentLoaded", () => {
   loadDATAMIPLTABLE();
   const searchInput = document.getElementById("DATASEARCMIPL");
-  if (searchInput) {
-    searchInput.addEventListener("keyup", searchDataMIPL);
-  }
+  if (searchInput) searchInput.addEventListener("keyup", searchDataMIPL);
 });
 </script>
 
-
-
-</body>
-</html>
 
 <!---------------------------- daybook SCRIPT START STOP ---------------------------------------- -->
 
