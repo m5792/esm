@@ -195,6 +195,7 @@ table tr:hover {
         <a data-target="btn3">UPCL Calculator</a>
         <a data-target="btn4">ID/Password</a>
         <a data-target="btn5">Cash Ledger</a>
+     
 
            <!-- Dropdown -->
         <select id="navDropdown" style="background-color: #323fcb; color: yellow; border: #323fcb;">
@@ -204,6 +205,7 @@ table tr:hover {
           <option value="https://www.wikipedia.org">Wikipedia</option>
           <option value="https://www.github.com">GitHub</option>
           <option value="https://www.openai.com">OpenAI</option>
+          <option value="cash-ledger" data-target="btn6">Cash Ledger</option>
         </select>
 
       </nav>
@@ -221,6 +223,8 @@ table tr:hover {
 <table id="noticeBoard">  <thead ><tr> <th>Type</th><th>Date</th> <th>Name</th><th>Vehicle No.</th><th>Job No.</th> <th>Status</th> <th>Inv. No.</th></tr></thead><tbody></tbody></table>
 <br/>
          
+
+
 
 
 
@@ -269,6 +273,14 @@ table tr:hover {
   
         </div>
 <!-- btn5 -cash ledger top part stop -->
+
+
+ <!-- btn6 -Loan Calculator top part strat -->
+        <div id="btn6-top" class="panel-content">
+              <label style="font-size: 20px; font-weight: bold;">Loan Calculator:</label>
+
+        </div>
+<!-- btn6 -cash ledger top part stop -->
       </div>
 
 
@@ -377,6 +389,140 @@ table tr:hover {
           <div id="tableContainer"  style="background-color: #fef8f6;"></div>
         </div>
   <!-- btn5 -cash ledger bottam part stop -->
+
+   <!-- btn6 -cash ledger bottam part start -->
+        <div id="btn6-bottom" class="panel-content">
+        
+          
+ <!-- ...................................Loan Calculator code strat .........................................................................-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Loan Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      padding: 20px;
+    }
+    .box {
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      max-width: 400px;
+      margin: auto;
+    }
+    h2 { margin-top: 0; }
+    label { display: block; margin: 8px 0 4px; }
+    input {
+      width: 100%;
+      padding: 6px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+    .summary {
+      margin-top: 20px;
+      background: #f0f4ff;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    .summary b { color: #222; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Loan Calculator</h2>
+
+    <label>Loan Amount (₹):</label>
+    <input type="number" id="loan" onblur="calculateLoan()">
+
+    <label>Rate of Interest (% p.a.):</label>
+    <input type="number" step="0.01" id="rate" onblur="calculateLoan()">
+
+    <label>EMI (₹):</label>
+    <input type="number" id="emi" onblur="calculateLoan()">
+
+    <label>Tenure (Months):</label>
+    <input type="number" id="months" onblur="calculateLoan()">
+
+    <label>Installment Start Date:</label>
+    <input type="date" id="startDate">
+
+    <div class="summary" id="summary">
+      <h3>📌 Loan Summary</h3>
+      <p><b>Loan Amount:</b> ₹<span id="sLoan">-</span></p>
+      <p><b>Rate of Interest:</b> <span id="sRate">-</span> % p.a.</p>
+      <p><b>EMI:</b> ₹<span id="sEmi">-</span></p>
+      <p><b>Tenure:</b> <span id="sMonths">-</span> months</p>
+      <p><b>Start Date:</b> <span id="sDate">-</span></p>
+    </div>
+  </div>
+
+  <script>
+    function calculateLoan() {
+      let P = parseFloat(document.getElementById("loan").value);   // Loan Amount
+      let R = parseFloat(document.getElementById("rate").value);   // Annual Interest %
+      let EMI = parseFloat(document.getElementById("emi").value);  // EMI
+      let N = parseFloat(document.getElementById("months").value); // Tenure in Months
+
+      let r = (R/100)/12; // monthly rate
+
+      // 1️⃣ EMI निकालें
+      if (!EMI && P && R && N) {
+        EMI = (P * r * Math.pow(1+r, N)) / (Math.pow(1+r, N) - 1);
+        document.getElementById("emi").value = EMI.toFixed(2);
+      }
+
+      // 2️⃣ Tenure निकालें
+      else if (!N && P && R && EMI) {
+        N = Math.log(EMI / (EMI - P*r)) / Math.log(1+r);
+        document.getElementById("months").value = Math.round(N);
+      }
+
+      // 3️⃣ Loan Amount निकालें
+      else if (!P && EMI && R && N) {
+        P = (EMI * (Math.pow(1+r, N) - 1)) / (r * Math.pow(1+r, N));
+        document.getElementById("loan").value = P.toFixed(2);
+      }
+
+      // 4️⃣ Rate निकालें (iterative method)
+      else if (!R && P && EMI && N) {
+        let guess = 0.01;
+        let maxIter = 1000;
+        for (let i = 0; i < maxIter; i++) {
+          let emiCalc = (P * guess * Math.pow(1+guess, N)) / (Math.pow(1+guess, N) - 1);
+          if (Math.abs(emiCalc - EMI) < 0.1) break;
+          if (emiCalc > EMI) guess -= 0.0001;
+          else guess += 0.0001;
+        }
+        R = guess * 12 * 100;
+        document.getElementById("rate").value = R.toFixed(2);
+      }
+
+      // Summary update
+      document.getElementById("sLoan").innerText = P ? P.toFixed(2) : "-";
+      document.getElementById("sRate").innerText = R ? R.toFixed(2) : "-";
+      document.getElementById("sEmi").innerText = EMI ? EMI.toFixed(2) : "-";
+      document.getElementById("sMonths").innerText = N ? N : "-";
+      
+      let d = document.getElementById("startDate").value;
+      document.getElementById("sDate").innerText = d ? d : "-";
+    }
+  </script>
+</body>
+</html>
+
+ <!-- ...................................Loan Calculator code stop .........................................................................-->
+
+
+
+        </div>
+  <!-- btn6 -cash ledger bottam part stop -->
+
+
       </div>
     </div>
 
@@ -384,11 +530,10 @@ table tr:hover {
     <div class="modalvcr-footer">
       <div>
 
-        
-<span style="font-size: 120%; font-weight: bold;">Daybook Searchbar</span>
+        <span style="font-size: 120%; font-weight: bold;color: #f6f7a9;">Daybook Searchbar</span>
 
-<input type="text" id="DATASEARCMIPL" placeholder="Search..." />
-          <div>
+<input type="text" id="DATASEARCMIPL" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width:200px; width: 4in; background-color: rgb(241, 212, 212);"  placeholder="Search..." />
+          <div style="background-color: rgb(217, 214, 214);">
  <span style="color: #680268 ;font-size:90%;">Invoice Amt:</span>  	Rs. <span id="totalInvoice"></span> |
  <span style="color: #037e71 ;font-size:90%;">Weight:</span>  		Kg.   <span id="totalWeight"></span> |
  <span style="color: #8f3f02 ;font-size:90%;">Receipt:</span> 		Rs.   <span id="totalBankInvoice"></span> |
@@ -402,38 +547,66 @@ table tr:hover {
     </div>
   </div>
 
+ 
+ 
+
   <script>
-    const navLinks = document.querySelectorAll('nav a');
+  const navLinks = document.querySelectorAll('nav a');
 
-    navLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        // Update active link
+  // Navigation links click handler
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      // Update active link
+      navLinks.forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+
+      const target = link.dataset.target;
+
+      // Update top panels
+      document.querySelectorAll('.top-panel .panel-content').forEach(p => p.classList.remove('active'));
+      const top = document.getElementById(`${target}-top`);
+      if (top) top.classList.add('active');
+
+      // Update bottom panels
+      document.querySelectorAll('.bottom-panel .panel-content').forEach(p => p.classList.remove('active'));
+      const bottom = document.getElementById(`${target}-bottom`);
+      if (bottom) bottom.classList.add('active');
+    });
+  });
+
+  // Dropdown handler
+  const dropdown = document.getElementById('navDropdown');
+  dropdown.addEventListener('change', () => {
+    const val = dropdown.value;
+    const target = dropdown.options[dropdown.selectedIndex].getAttribute("data-target");
+
+    if (val) {
+      if (target) {
+        // same-page navigation (trigger like nav link)
         navLinks.forEach(l => l.classList.remove('active'));
-        link.classList.add('active');
+        const navLink = document.querySelector(`nav a[data-target="${target}"]`);
+        if (navLink) {
+          navLink.classList.add('active');
+        }
 
-        const target = link.dataset.target;
-
-        // Update top panels
+        // Panels update
         document.querySelectorAll('.top-panel .panel-content').forEach(p => p.classList.remove('active'));
         const top = document.getElementById(`${target}-top`);
-        if(top) top.classList.add('active');
+        if (top) top.classList.add('active');
 
-        // Update bottom panels
         document.querySelectorAll('.bottom-panel .panel-content').forEach(p => p.classList.remove('active'));
         const bottom = document.getElementById(`${target}-bottom`);
-        if(bottom) bottom.classList.add('active');
-      });
-    });
+        if (bottom) bottom.classList.add('active');
 
-    // Dropdown link opener
-    const dropdown = document.getElementById('navDropdown');
-    dropdown.addEventListener('change', () => {
-      if (dropdown.value) {
-        window.open(dropdown.value, "_blank"); // open in new tab
-        dropdown.value = ""; // reset after open
+      } else {
+        // external link → open in new tab
+        window.open(val, "_blank");
       }
-    });
-  </script>
+    }
+
+    dropdown.selectedIndex = 0; // reset to "More Options"
+  });
+</script>
 </body>
 </html>
 
@@ -1418,5 +1591,3 @@ loadNoticeBoard();
     setInterval(displayCurrentDateTime, 1000);
 </script>
  <!-- Current date and time will be displayed Stop -->
-
-
