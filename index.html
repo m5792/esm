@@ -1926,13 +1926,13 @@ document.addEventListener("DOMContentLoaded", function () {
       <th>Amount</th>
     </tr>
     <tr>
-      <td>S1 (0–98.63)</td>
+      <td>S1 (0–100)</td>
       <td id="s1u">0</td>
       <td contenteditable="true" class="editable" id="r1">3.65</td>
       <td id="s1c">0</td>
     </tr>
     <tr>
-      <td>S2 (98.63–197.26)</td>
+      <td>S2 (100–200)</td>
       <td id="s2u">0</td>
       <td contenteditable="true" class="editable" id="r2">5.25</td>
       <td id="s2c">0</td>
@@ -8577,50 +8577,75 @@ loadNoticeBoard();
 
 <!-- DAYBOOK SECTION TABLE SCRIPT START---------------------------------------- -->
 <script>
-let val = [];
+const api102Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheet102Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
+const range102 = 'FORM!A:K'; 
+const api102Url = "https://script.google.com/macros/s/AKfycbwRAHlS8JeIXSEbPVjUNVrXkpfVOmNc2z95OZsygdzebtk-sgLV-86eWyZ20jVHspYe/exec";
 
-// ---------------- Collect Data from MIPLDATATABLE ----------------
-function collectDataFromMainTable() {
-  const mainTable = document.getElementById("MIPLDATATABLE");
-  if (!mainTable) return;
+let alldaybookData = []; // filtered & sorted data
+let val = [];          // data for miplTable rendering
 
-  val = [];
-  for (let i = 0; i < mainTable.rows.length; i++) {
-    const row = [];
-    const lastIndex = mainTable.rows[i].cells.length - 1; // last col skip
-    for (let j = 0; j < lastIndex; j++) {
-      const cell = mainTable.rows[i].cells[j];
-      row.push({ text: cell.innerText.trim() });
-    }
-    val.push(row);
-  }
+// ---------------- Fetch & Prepare Data ----------------
+async function loadalldaybookData() {
+  try {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet102Id}/values/${range102}?key=${api102Key}`;
+    const response = await fetch(url);
+    const data = await response.json();
 
-  if (val.length > 0) {
-    applyFilters(); // Apply both date + search filters
+    if (!data.values || data.values.length === 0) return;
+
+    const header = data.values[0];
+    const filteredRows = data.values.slice(1).filter(row => {
+      const colK = row[10]?.toUpperCase().trim();
+      return colK === "SALE" || colK === "RECEIPT" || colK === "TDS";
+    });
+
+    // Sort descending by column A
+    filteredRows.sort((a, b) => {
+      const valA = isNaN(a[0]) ? a[0] : Number(a[0]);
+      const valB = isNaN(b[0]) ? b[0] : Number(b[0]);
+      if (valA < valB) return 1;
+      if (valA > valB) return -1;
+      return 0;
+    });
+
+    alldaybookData = [header, ...filteredRows];
+    collectDataFromalldaybookData(); // populate val
+  } catch (err) {
+    console.error("Error fetching sheet data:", err);
   }
 }
 
-// ---------------- Render Data in miplTable ----------------
+// ---------------- Collect Data from alldaybookData ----------------
+function collectDataFromalldaybookData() {
+  if (!alldaybookData || alldaybookData.length === 0) return;
+
+  val = alldaybookData.map(row => row.map(cell => ({ text: cell })));
+  applyFilters(); // initial render
+}
+
+// ---------------- Render Data ----------------
 function renderMiplTable(data) {
   const miplTable = document.getElementById("miplTable");
+  if (!miplTable) return;
   miplTable.innerHTML = "";
   miplTable.classList.remove("hidden");
 
   data.forEach((row, rowIndex) => {
     const tr = document.createElement("tr");
 
-    // Skip last column (Action)
     row.forEach((cell, colIndex) => {
       const td = document.createElement(rowIndex === 0 ? "th" : "td");
       td.textContent = cell.text;
       tr.appendChild(td);
     });
 
+    // Row color formatting
     if (rowIndex !== 0) {
       const type = row[1]?.text?.toUpperCase() || "";
       if (type === "BANK") tr.style.color = "red";
-      else if (type === "CHALLAN") tr.style.color = "grey";
-      else if (type === "CREDIT NOTE") tr.style.color = "green";
+      else if (type === "CREDIT NOTE") tr.style.color = "grey";
+      else if (type === "CHALLAN") tr.style.color = "green";
       else tr.style.color = "black";
     }
 
@@ -8630,28 +8655,27 @@ function renderMiplTable(data) {
   highlightInvoiceCells();
 }
 
-
 // ---------------- Totals Calculation ----------------
 function calculateTotals(data) {
   let totalInvoice = 0, totalWeight = 0, totalBank = 0, totalTds = 0;
 
   data.forEach((row, i) => {
-    if (i === 0) return; // skip header
+    if (i === 0) return;
 
-    const type = (row[1]?.text || "").toUpperCase(); // column 2
-    const invoiceAmt = parseFloat(row[6]?.text || 0); // column 7
-    const weight = parseFloat(row[7]?.text || 0);     // column 8
+    const type = (row[1]?.text || "").toUpperCase();
+    const invoiceAmt = parseFloat(row[6]?.text || 0);
+    const weight = parseFloat(row[7]?.text || 0);
 
     if (!isNaN(invoiceAmt)) totalInvoice += invoiceAmt;
     if (!isNaN(weight)) totalWeight += weight;
 
     if (type === "BANK") {
-      const bank = parseFloat(row[4]?.text || 0); // column 5
+      const bank = parseFloat(row[4]?.text || 0);
       if (!isNaN(bank)) totalBank += bank;
     }
 
     if (type === "TDS") {
-      const tds = parseFloat(row[4]?.text || 0); // column 5
+      const tds = parseFloat(row[4]?.text || 0);
       if (!isNaN(tds)) totalTds += tds;
     }
   });
@@ -8665,7 +8689,6 @@ function calculateTotals(data) {
   document.getElementById("balance").textContent = "Balance: Rs. " + balance.toFixed();
 }
 
-
 // ---------------- Date Formatter ----------------
 function formatDate(inputDate) {
   const date = new Date(inputDate);
@@ -8673,26 +8696,23 @@ function formatDate(inputDate) {
   return `${date.getDate()}-${months[date.getMonth()]}-${date.getFullYear()}`;
 }
 
-// ---------------- Combined Filter ----------------
+// ---------------- Apply Search & Date Filters ----------------
 function applyFilters() {
   const searchInput = document.getElementById("searchBar");
   const dateInput = document.getElementById("dateFilter");
-
-  const searchText = searchInput.value.toLowerCase();
-  const dateValue = dateInput.value;
+  const searchText = searchInput?.value.toLowerCase() || "";
+  const dateValue = dateInput?.value;
   const formattedDate = dateValue ? formatDate(dateValue) : null;
 
   let filtered;
 
   if (searchText) {
-    // ✅ Search over entire table (no date filter)
     filtered = val.filter((row, index) => {
       if (index === 0) return true;
       const rowText = row.map(c => c.text.toLowerCase()).join(" ");
       return rowText.includes(searchText);
     });
   } else {
-    // ✅ No search — apply only date filter
     filtered = val.filter((row, index) => {
       if (index === 0) return true;
       const rowDate = row[2]?.text;
@@ -8709,17 +8729,16 @@ function setupSearchFilter() {
   const searchInput = document.getElementById("searchBar");
   const dateInput = document.getElementById("dateFilter");
 
-  searchInput.addEventListener("input", applyFilters);
-  dateInput.addEventListener("change", applyFilters);
+  searchInput?.addEventListener("input", applyFilters);
+  dateInput?.addEventListener("change", applyFilters);
 }
 
-// ---------------- Highlight Invoices ----------------
+// ---------------- Highlight Invoice Cells ----------------
 function highlightInvoiceCells() {
   const table = document.getElementById("miplTable");
   if (!table) return;
 
   const rows = table.getElementsByTagName("tr");
-
   for (let row of rows) {
     const cells = row.cells;
     if (!cells || cells.length < 5) continue;
@@ -8729,53 +8748,27 @@ function highlightInvoiceCells() {
     const invoiceNo = invoiceCell.innerText.trim();
 
     if (typeText === "TAX INVOICE" && invoiceNo) {
-      invoiceCell.style.color = "#2B6AF3"; // COLOER CODE
+      invoiceCell.style.color = "#2B6AF3";
       invoiceCell.style.cursor = "pointer";
       invoiceCell.title = "Click to open PDF";
 
-      invoiceCell.addEventListener("mouseover", () => {
-        invoiceCell.style.textDecoration = "underline";
-      });
-      invoiceCell.addEventListener("mouseout", () => {
-        invoiceCell.style.textDecoration = "none";
+      invoiceCell.addEventListener("mouseover", () => invoiceCell.style.textDecoration = "underline");
+      invoiceCell.addEventListener("mouseout", () => invoiceCell.style.textDecoration = "none");
+
+      invoiceCell.addEventListener("click", () => {
+        const invoiceKey = invoiceNo.replace("/", "_");
+        fetch(api101Url + "?invoice=" + encodeURIComponent(invoiceKey))
+          .then(res => res.text())
+          .then(url => {
+            if (url === "NOT_FOUND") alert("PDF not found for Invoice: " + invoiceNo);
+            else window.open(url, "_blank");
+          })
+          .catch(err => { console.error(err); alert("Error fetching PDF link."); });
       });
     }
   }
 }
 
-// ---------------- PDF on Invoice Click ----------------
-const apidaybookUrl = "https://script.google.com/macros/s/AKfycbwRAHlS8JeIXSEbPVjUNVrXkpfVOmNc2z95OZsygdzebtk-sgLV-86eWyZ20jVHspYe/exec";
-//https://script.google.com/macros/s/AKfycbzBXPXYoX9xp2IqWYXvVYMPhgERM41XQ8CyhOBWtpnFQy2SZIkQqBPlHTfl9-Z3nn8rXg/exec
-
-document.getElementById("miplTable").addEventListener("click", function(e) {
-  const clickedCell = e.target;
-  const row = clickedCell.parentElement;
-  const cells = row.cells;
-  if (!cells || cells.length < 5) return;
-  if (clickedCell.cellIndex !== 4) return;
-
-  const typeText = cells[1].innerText.trim().toUpperCase();
-  const invoiceNo = clickedCell.innerText.trim();
-  if (typeText !== "TAX INVOICE" || !invoiceNo) return;
-
-  clickedCell.style.color = "#0BCBAE"; // COLOER CODE
-  clickedCell.style.textDecoration = "underline";
-
-  const invoiceKey = invoiceNo.replace("/", "_");
-  fetch(apidaybookUrl + "?invoice=" + encodeURIComponent(invoiceKey))
-    .then(res => res.text())
-    .then(url => {
-      if (url === "NOT_FOUND") {
-        alert("PDF not found for Invoice: " + invoiceNo);
-      } else {
-        window.open(url, "_blank");
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      alert("Error fetching PDF link.");
-    });
-});
 
 // ---------------- Print Table ----------------
 function printdaybook() {
@@ -8856,22 +8849,18 @@ function printdaybook() {
   printWindow.print();
 }
 
-
 // ---------------- Init ----------------
 document.addEventListener("DOMContentLoaded", () => {
   const dateInput = document.getElementById("dateFilter");
-  const today = new Date();
-  dateInput.value = today.toISOString().slice(0, 10);
+  if (dateInput) {
+    const today = new Date();
+    dateInput.value = today.toISOString().slice(0, 10);
+  }
 
   setupSearchFilter();
-  collectDataFromMainTable();
-
-  const targetNode = document.getElementById("MIPLDATATABLE");
-  const observer = new MutationObserver(collectDataFromMainTable);
-  observer.observe(targetNode, { childList: true, subtree: true });
+  loadalldaybookData(); // fetch & populate val from alldaybookData
 });
 </script>
-
 
 
 <!-- DAYBOOK SECTION TABLE SCRIPT STOP---------------------------------------- -->
@@ -8897,13 +8886,15 @@ document.addEventListener("DOMContentLoaded", () => {
 </head>
 <body>
 
+
+
 <script>
 const api101Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheet101Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
-const range101 = 'LEDGER!A:K';
+const range101 = 'FORM!A:K'; 
 const api101Url = "https://script.google.com/macros/s/AKfycbwRAHlS8JeIXSEbPVjUNVrXkpfVOmNc2z95OZsygdzebtk-sgLV-86eWyZ20jVHspYe/exec";
 
-let allTableData = [];
+let allTableData = [];   // form sheet ka data isme store hai sno. ke decending form me
 
 // -------------------- Fetch Table --------------------
 async function loadDATAMIPLTABLE() {
@@ -8920,160 +8911,162 @@ async function loadDATAMIPLTABLE() {
       return;
     }
 
-    allTableData = data.values;
-    renderDATAMIPLTABLE(allTableData);
+    // Filter rows based on column K (index 10)
+    const header = data.values[0];
+    const filteredRows = data.values.slice(1).filter(row => {
+      const colK = row[10]?.toUpperCase().trim();
+      return colK === "SALE" || colK === "RECEIPT" || colK === "TDS";
+    });
 
+    // Sort descending by column A (index 0)
+    filteredRows.sort((a, b) => {
+      const valA = isNaN(a[0]) ? a[0] : Number(a[0]);
+      const valB = isNaN(b[0]) ? b[0] : Number(b[0]);
+      if (valA < valB) return 1;
+      if (valA > valB) return -1;
+      return 0;
+    });
+
+    // Store header + filtered sorted rows
+    allTableData = [header, ...filteredRows];
+
+    // Render table with last 10 entries initially
+    renderDATAMIPLTABLE(allTableData, true); 
   } catch (err) {
     console.error(err);
     table.innerHTML = "<tr><td>Error loading data</td></tr>";
   }
 }
 
-// -------------------- Render Table with Actions --------------------
-// -------------------- Render Table with Actions --------------------
-function renderDATAMIPLTABLE(dataArray) {
+// -------------------- Render Table --------------------
+function renderDATAMIPLTABLE(dataArray, limitTo10 = false) {
   const table = document.getElementById("MIPLDATATABLE");
   table.innerHTML = "";
+
+  if (!dataArray || dataArray.length === 0) {
+    table.innerHTML = "<tr><td>No data</td></tr>";
+    return;
+  }
 
   const thead = document.createElement("thead");
   const tbody = document.createElement("tbody");
 
-  dataArray.forEach((row, rowIndex) => {
+  // Header
+  const headerRow = dataArray[0];
+  const trHead = document.createElement("tr");
+  headerRow.forEach(cell => {
+    const th = document.createElement("th");
+    th.textContent = cell || "";
+    trHead.appendChild(th);
+  });
+  const thAction = document.createElement("th");
+  thAction.textContent = "Actions";
+  trHead.appendChild(thAction);
+  thead.appendChild(trHead);
+
+  // Rows to show
+  let rowsToShow = dataArray.slice(1);
+  if (limitTo10) rowsToShow = rowsToShow.slice(0, 10);
+
+  rowsToShow.forEach(row => {
     const tr = document.createElement("tr");
 
     row.forEach(cell => {
-      if (rowIndex === 0) {
-        const th = document.createElement("th");
-        th.textContent = cell || "";
-        tr.appendChild(th);
-      } else {
-        const td = document.createElement("td");
-        td.textContent = cell || "";
-        tr.appendChild(td);
-      }
+      const td = document.createElement("td");
+      td.textContent = cell || "";
+      tr.appendChild(td);
     });
 
-    // ---------------- Row color condition ----------------
-    if (rowIndex > 0) {
-      const typeCell = row[1]?.toUpperCase().trim();
-      if (typeCell === "BANK") {
-        tr.style.color = "red";
-      } else if (typeCell === "CREDIT NOTE") {
-        tr.style.color = "grey";
-      } else if (typeCell === "CHALLAN") {
-        tr.style.color = "green";
-      }
+    // Row color
+    const typeCell = row[1]?.toUpperCase().trim();
+    if (typeCell === "BANK") tr.style.color = "red";
+    else if (typeCell === "CREDIT NOTE") tr.style.color = "grey";
+    else if (typeCell === "CHALLAN") tr.style.color = "green";
+
+    // Actions
+    const invoiceNo = row[4]?.trim();
+    const actionTd = document.createElement("td");
+
+    if (invoiceNo && typeCell === "TAX INVOICE") {
+      const invoiceKey = invoiceNo.replace("/", "_");
+      const packingKey = invoiceNo;
+      const container = document.createElement("div");
+      container.style.display = "flex";
+      container.style.gap = "12px";
+
+      // BILL button
+      const viewInvoiceBtn = document.createElement("button");
+      viewInvoiceBtn.textContent = "BILL";
+      viewInvoiceBtn.style.color = "white";
+      viewInvoiceBtn.style.background = "#1F39FF";
+      viewInvoiceBtn.style.border = "none";
+      viewInvoiceBtn.style.padding = "3px 8px";
+      viewInvoiceBtn.style.cursor = "pointer";
+      viewInvoiceBtn.style.borderRadius = "4px";
+      viewInvoiceBtn.addEventListener("click", () => {
+        fetch(api101Url + "?invoice=" + encodeURIComponent(invoiceKey))
+          .then(res => res.text())
+          .then(url => {
+            if (url !== "NOT_FOUND") window.open(url, "_blank");
+            else alert("Invoice not found!");
+          })
+          .catch(err => { console.error(err); alert("Error fetching invoice"); });
+      });
+
+      // PL LIST button
+      const viewPackingBtn = document.createElement("button");
+      viewPackingBtn.textContent = "PL LIST";
+      viewPackingBtn.style.color = "white";
+      viewPackingBtn.style.background = "#28A745";
+      viewPackingBtn.style.border = "none";
+      viewPackingBtn.style.padding = "3px 8px";
+      viewPackingBtn.style.cursor = "pointer";
+      viewPackingBtn.style.borderRadius = "4px";
+      viewPackingBtn.addEventListener("click", () => {
+        fetch(api101Url + "?invoice=" + encodeURIComponent(packingKey))
+          .then(res => res.text())
+          .then(url => {
+            if (url !== "NOT_FOUND") window.open(url, "_blank");
+            else alert("Packing list not found!");
+          })
+          .catch(err => { console.error(err); alert("Error fetching packing list"); });
+      });
+
+      container.appendChild(viewInvoiceBtn);
+      container.appendChild(viewPackingBtn);
+      actionTd.appendChild(container);
     }
 
-    // ---------------- Actions column ----------------
-    if (rowIndex === 0) {
-      const th = document.createElement("th");
-      th.textContent = "Actions";
-      tr.appendChild(th);
-      thead.appendChild(tr);
-    } else {
-      const actionTd = document.createElement("td");
-
-      const typeCell = row[1]?.toUpperCase().trim();
-      const invoiceNo = row[4]?.trim();
-
-      if (invoiceNo && typeCell === "TAX INVOICE") {
-        const invoiceKey = invoiceNo.replace("/", "_");
-        const packingKey = invoiceNo;
-
-        const container = document.createElement("div");
-        container.style.display = "flex";
-        container.style.gap = "12px";
-
-        // --- BILL button ---
-        const viewInvoiceBtn = document.createElement("button");
-        viewInvoiceBtn.textContent = "BILL";
-        viewInvoiceBtn.style.color = "white";
-        viewInvoiceBtn.style.background = "#1F39FF";
-        viewInvoiceBtn.style.border = "none";
-        viewInvoiceBtn.style.padding = "3px 8px";
-        viewInvoiceBtn.style.cursor = "pointer";
-        viewInvoiceBtn.style.borderRadius = "4px";
-
-        viewInvoiceBtn.addEventListener("click", () => {
-          fetch(api101Url + "?invoice=" + encodeURIComponent(invoiceKey))
-            .then(res => res.text())
-            .then(url => {
-              if (url !== "NOT_FOUND") {
-                window.open(url, "_blank");
-              } else {
-                alert("Invoice not found!");
-              }
-            })
-            .catch(err => {
-              console.error(err);
-              alert("Error fetching invoice");
-            });
-        });
-
-        // --- PL LIST button ---
-        const viewPackingBtn = document.createElement("button");
-        viewPackingBtn.textContent = "PL LIST";
-        viewPackingBtn.style.color = "white";
-        viewPackingBtn.style.background = "#28A745";
-        viewPackingBtn.style.border = "none";
-        viewPackingBtn.style.padding = "3px 8px";
-        viewPackingBtn.style.cursor = "pointer";
-        viewPackingBtn.style.borderRadius = "4px";
-
-        viewPackingBtn.addEventListener("click", () => {
-          fetch(api101Url + "?invoice=" + encodeURIComponent(packingKey))
-            .then(res => res.text())
-            .then(url => {
-              if (url !== "NOT_FOUND") {
-                window.open(url, "_blank");
-              } else {
-                alert("Packing list not found!");
-              }
-            })
-            .catch(err => {
-              console.error(err);
-              alert("Error fetching packing list");
-            });
-        });
-
-        container.appendChild(viewInvoiceBtn);
-        container.appendChild(viewPackingBtn);
-        actionTd.appendChild(container);
-      }
-
-      tr.appendChild(actionTd);
-      tbody.appendChild(tr);
-    }
+    tr.appendChild(actionTd);
+    tbody.appendChild(tr);
   });
 
   table.appendChild(thead);
   table.appendChild(tbody);
 }
 
-
-
-// -------------------- Search bar Function --------------------
+// -------------------- Search --------------------
 function searchDataMIPL() {
   const query = document.getElementById("DATASEARCMIPL").value.trim().toLowerCase();
-
   if (!query) {
-    renderDATAMIPLTABLE(allTableData);
+    renderDATAMIPLTABLE(allTableData, true); // initial last 10
     return;
   }
 
+  // Filter from stored allTableData
   const filtered = allTableData.filter((row, rowIndex) => {
-    if (rowIndex === 0) return true; // header keep
+    if (rowIndex === 0) return true; // header
     return row.some(cell => cell && cell.toString().toLowerCase().includes(query));
   });
 
-  renderDATAMIPLTABLE(filtered);
+  // Render all matching rows (no limit to 10)
+  renderDATAMIPLTABLE(filtered, false);
 
   // Highlight matched text
   const table = document.getElementById("MIPLDATATABLE");
   if (table) {
     for (let i = 1; i < table.rows.length; i++) {
-      for (let j = 0; j < table.rows[i].cells.length - 1; j++) { // last column skip (Actions)
+      for (let j = 0; j < table.rows[i].cells.length - 1; j++) { // skip Actions
         const cell = table.rows[i].cells[j];
         const originalText = filtered[i]?.[j] || "";
         if (originalText.toLowerCase().includes(query)) {
@@ -9091,12 +9084,9 @@ function searchDataMIPL() {
 document.addEventListener("DOMContentLoaded", () => {
   loadDATAMIPLTABLE();
   const searchInput = document.getElementById("DATASEARCMIPL");
-  if (searchInput) {
-    searchInput.addEventListener("keyup", searchDataMIPL);
-  }
+  if (searchInput) searchInput.addEventListener("keyup", searchDataMIPL);
 });
 </script>
-
 
 
 </body>
@@ -9171,9 +9161,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let fuelRate = parseFloat(document.getElementById("fuelRate").innerText) || defaults.fuelRate;
 
     // Slabs
-    let s1 = Math.min(units, 98.63);
-    let s2 = (units > 98.63) ? Math.min(units - 98.63, 98.63) : 0;
-    let s3 = (units > 197.26) ? Math.min(units - 197.26, 197.26) : 0;
+    let s1 = Math.min(units, 100);
+    let s2 = (units > 100) ? Math.min(units - 100, 100) : 0;
+    let s3 = (units > 197.26) ? Math.min(units - 200, 200) : 0;
     let s4 = (units > 394.52) ? (units - 394.52) : 0;
 
     let c1 = s1 * rate1;
