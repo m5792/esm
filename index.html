@@ -694,6 +694,10 @@ async function fetchGlobalMessage() {
   <span style="color: #0515f0; font-weight: bold;font-size: 16px;">Loading Status</span>
 <table id="noticeBoard">  <thead ><tr> <th>Type</th><th>Date</th> <th>Name</th><th>Vehicle No.</th><th>Job No.</th> <th>Status</th> <th>Inv. No.</th></tr></thead><tbody></tbody></table>
 
+  <span style="color: #901803; font-weight: bold;font-size: 16px;">Important Points</span>
+<ul id="pointsList"></ul>
+
+
 
   <div style="display: flex; align-items: center; background: rgb(234, 235, 235); padding: 10px; gap: 10px;">
     <select id="monthDropdown" style="padding: 5px; font-size: 16px;"></select>
@@ -8560,6 +8564,37 @@ function formatCustomDate(dateStr) {
   return "";
 }
 
+
+//................................
+// ===== UL for Points in Column S2:S6 =====
+async function loadPointsList() {
+  const pointRange = "DATABASE!S2:S6";
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetNBId}/values/${pointRange}?key=${apiNBKey}`;
+  const response = await fetch(url);
+  const data = await response.json();
+  
+  const rows = data.values;
+  const ul = document.getElementById("pointsList");
+  ul.innerHTML = "";
+
+  if (!rows || rows.length === 0) {
+    ul.innerHTML = "<li>No Points Found</li>";
+    return;
+  }
+
+  rows.forEach(row => {
+    const val = row[0]?.trim();
+    if (val) {
+      const li = document.createElement("li");
+      li.textContent = val;
+      ul.appendChild(li);
+    }
+  });
+}
+
+loadPointsList();
+//................................
+
 loadNoticeBoard();
 </script>
 <!-- loading summry  script stop hare -->
@@ -8886,7 +8921,8 @@ document.addEventListener("DOMContentLoaded", () => {
 </head>
 <body>
 
-
+<table id="MIPLDATATABLE"></table>
+<input type="text" id="DATASEARCMIPL" placeholder="Search...">
 
 <script>
 const api101Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
