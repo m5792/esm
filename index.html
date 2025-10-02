@@ -2587,7 +2587,7 @@ document.addEventListener("DOMContentLoaded", function () {
   <marquee behavior="scroll" direction="left" scrollamount="5" style="flex: 1;">
     <div style="display: inline-flex; align-items: center; gap: 8px;">
      
-      <span id="newsTickerContent" style="color: white; font-size: 16px;"></span>
+      <span style="color: white; font-size: 16px;">Welcome to Multitech Infracon Pvt. Ltf</span>
     </div>
   </marquee>
 
@@ -7423,28 +7423,9 @@ table tr:hover {
 
 
 <!-- यह एक नोट है, indian news headline script start -->
-<script>
-//  api key website: https://gnews.io/dashboard
-//  user id : multitechsolution87@gmail.com ,  password:  Adv@2025
+<!-- यह एक नोट है, apiNEWSKey = '3b9045bc736598e29bff337027ba6d78';  -->
 
-const apiNEWSKey = '3b9045bc736598e29bff337027ba6d78';  // 🔑 GNews API key
-const ticker = document.getElementById('newsTickerContent');
 
-fetch(`https://gnews.io/api/v4/top-headlines?lang=hi&country=in&max=10&token=${apiNEWSKey}`)
-    .then(response => response.json())
-    .then(data => {
-        ticker.innerHTML = '';
-        data.articles.forEach(article => {
-            const span = document.createElement('span');
-            span.innerHTML = `<span style="color:#b1f4fd ;font-size:100%;font-family:Magneto;">eS|MTally</span> 📰 ${article.title}`;
-            ticker.appendChild(span);
-        });
-    })
-    .catch(error => {
-        ticker.innerHTML = `<span>❌ खबरें लोड नहीं हो सकीं।</span>`;
-        console.error("News fetch error:", error);
-    });
-</script>
 <!-- यह एक नोट है, indian news headline script stop -->
 
 
@@ -9653,3 +9634,4 @@ window.addEventListener('DOMContentLoaded', async () => {
 </html>
 
 <!-- ------------------  MIPL Repayment Sedual script and code stop -------------------------------------- -->
+
