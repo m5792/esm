@@ -2712,6 +2712,14 @@ setInterval(displayCurrentDateTime, 1000);
 
 
 
+
+
+
+
+
+
+
+  
 <!-- eventa & reminder script stop home section stop site -->
 
 <!DOCTYPE html>
@@ -2767,8 +2775,8 @@ setInterval(displayCurrentDateTime, 1000);
 </div>
 
 
-
 <script>
+  // ------------------ STYLES ------------------
   const style = document.createElement("style");
   style.textContent = `
     .monthly { color: #871301; }
@@ -2779,12 +2787,15 @@ setInterval(displayCurrentDateTime, 1000);
   `;
   document.head.appendChild(style);
 
+  // ------------------ CONFIG ------------------
   const apiEVENTKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
   const sheetEVENTId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
   const rangeEVENT = 'HOLIDAY!A:D';
-
   const today = new Date();
 
+  let allEventRows = []; // global cache for events
+
+  // ------------------ HELPER: PARSE DATE ------------------
   function parseDate(input) {
     const parts = input.split("-");
     if (parts.length === 3) {
@@ -2800,6 +2811,7 @@ setInterval(displayCurrentDateTime, 1000);
     return null;
   }
 
+  // ------------------ POPUP HANDLING ------------------
   function showPopup(content) {
     const popupContent = document.getElementById('popupContent');
     popupContent.innerHTML = '';
@@ -2831,12 +2843,15 @@ setInterval(displayCurrentDateTime, 1000);
     document.getElementById('popupOverlay').style.display = 'none';
   }
 
+  // ------------------ LOAD REMINDERS ------------------
   async function loadReminder() {
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetEVENTId}/values/${rangeEVENT}?key=${apiEVENTKey}`;
     const response = await fetch(url);
     const data = await response.json();
 
     const rows = data.values.slice(1);
+    allEventRows = rows; // cache for search use
+
     const allList = document.querySelector("#allEvents ul");
     allList.innerHTML = "";
 
@@ -2897,46 +2912,47 @@ setInterval(displayCurrentDateTime, 1000);
     });
   }
 
-  document.getElementById("searchInput").addEventListener("input", async function () {
+  // ------------------ SEARCH FILTER ------------------
+  document.getElementById("searchInput").addEventListener("input", function () {
     const query = this.value.trim().toLowerCase();
     const ul = document.querySelector("#allEvents ul");
     ul.innerHTML = "";
 
     if (!query) {
-  // 👇 Just reload original list when input is blank
-  loadReminder();
-  return;
-}
-
-
-    if (!query) {
-      window.originalEvents.forEach((obj) => ul.appendChild(obj.li));
-    } else {
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetEVENTId}/values/${rangeEVENT}?key=${apiEVENTKey}`;
-      const response = await fetch(url);
-      const data = await response.json();
-      const rows = data.values.slice(1);
-
-      rows.forEach((row) => {
-        if (!row || row.length < 3) return;
-        const [type, title, dateStr, extra] = row;
-
-        const matchStr = `${type} ${title} ${dateStr} ${extra || ""}`.toLowerCase();
-        if (matchStr.includes(query)) {
-          const li = document.createElement("li");
-          li.textContent = `${type}:- ${title} (${dateStr})`;
-          if (extra && extra.trim()) {
-            li.classList.add("clickable");
-            li.addEventListener("click", () => {
-              showPopup(extra.trim());
-            });
-          }
-          ul.appendChild(li);
-        }
-      });
+      // Reload original list if input empty
+      loadReminder();
+      return;
     }
+
+    const shown = new Set();
+
+    allEventRows.forEach((row) => {
+      if (!row || row.length < 3) return;
+      const [type, title, dateStr, extra] = row;
+      const matchStr = `${type} ${title} ${dateStr} ${extra || ""}`.toLowerCase();
+
+      if (matchStr.includes(query)) {
+        const uniqueKey = `${type}-${title}-${dateStr}`.toLowerCase();
+        if (shown.has(uniqueKey)) return; // skip duplicates
+        shown.add(uniqueKey);
+
+        const li = document.createElement("li");
+        li.textContent = `${type}:- ${title} (${dateStr})`;
+        li.classList.add(type.toLowerCase());
+
+        if (extra && extra.trim()) {
+          li.classList.add("clickable");
+          li.addEventListener("click", () => {
+            showPopup(extra.trim());
+          });
+        }
+
+        ul.appendChild(li);
+      }
+    });
   });
 
+  // ------------------ INITIAL LOAD ------------------
   loadReminder();
 </script>
 
