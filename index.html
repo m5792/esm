@@ -1017,13 +1017,14 @@ const allOptions = [
   { value: "MA", text: "MUKHTAR" },
   { value: "TA", text: "TUSHAR" },
   { value: "JLN", text: "JOURNAL" },
-  { value: "BANK", text: "BANK" }
+  { value: "BANK", text: "BANK" },
+  { value: "DB", text: "DAYBOOK" }
 ];
 
 // 2. Which user sees which options
 const userOptionsMap = {
   "Anchal": [0,2, 3,4],              // TUSHAR, JOURNAL, BANK
-  "Mukhtar (Admin)": [0, 1, 2, 3,4]   // All options
+  "Mukhtar (Admin)": [0, 1, 2, 3,4,5]   // All options
 };
 
 // 3. Populate cu123 dropdown based on username
@@ -3758,7 +3759,8 @@ function populateuserDropdowns(data) {
         MA: "User | Mukhtiyar",
         TA: "User | Tushar Agarwal",
         JLN: "Voucher | Journal",
-        BANK: "Voucher | Bank"
+        BANK: "Voucher | Bank",
+        DB: "Voucher | Daybook"
 
         //   <div id="resultDiv"></div>  user name show as per your requre
     };
