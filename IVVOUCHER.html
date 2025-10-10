@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>PIN Based Login</title>
+  <title>MIPL Imprest Voucher</title>
    <style>
    #mainContent {
   padding: 20px;
@@ -88,6 +88,8 @@ table tr:hover {
     background-color: white;
   ">
     <button onclick="refreshIVCRTable()" style="margin-bottom: 10px;"> Refresh Table</button>
+    <button onclick="printIVCRTable()">🖨️ Print Statement</button>
+
     <table id="myIVCRTable" style="width: 100%; border-collapse: collapse;"></table>
   </div>
 </div>
@@ -378,260 +380,261 @@ input[type="submit"]:hover, button:hover {
 
 
   </div>
+<script>
+  const userApiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+  const userSheetId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
+  const userRange = 'USER!K:N';
 
-  <script>
-    const userApiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-    const userSheetId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
-    const userRange = 'USER!K:N';
+  const ivcrSheetId = "1h3uC_0Ji4-NUhqrN0aIR-XwLZL5VdgilCBlIzC--SDA";
+  const ivcrRange = 'IVCR!W:AD';
 
-    const ivcrSheetId = "1h3uC_0Ji4-NUhqrN0aIR-XwLZL5VdgilCBlIzC--SDA";
-    const ivcrRange = 'IVCR!W:AD';
+  let users = [];
+  let fulivcrData = [];
 
-    let users = [];
-    let fulivcrData = [];
+  async function fetchUsers() {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${userSheetId}/values/${userRange}?key=${userApiKey}`;
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      const rows = data.values;
 
-    async function fetchUsers() {
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${userSheetId}/values/${userRange}?key=${userApiKey}`;
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        const rows = data.values;
-
-        if (!rows || rows.length < 2) {
-          alert("No data found.");
-          return;
-        }
-
-        users = rows.slice(1).map(row => ({
-          code: row[0]?.trim() || "",
-          pin: row[1]?.trim() || "",
-          status: row[2]?.trim() || "",
-          name: row[3]?.trim() || ""
-        }));
-
-        askForPIN();
-      } catch (err) {
-        console.error("Fetch error:", err);
-        alert("Failed to fetch user data.");
-      }
-    }
-
-    function askForPIN() {
-      let matchedUser = null;
-
-      while (!matchedUser) {
-        const pinInput = prompt("Enter your PIN:");
-        if (!pinInput) continue;
-
-        matchedUser = users.find(user => user.pin === pinInput.trim());
-        if (!matchedUser) alert("Invalid PIN. Please try again.");
-      }
-
-      processUser(matchedUser);
-    }
-
-    function processUser(user) {
-      const status = user.status.trim().toLowerCase();
-      const today = new Date();
-
-      if (status === "locked") {
-        alert("YOUR ID IS LOCKED. PLEASE CONTACT YOUR ADMIN.");
+      if (!rows || rows.length < 2) {
+        alert("No data found.");
         return;
       }
 
-      if (status === "unlocked") {
-        fillDropdown(user);
-        return;
-      }
+      users = rows.slice(1).map(row => ({
+        code: row[0]?.trim() || "",
+        pin: row[1]?.trim() || "",
+        status: row[2]?.trim() || "",
+        name: row[3]?.trim() || ""
+      }));
 
-      const expiry = new Date(user.status);
-      if (isNaN(expiry)) {
-        alert("Invalid status format. Not a valid date or unlock/locked.");
-        return;
-      }
+      askForPIN();
+    } catch (err) {
+      console.error("Fetch error:", err);
+      alert("Failed to fetch user data.");
+    }
+  }
 
-      const diffTime = expiry - today;
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  function askForPIN() {
+    let matchedUser = null;
+    while (!matchedUser) {
+      const pinInput = prompt("Enter your PIN:");
+      if (!pinInput) continue;
+      matchedUser = users.find(user => user.pin === pinInput.trim());
+      if (!matchedUser) alert("Invalid PIN. Please try again.");
+    }
+    processUser(matchedUser);
+  }
 
-      if (diffDays < 0) {
-        alert("YOUR LICENSE EXPIRED. PLEASE CONTACT ADMIN.");
-      } else {
-        if (diffDays <= 5) {
-          alert(`YOUR LICENSE IS EXPIRING IN ${diffDays} DAY(S) ON ${user.status}`);
-        }
-        fillDropdown(user);
-      }
+  function processUser(user) {
+    const status = user.status.trim().toLowerCase();
+    const today = new Date();
+
+    if (status === "locked") {
+      alert("YOUR ID IS LOCKED. PLEASE CONTACT YOUR ADMIN.");
+      return;
     }
 
-    function fillDropdown(user) {
-      const select1 = document.getElementById("ivuser");
-      const select2 = document.getElementById("voucherType");
-      const optionHTML = `<option value="${user.code}">${user.name}</option>`;
-      select1.innerHTML = optionHTML;
-      select2.innerHTML = optionHTML;
-
-      select1.style.display = "block";
-      select2.style.display = "block";
-
-      select1.addEventListener("change", updateIVCRTableAndDropdown);
-
-      updateIVCRTableAndDropdown();
+    if (status === "unlocked") {
+      fillDropdown(user);
+      return;
     }
 
-    async function loadIVCRSheet() {
-      try {
-        const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${ivcrSheetId}/values/${ivcrRange}?key=${userApiKey}`);
-        const data = await response.json();
-        if (data.values) {
-          fulivcrData = data.values;
-        }
-      } catch (err) {
-        console.error("Error fetching IVCR data:", err);
+    const expiry = new Date(user.status);
+    if (isNaN(expiry)) {
+      alert("Invalid status format. Not a valid date or unlock/locked.");
+      return;
+    }
+
+    const diffTime = expiry - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 0) {
+      alert("YOUR LICENSE EXPIRED. PLEASE CONTACT ADMIN.");
+    } else {
+      if (diffDays <= 5) {
+        alert(`YOUR LICENSE IS EXPIRING IN ${diffDays} DAY(S) ON ${user.status}`);
       }
+      fillDropdown(user);
     }
-function updateIVCRTableAndDropdown() {
-  const selectedVoucher = document.getElementById('ivuser').value;
-  const filteredData = fulivcrData.filter((row, i) => i === 0 || row[1] === selectedVoucher);
-  populateIVCRTable(filteredData);
-  populateDropdownList(filteredData); // 👈 Add this line
-}
+  }
 
+  function fillDropdown(user) {
+    const select1 = document.getElementById("ivuser");
+    const select2 = document.getElementById("voucherType");
+    const optionHTML = `<option value="${user.code}">${user.name}</option>`;
+    select1.innerHTML = optionHTML;
+    select2.innerHTML = optionHTML;
 
-    function populateIVCRTable(data) {
-      const table = document.getElementById("myIVCRTable");
-      table.innerHTML = '';
+    select1.style.display = "block";
+    select2.style.display = "block";
+    select1.addEventListener("change", updateIVCRTableAndDropdown);
+    updateIVCRTableAndDropdown();
+  }
 
-      data.forEach((row, index) => {
-        const tr = document.createElement("tr");
+  async function loadIVCRSheet() {
+    try {
+      const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${ivcrSheetId}/values/${ivcrRange}?key=${userApiKey}`);
+      const data = await response.json();
+      if (data.values) fulivcrData = data.values;
+    } catch (err) {
+      console.error("Error fetching IVCR data:", err);
+    }
+  }
 
-        if (index === 0) {
-          row.forEach(cell => {
-            const th = document.createElement("th");
-            th.textContent = cell;
-            tr.appendChild(th);
-          });
+  function updateIVCRTableAndDropdown() {
+    const selectedVoucher = document.getElementById('ivuser').value;
+    const filteredData = fulivcrData.filter((row, i) => i === 0 || row[1] === selectedVoucher);
+    populateIVCRTable(filteredData);
+    populateDropdownList(filteredData);
+  }
 
+  function populateIVCRTable(data) {
+    const table = document.getElementById("myIVCRTable");
+    table.innerHTML = '';
+    data.forEach((row, index) => {
+      const tr = document.createElement("tr");
+
+      if (index === 0) {
+        row.forEach(cell => {
           const th = document.createElement("th");
-          th.textContent = "Balance";
+          th.textContent = cell;
           tr.appendChild(th);
-        } else {
-          row.forEach((cell, idx) => {
-            const td = document.createElement("td");
-            td.textContent = cell;
-            tr.appendChild(td);
-
-            if (idx === 2) {
-              const type = cell.trim().toLowerCase();
-              if (type === 'receipt') tr.classList.add('receipt');
-              if (type === 'bill') tr.classList.add('bill');
-            }
-          });
-
+        });
+        const th = document.createElement("th");
+        th.textContent = "Balance";
+        tr.appendChild(th);
+      } else {
+        row.forEach((cell, idx) => {
           const td = document.createElement("td");
-          td.className = "runningBalance";
+          td.textContent = cell;
           tr.appendChild(td);
-        }
-
-        table.appendChild(tr);
-      });
-
-      calculateIVCRRunningBalance();
-    }
-
-    function calculateIVCRRunningBalance() {
-      const rows = Array.from(document.querySelectorAll("#myIVCRTable tr")).slice(1);
-      if (rows.length === 0) return;
-
-      let balance = 0;
-
-      for (let i = rows.length - 1; i >= 0; i--) {
-        const row = rows[i];
-        const tds = row.querySelectorAll('td');
-        const amt = parseFloat(tds[5]?.textContent || "0");
-        const typ = tds[2]?.textContent.trim().toLowerCase();
-
-        if (!isNaN(amt)) {
-          if (typ === 'receipt' || typ === 'salary') {
-            balance += amt;
-          } else if (typ === 'payment' || typ === 'bill') {
-            balance -= amt;
+          if (idx === 2) {
+            const type = cell.trim().toLowerCase();
+            if (type === 'receipt') tr.classList.add('receipt');
+            if (type === 'bill') tr.classList.add('bill');
           }
-        }
-
-        tds[tds.length - 1].textContent = balance.toFixed();
+        });
+        const td = document.createElement("td");
+        td.className = "runningBalance";
+        tr.appendChild(td);
       }
+
+      table.appendChild(tr);
+    });
+    calculateIVCRRunningBalance();
+  }
+
+  function calculateIVCRRunningBalance() {
+    const rows = Array.from(document.querySelectorAll("#myIVCRTable tr")).slice(1);
+    if (rows.length === 0) return;
+    let balance = 0;
+    for (let i = rows.length - 1; i >= 0; i--) {
+      const row = rows[i];
+      const tds = row.querySelectorAll('td');
+      const amt = parseFloat(tds[5]?.textContent || "0");
+      const typ = tds[2]?.textContent.trim().toLowerCase();
+      if (!isNaN(amt)) {
+        if (typ === 'receipt' || typ === 'salary') balance += amt;
+        else if (typ === 'payment' || typ === 'bill') balance -= amt;
+      }
+      tds[tds.length - 1].textContent = balance.toFixed();
     }
+  }
 
-async function refreshIVCRTable() {
-  await loadIVCRSheet();
-  updateIVCRTableAndDropdown();
-}
+  async function refreshIVCRTable() {
+    await loadIVCRSheet();
+    updateIVCRTableAndDropdown();
+  }
 
+  function filterIVCRTableGlobally() {
+    const input = document.getElementById("ivcrGlobalSearch").value.toLowerCase();
+    const table = document.getElementById("myIVCRTable");
+    const rows = table.querySelectorAll("tr");
+    rows.forEach((row, index) => {
+      if (index === 0) return;
+      const cells = row.querySelectorAll("td");
+      const match = Array.from(cells).some(td => td.textContent.toLowerCase().includes(input));
+      row.style.display = match ? "" : "none";
+    });
+  }
 
-    // table serch bar
-    function filterIVCRTableGlobally() {
-  const input = document.getElementById("ivcrGlobalSearch").value.toLowerCase();
-  const table = document.getElementById("myIVCRTable");
-  const rows = table.querySelectorAll("tr");
+  function populateDropdownList(data) {
+    const ul = document.getElementById("dropdownIVCRList");
+    ul.innerHTML = '';
+    const uniqueValues = [...new Set(data.slice(1).map(row => row[4]))].filter(v => v);
+    uniqueValues.forEach(value => {
+      const li = document.createElement("li");
+      li.textContent = value;
+      li.style.padding = "6px 10px";
+      li.style.cursor = "pointer";
+      li.onclick = () => {
+        document.getElementById('dropdownIVCRSearch').value = value;
+        ul.style.display = "none";
+        filterTableByLedger(value);
+      };
+      ul.appendChild(li);
+    });
+  }
 
-  rows.forEach((row, index) => {
-    if (index === 0) return; // Skip header row
+  function filterIVCRDropdown() {
+    const searchInput = document.getElementById("dropdownIVCRSearch");
+    const list = document.getElementById("dropdownIVCRList");
+    const searchVal = searchInput.value.toLowerCase();
+    const items = list.querySelectorAll("li");
+    let found = false;
+    items.forEach(item => {
+      const match = item.textContent.toLowerCase().includes(searchVal);
+      item.style.display = match ? "block" : "none";
+      if (match) found = true;
+    });
+    list.style.display = found && searchVal !== "" ? "block" : "none";
+  }
 
-    const cells = row.querySelectorAll("td");
-    const match = Array.from(cells).some(td => td.textContent.toLowerCase().includes(input));
-    row.style.display = match ? "" : "none";
-  });
-}
+  // 🖨️ --- PROFESSIONAL PRINT FUNCTION ---
+  function printIVCRTable() {
+    const table = document.getElementById("myIVCRTable").outerHTML;
+    const today = new Date().toLocaleString();
 
-    //
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Account Statement</title>
+          <style>
+            body { font-family: 'Segoe UI', sans-serif; margin: 20px; color: #000; }
+            h2 { text-align: center; text-transform: uppercase; }
+            .subtitle { text-align: center; font-size: 14px; color: #555; margin-bottom: 20px; }
+            table { width: 100%; border-collapse: collapse; font-size: 13px; }
+            th, td { border: 1px solid #333; padding: 6px 8px; text-align: left; }
+            th { background: #f0f0f0; font-weight: bold; }
+            tr:nth-child(even) { background-color: #fafafa; }
+            .footer { margin-top: 30px; font-size: 12px; text-align: center; color: #555; }
+            @media print {
+              button { display: none; }
+            }
+          </style>
+        </head>
+        <body>
+          <h2>Account Statement</h2>
+          <div class="subtitle">Printed on: ${today}</div>
+          ${table}
+          <div class="footer">This is a system-generated statement. No signature required.</div>
+          <script>window.print();<\/script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  }
 
-    function populateDropdownList(data) {
-  const ul = document.getElementById("dropdownIVCRList");
-  ul.innerHTML = '';
-  const uniqueValues = [...new Set(data.slice(1).map(row => row[4]))].filter(v => v);
+  window.onload = async function () {
+    await loadIVCRSheet();
+    fetchUsers();
+  }
+</script>
 
-  uniqueValues.forEach(value => {
-    const li = document.createElement("li");
-    li.textContent = value;
-    li.style.padding = "6px 10px";
-    li.style.cursor = "pointer";
-
-    li.onclick = () => {
-      document.getElementById('dropdownIVCRSearch').value = value;
-      ul.style.display = "none";
-      // Optional: Filter table based on dropdown selection
-      filterTableByLedger(value);
-    };
-
-    ul.appendChild(li);
-  });
-}
-
-function filterIVCRDropdown() {
-  const searchInput = document.getElementById("dropdownIVCRSearch");
-  const list = document.getElementById("dropdownIVCRList");
-  const searchVal = searchInput.value.toLowerCase();
-
-  const items = list.querySelectorAll("li");
-  let found = false;
-
-  items.forEach(item => {
-    const match = item.textContent.toLowerCase().includes(searchVal);
-    item.style.display = match ? "block" : "none";
-    if (match) found = true;
-  });
-
-  list.style.display = found && searchVal !== "" ? "block" : "none";
-}
-//
-
-
-
-    window.onload = async function () {
-      await loadIVCRSheet();
-      fetchUsers();
-    }
-  </script>
 </body>
 </html>
 
@@ -654,22 +657,28 @@ function filterIVCRDropdown() {
 
 
  <!-- IVCR form div script start hare -->
+<!-- ✅ IVCR Form Script (Full Fixed Version) -->
 <script>
   const scriptIVCRURL = 'https://script.google.com/macros/s/AKfycbz-lyd06EKKSO4xVaTSRWoIgMWS0C9nZvzipEP59K25TZSOSdL5CMpYJNPgmF1nyyGrXg/exec';
 
+  // 🔹 Handle form submission
   document.addEventListener("submit", async function (e) {
     const form = e.target;
     if (form.id !== "mainIVCRForm") return;
 
     e.preventDefault();
-     const formMode = document.getElementById("formModeIVCR").value; //****
+
+    const formMode = document.getElementById("formModeIVCR").value;
     const submitIVCRButton = document.getElementById("submitIVCRButton");
     submitIVCRButton.disabled = true;
-    submitIVCRButton.value = "Wait..";
+    submitIVCRButton.value = "Wait...";
 
+    // 🔹 Add timestamp
     const now = new Date();
-    document.getElementById('timestampIVCR').value = `${now.getMonth()+1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+    document.getElementById('timestampIVCR').value =
+      `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
 
+    // 🔹 Convert text to uppercase
     const formInputs = form.querySelectorAll('input, textarea');
     formInputs.forEach(input => {
       if (input.type === 'text' || input.type === 'textarea') {
@@ -677,8 +686,7 @@ function filterIVCRDropdown() {
       }
     });
 
-    //****
-    
+    // 🔹 Choose submit or modify
     if (formMode === "modify") {
       await modifyIVCREntry();
     } else {
@@ -689,6 +697,7 @@ function filterIVCRDropdown() {
     submitIVCRButton.value = "Submit";
   });
 
+  // 🔹 Submit new entry
   async function submitIVCREntry(form) {
     const formData = new FormData(form);
     try {
@@ -697,24 +706,21 @@ function filterIVCRDropdown() {
 
       if (result.result === 'success') {
         alert('Entry saved successfully!');
-        form.reset(); // FORM RESET
+        form.reset();
+
+        // ✅ Reset form state
         document.getElementById("formModeIVCR").value = "new";
-        // ✅ Reload data from sheet
-  await loadIVCRSheet();
+        document.getElementById("sNo").value = "";
 
-  // ✅ Refresh table using latest data and selected user
-  updateIVCRTableAndDropdown();
-       
-        
-        
+        // ✅ Refresh sheet & table
+        await loadIVCRSheet();
+        updateIVCRTableAndDropdown();
 
-           // ✅ Remove DLT option after submit
+        // ✅ Remove DLT option
         const voucherDropdown = document.getElementById("voucherType");
         const dltOption = [...voucherDropdown.options].find(opt => opt.value === "DLT");
-        if (dltOption) {
-          voucherDropdown.removeChild(dltOption);
-        }
-        //
+        if (dltOption) voucherDropdown.removeChild(dltOption);
+
       } else {
         alert(`Error: ${result.error || 'Unknown error occurred.'}`);
       }
@@ -722,58 +728,49 @@ function filterIVCRDropdown() {
       alert(`Error submitting the form: ${error.message}`);
     }
   }
-    //****
-   
 
+  // 🔹 Fetch details by S.No for modify/delete
   async function fetchIVCRDetails() {
     const sNo = document.getElementById("searchIVCRSNo").value;
     const waitMessage = document.getElementById("waitIVCRMessage");
     waitMessage.innerText = "Fetching data... Please wait...";
     waitMessage.style.display = 'block';
 
-
-
-    //**** option value ke base par data fetch krna
-
     try {
-  const response = await fetch(`${scriptIVCRURL}?sNo=${sNo}`);
-  const data = await response.json(); // ✅ You need this line!
+      const response = await fetch(`${scriptIVCRURL}?sNo=${sNo}`);
+      const data = await response.json();
 
-const voucherTypeDropdown = document.getElementById("voucherType");
-const selectedIVVoucher = voucherTypeDropdown.value;
+      const voucherTypeDropdown = document.getElementById("voucherType");
+      const selectedIVVoucher = voucherTypeDropdown.value;
 
-if (data.result !== "error" && data.Voucher === selectedIVVoucher) {
-    
-    document.getElementById("sNo").value = data.SNo;
+      if (data.result !== "error" && data.Voucher === selectedIVVoucher) {
+
+        // ✅ Fill fetched data
+        document.getElementById("sNo").value = data.SNo;
         document.getElementById("voucherType").value = data.Voucher;
         document.getElementById("ivcr0").value = data.Type;
         document.getElementById("ivcr1").value = data.Date;
         document.getElementById("dropdownIVCRSearch").value = data.Ledger;
         document.getElementById("ivcr2").value = data.Amount;
         document.getElementById("ivcr3").value = data.Narration;
-      //  document.getElementById("modifyIVCRButton").style.display = "inline-block";
 
+        // ✅ Add DLT option if missing
+        if (![...voucherTypeDropdown.options].some(opt => opt.value === "DLT")) {
+          const deleteOption = document.createElement("option");
+          deleteOption.value = "DLT";
+          deleteOption.text = "Delete";
+          deleteOption.style.color = "red";
+          deleteOption.style.backgroundColor = "blue";
+          voucherTypeDropdown.appendChild(deleteOption);
+        }
 
-       // ✅ Add "DLT - delete" option if it doesn't exist already
-const voucherDropdown = document.getElementById("voucherType");
-if (![...voucherDropdown.options].some(opt => opt.value === "DLT")) {
-  const deleteOption = document.createElement("option");
-  deleteOption.value = "DLT";
-  deleteOption.text = "Delete";
-  deleteOption.style.color = "red";
-  deleteOption.style.backgroundColor = "blue";
-  voucherDropdown.appendChild(deleteOption);
-}
-
-       document.getElementById("formModeIVCR").value = "modify"; // ✅ Set to modify
-    //    document.getElementById("modifyIVCRButton").style.display = "inline-block";
-
-    // ✅ Show alert after successful data fetch
-      alert(" Select Delete Option in User Section For Delete Entry");
-
+        // ✅ Set modify mode
+        document.getElementById("formModeIVCR").value = "modify";
+        alert("Select 'Delete' Option in User Section to Delete Entry or Modify Details.");
       } else {
         alert("No record found for the given S.No.");
       }
+
     } catch (error) {
       console.error("Error fetching details:", error);
       alert("Please reconcile details or contact admin.");
@@ -782,17 +779,18 @@ if (![...voucherDropdown.options].some(opt => opt.value === "DLT")) {
     }
   }
 
+  // 🔹 Modify existing entry
   async function modifyIVCREntry() {
     const waitMessage = document.getElementById("waitIVCRMessage");
     waitMessage.innerText = "Please wait...";
     waitMessage.style.display = "block";
 
-
     const form = document.getElementById('mainIVCRForm');
 
-    // ✅ Set new timestamp
+    // ✅ New timestamp
     const now = new Date();
-    document.getElementById('timestampIVCR').value = `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+    document.getElementById('timestampIVCR').value =
+      `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
 
     const formData = new FormData(form);
     formData.set('SNo', document.getElementById('sNo').value);
@@ -804,25 +802,22 @@ if (![...voucherDropdown.options].some(opt => opt.value === "DLT")) {
       if (result.result === 'success') {
         alert('Entry modified successfully!');
         form.reset();
-        document.getElementById("formModeIVCR").value = "new"; // ✅ Reset to new
-     // ✅ Reload data from sheet
-  await loadIVCRSheet();
 
-  // ✅ Refresh table using latest data and selected user
-  updateIVCRTableAndDropdown();
-   
-   
-       
-        document.getElementById("submitIVCRButton").style.display = "inline-block";
-        document.getElementById("modifyIVCRButton").style.display = "none";
+        // ✅ Reset state for new entry
+        document.getElementById("sNo").value = "";
+        document.getElementById("formModeIVCR").value = "new";
+        document.getElementById("submitIVCRButton").value = "Submit";
+        document.getElementById("submitIVCRButton").disabled = false;
 
-          // ✅ Remove DLT option after modify
+        // ✅ Reload & refresh
+        await loadIVCRSheet();
+        updateIVCRTableAndDropdown();
+
+        // ✅ Remove DLT option
         const voucherDropdown = document.getElementById("voucherType");
         const dltOption = [...voucherDropdown.options].find(opt => opt.value === "DLT");
-        if (dltOption) {
-          voucherDropdown.removeChild(dltOption);
-        }
-        //
+        if (dltOption) voucherDropdown.removeChild(dltOption);
+
       } else {
         alert(`Error modifying entry: ${result.error}`);
       }
@@ -833,8 +828,13 @@ if (![...voucherDropdown.options].some(opt => opt.value === "DLT")) {
     }
   }
 
-    //*****
+  // 🔹 Optional reset function (can be reused)
+  function resetIVCRState() {
+    document.getElementById("formModeIVCR").value = "new";
+    document.getElementById("sNo").value = "";
+  }
 </script>
+<!-- ✅ End of IVCR Form Script -->
 <!-- IVCR form div script stop hare -->
 
 
