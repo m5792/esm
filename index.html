@@ -4341,15 +4341,15 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
 </head>
 <body>
 
-  
  <script>
   const apiCLKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
   const sheetCLId = "1ECwXrxs8_FDWw1qAC6_qxEwP_HE3SGMM4qNKVZHlIS0";
-  const rangeCL = "DATAINDEX!A:G";
+  const rangeCL = "FORM!A:G";   //786786
 
   let fullData = [];
   let filteredByAccount = [];
 
+  // ===== Fetch Google Sheet Data =====
   async function fetchSheetData() {
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetCLId}/values/${rangeCL}?key=${apiCLKey}`;
     try {
@@ -4362,6 +4362,7 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
     }
   }
 
+  // ===== Process Raw Sheet Rows =====
   function processRawData(rows) {
     return rows.slice(1).map(row => ({
       date: row[0],
@@ -4375,6 +4376,7 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
     }));
   }
 
+  // ===== Render Table =====
   function renderTable(data) {
     const tableContainer = document.getElementById("tableContainer");
     if (!data || data.length === 0) {
@@ -4382,23 +4384,32 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
       return;
     }
 
+    // ✅ Sort by column index 0 (date or T.No.) in descending order
+    const sortedData = [...data].sort((a, b) => {
+      const numA = parseFloat(a.date) || 0;
+      const numB = parseFloat(b.date) || 0;
+      return numB - numA; // descending
+    });
+
+    // Running balance calculation
     let balance = 0;
-  const reversed = [...data].reverse();
-  const rowsWithBalance = reversed.map(row => {
-    const type = row.drcr.toLowerCase();
-    const isNegative = type === "payment" || type === "billdr";
-    const signed = isNegative ? -row.amount : row.amount;
-    balance += signed;
-    return { ...row, signedAmount: signed, running: balance };
-  }).reverse();
+    const reversed = [...sortedData].reverse();
+    const rowsWithBalance = reversed.map(row => {
+      const type = row.drcr.toLowerCase();
+      const isNegative = type === "payment" || type === "billdr";
+      const signed = isNegative ? -row.amount : row.amount;
+      balance += signed;
+      return { ...row, signedAmount: signed, running: balance };
+    }).reverse();
 
-
+    // Build Table
     const table = document.createElement("table");
+    table.id = "ledgerTable";
     table.innerHTML = `
       <thead>
         <tr>
           <th>T.No.</th>
-           <th>User</th>
+          <th>User</th>
           <th>Type</th>
           <th>Date</th>
           <th>Ledger</th>
@@ -4422,10 +4433,22 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
         `).join("")}
       </tbody>
     `;
+
+    // Show table
     tableContainer.innerHTML = "";
     tableContainer.appendChild(table);
+
+    // ✅ Replace "OPT" with "MA" in User column (index 1)
+    const rows = table.querySelectorAll("tbody tr");
+    rows.forEach(row => {
+      const userCell = row.cells[1];
+      if (userCell && userCell.textContent.trim() === "OPT") {
+        userCell.textContent = "MA";
+      }
+    });
   }
 
+  // ===== Filter by Account + Ledger =====
   function filterAndRender(accountType, ledgerFilter = "") {
     filteredByAccount = fullData.filter(row => row.type === accountType);
     let visible = filteredByAccount;
@@ -4439,6 +4462,7 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
     renderTable(visible);
   }
 
+  // ===== Ledger Search (auto dropdown) =====
   async function setupLedgerSearch() {
     const input = document.getElementById("msaf54");
     const dropdown = document.getElementById("ledgerDropdown");
@@ -4468,8 +4492,6 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
       });
 
       dropdown.style.display = matches.length ? "block" : "none";
-
-      // Live filter
       filterAndRender(document.getElementById("cu123").value, value);
     });
 
@@ -4481,16 +4503,18 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
     });
   }
 
+  // ===== Account Type Dropdown =====
   async function setupAccountSelect() {
     const select = document.getElementById("cu123");
     select.addEventListener("change", () => {
       const selected = select.value;
       document.getElementById("msaf54").value = "";
-      document.getElementById("searchCLedger").value = ""; // Clear global search
+      document.getElementById("searchCLedger").value = "";
       filterAndRender(selected);
     });
   }
 
+  // ===== Global Search (🔍 Search in Table...) =====
   function setupGlobalSearch() {
     const input = document.getElementById("searchCLedger");
 
@@ -4513,78 +4537,71 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
     });
   }
 
+  // ===== Print Table =====
+  function printCUSERTable() {
+    const tableHTML = document.getElementById("tableContainer").innerHTML;
+    const style = `
+      <style>
+        body { font-family: Arial; padding: 20px; }
+        table {
+          width: 100%;
+          margin-top: 20px;
+          border-collapse: collapse;
+          border-radius: 8px;
+          overflow: hidden;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          font-size: 14px;
+        }
+        th, td {
+          border: 1px solid #e0e0e0;
+          padding: 10px 14px;
+          text-align: left;
+        }
+        th {
+          background-color: #004d80;
+          color: white;
+          font-weight: bold;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+        tr:nth-child(even) {
+          background-color: #f9f9f9;
+        }
+        .negative { color: black; }
+        .positive { color: red; }
+      </style>
+    `;
+    const win = window.open("", "_blank");
+    win.document.write(`
+      <html>
+        <head>
+          <title>Print Table</title>
+          ${style}
+        </head>
+        <body>
+          <h2>MIPL Cash Ledger</h2>
+          ${tableHTML}
+          <script>
+            window.onload = function() {
+              window.print();
+              window.onafterprint = function() { window.close(); };
+            };
+          <\/script>
+        </body>
+      </html>
+    `);
+    win.document.close();
+  }
 
-// print table
-
-function printCUSERTable() {
-  const tableHTML = document.getElementById("tableContainer").innerHTML;
-  const style = `
-    <style>
-      body { font-family: Arial; padding: 20px; }
-      table {
-  width: 100%;
-  margin-top: 20px;
-  border-collapse: collapse;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 14px;
-
-}
-
-th, td {
-  border: 1px solid #e0e0e0;
-  padding: 10px 14px;
-  text-align: left;
-}
-
-th {
-  background-color: #004d80;
-  color: white;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-      .negative { color: black; }
-      .positive { color: red; }
-    </style>
-  `;
-  const win = window.open("", "_blank");
-  win.document.write(`
-    <html>
-      <head>
-        <title>Print Table</title>
-        ${style}
-      </head>
-      <body>
-        <h2>MIPL Cash Ledger</h2>
-        ${tableHTML}
-        <script>
-          window.onload = function() {
-            window.print();
-            window.onafterprint = function() { window.close(); };
-          };
-        <\/script>
-      </body>
-    </html>
-  `);
-  win.document.close();
-}
-
-//
+  // ===== Initialization =====
   document.addEventListener("DOMContentLoaded", async () => {
     const raw = await fetchSheetData();
     fullData = processRawData(raw);
 
     await setupLedgerSearch();
     await setupAccountSelect();
-    setupGlobalSearch(); // Global search setup
+    setupGlobalSearch();
 
     const defaultValue = document.getElementById("cu123").value;
     if (defaultValue) {
@@ -4593,7 +4610,6 @@ tr:nth-child(even) {
   });
 </script>
 
-  
 </body>
 </html>
 
