@@ -761,6 +761,7 @@ async function fetchGlobalMessage() {
 
 <button onclick="print2011Report()" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer;">🖨️ Print Report</button>
 
+<button id="refresh2011Btn" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer;"> 🔄 Refresh</button>
 
   </div>
 
@@ -9375,10 +9376,19 @@ async function load2011Data() {
 }
 
 // === Ledger Dropdown Setup ===
+// === Ledger Dropdown Setup ===
 function initledger2011Dropdown() {
-  // Get unique ledger names and sort alphabetically
-  const ledgerOptions = [...new Set(sheetData.slice(1).map(r => r[3]).filter(v => v))].sort((a, b) => a.localeCompare(b));
+  // Filter only rows where column K = "SALE" or "RECEIPT"
+  const validRows = sheetData.slice(1).filter(r => {
+    const type = (r[10] || "").trim().toUpperCase();
+    return type === "SALE" || type === "RECEIPT";
+  });
 
+  // Extract unique ledger names from column D (index 3)
+  const ledgerOptions = [...new Set(validRows.map(r => r[3]).filter(v => v))]
+    .sort((a, b) => a.localeCompare(b));
+
+  // Initialize dropdown with filtered ledgers
   setupDropdown("ledger2011Input", "ledger2011Dropdown", ledgerOptions, (val) => {
     resetDates();
     selectedLedger = val;
@@ -9388,6 +9398,7 @@ function initledger2011Dropdown() {
     showLedgerAddress(val);
   });
 }
+
 
 
 // === Show Ledger Address ===
@@ -9655,6 +9666,30 @@ function print2011Report(){
   printWindow.document.close();
 }
 
+
+// === REFRESH FUNCTION ===
+function refresh2011Data() {
+  const btn = document.getElementById("refresh2011Btn");
+  btn.disabled = true;
+  btn.textContent = "⏳ Refreshing...";
+
+  // Re-fetch data from Google Sheets
+  load2011Data()
+    .then(() => {
+      applySearch();
+      btn.textContent = "🔄 Refresh";
+      btn.disabled = false;
+      alert("✅ Data refreshed successfully!");
+    })
+    .catch((err) => {
+      console.error("Refresh Error:", err);
+      btn.textContent = "🔄 Refresh";
+      btn.disabled = false;
+      alert("❌ Failed to refresh data. Check console for details.");
+    });
+}
+document.getElementById("refresh2011Btn")?.addEventListener("click", refresh2011Data);
+//
 
 </script>
 
