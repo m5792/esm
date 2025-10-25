@@ -28,7 +28,7 @@
     /* Modal container */
     .modalvcr { 
       width: 10in;
-      height: 16in;
+      height: 17in;
       background: var(--card-bg); 
       border-radius: 20px; 
       overflow: hidden; 
@@ -308,8 +308,7 @@ table tr:hover {
 
 <!-- home btn bottam part start --> 
         <div id="home-bottom" class="panel-content active">
-         <table id="MIPLDATATABLE"></table>
-          </table>
+         <table id="mipl2011Table"><thead id="tableHead"></thead> <tbody id="table2011Body"></tbody></table><br/><br/>
         </div>
 <!-- home btn bottam part start --> 
 
@@ -553,20 +552,95 @@ table tr:hover {
     <!-- Footer -->
     <div class="modalvcr-footer">
       <div>
+     
+<div id="searchPEBContainer">
+        
+ 
 
-        <span style="font-size: 120%; font-weight: bold;color: #f6f7a9;">Daybook Searchbar</span>
+<br>
 
-<input type="text" id="DATASEARCMIPL" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width:200px; width: 4in; background-color: rgb(241, 212, 212);"  placeholder="Search..." />
-          <div style="background-color: rgb(217, 214, 214);">
- <span style="color: #680268 ;font-size:90%;">Invoice Amt:</span>  	Rs. <span id="totalInvoice"></span> |
- <span style="color: #037e71 ;font-size:90%;">Weight:</span>  		Kg.   <span id="totalWeight"></span> |
- <span style="color: #8f3f02 ;font-size:90%;">Receipt:</span> 		Rs.   <span id="totalBankInvoice"></span> |
-  <span style="color: blue ;font-size:90%;">TDS:</span> <span id="totalTdsInvoice"></span> |
-  <span id="balance"></span>
+
+<span style="color: rgb(240, 240, 240); font-weight: bold;">Select Report Option:</span>
+<select id="mipl2011" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width:200px; width: 4in; background-color: rgb(1, 68, 81);color: white; font-size: 14px;" >
+  <option value="">--Select--</option>
+  <option value="serch">Search Bar (All Data)</option>
+  <option value="ledger">Ledger</option>
+  <option value="poreff">PO/REFF</option>
+  <option value="receipt">Receipt</option>
+  <option value="sale">Sale</option>
+  <option value="address">Address</option>
+</select>
+
+<button onclick="print2011Report()" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer;">🖨️ Print Report</button>
+
+
+  </div>
+
+<div id="search2011Bar">
+  <input type="text" id="search2011Input" placeholder="Search in current table...">
+  <label>From:</label>
+  <input type="date" id="start2011Date">
+  <label>To:</label>
+  <input type="date" id="end2011Date">
 </div>
 
-        <div class="modalvcr-title">eS|MTally</div>
-        <div class="muted">User: Mukhtiyar Ahamad | Mob: 9756735792</div>
+<style>
+  #search2011Bar {
+    background-color: #027175; /* blue */
+    width: 100%;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    gap: 10px;
+    box-sizing: border-box;
+  }
+
+  #search2011Input {
+    flex: 1;
+    background-color: #fdfdf6; /* grey */
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+  }
+
+  #search2011Bar label {
+    font-weight: bold;
+    color: rgb(247, 244, 244);
+    margin-left: 10px;
+  }
+
+  #search2011Bar input[type="date"] {
+    padding: 4px 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+  }
+</style>
+
+
+        
+    <!-- Totals (Only for Ledger) -->
+<div id="totals2011mipl">
+
+  <!-- Ledger Filter -->
+<div id="ledger2011Select" class="filter-container">
+ <span style="color: black;">Ledger Name:</span>
+  <input type="text" id="ledger2011Input" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width:200px; width: 4in; background-color: rgb(241, 212, 212); font-size: 14px;" placeholder="Type to search ledger...">
+  <div id="ledger2011Dropdown" class="dropdown"></div>
+</div>
+
+  <span>Total Receipt:</span> <span id="totalReceipt">0</span> |
+  <span>Total TDS:</span> <span id="totalTds">0</span> |
+  <span>Total Bill:</span> <span id="totalBill">0</span> |
+  <span>Total Credit Note:</span> <span id="totalCn">0</span> |
+  <span>Total Weight:</span> <span id="totalPEBWeight">0</span> |
+  <span>Balance:</span> <span id="totalDifference">0</span>
+</div>       
+
+       
       </div>
     </div>
   </div>
@@ -1228,250 +1302,6 @@ loadAllData();
 
 
 
-  <!---------------------------- daybook SCRIPT START HARE ---------------------------------------- -->
-
-<script>
-const api101Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-const sheet101Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
-const range101 = 'FORM!A:K'; 
-const api101Url = "https://script.google.com/macros/s/AKfycbwRAHlS8JeIXSEbPVjUNVrXkpfVOmNc2z95OZsygdzebtk-sgLV-86eWyZ20jVHspYe/exec";
-
-let allTableData = [];   // form sheet ka data isme store hai sno. ke decending form me
-
-// ---------------- Totals Calculation ----------------
-function calculateTotals(data) {
-  let totalInvoice = 0, totalWeight = 0, totalBank = 0, totalTds = 0;
-
-  data.forEach((row, i) => {
-    if (i === 0) return; // skip header
-
-    const type = (row[1] || "").toUpperCase();
-    const invoiceAmt = parseFloat(row[6] || 0);
-    const weight = parseFloat(row[7] || 0);
-
-    if (!isNaN(invoiceAmt)) totalInvoice += invoiceAmt;
-    if (!isNaN(weight)) totalWeight += weight;
-
-    if (type === "BANK") {
-      const bank = parseFloat(row[4] || 0);
-      if (!isNaN(bank)) totalBank += bank;
-    }
-
-    if (type === "TDS") {
-      const tds = parseFloat(row[4] || 0);
-      if (!isNaN(tds)) totalTds += tds;
-    }
-  });
-
-  const balance = totalInvoice - totalBank - totalTds;
-
-  document.getElementById("totalInvoice").textContent = totalInvoice.toFixed();
-  document.getElementById("totalWeight").textContent = totalWeight.toFixed();
-  document.getElementById("totalBankInvoice").textContent = totalBank.toFixed();
-  document.getElementById("totalTdsInvoice").textContent = totalTds.toFixed();
-  document.getElementById("balance").textContent = "Balance: Rs. " + balance.toFixed();
-}
-
-// -------------------- Fetch Table --------------------
-async function loadDATAMIPLTABLE() {
-  const table = document.getElementById("MIPLDATATABLE");
-  table.innerHTML = "<tr><th>Loading...</th></tr>";
-
-  try {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet101Id}/values/${range101}?key=${api101Key}`;
-    const response = await fetch(url);
-    const data = await response.json();
-
-    if (!data.values || data.values.length === 0) {
-      table.innerHTML = "<tr><td>No data found</td></tr>";
-      return;
-    }
-
-    // Filter rows based on column K (index 10)
-    const header = data.values[0];
-    const filteredRows = data.values.slice(1).filter(row => {
-      const colK = row[10]?.toUpperCase().trim();
-      return colK === "SALE" || colK === "RECEIPT" || colK === "TDS";
-    });
-
-    // Sort descending by column A (index 0)
-    filteredRows.sort((a, b) => {
-      const valA = isNaN(a[0]) ? a[0] : Number(a[0]);
-      const valB = isNaN(b[0]) ? b[0] : Number(b[0]);
-      if (valA < valB) return 1;
-      if (valA > valB) return -1;
-      return 0;
-    });
-
-    // Store header + filtered sorted rows
-    allTableData = [header, ...filteredRows];
-
-    // Render table with last 10 entries initially
-    renderDATAMIPLTABLE(allTableData, true); 
-
-    // Calculate totals
-    calculateTotals(allTableData);
-
-  } catch (err) {
-    console.error(err);
-    table.innerHTML = "<tr><td>Error loading data</td></tr>";
-  }
-}
-
-// -------------------- Render Table --------------------
-function renderDATAMIPLTABLE(dataArray, limitTo10 = false) {
-  const table = document.getElementById("MIPLDATATABLE");
-  table.innerHTML = "";
-
-  if (!dataArray || dataArray.length === 0) {
-    table.innerHTML = "<tr><td>No data</td></tr>";
-    return;
-  }
-
-  const thead = document.createElement("thead");
-  const tbody = document.createElement("tbody");
-
-  // Header
-  const headerRow = dataArray[0];
-  const trHead = document.createElement("tr");
-  headerRow.forEach(cell => {
-    const th = document.createElement("th");
-    th.textContent = cell || "";
-    trHead.appendChild(th);
-  });
-  const thAction = document.createElement("th");
-  thAction.textContent = "Actions";
-  trHead.appendChild(thAction);
-  thead.appendChild(trHead);
-
-  // Rows to show
-  let rowsToShow = dataArray.slice(1);
-  if (limitTo10) rowsToShow = rowsToShow.slice(0, 15);
-
-  rowsToShow.forEach(row => {
-    const tr = document.createElement("tr");
-
-    row.forEach(cell => {
-      const td = document.createElement("td");
-      td.textContent = cell || "";
-      tr.appendChild(td);
-    });
-
-    // Row color
-    const typeCell = row[1]?.toUpperCase().trim();
-    if (typeCell === "BANK") tr.style.color = "red";
-    else if (typeCell === "CREDIT NOTE") tr.style.color = "grey";
-    else if (typeCell === "CHALLAN") tr.style.color = "green";
-
-    // Actions
-    const invoiceNo = row[4]?.trim();
-    const actionTd = document.createElement("td");
-
-    if (invoiceNo && typeCell === "TAX INVOICE") {
-      const invoiceKey = invoiceNo.replace("/", "_");
-      const packingKey = invoiceNo;
-      const container = document.createElement("div");
-      container.style.display = "flex";
-      container.style.gap = "12px";
-
-      // BILL button
-      const viewInvoiceBtn = document.createElement("button");
-      viewInvoiceBtn.textContent = "BILL";
-      viewInvoiceBtn.style.color = "white";
-      viewInvoiceBtn.style.background = "#1F39FF";
-      viewInvoiceBtn.style.border = "none";
-      viewInvoiceBtn.style.padding = "3px 8px";
-      viewInvoiceBtn.style.cursor = "pointer";
-      viewInvoiceBtn.style.borderRadius = "4px";
-      viewInvoiceBtn.addEventListener("click", () => {
-        fetch(api101Url + "?invoice=" + encodeURIComponent(invoiceKey))
-          .then(res => res.text())
-          .then(url => {
-            if (url !== "NOT_FOUND") window.open(url, "_blank");
-            else alert("Invoice not found!");
-          })
-          .catch(err => { console.error(err); alert("Error fetching invoice"); });
-      });
-
-      // PL LIST button
-      const viewPackingBtn = document.createElement("button");
-      viewPackingBtn.textContent = "PL LIST";
-      viewPackingBtn.style.color = "white";
-      viewPackingBtn.style.background = "#28A745";
-      viewPackingBtn.style.border = "none";
-      viewPackingBtn.style.padding = "3px 8px";
-      viewPackingBtn.style.cursor = "pointer";
-      viewPackingBtn.style.borderRadius = "4px";
-      viewPackingBtn.addEventListener("click", () => {
-        fetch(api101Url + "?invoice=" + encodeURIComponent(packingKey))
-          .then(res => res.text())
-          .then(url => {
-            if (url !== "NOT_FOUND") window.open(url, "_blank");
-            else alert("Packing list not found!");
-          })
-          .catch(err => { console.error(err); alert("Error fetching packing list"); });
-      });
-
-      container.appendChild(viewInvoiceBtn);
-      container.appendChild(viewPackingBtn);
-      actionTd.appendChild(container);
-    }
-
-    tr.appendChild(actionTd);
-    tbody.appendChild(tr);
-  });
-
-  table.appendChild(thead);
-  table.appendChild(tbody);
-}
-
-// -------------------- Search --------------------
-function searchDataMIPL() {
-  const query = document.getElementById("DATASEARCMIPL").value.trim().toLowerCase();
-  if (!query) {
-    renderDATAMIPLTABLE(allTableData, true); // initial last 10
-    calculateTotals(allTableData);
-    return;
-  }
-
-  // Filter from stored allTableData
-  const filtered = allTableData.filter((row, rowIndex) => {
-    if (rowIndex === 0) return true; // header
-    return row.some(cell => cell && cell.toString().toLowerCase().includes(query));
-  });
-
-  // Render all matching rows (no limit to 10)
-  renderDATAMIPLTABLE(filtered, false);
-  calculateTotals(filtered);
-
-  // Highlight matched text
-  const table = document.getElementById("MIPLDATATABLE");
-  if (table) {
-    for (let i = 1; i < table.rows.length; i++) {
-      for (let j = 0; j < table.rows[i].cells.length - 1; j++) { // skip Actions
-        const cell = table.rows[i].cells[j];
-        const originalText = filtered[i]?.[j] || "";
-        if (originalText.toLowerCase().includes(query)) {
-          const regex = new RegExp(`(${query})`, "gi");
-          cell.innerHTML = originalText.replace(regex, `<span style="background:yellow; font-weight:bold;">$1</span>`);
-        } else {
-          cell.textContent = originalText;
-        }
-      }
-    }
-  }
-}
-
-// -------------------- Init --------------------
-document.addEventListener("DOMContentLoaded", () => {
-  loadDATAMIPLTABLE();
-  const searchInput = document.getElementById("DATASEARCMIPL");
-  if (searchInput) searchInput.addEventListener("keyup", searchDataMIPL);
-});
-</script>
-
-
-<!---------------------------- daybook SCRIPT START STOP ---------------------------------------- -->
 
 
 
@@ -1849,3 +1679,463 @@ loadNoticeBoard();
 
 <!-- AFI MEDICAL DIV CODE STOP HARE ...................................... -->
 
+
+
+
+
+
+
+
+<!-- 2011 table code and script start HARE ...................................... -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Sheet Filter Table with Totals</title>
+<style>
+
+  .filter-container { position: relative; margin-bottom: 10px; display: none; }
+  .dropdown { position: absolute; top: 35px; left: 0; right: 0; background: white; border: 4px solid #012228; max-height: 700px; width: 500px; overflow-y: auto; display: none; z-index: 100; }
+  .dropdown div { padding: 6px; cursor: pointer; }
+  .dropdown div.active { background: #0078d4; color: white; }
+  .dropdown div:hover { background: #e8cd36; color: white; }
+ #totals2011mipl { margin-top: 15px; font-size: 16px; font-weight: bold; background: #fafafa; border: 1px solid #ccc; padding: 8px; border-radius: 8px; display: none; }
+  #totals2011mipl span { margin-right: 10px; }
+
+    /* --- Clickable invoice style --- */
+  #mipl2011Table td.clickable {
+    color: #2B6AF3;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  #mipl2011Table td.clickable:hover {
+    color: #1b4bd8;
+  }
+</style>
+</head>
+<body>
+
+
+<script>
+const api2011Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheet2011Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
+const range2011 = "FORM!A:M";
+const addressrange2011 = "ADDRESS!A:M"; 
+const apiFileUrl = "https://script.google.com/macros/s/AKfycbyKeTGzkEsRd26seiog3jtfEXcLXNK4_fvt9b6D7kYtFXhInLr3J4PqCCgMxmsJ7rim/exec";
+
+let sheetData = [];
+let addressData = [];
+let filteredData = [];
+let currentFilterType = "";
+
+// === HEADERS and COLUMN MAPS ===
+const tableConfig = {
+  search: {
+    headers: ["Sr No", "Type", "Date", "Ledger", "Rcpt/Inv. No.", "Tr./Ty","Reff. No.","Amount","Weight","Rate","Vehicle No.","V.Type"],
+    cols: [0, 1,2,3,4,11,5,6,7,8,9,10]
+  },
+  ledger: {
+    headers: ["Sr No", "Type", "Date", "Ledger", "Rcpt/Inv. No.", "Tr./Ty","Reff. No.","Amount","Weight","Rate","Vehicle No.","V.Type"],
+    cols: [0, 1,2,3,4,11,5,6,7,8,9,10]
+  },
+  poreff: {
+    headers: ["Sr No", "User", "Order By", "Clint Name", "Project Name","Address","PO/Reff No.","Status","PO Amt.","PO Weight", "V.Type"],
+    cols: [0, 1,2,3,4,5,6,7,8,9,10]
+  },
+  receipt: {
+    headers: ["Sr No", "Type", "Date", "Ledger", "Amount", "V .Type"],
+    cols: [0, 1,2,3,4, 10]
+  },
+  sale: {
+    headers: ["Sr No", "Type", "Date", "Ledger", "Inv. No.", "Tr./Ty","Reff. No.","Amount","Weight","Rate","Vehicle No.","V.Type"],
+    cols: [0, 1,2,3,4,11,5,6,7,8,9,10]
+  },
+  address: {
+    headers: ["Clint", "Address", "State", "Type", "GSTIN", "Contect Details"],
+    cols: [0, 1, 2, 3,4,5]
+  }
+};
+
+// === Load Sheet Data ===
+async function load2011Data() {
+  try {
+    const resForm = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheet2011Id}/values/${range2011}?key=${api2011Key}`);
+    const dataForm = await resForm.json();
+    sheetData = dataForm.values || [];
+
+    const resAddr = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheet2011Id}/values/${addressrange2011}?key=${api2011Key}`);
+    const dataAddr = await resAddr.json();
+    addressData = dataAddr.values || [];
+
+    filteredData = sheetData;
+    render2011Table([]); 
+    initledger2011Dropdown();
+  } catch (e) {
+    console.error("Load Error:", e);
+  }
+}
+
+// === Ledger Dropdown Setup ===
+function initledger2011Dropdown() {
+  const ledgerOptions = [...new Set(sheetData.slice(1).map(r => r[3]).filter(v => v))];
+  setupDropdown("ledger2011Input", "ledger2011Dropdown", ledgerOptions, (val) => {
+    resetDates();
+    filteredData = sheetData.filter((row,i)=>i===0 || row[3]===val);
+    currentFilterType = "ledger";
+    document.getElementById("totals2011mipl").style.display = "block";
+    applySearch();
+  });
+}
+
+// === Render Table ===
+function render2011Table(rows) {
+  const tableHead = document.getElementById("tableHead");
+  const table2011Body = document.getElementById("table2011Body");
+  const totalsDiv = document.getElementById("totals2011mipl");
+  const table = document.getElementById("mipl2011Table");
+
+  tableHead.innerHTML = "";
+  table2011Body.innerHTML = "";
+
+  if (!rows || rows.length <= 1) {
+    table.style.display = "none";
+    totalsDiv.style.display = "none";
+    return;
+  }
+
+  table.style.display = "table";
+
+  // 🔹 Determine headers and columns
+  const config = tableConfig[currentFilterType] || tableConfig.search;
+  const headers = config.headers;
+  const cols = config.cols;
+
+  // === Create Table Header ===
+  const headerRow = document.createElement("tr");
+  headers.forEach(h => {
+    const th = document.createElement("th");
+    th.textContent = h;
+    headerRow.appendChild(th);
+  });
+  tableHead.appendChild(headerRow);
+
+  let totalTds = 0, totalReceipt = 0, totalBill = 0, totalCn = 0, totalPEBWeight = 0;
+
+  const sortedRows = rows.slice(1).sort((a, b) => Number(b[0]) - Number(a[0]));
+
+  sortedRows.forEach((r) => {
+    const tr = document.createElement("tr");
+
+    cols.forEach((colIndex, index) => {
+      const cell = r[colIndex] || "";
+      const td = document.createElement("td");
+
+      // === Detect and make URLs clickable ===
+      if (cell && (cell.startsWith("http") || cell.startsWith("www"))) {
+        const a = document.createElement("a");
+        a.href = cell.startsWith("http") ? cell : `https://${cell}`;
+        a.innerHTML = "&#128221;";
+        a.target = "_blank";
+        td.appendChild(a);
+      } else {
+        td.innerHTML = highlightText(cell);
+      }
+
+      tr.appendChild(td);
+    });
+
+    // === Row color formatting ===
+    const typeCell = r[1]?.toUpperCase().trim();
+    if (typeCell === "BANK") tr.style.color = "red";
+    else if (typeCell === "CREDIT NOTE") tr.style.color = "grey";
+    else if (typeCell === "CHALLAN") tr.style.color = "green";
+
+    table2011Body.appendChild(tr);
+
+    if (currentFilterType === "ledger") {
+      const type = r[1]?.trim().toUpperCase();
+      const receipt = parseFloat(r[4]) || 0;
+      const amount = parseFloat(r[6]) || 0;
+      const weight = parseFloat(r[7]) || 0;
+      if (type === "TDS") totalTds += receipt;
+      else if (type === "BANK") totalReceipt += receipt;
+      else if (type === "TAX INVOICE") { totalBill += amount; totalPEBWeight += weight; }
+      else if (type === "CREDIT NOTE") totalCn += amount;
+    }
+  });
+
+  if (currentFilterType === "ledger") {
+    totalsDiv.style.display = "block";
+    updateTotals(totalTds, totalReceipt, totalBill, totalCn, totalPEBWeight);
+  } else totalsDiv.style.display = "none";
+
+  highlightInvoiceAndPOCells();
+}
+
+// === Highlight Text for Search ===
+function highlightText(text) {
+  const searchValue = document.getElementById("search2011Input")?.value.toLowerCase();
+  if (!searchValue) return text;
+  const regex = new RegExp(`(${searchValue})`, "gi");
+  return text.replace(regex, '<span style="background:yellow;font-weight:bold;">$1</span>');
+}
+
+// === Highlight Invoice + PO Clickable ===
+function highlightInvoiceAndPOCells() {
+  const table = document.getElementById("mipl2011Table");
+  if (!table) return;
+  const rows = table.getElementsByTagName("tr");
+  for (let row of rows) {
+    const cells = row.cells;
+    if (!cells || cells.length < 11) continue;
+    const typeText = cells[1].innerText.trim().toUpperCase();
+    const invoiceCell = cells[4];
+    const invoiceNo = invoiceCell.innerText.trim();
+    const poType = cells[10].innerText.trim().toUpperCase();
+    const poCell = cells[6];
+    const poName = poCell.innerText.trim();
+
+    if (typeText === "TAX INVOICE" && invoiceNo) {
+      invoiceCell.classList.add("clickable");
+      invoiceCell.onclick = () => {
+        const key = invoiceNo.replace(/\//g, "_");
+        fetch(`${apiFileUrl}?invoice=${encodeURIComponent(key)}`)
+          .then(res => res.text())
+          .then(url => url === "NOT_FOUND" ? alert("Invoice not found") : window.open(url, "_blank"))
+          .catch(() => alert("Error loading invoice"));
+      };
+    }
+
+    if (poType === "JOB/REFF" && poName) {
+      poCell.classList.add("clickable");
+      poCell.onclick = () => {
+        const key = poName.replace(/\//g, "_");
+        fetch(`${apiFileUrl}?po=${encodeURIComponent(key)}`)
+          .then(res => res.text())
+          .then(url => url === "NOT_FOUND" ? alert("PO not found") : window.open(url, "_blank"))
+          .catch(() => alert("Error loading PO"));
+      };
+    }
+  }
+}
+
+// === Update Totals ===
+function updateTotals(totalTds, totalReceipt, totalBill, totalCn, totalPEBWeight) {
+  document.getElementById("totalTds").textContent = totalTds.toFixed(0);
+  document.getElementById("totalReceipt").textContent = totalReceipt.toFixed(0);
+  document.getElementById("totalBill").textContent = totalBill.toFixed(0);
+  document.getElementById("totalCn").textContent = totalCn.toFixed(0);
+  document.getElementById("totalPEBWeight").textContent = totalPEBWeight.toFixed(0);
+  document.getElementById("totalDifference").textContent = (totalBill - totalReceipt - totalTds - totalCn).toFixed(0);
+
+  //
+    const difference = (totalBill - totalReceipt - totalTds - totalCn);
+  const diffElement = document.getElementById("totalDifference");
+  
+  diffElement.textContent = difference.toFixed(0);
+
+  // Apply color based on positive/negative value
+  if (difference < 0) {
+    diffElement.style.color = "red";
+  } else {
+    diffElement.style.color = "green";
+  }
+  //
+}
+
+// === Dropdown Setup ===
+function setupDropdown(inputId, dropdownId, options, callback) {
+  const input = document.getElementById(inputId);
+  const dropdown = document.getElementById(dropdownId);
+  let currentIndex = -1;
+
+  function showDropdown(list) {
+    dropdown.innerHTML = "";
+    if (list.length === 0) { dropdown.style.display = "none"; return; }
+    list.forEach(opt => {
+      const div = document.createElement("div");
+      div.textContent = opt;
+      div.addEventListener("click", () => selectOption(opt));
+      dropdown.appendChild(div);
+    });
+    dropdown.style.display = "block";
+  }
+
+  function selectOption(value) {
+    input.value = value;
+    dropdown.style.display = "none";
+    currentIndex = -1;
+    callback(value);
+  }
+
+  input.addEventListener("click", () => showDropdown(options));
+  input.addEventListener("input", () => {
+    const val = input.value.toLowerCase();
+    const filtered = options.filter(opt => opt.toLowerCase().includes(val));
+    showDropdown(filtered);
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!dropdown.contains(e.target) && e.target !== input) dropdown.style.display = "none";
+  });
+}
+
+// === Reset Dates ===
+function resetDates() {
+  document.getElementById("start2011Date").value = "";
+  document.getElementById("end2011Date").value = "";
+}
+
+// === Apply Search and Filters ===
+function applySearch() {
+  const val = document.getElementById("search2011Input")?.value.toLowerCase();
+  const start2011Date = document.getElementById("start2011Date")?.value ? new Date(document.getElementById("start2011Date").value + "T00:00:00") : null;
+  const end2011Date = document.getElementById("end2011Date")?.value ? new Date(document.getElementById("end2011Date").value + "T23:59:59") : null;
+
+  let dataToSearch = sheetData;
+  if (currentFilterType === "ledger") dataToSearch = filteredData;
+  else if (["poreff", "receipt", "sale"].includes(currentFilterType)) {
+    const map = { poreff: "JOB/REFF", receipt: "RECEIPT", sale: "SALE" };
+    dataToSearch = sheetData.filter((r, i) => i === 0 || (r[10]?.trim().toUpperCase() === map[currentFilterType]));
+  } else if (currentFilterType === "address") dataToSearch = addressData;
+
+  const filtered = dataToSearch.filter((row, i) => {
+    if (i === 0) return true;
+    const matchesSearch = !val || row.some(c => (c || "").toLowerCase().includes(val));
+    const date = row[2] ? new Date(row[2]) : null;
+    const matchDate = (!start2011Date || (date && date >= start2011Date)) && (!end2011Date || (date && date <= end2011Date));
+    return matchesSearch && matchDate;
+  });
+
+  render2011Table(filtered);
+}
+
+// === Filter Type Selection ===
+document.getElementById("mipl2011").addEventListener("change", function () {
+  currentFilterType = this.value;
+  resetDates();
+  document.getElementById("search2011Input").value = "";
+  document.getElementById("ledger2011Select").style.display = "none";
+  document.getElementById("totals2011mipl").style.display = "none";
+  filteredData = sheetData;
+  if (currentFilterType === "ledger") document.getElementById("ledger2011Select").style.display = "block";
+  applySearch();
+});
+
+// === Event Listeners ===
+document.getElementById("search2011Input")?.addEventListener("input", applySearch);
+document.getElementById("start2011Date")?.addEventListener("change", applySearch);
+document.getElementById("end2011Date")?.addEventListener("change", applySearch);
+
+load2011Data();
+
+
+// === PRINT FUNCTION ===
+function print2011Report() {
+  const table = document.getElementById("mipl2011Table");
+  const totals = document.getElementById("totals2011mipl");
+
+  if (!table || table.style.display === "none") {
+    alert("No table data to print!");
+    return;
+  }
+
+  // Clone the totals div
+  const totalsClone = totals.cloneNode(true);
+
+  // 🧩 Replace the ledger input with plain text for print
+  const ledgerInput = document.getElementById("ledger2011Input");
+  const cloneInput = totalsClone.querySelector("#ledger2011Input");
+  if (ledgerInput && cloneInput) {
+    const ledgerValue = ledgerInput.value.trim();
+    const ledgerText = ledgerValue
+      ? `<strong style="color:#000;">${ledgerValue}</strong>`
+      : `<em style="color:#777;">(No Ledger Selected)</em>`;
+    cloneInput.outerHTML = ledgerText; // Replace the input with text
+  }
+
+  // 🖨️ Create a new print window
+  const printWindow = window.open("", "_blank");
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print Preview - MIPL Report</title>
+        <style>
+          body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            margin: 20px;
+            color: #000;
+            background: #fff;
+          }
+          h2 {
+            text-align: center;
+            margin-bottom: 10px;
+          }
+          #totals2011mipl {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #aaa;
+            background-color: #f7f7f7;
+            font-size: 14px;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+          }
+          th, td {
+            border: 1px solid #555;
+            padding: 6px 8px;
+            text-align: center;
+            font-size: 13px;
+          }
+          th {
+            background-color: #efefef;
+          }
+          tr:nth-child(even) {
+            background-color: #f9f9f9;
+          }
+          tr:hover {
+            background-color: #e6f0ff;
+          }
+          .highlight {
+            background-color: yellow;
+            font-weight: bold;
+          }
+          @media print {
+            body {
+              margin: 0;
+              padding: 0;
+              zoom: 95%;
+            }
+            #printBtn {
+              display: none;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <h2>MIPL Report Preview</h2>
+        ${totalsClone.outerHTML}
+        ${table.outerHTML}
+        <div style="text-align:center; margin-top:20px;">
+          <button id="printBtn" onclick="window.print()">🖨️ Print Now</button>
+        </div>
+      </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+}
+
+
+</script>
+
+
+
+</body>
+</html>
+
+<!-- 2011 table code and script stop HARE ...................................... -->
