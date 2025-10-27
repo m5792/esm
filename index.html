@@ -253,8 +253,6 @@
   overflow-x: auto;
 }
 
-
-
  
  /* Table container ************/
 table{
@@ -307,14 +305,11 @@ th {
 
   /* Row hover effect */
   tr:hover td {
-    background: #fce303;
-    transition: background 0.2s ease-in-out;  }
-    
-    table tr:hover {
-  background-color: #04f818;
-  color: rgb(1, 20, 37);
-  transition: background-color 0.3s ease, color 0.3s ease;
+   background: #fccc49;
+ color: rgb(0, 15, 15);
+  transition: background-color 1s ease, color 1s ease;
   }
+    
 
  
 
@@ -760,25 +755,48 @@ async function fetchGlobalMessage() {
 
 
 
-<span style="color: black; font-weight: bold;">Select Report Option:</span>
-<select id="mipl2011" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width:200px; width: 4in; background-color: rgb(1, 68, 81);color: white; font-size: 14px;" >
-  <option value="">--Select--</option>
-  <option value="serch">Search Bar (All Data)</option>
-  <option value="ledger">Ledger</option>
-  <option value="poreff">PO/REFF</option>
-  <option value="receipt">Receipt</option>
-  <option value="sale">Sale</option>
-  <option value="address">Address</option>
-</select>
+<style>
+ .filter-btn {
+  background: #035b67;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s ease;
+  min-width: 90px;            /* optional: makes buttons uniform width */
+  text-align: center;
+}
+.filter-btn:hover {
+  background: #058091;
+}
+.filter-btn.active {
+  background: #932001;
+  color: rgb(252, 250, 250);
+  font-weight: bold;
+}
 
-<button onclick="print2011Report()" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer;">🖨️ Print Report</button>
+</style>
+<br/>
+<div id="mipl2011Buttons" style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 10px;">
+  <button class="filter-btn" data-value="search">🔍 Searchbar</button>
+  <button class="filter-btn" data-value="ledger">📘 Ledger</button>
+  <button class="filter-btn" data-value="poreff">📄 PO/REFF</button>
+  <button class="filter-btn" data-value="receipt">💰 Receipt</button>
+  <button class="filter-btn" data-value="sale">🧾 Sale</button>
+  <button class="filter-btn" data-value="address">🏢 Address</button>
 
-<button id="refresh2011Btn" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer;"> 🔄 Refresh</button>
+<button onclick="print2011Report()" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer; background-color: white;">🖨️ Print Report</button>
+<button id="refresh2011Btn" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer; background-color: white;"> 🔄 Refresh</button>
+</div>
+
+
 
 
 
 <div id="search2011Bar">
-  <input type="text" id="search2011Input" placeholder="Search in current table...">
+  <input type="text" id="search2011Input" placeholder="🔍 Search in current table...">
   <label>From:</label>
   <input type="date" id="start2011Date">
   <label>To:</label>
@@ -829,7 +847,7 @@ async function fetchGlobalMessage() {
   <!-- Ledger Filter -->
 <div id="ledger2011Select" class="filter-container">
  <span style="color: black;">Ledger Name:</span>
-  <input type="text" id="ledger2011Input" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width:200px; width: 4in; background-color: rgb(241, 212, 212); font-size: 14px;" placeholder="Type to search ledger...">
+  <input type="text" id="ledger2011Input" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width:200px; width: 4in; background-color: rgb(241, 212, 212); font-size: 14px;" placeholder="🔍 Type to search ledger...">
   <div id="ledger2011Dropdown" class="dropdown"></div>
 
   <span id="address2011"></span>
@@ -847,7 +865,7 @@ async function fetchGlobalMessage() {
 
 
   <div id="section3" class="section hidden" style="max-height: 650px;color: black;overflow-y: auto;">  <table id="mipl2011Table"><thead id="tableHead"></thead> <tbody id="table2011Body"></tbody></table>
-<br/><br/><br/><br/><br/><br/>
+<br/><br/><br/>
 </div>  <!--  sections3 start  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
 
 
@@ -897,7 +915,7 @@ async function fetchGlobalMessage() {
 #mipl2011Table {
   overflow-x: auto;
   display: block;
-  max-height: 450px; /* Optional scrolling */
+  max-height: 400px; /* Optional scrolling */
 }
 
 
@@ -9418,17 +9436,30 @@ function applySearch() {
 
 
 // === Filter Type Selection ===
-document.getElementById("mipl2011").addEventListener("change",function(){
-  currentFilterType=this.value;
-  resetDates();
-  document.getElementById("search2011Input").value="";
-  document.getElementById("ledger2011Select").style.display="none";
-  document.getElementById("totals2011mipl").style.display="none";
-  filteredData = sheetData;
-  selectedLedger="";
-  if(currentFilterType==="ledger") document.getElementById("ledger2011Select").style.display="block";
-  applySearch();
+// === Filter Button Click Handling ===
+document.querySelectorAll("#mipl2011Buttons .filter-btn").forEach(btn => {
+  btn.addEventListener("click", function() {
+    // Remove active from all buttons
+    document.querySelectorAll("#mipl2011Buttons .filter-btn").forEach(b => b.classList.remove("active"));
+    // Set current active
+    this.classList.add("active");
+
+    currentFilterType = this.dataset.value;
+    resetDates();
+    document.getElementById("search2011Input").value = "";
+    document.getElementById("ledger2011Select").style.display = "none";
+    document.getElementById("totals2011mipl").style.display = "none";
+    filteredData = sheetData;
+    selectedLedger = "";
+
+    if (currentFilterType === "ledger") {
+      document.getElementById("ledger2011Select").style.display = "block";
+    }
+
+    applySearch();
+  });
 });
+
 
 // === Event Listeners ===
 document.getElementById("search2011Input")?.addEventListener("input",applySearch);
@@ -9521,4 +9552,3 @@ document.getElementById("refresh2011Btn")?.addEventListener("click", refresh2011
 </html>
 
 <!-- 2011 table code and script stop HARE ...................................... -->
-
