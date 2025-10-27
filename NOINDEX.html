@@ -2073,7 +2073,7 @@ function attachInvoiceClickREFF(tableId, invoiceColIndex = 3) {
 
 // ***************  TABLE PO NO BY INVOICE TABLE MODEL 1 ****************
 async function fetchReffNo(jobNo, ledgerName = "---", ledgerAddress = "---") {
-  const range124 = "LEDGER!B:K";
+  const range124 = "FORM!B:K";
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet123Id}/values/${range124}?key=${api123Key}`;
   const res = await fetch(url);
   const data = await res.json();
@@ -2125,7 +2125,7 @@ async function fetchReffNo(jobNo, ledgerName = "---", ledgerAddress = "---") {
 
 // ***************  LEDGER SERCH BY LEDGER MODAL 2 ****************
 async function fetchLedgerByLedgerName(ledgerName = "---", ledgerAddress = "---") {
-  const range124 = "LEDGER!B:K"; // Expanded to column L for full data
+  const range124 = "FORM!B:K"; // Expanded to column L for full data
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet123Id}/values/${range124}?key=${api123Key}`;
   const res = await fetch(url);
   const data = await res.json();
@@ -2607,4 +2607,5 @@ function closeVOUCHERPopup() {
 </script>
 
 </body>
+
 </html>
