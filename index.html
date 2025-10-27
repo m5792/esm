@@ -677,11 +677,16 @@ async function fetchGlobalMessage() {
    <button onclick="showSection(14)">Chander Shekher Voucher</button><br/>
 </div>
 
-<br/><br/><br/><br/>
- <!-- event & reminder  body stop -->
+<br/><br/>
+<div style="height:200px; overflow-y:auto; overflow-x:auto; border:1px solid #ccc; padding:8px; background-color: #f4faf3;" >
+        <span style="color: #901803; font-weight: bold;font-size: 16px;">Important Points</span>
+<ul id="pointsList"></ul>
+
+
+<!-- ========================= -->
 <span  style="color: rgb(1, 26, 116); font-size: 16px; font-weight: bold;">Notice Board:</span><br/>
       <span id="globalMessage" style="color: rgb(16, 15, 15); font-size: 16px;"></span>
-    
+    </div> 
    
       
         </div> <!-- यह एक नोट है, vertical Two Part Div (30-70) left content stop -->
@@ -711,12 +716,8 @@ async function fetchGlobalMessage() {
  <div class="container2">  
   <div class="leftdiv"  style="max-height: 350px;width: 800px; overflow-y: auto; border: 3px solid #013342; padding: 5px; border-radius: 6px;background-color: #f3f9f8;" >
 
-  <span style="color: #0515f0; font-weight: bold;font-size: 16px;">Loading Status</span>
+  <span style="color: #8b0202; font-weight: bold;font-size: 16px;">Loading Status</span>
 <table id="noticeBoard">  <thead ><tr> <th>Type</th><th>Date</th> <th>Name</th><th>Vehicle No.</th><th>Job No.</th> <th>Status</th> <th>Inv. No.</th></tr></thead><tbody></tbody></table>
-
-  <span style="color: #901803; font-weight: bold;font-size: 16px;">Important Points</span>
-<ul id="pointsList"></ul>
-
 
 </div>
 
