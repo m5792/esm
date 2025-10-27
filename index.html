@@ -256,41 +256,50 @@
 
 
  
- /* Table container */
+ /* Table container ************/
 table{
     width: 100%;
-    border-collapse: collapse;
-    font-family: "Arial";
-    font-size: 16px;
-    background: #ffffff;
-    box-shadow: 0px 2px 8px rgba(0,0,0,0.15);
-    border-radius: 8px;
-    overflow: hidden;
-    table-layout: fixed; /* columns fixed width */
+  border-collapse: collapse;
+  table-layout: auto;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  background: #ffffff;
+  border: 1px solid #d0d0d0;
+
+  }
+
+/* Optional heder alwayas fix on top and table scrolling  */
+  table{
+  overflow-x: auto;
+  display: block;
+  max-height: 730px; /* Optional scrolling */
   }
 
   /* Table border & cell style */
-th, 
+th {
+   background: #01305c;
+  color: #ffffff;
+  padding: 10px;
+  border: 1px solid #b5b5b5;
+  text-align: left;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  white-space: nowrap;
+  }
+
+
  td {
-    border: 1px solid #dcdcdc;
-    padding: 8px 10px;
-    text-align: left;
-   
-    overflow: hidden;
-    text-overflow: ellipsis; /* show ... if text overflow */
-    vertical-align: middle;
-    font-size: clamp(10px, 1vw, 14px); /* auto shrink text */
+   padding: 8px 10px;
+  border: 1px solid #e0e0e0;
+  vertical-align: top;
+  word-wrap: break-word; /* Wrap long text */
+  white-space: normal;
   }
 
   /* Header design */
-th {
-    background: linear-gradient(135deg, #070707, #616161);
-    color: #fff;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 13px;
-    letter-spacing: 0.5px;
-  }
+
 
   tr:nth-child(even) {
   background-color: #f9f9f9;
@@ -302,7 +311,7 @@ th {
     transition: background 0.2s ease-in-out;  }
     
     table tr:hover {
-  background-color: #f81404;
+  background-color: #04f818;
   color: rgb(1, 20, 37);
   transition: background-color 0.3s ease, color 0.3s ease;
   }
@@ -627,7 +636,7 @@ async function fetchGlobalMessage() {
     background-color: #cfcfcf;
     border: 2px solid #b0d4ec;
     border-radius: 10px;
-    padding: 5px;
+    padding: 20px;
     width: 300px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     font-family: 'Eras Bold ITC', sans-serif;
@@ -638,9 +647,9 @@ async function fetchGlobalMessage() {
     background-color: #035e97;
     color: rgb(248, 249, 250);
     border: none;
-    font-size: 15px;
+    font-size: 18px;
     font-weight: bold;
-    margin: 4px 0;
+    margin: 10px 0;  
     width: 100%;
     padding: 10px 15px;
     border-radius: 6px;
@@ -668,8 +677,10 @@ async function fetchGlobalMessage() {
    <button onclick="showSection(14)">Chander Shekher Voucher</button><br/>
 </div>
 
-
-
+<br/><br/><br/><br/>
+ <!-- event & reminder  body stop -->
+<span  style="color: rgb(1, 26, 116); font-size: 16px; font-weight: bold;">Notice Board:</span><br/>
+      <span id="globalMessage" style="color: rgb(16, 15, 15); font-size: 16px;"></span>
     
    
       
@@ -678,11 +689,27 @@ async function fetchGlobalMessage() {
 
 
 
+<div style="height:460px; overflow-y:auto; overflow-x:auto; border:1px solid #ccc; padding:8px; background-color: #f4faf3;" >
+
+   <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">    
+    <label style="color: rgb(1, 26, 71);"> Daybook Search :</label>                            <!-- Search Box -->
+<input type="text" id="DATASEARCMIPL" placeholder="🔍 Search Ledger, Invoice, Reff, Vehicle No...." style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width:200px; width: 4in; background-color: rgb(241, 212, 212);" />
+
+
+    <select id="monthDropdown" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width:200px; width: 1.5in; background-color: rgb(1, 42, 61); color: white;"></select>
+<sapn id="monthlyTotals"></sapn>
 
 
 
+</td>
+
+  <style> #MIPLDATATABLE {overflow-x: auto; display: block; max-height: 390px; /*heder alwayas fix on top and table scrolling  */} </style>
+<table id="MIPLDATATABLE"></table>
+</div>
+
+<BR/>
  <div class="container2">  
-  <div class="leftdiv"  style="max-height: 600px;width: 800px; overflow-y: auto; border: 3px solid #013342; padding: 5px; border-radius: 6px;background-color: #f3f9f8;" >
+  <div class="leftdiv"  style="max-height: 350px;width: 800px; overflow-y: auto; border: 3px solid #013342; padding: 5px; border-radius: 6px;background-color: #f3f9f8;" >
 
   <span style="color: #0515f0; font-weight: bold;font-size: 16px;">Loading Status</span>
 <table id="noticeBoard">  <thead ><tr> <th>Type</th><th>Date</th> <th>Name</th><th>Vehicle No.</th><th>Job No.</th> <th>Status</th> <th>Inv. No.</th></tr></thead><tbody></tbody></table>
@@ -691,32 +718,22 @@ async function fetchGlobalMessage() {
 <ul id="pointsList"></ul>
 
 
-
-  <div style="display: flex; align-items: center; background: rgb(234, 235, 235); padding: 10px; gap: 10px;">
-    <select id="monthDropdown" style="padding: 5px; font-size: 16px;"></select>
-    <div id="monthlyTotals" style="color: white; font-size: 16px;">Please Wait!</div>
-
 </div>
 
- 
-   
-</div>
-
-<div class="rightdiv" >
+<div class="rightdiv" style="max-height: 350px;width: 800px; overflow-y: auto; border: 3px solid #013342; padding: 5px; border-radius: 6px;background-color: #f3f9f8;"  >
  <!-- event & reminder  body start -->
 
-<div class="event-section" id="allEvents" style="max-height: 300px; overflow-y: auto; border: 3px solid #011632; padding: 10px; border-radius: 6px; padding: 10px; border-radius: 6px; background-color: #fcfbeb;">
+<div class="event-section" id="allEvents" style="max-height: 250px; overflow-y: auto; border: 3px solid #011632; padding: 10px; border-radius: 6px; padding: 10px; border-radius: 6px; background-color: #fcfbeb;">
   <span style="font-size: 20px; font-weight: bold; color: #000;">📅 Event Reminders</span>
+
   
   <input type="text" id="searchInput" placeholder="🔍 Search events..." 
-         style="padding: 4px 8px; width: 98%; max-width: 300px; margin-bottom: 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;background-color: #f6e0e0;">
+         style="padding: 4px 8px; width: 98%; max-width: 250px; margin-bottom: 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;background-color: #f6e0e0;">
   
   <ul style="list-style-type: none; padding-left: 0; margin: 0;"></ul>
 </div>
 
- <!-- event & reminder  body stop -->
-<span  style="color: rgb(1, 26, 116); font-size: 16px; font-weight: bold;">Notice Board:</span><br/>
-      <span id="globalMessage" style="color: rgb(16, 15, 15); font-size: 16px;"></span>
+
  
 </div></div>
 
@@ -740,12 +757,6 @@ async function fetchGlobalMessage() {
 <div id="section3b" class="section hidden">
 
 
-        
-<div id="searchPEBContainer">
-        
- 
-
-<br>
 
 
 <span style="color: black; font-weight: bold;">Select Report Option:</span>
@@ -763,7 +774,7 @@ async function fetchGlobalMessage() {
 
 <button id="refresh2011Btn" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer;"> 🔄 Refresh</button>
 
-  </div>
+
 
 <div id="search2011Bar">
   <input type="text" id="search2011Input" placeholder="Search in current table...">
@@ -2344,68 +2355,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <div id="section1b" class="section hidden" style="background-color: rgb(1, 51, 92);border: none;">
 
 
-<div style="height:30vh; overflow-y:auto; overflow-x:auto; border:1px solid #ccc; padding:8px;">
 
-   <table id="myTable" style="background-color: rgb(245, 243, 243); color: blue;"> </table>  <!-- Address bar Table -->
- 
-
-   <style>
-  /* Table container */
-  #MIPLDATATABLE {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
-    font-size: 14px;
-    background: #ffffff;
-    color: black;
-    box-shadow: 0px 2px 8px rgba(0,0,0,0.15);
-    border-radius: 8px;
-    overflow: hidden;
-    table-layout: fixed; /* columns fixed width */
-  }
-
-  /* Table border & cell style */
-  #MIPLDATATABLE th, 
-  #MIPLDATATABLE td {
-    border: 1px solid #dcdcdc;
-    padding: 8px 10px;
-    text-align: left;
-    overflow: hidden;
-    text-overflow: ellipsis; /* show ... if text overflow */
-    vertical-align: middle;
-    font-size: clamp(10px, 1vw, 14px); /* auto shrink text */
-  }
-
-  /* Header design */
-  #MIPLDATATABLE th {
-    background: linear-gradient(135deg, #620101, #f03838);
-    color: #fff;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 13px;
-    letter-spacing: 0.5px;
-  }
-
-  /* Alternate row coloring */
-  #MIPLDATATABLE tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-
-  /* Row hover effect */
-  #MIPLDATATABLE tr:hover td {
-    background: #fce303;
-    transition: background 0.2s ease-in-out;
-  }
-
-  #MIPLDATATABLE tr:hover {
-    background-color: #f81404;
-    color: rgb(1, 20, 37);
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-</style>
-
-<table id="MIPLDATATABLE"></table>
-</div>
     
 
  
@@ -2431,7 +2381,7 @@ document.addEventListener("DOMContentLoaded", function () {
     </td>
     
     <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
-    <a href="https://www.youtube.com/" target="_blank"><img src="http://3d-sprinter.ru/pictures/youtube256-2-on.gif" alt="You Tube" width="50" height="50" /></a>
+    <a href="https://www.youtube.com/" target="_blank"><img src="https://cliply.co/wp-content/uploads/2019/07/371907120_YOUTUBE_ICON_TRANSPARENT_400.gif" alt="You Tube" width="50" height="50" /></a>
     </td>
     
     <td style="text-align: center; color:WHITE;border: none; background-color: #011d30; ">
@@ -2473,14 +2423,9 @@ document.addEventListener("DOMContentLoaded", function () {
                                   <td style="text-align: center; color:WHITE;border: none;background-color: #011d30;">
                                 <a href="https://m5792.github.io/esm/" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/1197/1197396.png" alt="You Tube" width="60" height="60" /></a>
                                   </td>
-	<td style="text-align: center; color:WHITE;border: none;background-color: #011d30;">
-                                <a href="https://m5792.github.io/esmTally/emstools.html" target="_blank"><img src="https://png.pngtree.com/element_our/png/20180926/office-tools-background-png_112349.jpg" alt="You Tube" width="60" height="60" /></a>
-                                  </td>
 
-   <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">    
-    <label style="color: white;"> Daybook Search :</label>                            <!-- Search Box -->
-<input type="text" id="DATASEARCMIPL" placeholder="🔍 Search Ledger, Invoice, Reff, Vehicle No...." style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width:200px; width: 4in; background-color: rgb(241, 212, 212);" />
-</td>
+
+  
 </table>
 
  </div>  <!-- section1B content stop hare *********************************************************************************************************-->
@@ -2787,7 +2732,7 @@ setInterval(displayCurrentDateTime, 1000);
             flex-direction: row; /* Arrange child divs side-by-side (flex-direction: column;) */
 
           /*  flex-direction: column;  Arrange child divs vertically */
-            height: 48vh; /* Full viewport height */
+            /*  height: 48vh;   Full viewport height */
         }
       .leftdiv {
     flex: 5.4; /* 70% */
@@ -3194,135 +3139,9 @@ setInterval(displayCurrentDateTime, 1000);
  
  <!-- monthly sale & receipt Script & code Start Heare  (CODE504)  --> 
  
- <table id="totalMonth" border="1"></table>
+
     <script>
-        async function loadMonth() {
-            const apiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-            const sheetId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
-            const range = 'FORM!B:J';
-        
-            try {
-                const response = await fetch(
-                    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`
-                );
-                const data = await response.json();
-        
-                if (data.values) {
-                    const table = document.getElementById('totalMonth');
-                    const monthlyData = {}; // Object to hold data for each month
-        
-                    data.values.forEach((row, index) => {
-                        const tr = document.createElement('tr');
-        
-                        if (index === 0) {
-                            row.forEach((cell) => {
-                                const th = document.createElement('th');
-                                th.textContent = cell;
-                                tr.appendChild(th);
-                            });
-                        } else {
-                            const month = getMonthFromDate(row[1]); // Get month from the first column (date)
-                            if (!monthlyData[month]) {
-                                monthlyData[month] = { bank: 0, taxInvoice: 0 };
-                            }
-        
-                            row.forEach((cell, cellIndex) => {
-                                const td = document.createElement('td');
-                                td.textContent = cell;
-                                tr.appendChild(td);
-        
-                                if (cellIndex === 0) {
-                                    if (cell.toLowerCase() === "bank" && row[0]) {
-                                        monthlyData[month].bank += parseFloat(row[3]) || 0;
-                                    } else if (cell.toLowerCase() === "tax invoice" && row[0]) {
-                                        monthlyData[month].taxInvoice += parseFloat(row[5]) || 0;
-                                    }
-                                }
-                            });
-                        }
-                        table.appendChild(tr);
-                    });
-        
-                    // Populate the month dropdown
-                    populateMonthDropdown(Object.keys(monthlyData));
-        
-                    // Set initial totals for the first month (optional)
-                    const firstMonth = Object.keys(monthlyData)[0];
-                    updateMonthlyTotalsDisplay(monthlyData[firstMonth]);
-                    
-                    window.monthlyData = monthlyData; // Store the data globally for later use
-                } else {
-                    console.error("No data found in the specified range.");
-                }
-            } catch (error) {
-                console.error("Error fetching data from Google Sheets:", error);
-            }
-        }
-        
-        function getMonthFromDate(dateStr) {
-            // Assuming the date is in the format "8-Jan-2025"
-            const date = new Date(dateStr); // Convert string to Date object
-            const month = date.toLocaleString('default', { month: 'short' }); // Get abbreviated month (Jan, Feb, etc.)
-            const year = date.getFullYear(); // Get the year
-            return `${month}-${year}`; // Format as "Jan-2025"
-        }
-        
-        function populateMonthDropdown(months) {
-            const dropdown = document.getElementById('monthDropdown');
-            months.forEach(month => {
-                const option = document.createElement('option');
-                option.value = month;
-                option.textContent = month;
-                dropdown.appendChild(option);
-            });
-        
-            // Add event listener for the dropdown change
-            dropdown.addEventListener('change', (e) => {
-                const selectedMonth = e.target.value;
-                updateMonthlyTotalsDisplay(window.monthlyData[selectedMonth]);
-            });
-        }
-        
-        function updateMonthlyTotalsDisplay(totals) {
-            const totalsElement = document.getElementById('monthlyTotals');
-            totalsElement.innerHTML = `<span style="color: #4067DD ;font-size:100%;font-family:Arial Black;">Total Receipt : Rs. ${totals.bank.toFixed()}</span>   | <span style="color: #08BF36 ;font-size:100%;font-family:Arial Black;">Total Sale : Rs. ${totals.taxInvoice.toFixed()}</span> `;
-        }
-        
-        function filterTablemonth() {
-            const query = document.getElementById('searchBarmonth').value.toLowerCase();
-            const table = document.getElementById('totalMonth');
-            const rows = document.querySelectorAll('#totalMonth tr');
-            let visibleRows = 0;
-        
-            rows.forEach((row, index) => {
-                if (index === 0) return;
-        
-                const cells = row.querySelectorAll('td');
-                const rowText = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join(' ');
-        
-                if (rowText.includes(query)) {
-                    row.classList.remove('hidden');
-                    visibleRows++;
-                } else {
-                    row.classList.add('hidden');
-                }
-            });
-        
-            table.style.display = visibleRows > 0 ? 'table' : 'none';
-        
-            const noResultsMessage = document.getElementById('noResultsMessage');
-            if (!visibleRows && query.trim() !== '') {
-                if (!noResultsMessage) {
-                    const message = document.createElement('p');
-                    message.id = 'noResultsMessage';
-                    message.textContent = 'No matching results found.';
-                    document.body.appendChild(message);
-                }
-            } else if (noResultsMessage) {
-                noResultsMessage.remove();
-            }
-        }
-        
+
      
 // -------------------- Onload --------------------
 window.onload = () => {
@@ -3354,9 +3173,9 @@ window.onload = () => {
     document.getElementById('starIVtDate').addEventListener('change', filterIVTable);
     document.getElementById('endIVDate').addEventListener('change', filterIVTable);
 
-    document.getElementById('totalMonth').style.display = 'none';
-    loadMonth();
-    document.getElementById('myTable').style.display = 'none';
+   // document.getElementById('totalMonth').style.display = 'none';
+   // loadMonth();
+ //   document.getElementById('myTable').style.display = 'none';
     
 };
     </script>
@@ -6911,8 +6730,6 @@ table tr:hover {
   <script>
     function refreshAll() {
       filterDp();  // SRR TABLE 
-      loadMonth();  //SALE PURCHSHAE MONTHLY SUMMRY
- 
       loadDATAMIPLTABLE();
       loadIVCRSheet();   // IVCR ENTRY FORM TABLE
       loadusrAdminSheet();  // ADMIN USER 
@@ -8109,206 +7926,209 @@ loadNoticeBoard();
 
 <!---------------------------- DATAMIPLTABLE SCRIPT START HARE ---------------------------------------- -->
 
-
 <script>
-const api101Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-const sheet101Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
-const range101 = 'FORM!A:K'; 
-const api101Url = "https://script.google.com/macros/s/AKfycbwRAHlS8JeIXSEbPVjUNVrXkpfVOmNc2z95OZsygdzebtk-sgLV-86eWyZ20jVHspYe/exec";
+const apidbookKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheetdbookId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
+const rangedbook = 'FORM!A:K';
+const apipdfUrl = "https://script.google.com/macros/s/AKfycbwRAHlS8JeIXSEbPVjUNVrXkpfVOmNc2z95OZsygdzebtk-sgLV-86eWyZ20jVHspYe/exec";
 
-let allTableData = [];   // form sheet ka data isme store hai sno. ke decending form me
+let allTableData = [];
+let monthlyData = {};
 
-// -------------------- Fetch Table --------------------
+function getMonthFromDate(dateStr) {
+  const d = new Date(dateStr);
+  if (isNaN(d)) return "";
+  return d.toLocaleString('default', { month: 'short' }) + "-" + d.getFullYear();
+}
+
+// ✅ Main data load
 async function loadDATAMIPLTABLE() {
   const table = document.getElementById("MIPLDATATABLE");
   table.innerHTML = "<tr><th>Loading...</th></tr>";
 
   try {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet101Id}/values/${range101}?key=${api101Key}`;
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetdbookId}/values/${rangedbook}?key=${apidbookKey}`;
     const response = await fetch(url);
     const data = await response.json();
 
-    if (!data.values || data.values.length === 0) {
-      table.innerHTML = "<tr><td>No data found</td></tr>";
+    if (!data.values) {
+      table.innerHTML = "<tr><td>No data</td></tr>";
       return;
     }
 
-    // Filter rows based on column K (index 10)
     const header = data.values[0];
-    const filteredRows = data.values.slice(1).filter(row => {
-      const colK = row[10]?.toUpperCase().trim();
-      return colK === "SALE" || colK === "RECEIPT" || colK === "TDS";
+    const rows = data.values.slice(1).filter(r => {
+      const type = r[10]?.toUpperCase().trim();
+      return type === "SALE" || type === "RECEIPT" || type === "TDS";
     });
 
-    // Sort descending by column A (index 0)
-    filteredRows.sort((a, b) => {
-      const valA = isNaN(a[0]) ? a[0] : Number(a[0]);
-      const valB = isNaN(b[0]) ? b[0] : Number(b[0]);
-      if (valA < valB) return 1;
-      if (valA > valB) return -1;
-      return 0;
+    rows.sort((a, b) => Number(b[0]) - Number(a[0]));
+    allTableData = [header, ...rows];
+
+    // ✅ Monthly totals store
+    monthlyData = {};
+    rows.forEach(r => {
+      const month = getMonthFromDate(r[2]);
+      if (!month) return;
+      if (!monthlyData[month]) monthlyData[month] = { bank: 0, taxInvoice: 0 };
+
+      const type = r[1]?.toUpperCase();
+      if (type === "BANK") monthlyData[month].bank += Number(r[4]) || 0;
+      if (type === "TAX INVOICE") monthlyData[month].taxInvoice += Number(r[6]) || 0;
     });
 
-    // Store header + filtered sorted rows
-    allTableData = [header, ...filteredRows];
+    populateMonthDropdown(Object.keys(monthlyData));
 
-    // Render table with last 10 entries initially
-    renderDATAMIPLTABLE(allTableData, true); 
+    // ✅ Show only latest 10 entries at start
+    renderDATAMIPLTABLE(allTableData, true);
+
+    // ✅ Show current month totals only
+    const today = new Date();
+    const currentKey = today.toLocaleString('default', { month: 'short' }) + "-" + today.getFullYear();
+    const dropdown = document.getElementById("monthDropdown");
+
+    if (monthlyData[currentKey]) {
+      dropdown.value = currentKey;
+      updateMonthlyTotalsDisplay(monthlyData[currentKey]);
+    }
+
   } catch (err) {
     console.error(err);
-    table.innerHTML = "<tr><td>Error loading data</td></tr>";
+    table.innerHTML = "<tr><td>Load Error</td></tr>";
   }
 }
 
-// -------------------- Render Table --------------------
-function renderDATAMIPLTABLE(dataArray, limitTo10 = false) {
+// ✅ Dropdown
+function populateMonthDropdown(months) {
+  const dropdown = document.getElementById("monthDropdown");
+  dropdown.innerHTML = `<option value="">Select Month</option>`;
+  months.forEach(m => {
+    const opt = document.createElement("option");
+    opt.value = m;
+    opt.textContent = m;
+    dropdown.appendChild(opt);
+  });
+
+  dropdown.addEventListener("change", () => {
+    const m = dropdown.value;
+    if (m) {
+      updateMonthlyTotalsDisplay(monthlyData[m]);
+      filterMonthTable(m);
+    }
+  });
+}
+
+// ✅ Filter table by month
+function filterMonthTable(month) {
+  const filtered = [
+    allTableData[0],
+    ...allTableData.slice(1).filter(r => getMonthFromDate(r[2]) === month)
+  ];
+  renderDATAMIPLTABLE(filtered, false);
+}
+
+// ✅ Totals display
+function updateMonthlyTotalsDisplay(t) {
+  if (!t) return;
+  document.getElementById("monthlyTotals").innerHTML = `
+    <span style="color:#4067DD;font-weight:bold;">Receipt: ₹${t.bank.toFixed()}</span> | 
+    <span style="color:#08BF36;font-weight:bold;">Sale: ₹${t.taxInvoice.toFixed()}</span>
+  `;
+}
+
+// ✅ Render table
+function renderDATAMIPLTABLE(data, limit10 = false) {
   const table = document.getElementById("MIPLDATATABLE");
   table.innerHTML = "";
-
-  if (!dataArray || dataArray.length === 0) {
-    table.innerHTML = "<tr><td>No data</td></tr>";
-    return;
-  }
 
   const thead = document.createElement("thead");
   const tbody = document.createElement("tbody");
 
-  // Header
-  const headerRow = dataArray[0];
-  const trHead = document.createElement("tr");
-  headerRow.forEach(cell => {
+  const headerRow = data[0];
+  const trh = document.createElement("tr");
+  headerRow.forEach(h => {
     const th = document.createElement("th");
-    th.textContent = cell || "";
-    trHead.appendChild(th);
+    th.textContent = h;
+    trh.appendChild(th);
   });
-  const thAction = document.createElement("th");
-  thAction.textContent = "Actions";
-  trHead.appendChild(thAction);
-  thead.appendChild(trHead);
+  trh.appendChild(document.createElement("th")).textContent = "Actions";
+  thead.appendChild(trh);
 
-  // Rows to show
-  let rowsToShow = dataArray.slice(1);
-  if (limitTo10) rowsToShow = rowsToShow.slice(0, 10);
+  let rows = data.slice(1);
+  if (limit10) rows = rows.slice(0, 9);  // change the no 9 for no of row startup
 
-  rowsToShow.forEach(row => {
+  rows.forEach(r => {
     const tr = document.createElement("tr");
 
-    row.forEach(cell => {
+    // ✅ Color logic
+    const type = r[1]?.toUpperCase();
+    if (type === "BANK") tr.style.color = "red";
+    if (type === "CREDIT NOTE") tr.style.color = "grey";
+    if (type === "CHALLAN") tr.style.color = "green";
+
+    r.forEach(c => {
       const td = document.createElement("td");
-      td.textContent = cell || "";
+      td.textContent = c || "";
       tr.appendChild(td);
     });
 
-    // Row color
-    const typeCell = row[1]?.toUpperCase().trim();
-    if (typeCell === "BANK") tr.style.color = "red";
-    else if (typeCell === "CREDIT NOTE") tr.style.color = "grey";
-    else if (typeCell === "CHALLAN") tr.style.color = "green";
+    // ✅ BILL + PL LIST buttons
+    const action = document.createElement("td");
+    const invoice = r[4]?.trim();
 
-    // Actions
-    const invoiceNo = row[4]?.trim();
-    const actionTd = document.createElement("td");
+    if (invoice && type === "TAX INVOICE") {
+      const b1 = document.createElement("button");
+      b1.textContent = "BILL";
+      b1.onclick = () => openFile(invoice.replace("/", "_"));
 
-    if (invoiceNo && typeCell === "TAX INVOICE") {
-      const invoiceKey = invoiceNo.replace("/", "_");
-      const packingKey = invoiceNo;
-      const container = document.createElement("div");
-      container.style.display = "flex";
-      container.style.gap = "12px";
+      const b2 = document.createElement("button");
+      b2.textContent = "PL LIST";
+      b2.onclick = () => openFile(invoice);
 
-      // BILL button
-      const viewInvoiceBtn = document.createElement("button");
-      viewInvoiceBtn.textContent = "BILL";
-      viewInvoiceBtn.style.color = "white";
-      viewInvoiceBtn.style.background = "#1F39FF";
-      viewInvoiceBtn.style.border = "none";
-      viewInvoiceBtn.style.padding = "3px 8px";
-      viewInvoiceBtn.style.cursor = "pointer";
-      viewInvoiceBtn.style.borderRadius = "4px";
-      viewInvoiceBtn.addEventListener("click", () => {
-        fetch(api101Url + "?invoice=" + encodeURIComponent(invoiceKey))
-          .then(res => res.text())
-          .then(url => {
-            if (url !== "NOT_FOUND") window.open(url, "_blank");
-            else alert("Invoice not found!");
-          })
-          .catch(err => { console.error(err); alert("Error fetching invoice"); });
-      });
+      b1.style.cssText = b2.style.cssText = "padding:3px 7px;color:white;border:none;border-radius:4px;cursor:pointer;";
+      b1.style.background = "#1F39FF";
+      b2.style.background = "#28A745";
 
-      // PL LIST button
-      const viewPackingBtn = document.createElement("button");
-      viewPackingBtn.textContent = "PL LIST";
-      viewPackingBtn.style.color = "white";
-      viewPackingBtn.style.background = "#28A745";
-      viewPackingBtn.style.border = "none";
-      viewPackingBtn.style.padding = "3px 8px";
-      viewPackingBtn.style.cursor = "pointer";
-      viewPackingBtn.style.borderRadius = "4px";
-      viewPackingBtn.addEventListener("click", () => {
-        fetch(api101Url + "?invoice=" + encodeURIComponent(packingKey))
-          .then(res => res.text())
-          .then(url => {
-            if (url !== "NOT_FOUND") window.open(url, "_blank");
-            else alert("Packing list not found!");
-          })
-          .catch(err => { console.error(err); alert("Error fetching packing list"); });
-      });
-
-      container.appendChild(viewInvoiceBtn);
-      container.appendChild(viewPackingBtn);
-      actionTd.appendChild(container);
+      action.style.display = "flex";
+      action.style.gap = "8px";
+      action.append(b1, b2);
     }
 
-    tr.appendChild(actionTd);
+    tr.appendChild(action);
     tbody.appendChild(tr);
   });
 
-  table.appendChild(thead);
-  table.appendChild(tbody);
+  table.append(thead, tbody);
 }
 
-// -------------------- Search --------------------
+// ✅ PDF Open
+function openFile(key) {
+  fetch(apipdfUrl + "?invoice=" + encodeURIComponent(key))
+    .then(res => res.text())
+    .then(url => url !== "NOT_FOUND" ? window.open(url, "_blank") : alert("File not found!"))
+    .catch(() => alert("Error loading file"));
+}
+
+// ✅ Search system
 function searchDataMIPL() {
-  const query = document.getElementById("DATASEARCMIPL").value.trim().toLowerCase();
-  if (!query) {
-    renderDATAMIPLTABLE(allTableData, true); // initial last 10
-    return;
-  }
+  const q = document.getElementById("DATASEARCMIPL").value.toLowerCase();
+  if (!q) return renderDATAMIPLTABLE(allTableData, true);
 
-  // Filter from stored allTableData
-  const filtered = allTableData.filter((row, rowIndex) => {
-    if (rowIndex === 0) return true; // header
-    return row.some(cell => cell && cell.toString().toLowerCase().includes(query));
-  });
+  const filtered = [
+    allTableData[0],
+    ...allTableData.slice(1).filter(r => r.some(c => c?.toLowerCase().includes(q)))
+  ];
 
-  // Render all matching rows (no limit to 10)
   renderDATAMIPLTABLE(filtered, false);
-
-  // Highlight matched text
-  const table = document.getElementById("MIPLDATATABLE");
-  if (table) {
-    for (let i = 1; i < table.rows.length; i++) {
-      for (let j = 0; j < table.rows[i].cells.length - 1; j++) { // skip Actions
-        const cell = table.rows[i].cells[j];
-        const originalText = filtered[i]?.[j] || "";
-        if (originalText.toLowerCase().includes(query)) {
-          const regex = new RegExp(`(${query})`, "gi");
-          cell.innerHTML = originalText.replace(regex, `<span style="background:yellow; font-weight:bold;">$1</span>`);
-        } else {
-          cell.textContent = originalText;
-        }
-      }
-    }
-  }
 }
 
-// -------------------- Init --------------------
+// ✅ Initialize
 document.addEventListener("DOMContentLoaded", () => {
   loadDATAMIPLTABLE();
-  const searchInput = document.getElementById("DATASEARCMIPL");
-  if (searchInput) searchInput.addEventListener("keyup", searchDataMIPL);
+  document.getElementById("DATASEARCMIPL").addEventListener("keyup", searchDataMIPL);
 });
 </script>
+
 
 
 
