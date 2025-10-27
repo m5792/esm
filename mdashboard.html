@@ -261,9 +261,7 @@ table tr:hover {
 </div>
 
 
-<button onclick="print2011Report()" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer;">🖨️ Print Report</button>
 
-<button id="refresh2011Btn" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer;"> 🔄 Refresh</button>
 
 
 
@@ -412,8 +410,60 @@ table tr:hover {
 
 <!-- home btn bottam part start --> 
         <div id="home-bottom" class="panel-content active">
+
+          <style>
+
+#mipl2011Table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  background: #ffffff;
+  border: 1px solid #d0d0d0;
+}
+
+#mipl2011Table thead th {
+  background: #01305c;
+  color: #ffffff;
+  padding: 10px;
+  border: 1px solid #b5b5b5;
+  text-align: left;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+#mipl2011Table tbody td {
+  padding: 8px 10px;
+  border: 1px solid #e0e0e0;
+  vertical-align: top;
+  word-wrap: break-word; /* Wrap long text */
+  white-space: normal;
+}
+
+#mipl2011Table tbody tr:nth-child(even) {
+  background: #f7faff;
+}
+
+#mipl2011Table tbody tr:hover {
+  background: #e2f0ff;
+  
+}
+
+#mipl2011Table {
+  overflow-x: auto;
+  display: block;
+  max-height: 400px; /* Optional scrolling */
+}
+
+
+</style>
+     
         <table id="mipl2011Table"><thead id="tableHead"></thead> <tbody id="table2011Body"></tbody></table>
-<br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
         </div>
 <!-- home btn bottam part start --> 
 
@@ -2123,3 +2173,4 @@ document.getElementById("refresh2011Btn")?.addEventListener("click", refresh2011
 </html>
 
 <!-- 2011 table code and script stop HARE ...................................... -->
+
