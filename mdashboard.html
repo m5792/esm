@@ -27,8 +27,8 @@
 
     /* Modal container  10/17*/
     .modalvcr { 
-      width:10in;
-      height: 17in;
+      width: 10in;
+      height: 9in;
       background: var(--card-bg); 
       border-radius: 20px; 
       overflow: hidden; 
@@ -259,6 +259,7 @@ table tr:hover {
   <button class="filter-btn" data-value="receipt">💰 Receipt</button>
   <button class="filter-btn" data-value="sale">🧾 Sale</button>
   <button class="filter-btn" data-value="address">🏢 Address</button>
+  <button class="filter-btn" data-value="atn">🏢 Attendance</button>
 
 <button onclick="print2011Report()" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer; background-color: white;">🖨️ Print Report</button>
 <button id="refresh2011Btn" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer; background-color: white;"> 🔄 Refresh</button>
@@ -1798,11 +1799,13 @@ loadNoticeBoard();
 const api2011Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheet2011Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
 const range2011 = "FORM!A:M";
-const addressrange2011 = "ADDRESS!A:M"; 
+const addressrange2011 = "ADDRESS!A:M"; //xxxxxxxxxxxxxxxxxx
+const atnrange2011 = "ATN!A:M";
 const apiFileUrl = "https://script.google.com/macros/s/AKfycbyKeTGzkEsRd26seiog3jtfEXcLXNK4_fvt9b6D7kYtFXhInLr3J4PqCCgMxmsJ7rim/exec";
 
 let sheetData = [];
 let addressData = [];
+let atnData = [];
 let filteredData = [];
 let currentFilterType = "";
 let selectedLedger = "";
@@ -1814,7 +1817,8 @@ const tableConfig = {
   poreff: { headers: ["Sr No","User","Order By","Clint Name","Project Name","Address","PO/Reff No.","Status","PO Amt.","PO Weight","V.Type"], cols:[0,1,2,3,4,5,6,7,8,9,10]},
   receipt: { headers:["Sr No","Type","Date","Ledger","Amount","V .Type"], cols:[0,1,2,3,4,10]},
   sale: { headers:["Sr No","Type","Date","Ledger","Inv. No.","Tr./Ty","Reff. No.","Amount","Weight","Rate","Vehicle No.","V.Type"], cols:[0,1,2,3,4,11,5,6,7,8,9,10]},
-  address: { headers:["Clint","Address","State","Type","GSTIN","Contect Details"], cols:[0,1,2,3,4,5]}
+  address: { headers:["Clint","Address","State","Type","GSTIN","Contect Details"], cols:[0,1,2,3,4,5]},
+  atn: { headers:["Sr No","Type","Date","Employee","P/A","Login Time"], cols:[0,1,2,3,4,5]}
 };
 
 // === Load Sheet Data ===
@@ -1827,6 +1831,10 @@ async function load2011Data() {
     const resAddr = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheet2011Id}/values/${addressrange2011}?key=${api2011Key}`);
     const dataAddr = await resAddr.json();
     addressData = dataAddr.values || [];
+
+     const resAtn = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheet2011Id}/values/${atnrange2011}?key=${api2011Key}`);
+    const dataAtn = await resAtn.json();
+    atnData = dataAtn.values || [];
 
     filteredData = sheetData;
     render2011Table([]);
@@ -2040,6 +2048,8 @@ function applySearch() {
     );
   } else if (currentFilterType === "address") {
     dataToSearch = addressData;
+  } else if (currentFilterType === "atn") {
+    dataToSearch = atnData;
   }
 
   const filtered = dataToSearch.filter((row, i) => {
@@ -2055,9 +2065,6 @@ function applySearch() {
 
 
 
-
-
-// === Filter Type Selection ===
 // === Filter Button Click Handling ===
 document.querySelectorAll("#mipl2011Buttons .filter-btn").forEach(btn => {
   btn.addEventListener("click", function() {
@@ -2169,6 +2176,7 @@ document.getElementById("refresh2011Btn")?.addEventListener("click", refresh2011
 //
 
 </script>
+
 
 
 
