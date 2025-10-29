@@ -816,6 +816,7 @@ th {
   <button class="filter-btn" data-value="receipt">💰 Receipt</button>
   <button class="filter-btn" data-value="sale">🧾 Sale</button>
   <button class="filter-btn" data-value="address">🏢 Address</button>
+  <button class="filter-btn" data-value="atn">🏢 Attendance</button>
 
 <button onclick="print2011Report()" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer; background-color: white;">🖨️ Print Report</button>
 <button id="refresh2011Btn" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer; background-color: white;"> 🔄 Refresh</button>
@@ -890,6 +891,24 @@ th {
   <span>Total Weight:</span> <span id="totalPEBWeight">0</span> |
   <span>Balance:</span> <span id="totalDifference">0</span>
 </div>       
+
+
+<!-- PO Filter -->
+<div id="po2011Select" class="filter-container" style="display:none;">
+  <br/> <strong style="color: black;">PO / Reff No.:</strong>
+  <input type="text" id="po2011Input" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width:200px; width: 4in; background-color: rgb(228, 241, 212); font-size: 14px;" placeholder="🔍 Type PO No..."
+    style="padding:4px 8px;border-radius:4px;border:1px solid #ccc;
+    margin-bottom:10px;width:4in;background:#f7f7f7;font-size:14px;">
+  <div id="po2011Dropdown" class="dropdown"></div>
+
+  <!-- ✅ Totals For PO -->
+  <div id="poTotals2011mipl" style="display:none;margin-top:10px;
+    padding:8px;background:#f8f0ff;border:1px solid #ccc;border-radius:4px;">
+    <strong>Total Bill:</strong> ₹<span id="poTotalAmount">0</span> &nbsp;&nbsp;
+    <strong>Total Weight:</strong> <span id="poTotalWeight">0</span> Kg
+  </div>
+</div>
+
 
       </div>  <!-- section3B content stop hare *********************************************************************************************************-->
 
@@ -9182,10 +9201,10 @@ window.addEventListener('DOMContentLoaded', async () => {
 <style>
 
   .filter-container { position: relative; margin-bottom: 10px; display: none; }
-  .dropdown { position: absolute; top: 35px; left: 0; right: 0; background: white; border: 4px solid #012228; max-height: 700px; width: 500px; overflow-y: auto; display: none; z-index: 100; }
+  .dropdown { position: absolute; top: 50px; left: 0; right: 0; background: white; border: 4px solid #012228; max-height: 700px; width: 500px; overflow-y: auto; display: none; z-index: 100; }
   .dropdown div { padding: 6px; cursor: pointer; }
   .dropdown div.active { background: #0078d4; color: white; }
-  .dropdown div:hover { background: #e8cd36; color: white; }
+  .dropdown div:hover { background: #e8cd36; color: rgb(1, 3, 30); font-weight: bold;}
  #totals2011mipl { margin-top: 15px; font-size: 16px; font-weight: bold; background: #fafafa; border: 1px solid #ccc; padding: 8px; border-radius: 8px; display: none; }
   #totals2011mipl span { margin-right: 10px; }
 
@@ -9206,14 +9225,17 @@ window.addEventListener('DOMContentLoaded', async () => {
 const api2011Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheet2011Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
 const range2011 = "FORM!A:M";
-const addressrange2011 = "ADDRESS!A:M"; 
+const addressrange2011 = "ADDRESS!A:M"; //xxxxxxxxxxxxxxxxxx
+const atnrange2011 = "ATN!A:M";
 const apiFileUrl = "https://script.google.com/macros/s/AKfycbyKeTGzkEsRd26seiog3jtfEXcLXNK4_fvt9b6D7kYtFXhInLr3J4PqCCgMxmsJ7rim/exec";
 
 let sheetData = [];
 let addressData = [];
+let atnData = [];
 let filteredData = [];
 let currentFilterType = "";
 let selectedLedger = "";
+let selectedPO = ""; // sales btn ke poreff  ke lye po dropdown
 
 // === HEADERS and COLUMN MAPS ===
 const tableConfig = {
@@ -9222,7 +9244,8 @@ const tableConfig = {
   poreff: { headers: ["Sr No","User","Order By","Clint Name","Project Name","Address","PO/Reff No.","Status","PO Amt.","PO Weight","V.Type"], cols:[0,1,2,3,4,5,6,7,8,9,10]},
   receipt: { headers:["Sr No","Type","Date","Ledger","Amount","V .Type"], cols:[0,1,2,3,4,10]},
   sale: { headers:["Sr No","Type","Date","Ledger","Inv. No.","Tr./Ty","Reff. No.","Amount","Weight","Rate","Vehicle No.","V.Type"], cols:[0,1,2,3,4,11,5,6,7,8,9,10]},
-  address: { headers:["Clint","Address","State","Type","GSTIN","Contect Details"], cols:[0,1,2,3,4,5]}
+  address: { headers:["Clint","Address","State","Type","GSTIN","Contect Details"], cols:[0,1,2,3,4,5]},
+  atn: { headers:["Sr No","Type","Date","Employee","P/A","Login Time"], cols:[0,1,2,3,4,5]}
 };
 
 // === Load Sheet Data ===
@@ -9235,6 +9258,10 @@ async function load2011Data() {
     const resAddr = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheet2011Id}/values/${addressrange2011}?key=${api2011Key}`);
     const dataAddr = await resAddr.json();
     addressData = dataAddr.values || [];
+
+     const resAtn = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheet2011Id}/values/${atnrange2011}?key=${api2011Key}`);
+    const dataAtn = await resAtn.json();
+    atnData = dataAtn.values || [];
 
     filteredData = sheetData;
     render2011Table([]);
@@ -9349,9 +9376,36 @@ function render2011Table(rows){
     }
   });
 
-  if(currentFilterType==="ledger"){ totalsDiv.style.display="block"; updateTotals(totalTds,totalReceipt,totalBill,totalCn,totalPEBWeight);}
-  else totalsDiv.style.display="none";
+ // if(currentFilterType==="ledger"){ totalsDiv.style.display="block"; updateTotals(totalTds,totalReceipt,totalBill,totalCn,totalPEBWeight);}
+ // else totalsDiv.style.display="none";
 
+
+
+ //
+
+ if(currentFilterType === "ledger") {
+    
+    // ✅ Show Ledger Totals
+    totalsDiv.style.display = "block";
+    document.getElementById("poTotals2011mipl").style.display = "none";
+    
+    updateTotals(totalTds,totalReceipt,totalBill,totalCn,totalPEBWeight);
+}
+
+else if(currentFilterType === "sale") {
+
+    // ✅ Hide Ledger Totals, show PO totals
+    totalsDiv.style.display = "none";
+    document.getElementById("poTotals2011mipl").style.display = "block";
+
+    // ✅ Auto-update PO totals when table refresh
+    updatePOTotals(rows);
+
+} else {
+    totalsDiv.style.display = "none";
+    document.getElementById("poTotals2011mipl").style.display = "none";
+}
+//
   highlightInvoiceAndPOCells();
 }
 
@@ -9416,6 +9470,66 @@ function setupDropdown(inputId,dropdownId,options,callback){
 // === Reset Dates ===
 function resetDates(){ document.getElementById("start2011Date").value=""; document.getElementById("end2011Date").value=""; }
 
+
+
+
+//  dropdown fuction in sales bttn for po reff no ke lye ============================== start
+// ✅ Initialize PO Dropdown only for SALE type rows
+function init2011PoDropdown() {
+  const saleRows = sheetData.slice(1).filter(r =>
+    (r[10] || "").trim().toUpperCase() === "SALE"
+  );
+
+  const poOptions = [...new Set(saleRows.map(r => r[5]).filter(v => v))].sort();
+
+  setupDropdown("po2011Input", "po2011Dropdown", poOptions, (val) => {
+    selectedPO = val;
+    applyPOFilter(val);
+  });
+}
+
+
+
+// ✅ Apply Filter based on selected PO
+function applyPOFilter(poName) {
+  if (!poName) {
+    render2011Table([]);
+    document.getElementById("poTotals2011mipl").style.display = "none";
+    return;
+  }
+
+  const filtered = sheetData.filter((r, i) =>
+    i === 0 ||
+    ((r[10] || "").trim().toUpperCase() === "SALE" &&
+     (r[5] || "").trim() === poName.trim())
+  );
+
+  updatePOTotals(filtered);
+  render2011Table(filtered);
+}
+
+
+
+// ✅ Correct totals calculation based on SALE columns
+function updatePOTotals(rows) {
+  let totalBill = 0;
+  let totalWeight = 0;
+
+  rows.slice(1).forEach(r => {
+    totalBill += parseFloat(r[6]) || 0;  // ✅ Bill Amount
+    totalWeight += parseFloat(r[7]) || 0; // ✅ PEB Weight
+  });
+
+  document.getElementById("poTotalAmount").textContent = totalBill.toFixed(0);
+  document.getElementById("poTotalWeight").textContent = totalWeight.toFixed(0);
+
+  document.getElementById("poTotals2011mipl").style.display = "block";
+}
+
+// =================//  dropdown fuction in sales bttn for po reff no ke lye ============================== stop
+
+
+
 // === Apply Search / Ledger / Date Filter ===
 function applySearch() {
   const val = document.getElementById("search2011Input")?.value.toLowerCase();
@@ -9441,13 +9555,35 @@ function applySearch() {
         i === 0 || ["SALE", "RECEIPT"].includes((r[10] || "").trim().toUpperCase())
       );
     }
-  } else if (["poreff", "receipt", "sale"].includes(currentFilterType)) {
+ // } else if (["poreff", "receipt", "sale"].includes(currentFilterType)) {
+
+ } else if (currentFilterType === "sale") {
+
+  if (selectedPO) {
+    dataToSearch = sheetData.filter((r, i) =>
+      i === 0 || (
+        (r[10] || "").trim().toUpperCase() === "SALE" &&
+        r[5]?.trim() === selectedPO
+      )
+    );
+  } else {
+    dataToSearch = sheetData.filter((r, i) =>
+      i === 0 || (r[10] || "").trim().toUpperCase() === "SALE"
+    );
+  }
+
+} else if (currentFilterType === "receipt" || currentFilterType === "poreff") {
+//
+
+
     const map = { poreff: "JOB/REFF", receipt: "RECEIPT", sale: "SALE" };
     dataToSearch = sheetData.filter((r, i) =>
       i === 0 || (r[10]?.trim().toUpperCase() === map[currentFilterType])
     );
   } else if (currentFilterType === "address") {
     dataToSearch = addressData;
+  } else if (currentFilterType === "atn") {
+    dataToSearch = atnData;
   }
 
   const filtered = dataToSearch.filter((row, i) => {
@@ -9481,7 +9617,16 @@ document.querySelectorAll("#mipl2011Buttons .filter-btn").forEach(btn => {
 
     if (currentFilterType === "ledger") {
       document.getElementById("ledger2011Select").style.display = "block";
-    }
+    } 
+    //
+    if (currentFilterType === "sale") {
+  document.getElementById("po2011Select").style.display = "block";
+  init2011PoDropdown();
+} else {
+  document.getElementById("po2011Select").style.display = "none";
+  selectedPO = "";
+}
+//
 
     applySearch();
   });
@@ -9501,7 +9646,8 @@ function applyButtonPermissions() {
     "poreff": "3",
     "receipt": "4",
     "sale": "5",
-    "address": "6"
+    "address": "6",
+    "atn": "7"
   };
 
   document.querySelectorAll("#mipl2011Buttons .filter-btn")
@@ -9548,51 +9694,95 @@ document.getElementById("start2011Date")?.addEventListener("change",applySearch)
 document.getElementById("end2011Date")?.addEventListener("change",applySearch);
 
 load2011Data();
+initPO2011Dropdown(); 
 
 
 
 
-//*********
+//
 
 
 // === PRINT FUNCTION ===
-function print2011Report(){
+function print2011Report() {
   const table = document.getElementById("mipl2011Table");
-  const totals = document.getElementById("totals2011mipl");
-  if(!table || table.style.display==="none"){ alert("No table data to print!"); return; }
-
-  const totalsClone = totals.cloneNode(true);
-  const ledgerInput = document.getElementById("ledger2011Input");
-  const cloneInput = totalsClone.querySelector("#ledger2011Input");
-  if(ledgerInput && cloneInput){
-    const ledgerValue = ledgerInput.value.trim();
-    const ledgerText = ledgerValue ? `<strong style="color:#000;">${ledgerValue}</strong>` : `<em style="color:#777;">(No Ledger Selected)</em>`;
-    cloneInput.outerHTML = ledgerText;
+  if (!table || table.style.display === "none") {
+    alert("No table data to print!");
+    return;
   }
 
-  const printWindow = window.open("","_blank");
+  const printWindow = window.open("", "_blank");
+
+  let totalsHTML = "";
+
+  // ✅ If Ledger Filter Active → Print Ledger Totals
+  if (currentFilterType === "ledger") {
+    const totals = document.getElementById("totals2011mipl").cloneNode(true);
+
+    // ✅ Replace Input Box with selected Ledger Name text
+    const ledgerInput = document.getElementById("ledger2011Input");
+    const cloneInput = totals.querySelector("#ledger2011Input");
+    if (ledgerInput && cloneInput) {
+      const ledgerValue = ledgerInput.value.trim();
+      cloneInput.outerHTML =
+        `<strong style="padding:4px;color:#000;">Ledger: ${ledgerValue || "N/A"}</strong>`;
+    }
+
+    // ✅ Hide Dropdown inside print
+    let drp = totals.querySelector("#ledger2011Dropdown");
+    if (drp) drp.remove();
+
+    totalsHTML = totals.outerHTML;
+  }
+
+  // ✅ If PO Filter Active → Print PO Totals
+  if (currentFilterType === "sale") {
+    const poTotals = document.getElementById("poTotals2011mipl").cloneNode(true);
+    const poInput = document.getElementById("po2011Input");
+
+    // ✅ Show selected PO above totals
+    const selectedPOText = poInput?.value?.trim() || "(No PO Selected)";
+    totalsHTML = `
+      <div style="margin-bottom:10px;">
+        <strong>PO Ref:</strong> ${selectedPOText}
+      </div>
+      ${poTotals.outerHTML}
+    `;
+  }
+
   printWindow.document.write(`
     <html>
       <head>
         <title>Print Preview - MIPL Report</title>
         <style>
-          body { font-family:"Segoe UI", Arial, sans-serif; margin:20px; color:#000; background:#fff; }
-          h2 { text-align:center; margin-bottom:10px; }
-          #totals2011mipl { margin-bottom:15px; padding:10px; border:1px solid #aaa; background-color:#f7f7f7; font-size:14px; }
+          body { font-family:"Segoe UI", Arial, sans-serif; margin:20px; background:#fff; }
+          h2 { text-align:center; margin-bottom:10px; margin-top:5px; }
           table { width:100%; border-collapse:collapse; margin-top:10px; }
           th, td { border:1px solid #555; padding:6px 8px; text-align:center; font-size:13px; }
           th { background-color:#efefef; }
           tr:nth-child(even){background-color:#f9f9f9;}
           tr:hover{background-color:#e6f0ff;}
-          .highlight{background-color:yellow;font-weight:bold;}
-          @media print{ body{margin:0;padding:0;zoom:95%;} #printBtn{display:none;} }
+          #printBtn { margin-top:20px; }
+          .developer-tag { 
+            text-align:left; 
+            font-size:13px; 
+            color:#444; 
+            font-weight:bold;
+          }
+          @media print { 
+            #printBtn{display:none;} 
+            body{zoom:95%;}
+          }
+          strong { font-size:14px; }
         </style>
       </head>
       <body>
+        <div class="developer-tag">
+          Developed By - eS|MTally Kundeshwari Kashipur
+        </div>
         <h2>MIPL Report Preview</h2>
-        ${totalsClone.outerHTML}
+        ${totalsHTML}
         ${table.outerHTML}
-        <div style="text-align:center; margin-top:20px;">
+        <div style="text-align:center;">
           <button id="printBtn" onclick="window.print()">🖨️ Print Now</button>
         </div>
       </body>
