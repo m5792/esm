@@ -9894,7 +9894,7 @@ async function checkPopupCondition(username) {
 
     // ✅ Agar match nahi mila — popup dikhao
     if (!matchFound) {
-      showPopup(username, today);
+      showATNPopup(username, today);
     }
 
   } catch (err) {
@@ -9903,14 +9903,14 @@ async function checkPopupCondition(username) {
 }
 
 // ✅ Show popup
-function showPopup(username, today) {
+function showATNPopup(username, today) {
   document.getElementById("popup-username").value = username;
   document.getElementById("popup-date").value = today.toISOString().split('T')[0];
   document.getElementById("popupForm").style.display = "flex";
 }
 
 // ✅ Close popup
-function closePopup() {
+function closeATNPopup() {
   document.getElementById("popupForm").style.display = "none";
 }
 </script>
@@ -9946,7 +9946,7 @@ document.addEventListener("submit", async function (e) {
     if (result.result === 'success') {
       alert('✅ Success Have a Nice Day!');
       form.reset();
-      closePopup(); // ✅ auto close
+      closeATNPopup(); // ✅ auto close
     } else {
       alert(`❌ Error: ${result.error || 'Unknown error occurred.'}`);
     }
@@ -9964,3 +9964,4 @@ document.addEventListener("submit", async function (e) {
 
 
 <!-- ================  Attendance  Confermation script and code stop hare ===============================-->
+
