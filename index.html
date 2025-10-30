@@ -709,10 +709,16 @@ th {
 <span  style="color: rgb(1, 26, 116); font-size: 16px; font-weight: bold;">Notice Board:</span><br/>
       <span id="globalMessage" style="color: rgb(16, 15, 15); font-size: 16px;"></span>
 
-      <span id="username"></span>
+      
+
+      <div id="greetingMessage" 
+     style="display:none; font-size:18px; 
+     font-weight:bold; color:green; padding:10px;">
+</div>
+
     </div> 
    
-      <span id="reportauth" style="color: #ececec;"></span>
+      
 
         </div> <!-- यह एक नोट है, vertical Two Part Div (30-70) left content stop -->
 <div class="right" style="background-color: white;"> <!-- यह एक नोट है, vertical Two Part Div (30-70) right content start -->
@@ -2701,6 +2707,9 @@ document.addEventListener("DOMContentLoaded", function () {
   
   <!-- Current Time -->
   <div id="currentDateTime" style="padding: 10px 20px; white-space: nowrap;"></div>
+
+  <span id="reportauth" style="color: #002044;"></span>
+  <span id="username" style="color: #002044;"></span>
 
   <!-- Scrolling News Ticker -->
   <marquee behavior="scroll" direction="left" scrollamount="5" style="flex: 1;">
@@ -9448,7 +9457,7 @@ function updateTotals(totalTds,totalReceipt,totalBill,totalCn,totalPEBWeight){
   document.getElementById("totalBill").textContent=totalBill.toFixed(0);
   document.getElementById("totalCn").textContent=totalCn.toFixed(0);
   document.getElementById("totalPEBWeight").textContent=totalPEBWeight.toFixed(0);
-  const difference = totalBill-totalReceipt-totalTds-totalCn;
+  const difference = totalBill-totalReceipt-totalTds+totalCn;         // BALANCE CALCULATION
   const diffElement=document.getElementById("totalDifference");
   diffElement.textContent=difference.toFixed(0);
   diffElement.style.color = difference<0 ? "red":"green";
@@ -9864,6 +9873,9 @@ document.getElementById("refresh2011Btn")?.addEventListener("click", refresh2011
   </div>
 </div>
 
+
+
+
 <script>
 // ✅ Google Sheet Config
 const apiKey2 = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
@@ -9871,15 +9883,40 @@ const sheetId2 = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
 const range2 = "ATN!A:G";
 
 // ✅ Check condition after login
+// ✅ Check condition after login
 async function checkPopupCondition(username) {
   try {
+
+    // ✅ Time Check (9 AM - 6 PM)
+    const now = new Date();
+    const currentHour = now.getHours();
+
+    if (currentHour < 9 || currentHour >= 18) {
+      let greeting = "";
+
+      if (currentHour < 12) {
+        greeting = "Good Morning, " + username + "!";
+      } else if (currentHour < 18) {
+        greeting = "Good Afternoon, " + username + "!";
+      } else {
+        greeting = "Good Evening, " + username + "!";
+      }
+
+      // ✅ Show greeting on screen
+      showGreeting(greeting);
+      console.log("⛔ Outside allowed popup time. Popup disabled.");
+      return; // ✅ Stop here — no popup check
+    }
+
+    // ✅ If time is ok → Check match from Sheet
     const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId2}/values/${range2}?key=${apiKey2}`);
     const data = await response.json();
     const rows = data.values || [];
 
     const today = new Date();
-    const todayStr = today.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).replace(/ /g, '-');
-    // Example: "28-Oct-2025"
+    const todayStr = today
+      .toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+      .replace(/ /g, '-');
 
     let matchFound = false;
     for (let i = 1; i < rows.length; i++) {
@@ -9892,7 +9929,6 @@ async function checkPopupCondition(username) {
       }
     }
 
-    // ✅ Agar match nahi mila — popup dikhao
     if (!matchFound) {
       showATNPopup(username, today);
     }
@@ -9901,6 +9937,19 @@ async function checkPopupCondition(username) {
     console.error("Error checking popup condition:", err);
   }
 }
+
+// ✅ Show Greeting Message
+function showGreeting(msg) {
+  const messageDiv = document.getElementById("greetingMessage");
+
+  if (messageDiv) {
+    messageDiv.textContent = msg;
+    messageDiv.style.display = "block";
+  } else {
+    alert(msg);
+  }
+}
+
 
 // ✅ Show popup
 function showATNPopup(username, today) {
@@ -9914,6 +9963,7 @@ function closeATNPopup() {
   document.getElementById("popupForm").style.display = "none";
 }
 </script>
+
 
 <script>
 // ✅ Google Apps Script URL
@@ -9964,4 +10014,3 @@ document.addEventListener("submit", async function (e) {
 
 
 <!-- ================  Attendance  Confermation script and code stop hare ===============================-->
-
