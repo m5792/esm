@@ -828,17 +828,50 @@ th {
 <button id="refresh2011Btn" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer; background-color: white;"> 🔄 Refresh</button>
 </div>
 
-
-
-
-
 <div id="search2011Bar">
   <input type="text" id="search2011Input" placeholder="🔍 Search in current table...">
   <label>From:</label>
   <input type="date" id="start2011Date">
   <label>To:</label>
   <input type="date" id="end2011Date">
+
+   <button id="exportBtn" data-value="exportBtn" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer; background-color: #027175; color: rgb(245, 242, 163);">🏢 Export</button>
+
+   <style>
+  .export-menu {
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    border-radius: 6px;
+    display: none;
+    flex-direction: column;
+    min-width: 120px;
+    z-index: 100;
+  }
+
+  .export-menu button {
+    padding: 8px 12px;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .export-menu button:hover {
+    background: #f0f0f0;
+    color: #0026ff;
+  }
+
+</style>
+
+
+<div class="export-menu" id="exportMenu">
+  <button data-type="html">Export as HTML</button>
+  <button data-type="excel">Export as Excel</button>
 </div>
+
+</div>   <!-- <div id="search2011Bar"> stop  -->
 
 <style>
   #search2011Bar {
@@ -9367,7 +9400,7 @@ function render2011Table(rows){
     });
 
     const typeCell = r[1]?.toUpperCase().trim();
-    if(typeCell==="BANK") tr.style.color="red";
+    if(typeCell==="BANK" || typeCell === "CASH") tr.style.color="red";
     else if(typeCell==="CREDIT NOTE") tr.style.color="grey";
     else if(typeCell==="CHALLAN") tr.style.color="green";
 
@@ -9379,7 +9412,7 @@ function render2011Table(rows){
       const amount = parseFloat(r[6]) || 0;
       const weight = parseFloat(r[7]) || 0;
       if(type==="TDS") totalTds+=receipt;
-      else if(type==="BANK") totalReceipt+=receipt;
+      else if(type === "BANK" || type === "CASH") totalReceipt+=receipt;
       else if(type==="TAX INVOICE"){ totalBill+=amount; totalPEBWeight+=weight;}
       else if(type==="CREDIT NOTE") totalCn+=amount;
     }
@@ -9656,7 +9689,8 @@ function applyButtonPermissions() {
     "receipt": "4",
     "sale": "5",
     "address": "6",
-    "atn": "7"
+    "atn": "7",
+    "exportBtn": "8"
   };
 
   document.querySelectorAll("#mipl2011Buttons .filter-btn")
@@ -9668,6 +9702,16 @@ function applyButtonPermissions() {
         btn.style.display = "none"; // ❌ Hide
       }
     });
+
+     // ✅ Additionally handle Export button by ID
+  const exportButton = document.getElementById("exportBtn");
+  if (exportButton) {
+    if (allowed.includes(buttonMap["exportBtn"])) {
+      exportButton.style.display = "inline-block";
+    } else {
+      exportButton.style.display = "none";
+    }
+  } //--
 }
 
 // Call when user login or after permissions loaded
@@ -9695,7 +9739,7 @@ function waitForReportAuth() {
 // ✅ Start observing for changes
 waitForReportAuth();
 
-//+++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // === Event Listeners ===
 document.getElementById("search2011Input")?.addEventListener("input",applySearch);
@@ -9828,6 +9872,71 @@ document.getElementById("refresh2011Btn")?.addEventListener("click", refresh2011
 </script>
 
 
+
+
+
+<script>
+// === Export Menu Toggle ===
+const exportBtn = document.getElementById("exportBtn");
+const exportMenu = document.getElementById("exportMenu");
+
+exportBtn.addEventListener("click", (e) => {
+  const rect = exportBtn.getBoundingClientRect();
+  exportMenu.style.top = rect.bottom + "px";
+  exportMenu.style.left = rect.left + "px";
+  exportMenu.style.display = exportMenu.style.display === "flex" ? "none" : "flex";
+});
+
+document.addEventListener("click", (e) => {
+  if (!exportBtn.contains(e.target) && !exportMenu.contains(e.target)) {
+    exportMenu.style.display = "none";
+  }
+});
+
+// === Export Buttons Action ===
+document.querySelectorAll("#exportMenu button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const type = btn.dataset.type;
+    exportRenderedTable(type);
+    exportMenu.style.display = "none";
+  });
+});
+
+// === Export Rendered Table Function ===
+function exportRenderedTable(type) {
+  const table = document.getElementById("mipl2011Table");
+  if (!table || table.style.display === "none") {
+    alert("⚠️ No table data to export!");
+    return;
+  }
+
+  // ✅ Export only what is currently rendered (no re-rendering)
+  const clonedTable = table.cloneNode(true);
+  const wrapper = document.createElement("div");
+  wrapper.appendChild(clonedTable);
+  const htmlData = wrapper.innerHTML;
+
+  if (type === "html") {
+    const blob = new Blob([htmlData], { type: "text/html" });
+    triggerDownload(blob, "RenderedTable.html");
+  }
+
+  else if (type === "excel") {
+    const blob = new Blob([htmlData], { type: "application/vnd.ms-excel" });
+    triggerDownload(blob, "RenderedTable.xls");
+  }
+}
+
+function triggerDownload(blob, filename) {
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
+
+</script>
 
 
 </body>
