@@ -2124,7 +2124,7 @@ function updateTotals(totalTds,totalReceipt,totalBill,totalCn,totalPEBWeight){
   document.getElementById("totalBill").textContent=totalBill.toFixed(0);
   document.getElementById("totalCn").textContent=totalCn.toFixed(0);
   document.getElementById("totalPEBWeight").textContent=totalPEBWeight.toFixed(0);
-  const difference = totalBill-totalReceipt-totalTds-totalCn;
+  const difference = totalBill-totalReceipt-totalTds+totalCn;
   const diffElement=document.getElementById("totalDifference");
   diffElement.textContent=difference.toFixed(0);
   diffElement.style.color = difference<0 ? "red":"green";
@@ -2499,6 +2499,7 @@ document.addEventListener("submit", async function (e) {
 // checkPopupCondition(user.displayName); remove this line in login section if username not showing auto
 </script>
 <!-- ================ user lock/unlock script stop ===============================-->
+
 
 
 
