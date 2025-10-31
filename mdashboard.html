@@ -2034,7 +2034,7 @@ function render2011Table(rows){
     });
 
     const typeCell = r[1]?.toUpperCase().trim();
-    if(typeCell==="BANK") tr.style.color="red";
+    if(typeCell==="BANK" || typeCell === "CASH") tr.style.color="red";
     else if(typeCell==="CREDIT NOTE") tr.style.color="grey";
     else if(typeCell==="CHALLAN") tr.style.color="green";
 
@@ -2046,7 +2046,7 @@ function render2011Table(rows){
       const amount = parseFloat(r[6]) || 0;
       const weight = parseFloat(r[7]) || 0;
       if(type==="TDS") totalTds+=receipt;
-      else if(type==="BANK") totalReceipt+=receipt;
+      else if(typeCell==="BANK" || typeCell === "CASH") totalReceipt+=receipt;
       else if(type==="TAX INVOICE"){ totalBill+=amount; totalPEBWeight+=weight;}
       else if(type==="CREDIT NOTE") totalCn+=amount;
     }
@@ -2499,6 +2499,7 @@ document.addEventListener("submit", async function (e) {
 // checkPopupCondition(user.displayName); remove this line in login section if username not showing auto
 </script>
 <!-- ================ user lock/unlock script stop ===============================-->
+
 
 
 
