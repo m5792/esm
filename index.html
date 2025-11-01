@@ -270,7 +270,7 @@ table{
   table{
   overflow-x: auto;
   display: block;
-  max-height: 730px; /* Optional scrolling */
+  max-height: 700px; /* Optional scrolling */
   }
 
   /* Table border & cell style */
@@ -778,8 +778,45 @@ th {
 
 </div>  <!--  sections1 stop  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA  X -->
 
-   
-      <div id="section2" class="section hidden"><table id="myuserTable"></table> <br/><br/><br/><br/><br/><br/><br/><br/></div>  <!--  sections2 start  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
+
+<!-- section2B content start hare *********************************************************************************************************-->
+      <div id="section2b" class="section hidden">
+
+
+
+  <!-- Ledger Filter -->
+  <div id="ledger5792Select" >
+    <span style="color: black;">Ledger Name:</span>
+    <input type="text" id="ledger5792Input"
+      style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width: 4in; background-color: rgb(241, 212, 212); font-size: 14px;"
+      placeholder="🔍 Type to search ledger...">
+    <div id="ledger5792Dropdown" class="dropdown"></div>
+
+    <button onclick="print5792Table()">🖨️ Print Table</button>
+<button onclick="refresh5792Table()">🔄 Refresh Table</button>
+  </div>
+
+          <div id="search5792Bar">
+  <input type="text" id="search5792Input" placeholder="🔍 Search in current table...">
+
+  <strong style="color: white;"> Select User:</strong>
+    <select id="user5792">
+    <option value="">--Select Type--</option>
+    <option value="MA">MUKHTIYAR</option>
+    <option value="TA">TUSHAR AGARWAL</option>
+    <option value="BANK">BANK</option>
+  </select>
+
+  <label>From:</label>
+  <input type="date" id="start5792Date">
+  <label>To:</label>
+  <input type="date" id="end5792Date">
+  </div>
+      
+      </div>  <!-- section2B content stop hare *********************************************************************************************************-->
+
+
+      <div id="section2" class="section hidden"><div id="table5792Container"></div> <br/><br/><br/><br/><br/><br/><br/><br/></div>  <!--  sections2 start  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
       
       
       
@@ -836,40 +873,6 @@ th {
   <input type="date" id="end2011Date">
 
    <button id="exportBtn" data-value="exportBtn" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer; background-color: #027175; color: rgb(245, 242, 163);">🏢 Export</button>
-
-   <style>
-  .export-menu {
-    position: absolute;
-    background: white;
-    border: 1px solid #ddd;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    border-radius: 6px;
-    display: none;
-    flex-direction: column;
-    min-width: 120px;
-    z-index: 100;
-  }
-
-  .export-menu button {
-    padding: 8px 12px;
-    background: none;
-    border: none;
-    text-align: left;
-    cursor: pointer;
-  }
-
-  .export-menu button:hover {
-    background: #f0f0f0;
-    color: #0026ff;
-  }
-
-</style>
-
-
-<div class="export-menu" id="exportMenu">
-  <button data-type="html">Export as HTML</button>
-  <button data-type="excel">Export as Excel</button>
-</div>
 
 </div>   <!-- <div id="search2011Bar"> stop  -->
 
@@ -1553,7 +1556,9 @@ function syncLedgerMsaf99Option() {
         <input type="text" id="msaf14" name="VNo" placeholder="Enter Invoice No. (25-26/xxxx)" required >
         
 
-        <input type="text" id="msaf16" name="Amount" placeholder="Enter Amount" required >
+        <input type="number" id="msaf16" name="Amount" placeholder="Enter Amount" required>
+        <span id="amountWords16" style="font-size: 15px; color: rgb(45, 68, 133);;">...</span>  <br/>
+
         <input type="text" id="msaf17" name="Weight" placeholder="Enter Weight" required >
         <input type="text" id="msaf18" name="Rate" placeholder="Enter Rate" required >
 
@@ -1578,6 +1583,9 @@ function syncLedgerMsaf99Option() {
 
    
 </div>   
+
+
+
 
         </div> <!-- यह एक नोट है, vertical Two Part Div (30-70) left content stop -->
 <div class="right"> <!-- यह एक नोट है, vertical Two Part Div (30-70) right content start -->
@@ -1631,7 +1639,9 @@ function syncLedgerMsaf99Option() {
                     <option value="DR">DR</option>
                 </select>
          <label >Amount</label>   
-         <input type="text" id="msaf5" name="VNo" placeholder="Enter Amount" required >
+         <input type="number" id="msaf5" name="VNo" placeholder="Enter Amount" required>
+          <span id="amountWords5" style="font-size: 15px; color: rgb(45, 68, 133);">...</span> <br/>
+
         <label >Narration</label>
         <input type="text" id="msaf6" name="Narration" placeholder="Narration if any">
 
@@ -1657,6 +1667,84 @@ function syncLedgerMsaf99Option() {
         <span style="color:rgb(129, 1, 1);font-size:130%;font-family:Magneto;">eS |</span> 
         <span style="color:#004d80;font-size:130%;font-family:Magneto;">MTally</span>
 </div>   
+
+   <!-- ************************* number in words start *************************************************** -->
+<script>
+const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+              "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen",
+              "Seventeen", "Eighteen", "Nineteen"];
+const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+
+function twoDigitToWords(n) {
+  n = Number(n);
+  if (n < 20) return ones[n];
+  const t = Math.floor(n / 10);
+  const o = n % 10;
+  return tens[t] + (o ? " " + ones[o] : "");
+}
+
+function numToChunk(n) {
+  n = Number(n);
+  if (n === 0) return "";
+  const h = Math.floor(n / 100);
+  const r = n % 100;
+  let s = "";
+  if (h) s += ones[h] + " Hundred ";
+  if (r) s += (h ? "and " : "") + twoDigitToWords(r);
+  return s.trim();
+}
+
+function numToWordsIndian(num) {
+  if (num === 0) return "Zero";
+  let words = "";
+
+  const crore = Math.floor(num / 10000000);
+  num = num % 10000000;
+  const lakh = Math.floor(num / 100000);
+  num = num % 100000;
+  const thousand = Math.floor(num / 1000);
+  num = num % 1000;
+  const hundred = Math.floor(num / 100);
+  const rest = num % 100;
+
+  if (crore) words += numToChunk(crore) + " Crore ";
+  if (lakh) words += numToChunk(lakh) + " Lakh ";
+  if (thousand) words += numToChunk(thousand) + " Thousand ";
+  if (hundred) words += ones[hundred] + " Hundred ";
+  if (rest) words += (words ? "and " : "") + twoDigitToWords(rest) + " ";
+  return words.trim();
+}
+
+function convertNumberToWords(value) {
+  if (value === "" || isNaN(value)) return "";
+  const num = parseFloat(value);
+  if (isNaN(num)) return "";
+  const intPart = Math.floor(num);
+  const fracPart = Math.round((num - intPart) * 100);
+
+  let result = "";
+  if (intPart > 0) result += numToWordsIndian(intPart) + " Rupees";
+  if (fracPart > 0) result += " and " + numToWordsIndian(fracPart) + " Paise";
+  if (result === "") result = "Zero Rupees";
+  result += " Only";
+  return result;
+}
+
+// === Attach Live Conversion to Both Inputs ===
+function attachWordConverter(inputId, spanId) {
+  const input = document.getElementById(inputId);
+  const span = document.getElementById(spanId);
+  input.addEventListener("input", () => {
+    const words = convertNumberToWords(input.value);
+    span.textContent = words ? words : "...";
+  });
+}
+
+attachWordConverter("msaf16", "amountWords16");
+attachWordConverter("msaf5", "amountWords5");
+</script>
+
+   <!-- ************************* number in words stop *************************************************** -->
 
         </div> <!-- यह एक नोट है, vertical Two Part Div (30-70) left content stop -->
 <div class="right"> <!-- यह एक नोट है, vertical Two Part Div (30-70) right content start -->
@@ -2538,44 +2626,7 @@ document.addEventListener("DOMContentLoaded", function () {
  </div>  <!-- section1B content stop hare *********************************************************************************************************-->
 
 
- <!-- section2B content start hare *********************************************************************************************************-->
-      <div id="section2b" class="section hidden">
-
-          <div id="userTotals" >
-            <span>Total Receipt:</span> <span id="totaluserReceipt">0</span> |
-            <span>Total Payment:</span> <span id="totaluserPayment">0</span> |
-            <span>Total Payable Bill:</span> <span id="totaluserBilldr">0</span> |
-            <span>Total Receivd Bill:</span> <span id="totaluserBillcr">0</span> |
-            <span>Total Salary:</span> <span id="totaluserSalary">0</span> |
-            <span>Balance:</span> <span id="totaluserDifference">0</span>
-        </div>
-        
- <div id="search123Container">
-    
-           <blink> <span style="color:rgb(1, 60, 60);font-size:120%;font-family:Arial Black;" id="resultDiv">Users & Cash Ledger Report</span> </blink> <br/>
-    
-            <label style="font-weight: bold;">Ledger:</label>
-            <select id="filteruserColumn4"></select>
-    
-            <label style="font-weight: bold;  color: red ;">From:</label>
-            <input type="date" id="starusertDate">
-    
-            <label style="font-weight: bold;  color: red ;">To:</label>
-            <input type="date" id="enduserDate">
-    
-            <label style="font-weight: bold;">User:</label>
-            <select id="filterusrColumn1"></select>
-    
-            <label style="font-weight: bold;">Voucher:</label>
-            <select id="filteruserColumn2"></select>
-    
-            <button onclick="printuserTable()">🖨️ Print</button>  
-        </div>
-    
-      
-      </div>  <!-- section2B content stop hare *********************************************************************************************************-->
-
-     
+ 
      
 
       <div id="section5b" class="section hidden" style="background-color: #d7d9dc;">  <!-- section5B content START hare ****-->
@@ -3299,535 +3350,352 @@ window.onload = () => {
 
 
 <!-- user ma/ta script & code start   (CODE505) -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Cash Ledger Report</title>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-        #search123Container {
-            position: sticky;
-            top: 0;
-           left: 0;
-      width: 100%;
-      background: #ebecec;
-      padding: 10px 20px;
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      z-index: 1000;
-      color: #000;
-        }
+<style>
+  #search5792Bar {
+    background-color: #424242;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+    box-sizing: border-box;
+  }
 
-        .search123Container select,
-    .search123Container input {
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      cursor: pointer;
+  #search5792Input {
+    flex: 1;
+    background-color: #fdfdf6;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+  }
+
+  #search5792Bar label {
+    font-weight: bold;
+    color: rgb(247, 244, 244);
+    margin-left: 10px;
+  }
+
+  #search5792Bar input[type="date"] {
+    padding: 4px 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+  }
+
+  #ledger5792Dropdown {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    max-height: 600px;
+    overflow-y: auto;
+    width: 4in;
+    display: none;
+    z-index: 999;
+  }
+
+  #ledger5792Dropdown div {
+    padding: 4px;
+    cursor: pointer;
+  }
+
+  #ledger5792Dropdown div:hover {
+    background: #eee;
+  }
+</style>
+
+
+
+
+
+
+
+
+
+<script>
+const api5792Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheet5792Id = "1ECwXrxs8_FDWw1qAC6_qxEwP_HE3SGMM4qNKVZHlIS0";
+const range5792 = "FORM!A:G";
+
+let all5792Data = [];
+let filtered5792Data = [];
+
+// ✅ Convert "7-Oct-2025" → Date object
+function parseCustomDate(dateStr) {
+  if (!dateStr) return null;
+  const parts = dateStr.split("-");
+  if (parts.length !== 3) return null;
+  const day = parseInt(parts[0]);
+  const monthStr = parts[1].toLowerCase().substring(0, 3);
+  const year = parseInt(parts[2]);
+  const months = {
+    jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+    jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
+  };
+  const month = months[monthStr];
+  if (isNaN(day) || isNaN(year) || month === undefined) return null;
+  return new Date(year, month, day);
+}
+
+// ✅ Fetch Google Sheet Data
+async function fetch5792Data() {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet5792Id}/values/${range5792}?key=${api5792Key}`;
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    return data.values || [];
+  } catch (err) {
+    console.error("Error fetching data:", err);
+    return [];
+  }
+}
+
+// ✅ Process Rows
+function processRows(rows) {
+  if (!rows || rows.length < 2) return [];
+  const headers = rows[0];
+  let data = rows.slice(1).map(r => {
+    let obj = {};
+    headers.forEach((h, i) => obj[h] = r[i] || "");
+    obj._serial = parseFloat(r[0]) || 0;
+    obj._user = r[1] || "";
+    obj._type = r[2] || "";
+    obj._dateStr = r[3] || "";
+    obj._date = parseCustomDate(r[3]);
+    obj._ledger = r[4] || "";
+    obj._amount = parseFloat(r[5]) || 0;
+
+    // 🔹 JNP ko MA me convert kar do (display ke liye)
+    if (obj._user.trim().toUpperCase() === "JNP") obj._user = "MA";
+    
+    return obj;
+  });
+
+  data.sort((a, b) => b._serial - a._serial);
+  return data;
+}
+
+// ✅ Render Table + Color Formatting
+function render5792Table(data) {
+  const container = document.getElementById("table5792Container");
+  if (!data.length) {
+    container.innerHTML = "<p>No records found.</p>";
+    return;
+  }
+
+  const headers = Object.keys(data[0]).filter(h => !h.startsWith("_"));
+  const html = `
+    <table id="myuserTable" border="1" style="border-collapse:collapse;width:100%;font-size:14px;">
+      <thead style="background:#004d80;color:white;">
+        <tr>${headers.map(h => `<th>${h}</th>`).join("")}<th>Running Balance</th></tr>
+      </thead>
+      <tbody>
+        ${data.map(r => {
+          let color = "";
+          const type = r._type.toLowerCase();
+          if (type === "payment") color = "red";
+          else if (type === "salary") color = "blue";
+          else if (type === "billdr") color = "green";
+
+          return `
+            <tr style="color:${color};">
+              ${headers.map(h => `<td>${r[h]}</td>`).join("")}
+              <td class="runningBalance"></td>
+            </tr>`;
+        }).join("")}
+      </tbody>
+    </table>
+  `;
+  container.innerHTML = html;
+  calculate5792RunningBalance();
+}
+
+// ✅ Calculate Running Balance
+function calculate5792RunningBalance() {
+  const rows = Array.from(document.querySelectorAll('#myuserTable tbody tr'));
+  if (rows.length === 0) return;
+
+  const lastRow = rows[rows.length - 1];
+  const lastCells = lastRow.querySelectorAll('td');
+  const lastType = lastCells[2]?.textContent.trim().toLowerCase();
+  const lastAmount = parseFloat(lastCells[5]?.textContent || 0);
+
+  const creditTypes = ["receipt", "salary", "billcr"];
+  let runningBalance = creditTypes.includes(lastType) ? lastAmount : -lastAmount;
+
+  lastRow.querySelector('.runningBalance').textContent = runningBalance.toFixed(2);
+
+  for (let i = rows.length - 2; i >= 0; i--) {
+    const cells = rows[i].querySelectorAll('td');
+    const type = cells[2]?.textContent.trim().toLowerCase();
+    const amount = parseFloat(cells[5]?.textContent || 0);
+
+    if (!isNaN(amount)) {
+      if (creditTypes.includes(type)) {
+        runningBalance += amount;
+      } else if (["payment", "billdr"].includes(type)) {
+        runningBalance -= amount;
+      }
+    }
+    rows[i].querySelector('.runningBalance').textContent = runningBalance.toFixed();
+  }
+}
+
+// ✅ Apply Filters (Search + Ledger + User + Date)
+function apply5792Filters() {
+  const searchVal = document.getElementById("search5792Input")?.value.toLowerCase() || "";
+  const ledgerVal = document.getElementById("ledger5792Input")?.value.toLowerCase() || "";
+  const userVal = document.getElementById("user5792")?.value || "";
+  const startDateStr = document.getElementById("start5792Date")?.value;
+  const endDateStr = document.getElementById("end5792Date")?.value;
+
+  const startDate = startDateStr ? new Date(startDateStr) : null;
+  const endDate = endDateStr ? new Date(endDateStr) : null;
+
+  filtered5792Data = all5792Data.filter(row => {
+    const rowDate = row._date;
+    if (!rowDate) return false;
+
+    const rowTime = rowDate.setHours(0, 0, 0, 0);
+    const startTime = startDate ? startDate.setHours(0, 0, 0, 0) : null;
+    const endTime = endDate ? endDate.setHours(0, 0, 0, 0) : null;
+
+    // ✅ Start date inclusive
+    const inDateRange =
+      (!startTime || rowTime >= startTime) &&
+      (!endTime || rowTime <= endTime);
+
+    const matchesUser = !userVal || row._user === userVal;
+    const matchesLedger = !ledgerVal || (row._ledger || "").toLowerCase().includes(ledgerVal);
+    const matchesSearch = !searchVal || Object.values(row)
+      .some(v => String(v).toLowerCase().includes(searchVal));
+
+    return inDateRange && matchesUser && matchesLedger && matchesSearch;
+  });
+
+  filtered5792Data.sort((a, b) => b._serial - a._serial);
+  render5792Table(filtered5792Data);
+}
+
+// ✅ Ledger Dropdown Setup
+function setupLedger5792Dropdown() {
+  const ledgerInput = document.getElementById("ledger5792Input");
+  const dropdown = document.getElementById("ledger5792Dropdown");
+  if (!ledgerInput || !dropdown) return;
+  
+  const ledgers = [...new Set(all5792Data.map(r => r._ledger).filter(Boolean))];
+
+  ledgerInput.addEventListener("input", () => {
+    const value = ledgerInput.value.trim().toLowerCase();
+    dropdown.innerHTML = "";
+
+    if (!value) {
+      dropdown.style.display = "none";
+      apply5792Filters();
+      return;
     }
 
+    const matches = ledgers.filter(l => l.toLowerCase().includes(value));
+    matches.forEach(item => {
+      const div = document.createElement("div");
+      div.textContent = item;
+      div.style.padding = "4px";
+      div.style.cursor = "pointer";
+      div.onclick = () => {
+        ledgerInput.value = item;
+        dropdown.style.display = "none";
+        apply5792Filters();
+      };
+      dropdown.appendChild(div);
+    });
 
-        .select2-container {
-            flex: 1;
-        }
-        tr.hidden {
-            display: none;
-        }
-        tr.receipt {
-            background-color: #ffe6e6;
-            color: #a10404;
-        }
+    dropdown.style.display = matches.length ? "block" : "none";
+  });
 
-        tr.receipt2 {
-            background-color: #ffe6e6;
-            color: #5b0202;
-          }
-          tr.billdr {
-             background-color: #e6f3ff;
-             color: #1d03c6;
-         }
-         tr.billcr {
-             background-color: #e6f3ff;
-             color: #190599;
-         }
-        #userTotals {
-           
-            font-size: 20px;
-            color: #f8f9fa;
-            background-color: #1c1c1b;
-        }
-        #noResultsMessage {
-            text-align: center;
-            margin-top: 10px;
-        }
-    </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script>
-        async function loadusrSheet() {
-            const apiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM"; // Replace with your API key
-            const sheetId = "1ECwXrxs8_FDWw1qAC6_qxEwP_HE3SGMM4qNKVZHlIS0"; // Replace with your Sheet ID
-            const range = 'DATAINDEX!K:S'; // Replace with the correct range
-    
-            try {
-                const response = await fetch(
-                    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`
-                );
-                const data = await response.json();
-    
-                if (data.values) {
-                     populateuserTable(data.values);
-    populateuserDropdowns(data.values);
-    displayLast10EntriesPerUser(data.values); // 🔥 Show MA & TA last 10
-                } else {
-                    console.error("No data found in the specified range.");
-                }
-            } catch (error) {
-                console.error("Error fetching data from Google Sheets:", error);
-            }
-        }
-    
-        function populateuserTable(data) {
-            const table = document.getElementById('myuserTable');
-            table.innerHTML = ''; // Clear existing rows
-    
-            data.forEach((row, index) => {
-                const tr = document.createElement('tr');
-    
-                if (index === 0) {
-                    // Header row
-                    row.forEach(cell => {
-                        const th = document.createElement('th');
-                        th.textContent = cell;
-                        tr.appendChild(th);
-                    });
-    
-
-                   
-                
-
-                    // Add "Running Balance" column to the header
-                    const thRunningBalance = document.createElement('th');
-                    thRunningBalance.textContent = 'Balance';
-                    tr.appendChild(thRunningBalance);
-                } else {
-                    // Data rows
-                    row.forEach((cell, cellIndex) => {
-                        const td = document.createElement('td');
-                        td.textContent = cell;
-                        tr.appendChild(td);
-    
-                        // Add class based on "Type" column cloour row
-                        if (cellIndex === 2) { // Assuming Type is in column 2
-                            if (cell.toLowerCase() === "receipt") {
-                                tr.classList.add('receipt');
-                            } else if (cell.toLowerCase() === "receipt ") {
-                                tr.classList.add('receipt2');
-                            } else if (cell.toLowerCase() === "billdr") {
-                             tr.classList.add('billdr');
-                         }
-                         else if (cell.toLowerCase() === "billcr") {
-                             tr.classList.add('billcr');
-                         }
-                        }
-                    });
-    
-                    // Add empty cell for "Running Balance"
-                    const tdRunningBalance = document.createElement('td');
-                    tdRunningBalance.classList.add('runningBalance');
-                    tr.appendChild(tdRunningBalance);
-                }
-    
-                table.appendChild(tr);
-            });
-    
-            
-        }
-    
-       
-        
-       
-   
-// runnin balance start hare 
-
-
-        function calculateuserRunningBalance() {
-    // Select only visible rows after filtering (excluding the header row)
-    const rows = Array.from(document.querySelectorAll('#myuserTable tr:not(.hidden)')).slice(1); // Skip header row
-
-    if (rows.length === 0) return; // Exit if no rows are visible
-
-    // Get the amount from the last visible row (latest transaction)
-    const lastRow = rows[rows.length - 1];
-    const lastRowCells = lastRow.querySelectorAll('td');
-    const lastRowTransactionType = lastRowCells[2]?.textContent.trim().toLowerCase(); // Type column
-    const lastRowAmount = parseFloat(lastRowCells[5]?.textContent || 0); // Amount column
-
-    // Start the running balance with the amount from the last row
-   // let runningBalance = lastRowTransactionType === "receipt" ? lastRowAmount : -lastRowAmount;
-   
-
-  // Define transaction types that should be added to the balance
-  const positiveTypes = ["receipt", "salary","billcr"];
-// Start the running balance with the correct sign
-let runningBalance = positiveTypes.includes(lastRowTransactionType) ? lastRowAmount : -lastRowAmount;
-
-
-
-
-    // Update the running balance cell in the last row
-    const lastRowBalanceCell = lastRow.querySelector('.runningBalance');
-    if (lastRowBalanceCell) {
-        lastRowBalanceCell.textContent = runningBalance.toFixed(2);
+  document.addEventListener("click", e => {
+    if (!ledgerInput.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.style.display = "none";
     }
-
-    // Iterate upwards through the remaining rows
-    for (let index = rows.length - 2; index >= 0; index--) {
-        const row = rows[index];
-        const cells = row.querySelectorAll('td');
-        const transactionType = cells[2]?.textContent.trim().toLowerCase(); // Assuming "Type" column is at index 2
-        const amount = parseFloat(cells[5]?.textContent || 0); // Assuming "Amount" column is at index 5
-
-        if (!isNaN(amount)) {
-            if (transactionType === "receipt") {
-                runningBalance += amount; // Add for receipt
-            } else if (transactionType === "payment") {
-                 runningBalance -= amount; // Subtract for payment
-             }else if (transactionType === "billdr") {
-                 runningBalance -= amount; // Subtract for payment
-                 
-             }else if (transactionType === "salary") {
-                 runningBalance += amount; // Subtract for payment
-             }else if (transactionType === "billcr") {
-                 runningBalance += amount; // Subtract for payment
-             }
-        }
-
-        // Update the running balance cell
-        const runningBalanceCell = row.querySelector('.runningBalance');
-        if (runningBalanceCell) {
-            runningBalanceCell.textContent = runningBalance.toFixed();
-        }
-    }
+  });
 }
 
-// running balance funtion stop
-//calculateuserRunningBalance(); // Recalculate running balance after filtering
-
-
-function populateuserDropdowns(data) {
-    const dropdown1 = document.getElementById('filterusrColumn1');
-    const dropdown2 = document.getElementById('filteruserColumn2');
-    const dropdown4 = document.getElementById('filteruserColumn4');
-
-    const uniqueValues1 = [...new Set(data.slice(1).map(row => row[1]))]; // Column 1
-    const uniqueValues2 = [...new Set(data.slice(1).map(row => row[2]))]; // Column 2
-    const uniqueValues4 = [...new Set(data.slice(1).map(row => row[4]))]; // Column 4
-
-    populateuserDropdown(dropdown1, uniqueValues1);
-    populateuserDropdown(dropdown2, uniqueValues2);
-    populateuserDropdown(dropdown4, uniqueValues4);
-
-    // Initialize Select2 for searchable dropdown
-    $(dropdown4).select2({
-        placeholder: "-- Select --",
-        allowClear: true,
-        width: 'resolve'
-    });
-
-    // Bind filter event for Select2
-    $(dropdown4).on('change', filteruserTable);
-
-    // Map for dropdown1 values to corresponding names
-    const userMapping = {
-        MA: "User | Mukhtiyar",
-        TA: "User | Tushar Agarwal",
-        JLN: "Voucher | Journal",
-        BANK: "Voucher | Bank",
-        DB: "Voucher | Daybook"
-
-        //   <div id="resultDiv"></div>  user name show as per your requre
-    };
-
-    // Event listener for dropdown1 to show corresponding name
-    dropdown1.addEventListener('change', function () {
-        const selectedValue = dropdown1.value;
-        const resultDiv = document.getElementById('resultDiv');
-
-        if (userMapping[selectedValue]) {
-            resultDiv.textContent = userMapping[selectedValue]; // Show corresponding name
-        } else {
-            resultDiv.textContent = ""; // Clear the div if no valid option is selected
-        }
-    });
+// ✅ Setup Event Listeners
+function setup5792Events() {
+  document.getElementById("search5792Input")?.addEventListener("input", apply5792Filters);
+  document.getElementById("user5792")?.addEventListener("change", apply5792Filters);
+  document.getElementById("start5792Date")?.addEventListener("change", apply5792Filters);
+  document.getElementById("end5792Date")?.addEventListener("change", apply5792Filters);
 }
 
-function populateuserDropdown(dropdown, values) {
-    dropdown.innerHTML = '<option value="">-- Select --</option>';
-    values.forEach(value => {
-        const option = document.createElement('option');
-        option.value = value;
-        option.textContent = value;
-        dropdown.appendChild(option);
-    });
+// ✅ Refresh Function (Reload All)
+async function refresh5792Table() {
+  document.getElementById("search5792Input").value = "";
+  document.getElementById("ledger5792Input").value = "";
+  document.getElementById("user5792").value = "";
+  document.getElementById("start5792Date").value = "";
+  document.getElementById("end5792Date").value = "";
+  const rows = await fetch5792Data();
+  all5792Data = processRows(rows);
+  filtered5792Data = [...all5792Data];
+  render5792Table(all5792Data);
+  setupLedger5792Dropdown();
 }
 
-    
-        function filteruserTable() {
-    const filter1 = document.getElementById('filterusrColumn1').value.toLowerCase();
-    const filter2 = document.getElementById('filteruserColumn2').value.toLowerCase();
-    const filter4 = $('#filteruserColumn4').val()?.toLowerCase();
+// ✅ Print Function
+// ✅ Print Function (with Ledger Name condition)
+function print5792Table() {
+  const table = document.getElementById("myuserTable");
+  if (!table) {
+    alert("No table data to print!");
+    return;
+  }
 
-    const starusertDateInput = document.getElementById("starusertDate").value;
-    const enduserDateInput = document.getElementById("enduserDate").value;
+  // 🔹 Ledger name fetch karo
+  const ledgerName = document.getElementById("ledger5792Input")?.value.trim() || "";
+  let ledgerHTML = "";
+  if (ledgerName) {
+    ledgerHTML = `<h4 style="text-align:center; margin-top:-10px;">Ledger: ${ledgerName}</h4>`;
+  }
 
-    // ---- Convert input to pure date (ignore time) ----
-    const starusertDate = starusertDateInput ? new Date(starusertDateInput + "T00:00:00") : null;
-    const enduserDate = enduserDateInput ? new Date(enduserDateInput + "T23:59:59") : null;
-
-    const rows = document.querySelectorAll('#myuserTable tr');
-    let visibleRows = 0;
-    let totaluserPayment = 0, totaluserReceipt = 0, totaluserBilldr = 0, totaluserBillcr = 0, totaluserSalary = 0;
-
-    rows.forEach((row, index) => {
-        if (index === 0) return; // Skip header row
-
-        const cells = row.querySelectorAll('td');
-        const rowDateStr = cells[3]?.textContent.trim();
-        const date = rowDateStr ? new Date(rowDateStr) : null;
-
-        const type = cells[2]?.textContent.trim().toUpperCase();
-        const amount = parseFloat(cells[5]?.textContent.trim()) || 0;
-
-        // ---- Date filter check ----
-        let dateMatches = true;
-        if (starusertDate && date && date < starusertDate) dateMatches = false;
-        if (enduserDate && date && date > enduserDate) dateMatches = false;
-
-        // ---- Other filters ----
-        const matchesFilter1 = !filter1 || cells[1]?.textContent.toLowerCase() === filter1;
-        const matchesFilter2 = !filter2 || cells[2]?.textContent.toLowerCase() === filter2;
-        const matchesFilter4 = !filter4 || cells[4]?.textContent.toLowerCase() === filter4;
-
-        if (matchesFilter1 && matchesFilter2 && matchesFilter4 && dateMatches) {
-            row.classList.remove('hidden');
-            visibleRows++;
-
-            // ---- Totals update ----
-            if (type === "PAYMENT") {
-                totaluserPayment += amount;
-            } else if (type === "RECEIPT") {
-                totaluserReceipt += amount;
-            } else if (type === "BILLDR") {
-                totaluserBilldr += amount;
-            } else if (type === "SALARY") {
-                totaluserSalary += amount;
-            } else if (type === "BILLCR") {
-                totaluserBillcr -= amount;
-            }
-        } else {
-            row.classList.add('hidden');
-        }
-    });
-
-    displayNoResultsMessage(visibleRows);
-    updateuserTotals(totaluserPayment, totaluserReceipt, totaluserBilldr, totaluserBillcr, totaluserSalary);
-
-    // Recalculate running balance after filtering
-    calculateuserRunningBalance();
-}
-
-    
-        function displayNoResultsMessage(visibleRows) {
-            const noResultsMessage = document.getElementById('noResultsMessage');
-            if (!visibleRows) {
-                if (!noResultsMessage) {
-                    const message = document.createElement('p');
-                    message.id = 'noResultsMessage';
-                    message.textContent = 'No matching results found.';
-                    document.body.appendChild(message);
-                }
-            } else if (noResultsMessage) {
-                noResultsMessage.remove();
-            }
-        }
-    
-        function updateuserTotals(totaluserPayment, totaluserReceipt, totaluserBilldr,totaluserBillcr, totaluserSalary) {
-            document.getElementById("totaluserPayment").textContent = totaluserPayment.toFixed();
-            document.getElementById("totaluserReceipt").textContent = totaluserReceipt.toFixed();
-            document.getElementById("totaluserBilldr").textContent = totaluserBilldr.toFixed();
-            document.getElementById("totaluserBillcr").textContent = totaluserBillcr.toFixed();
-            document.getElementById("totaluserSalary").textContent = totaluserSalary.toFixed();
-            document.getElementById("totaluserDifference").textContent = (totaluserReceipt - totaluserPayment - totaluserBilldr + totaluserBillcr + totaluserSalary).toFixed();
-        }
-    
-
-
-// last 10 entry start hare
-
-function displayLast10EntriesPerUser(data) {
-    const headers = data[0];
-    const entries = data.slice(1); // Exclude header row
-
-    ['MA', 'TA'].forEach(userCode => {
-        // Step 1: Filter entries for user
-        const userEntries = entries.filter(row => row[1] === userCode);
-
-        // Step 2: Sort all entries by Sr No. ASC (oldest to newest)
-        const sorted = userEntries.sort((a, b) => parseInt(a[0]) - parseInt(b[0]));
-
-        // Step 3: Compute running balance for all entries
-        let balance = 0;
-        const positiveTypes = ["receipt", "salary", "billcr"];
-        const withBalance = sorted.map(row => {
-            const type = row[2]?.toLowerCase();
-            const amount = parseFloat(row[5]) || 0;
-            balance += positiveTypes.includes(type) ? amount : -amount;
-            return { row, balance: balance.toFixed() };
-        });
-
-        // Step 4: Get latest 10 entries (newest), in descending order
-        const last10 = withBalance.slice(-10).reverse(); // latest to oldest
-
-        // Step 5: Generate HTML
-        const tableRows = last10.map(entry => {
-            const type = entry.row[2]?.toLowerCase();
-            const isReceipt = type === 'receipt';
-            const rowStyle = isReceipt ? 'style="background-color: ; color: RED;"' : '';
-
-            return `
-                <tr ${rowStyle}>
-                    <td>${entry.row[0]}</td> <!-- Trn. No -->
-                    <td>${entry.row[3]}</td> <!-- Date -->
-                    <td>${entry.row[2]}</td> <!-- Type -->
-                    <td>${entry.row[4]}</td> <!-- Ledger -->
-                    <td>${entry.row[5]}</td> <!-- Amount -->
-                    <td>${entry.row[6]}</td> <!-- Narration -->
-                    <td>${entry.balance}</td> <!-- Running Balance -->
-                </tr>
-            `;
-        });
-
-        const tableHTML = `
-            <h3>Last 10 Entries - ${userCode}</h3>
-            <table border="1" style="border-collapse: collapse; width: 100%; font-size:16px;">
-                <thead>
-                    <tr>
-                        <th>T.No.</th>
-                        <th>Date</th>
-                        <th>Type</th>
-                        <th>Ledger</th>
-                        <th>Amount</th>
-                        <th>Narration</th>
-                        <th>Balance</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${tableRows.join('')}
-                </tbody>
-            </table>
-        `;
-
-        document.getElementById(`last10${userCode}`).innerHTML = tableHTML;
-    });
-}
-
-// last 10 entry stop hare
-
-
-        function printuserTable() {
-    let printWindow = window.open('', '', 'height=500, width=800');
-
-    const styles = `
+  const printWindow = window.open("", "_blank");
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print Table</title>
         <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
-            table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 12px; text-align: left; }
-            table th, table td { border: 1px solid #ddd; padding: 5px; }
-            table th { background-color: #f4f4f4; font-weight: bold; }
-            table tr.payment { background-color: white; color: black; }
-            table tr.receipt { background-color: blac; color: red; }
-            table tr.bill { background-color: blac; color: blue; }
-            .filter-summary { margin: 10px 0; font-size: 14px; }
-            .filter-summary span { display: inline-block; margin-right: 20px; }
+          body { font-family: Arial, sans-serif; margin: 20px; }
+          table { width:100%; border-collapse:collapse; font-size:14px; }
+          th, td { border:1px solid #444; padding:6px; text-align:left; }
+          th { background:#004d80; color:white; }
+          h3, h4 { text-align:center; }
         </style>
-    `;
-
-    // Fetch filter values
-    const ledger = document.getElementById("filteruserColumn4").value || "All";
-    const starusertDate = document.getElementById("starusertDate").value || "Not Set";
-    const enduserDate = document.getElementById("enduserDate").value || "Not Set";
-    const user = document.getElementById("filterusrColumn1").value || "All";
-    const voucher = document.getElementById("filteruserColumn2").value || "All";
-
-    // Create a summary of filter options
-    const filterSummary = `
-        <div class="filter-summary">
-            <span><strong>Ledger:</strong> ${ledger}</span>
-            <span><strong>From:</strong> ${starusertDate}</span>
-            <span><strong>To:</strong> ${enduserDate}</span>
-            <span><strong>User:</strong> ${user}</span>
-            <span><strong>Voucher:</strong> ${voucher}</span>
-        </div>
-    `;
-
-    // Clone the table and remove hidden rows
-    let table = document.getElementById("myuserTable");
-    let tableClone = table.cloneNode(true);
-
-    let rows = tableClone.querySelectorAll('tr');
-    rows.forEach((row) => {
-        if (row.classList.contains('hidden')) {
-            row.remove(); // Remove hidden rows from the cloned table
-        } else {
-            // Retain only the first 7 columns for each row
-            while (row.cells.length > 10) {
-                row.deleteCell(10); // Remove extra columns starting from index 7
-            }
-        }
-    });
-
-    // Start writing to the print window
-    printWindow.document.write('<html><head><title>🖨️ Print</title></head><body>');
-    printWindow.document.write(styles);
-   
-    printWindow.document.write('<span style="color:grey;font-size:70%;font-family:Magneto;">eS|MTally</span> <br/> <span style="color:black;font-size:120%;font-family:Arial;">MIPL Cash Management</span>'); // Optional title
- 
-    printWindow.document.write(filterSummary); // Add the filter summary to the print view
-
-    // Add totals section
-    printWindow.document.write(document.getElementById("userTotals").outerHTML);
-
-    // Write the cloned table with only visible rows and limited columns
-    printWindow.document.write(tableClone.outerHTML);
-
-    // Close and print
-    printWindow.document.close();
-    printWindow.print();
+      </head>
+      <body>
+        <h3>Cash Ledger Report</h3>
+        ${ledgerHTML}
+        ${table.outerHTML}
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.print();
 }
 
 
+// ✅ Initialize
+document.addEventListener("DOMContentLoaded", async () => {
+  const rows = await fetch5792Data();
+  all5792Data = processRows(rows);
+  filtered5792Data = [...all5792Data];
+  render5792Table(all5792Data);
+  setupLedger5792Dropdown();
+  setup5792Events();
+});
+</script>
 
 
-
-
-
-     //   window.onload = () => {
-       //     loadusrSheet();
-       //     document.getElementById('filterusrColumn1').addEventListener('change', filteruserTable);
-       //     document.getElementById('filteruserColumn2').addEventListener('change', filteruserTable);
-      //      document.getElementById('starusertDate').addEventListener('change', filteruserTable);
-      //      document.getElementById('enduserDate').addEventListener('change', filteruserTable);
-     //   };
-    </script>
-</head>
-
-</html>
 
 
 <!-- user ma/ta script & code stop  (CODE505) -->
@@ -4134,7 +4002,7 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
  <script>
   const apiCLKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
   const sheetCLId = "1ECwXrxs8_FDWw1qAC6_qxEwP_HE3SGMM4qNKVZHlIS0";
-  const rangeCL = "FORM!A:G";   //786786
+  const rangeCL = "FORM!A:G";
 
   let fullData = [];
   let filteredByAccount = [];
@@ -4174,14 +4042,21 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
       return;
     }
 
-    // ✅ Sort by column index 0 (date or T.No.) in descending order
-    const sortedData = [...data].sort((a, b) => {
+    // ✅ Normalize: Replace JNP → MA before processing
+    const normalizedData = data.map(row => ({
+      ...row,
+      cUser: row.cUser === "JNP" ? "MA" : row.cUser,
+      type: row.type === "JNP" ? "MA" : row.type
+    }));
+
+    // ✅ Sort by date/T.No descending
+    const sortedData = [...normalizedData].sort((a, b) => {
       const numA = parseFloat(a.date) || 0;
       const numB = parseFloat(b.date) || 0;
-      return numB - numA; // descending
+      return numB - numA;
     });
 
-    // Running balance calculation
+    // ✅ Running balance calculation
     let balance = 0;
     const reversed = [...sortedData].reverse();
     const rowsWithBalance = reversed.map(row => {
@@ -4192,7 +4067,7 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
       return { ...row, signedAmount: signed, running: balance };
     }).reverse();
 
-    // Build Table
+    // ✅ Build Table
     const table = document.createElement("table");
     table.id = "ledgerTable";
     table.innerHTML = `
@@ -4200,7 +4075,7 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
         <tr>
           <th>T.No.</th>
           <th>User</th>
-          <th>Type</th>
+         
           <th>Date</th>
           <th>Ledger</th>
           <th>Narration</th>
@@ -4210,10 +4085,10 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
       </thead>
       <tbody>
         ${rowsWithBalance.map(row => `
-          <tr style="${row.drcr.toLowerCase() === 'receipt' ? 'color: RED; background-color: rgb(248, 229, 229);' : ''}">
+          <tr style="${row.drcr.toLowerCase() === 'receipt' ? 'color: RED; background-color: rgb(248,229,229);' : ''}">
             <td>${row.date}</td>
             <td>${row.cUser}</td>
-            <td>${row.drcr}</td>
+           
             <td>${row.dt}</td>
             <td>${row.ldgr}</td>
             <td>${row.narration}</td>
@@ -4224,35 +4099,47 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
       </tbody>
     `;
 
-    // Show table
+    // ✅ Show Table
     tableContainer.innerHTML = "";
     tableContainer.appendChild(table);
+  
 
-    // ✅ Replace "OPT" with "MA" in User column (index 1)
+
+  // ✅ Replace "JNR" with "MA" in User column (index 1)    serbar ke lye condition
     const rows = table.querySelectorAll("tbody tr");
     rows.forEach(row => {
       const userCell = row.cells[1];
-      if (userCell && userCell.textContent.trim() === "OPT") {
+      if (userCell && userCell.textContent.trim() === "JNR") {
         userCell.textContent = "MA";
       }
     });
   }
-
-  // ===== Filter by Account + Ledger =====
+    // ===== Filter by Account + Ledger =====
   function filterAndRender(accountType, ledgerFilter = "") {
-    filteredByAccount = fullData.filter(row => row.type === accountType);
-    let visible = filteredByAccount;
+    let filteredByAccount = [];
 
+    // ✅ Include MA + JNP if MA selected
+    if (accountType === "MA") {
+      filteredByAccount = fullData.filter(
+        row => row.type === "MA" || row.type === "JNP"
+      );
+    } else {
+      filteredByAccount = fullData.filter(row => row.type === accountType);
+    }
+
+    // ✅ Ledger filter
+    let visible = filteredByAccount;
     if (ledgerFilter.trim() !== "") {
       visible = filteredByAccount.filter(row =>
         row.ldgr.toLowerCase().includes(ledgerFilter.toLowerCase())
       );
     }
 
+    // ✅ Render with normalization (OPTP → MA)
     renderTable(visible);
   }
 
-  // ===== Ledger Search (auto dropdown) =====
+  // ===== Ledger Search (Auto Dropdown) =====
   async function setupLedgerSearch() {
     const input = document.getElementById("msaf54");
     const dropdown = document.getElementById("ledgerDropdown");
@@ -4304,7 +4191,7 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
     });
   }
 
-  // ===== Global Search (🔍 Search in Table...) =====
+  // ===== Global Search =====
   function setupGlobalSearch() {
     const input = document.getElementById("searchCLedger");
 
@@ -4317,11 +4204,9 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
         return;
       }
 
-      const results = fullData.filter(row => {
-        return Object.values(row).some(val =>
-          String(val).toLowerCase().includes(query)
-        );
-      });
+      const results = fullData.filter(row =>
+        Object.values(row).some(val => String(val).toLowerCase().includes(query))
+      );
 
       renderTable(results);
     });
@@ -4340,7 +4225,6 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
           border-radius: 8px;
           overflow: hidden;
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
           font-size: 14px;
         }
         th, td {
@@ -4353,11 +4237,8 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
           color: white;
           font-weight: bold;
           text-transform: uppercase;
-          letter-spacing: 0.5px;
         }
-        tr:nth-child(even) {
-          background-color: #f9f9f9;
-        }
+        tr:nth-child(even) { background-color: #f9f9f9; }
         .negative { color: black; }
         .positive { color: red; }
       </style>
@@ -4365,10 +4246,7 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
     const win = window.open("", "_blank");
     win.document.write(`
       <html>
-        <head>
-          <title>Print Table</title>
-          ${style}
-        </head>
+        <head><title>Print Table</title>${style}</head>
         <body>
           <h2>MIPL Cash Ledger</h2>
           ${tableHTML}
@@ -9262,7 +9140,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 </style>
 </head>
 <body>
-
+<!-- ================================================ Dishplay Report Script start hare ========================================================= -->
 <script>
 const api2011Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheet2011Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
@@ -9413,7 +9291,7 @@ function render2011Table(rows){
       const weight = parseFloat(r[7]) || 0;
       if(type==="TDS") totalTds+=receipt;
       else if(type === "BANK" || type === "CASH") totalReceipt+=receipt;
-      else if(type==="TAX INVOICE"){ totalBill+=amount; totalPEBWeight+=weight;}
+      else if(type==="TAX INVOICE"   || type === "CHALLAN"){ totalBill+=amount; totalPEBWeight+=weight;}
       else if(type==="CREDIT NOTE") totalCn+=amount;
     }
   });
@@ -9871,9 +9749,47 @@ document.getElementById("refresh2011Btn")?.addEventListener("click", refresh2011
 
 </script>
 
+<!-- ================================================ Dishplay Report Script stop hare ========================================================= -->
+
+</body>
+</html>
 
 
 
+<!-- ========= file export in excel & html script start ============ -->
+   <style>
+  .export-menu {
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    border-radius: 6px;
+    display: none;
+    flex-direction: column;
+    min-width: 100px;
+    z-index: 100;
+  }
+
+  .export-menu button {
+    padding: 8px 8px;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .export-menu button:hover {
+    background: #f0f0f0;
+    color: #0026ff;
+  }
+
+</style>
+
+
+<div class="export-menu" id="exportMenu">
+  <button data-type="html">as HTML</button>
+  <button data-type="excel">as Excel</button>
+</div>
 
 <script>
 // === Export Menu Toggle ===
@@ -9937,10 +9853,7 @@ function triggerDownload(blob, filename) {
 
 
 </script>
-
-
-</body>
-</html>
+<!-- ========= file export in excel & html script stop ============ -->
 
 <!-- 2011 table code and script stop HARE ...................................... -->
 
@@ -10163,4 +10076,3 @@ document.addEventListener("DOMContentLoaded", setTodayDate);
 
 
 <!-- ================  Attendance  Confermation script and code stop hare ===============================-->
-
