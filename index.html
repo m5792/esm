@@ -9992,46 +9992,49 @@ const sheetId2 = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
 const range2 = "ATN!A:G";
 
 // ✅ Check condition after login
-// ✅ Check condition after login
 async function checkPopupCondition(username) {
   try {
-
     // ✅ Time Check (9 AM - 6 PM)
     const now = new Date();
     const currentHour = now.getHours();
 
     if (currentHour < 9 || currentHour >= 18) {
       let greeting = "";
+      if (currentHour < 12) greeting = "Good Morning, " + username + "!";
+      else if (currentHour < 18) greeting = "Good Afternoon, " + username + "!";
+      else greeting = "Good Evening, " + username + "!";
 
-      if (currentHour < 12) {
-        greeting = "Good Morning, " + username + "!";
-      } else if (currentHour < 18) {
-        greeting = "Good Afternoon, " + username + "!";
-      } else {
-        greeting = "Good Evening, " + username + "!";
-      }
-
-      // ✅ Show greeting on screen
       showGreeting(greeting);
       console.log("⛔ Outside allowed popup time. Popup disabled.");
       return; // ✅ Stop here — no popup check
     }
 
-    // ✅ If time is ok → Check match from Sheet
-    const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId2}/values/${range2}?key=${apiKey2}`);
+     // ✅ If time is ok → Check match from Sheet
+     
+    // ✅ Fetch Sheet Data
+    const response = await fetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${sheetId2}/values/${range2}?key=${apiKey2}`
+    );
     const data = await response.json();
     const rows = data.values || [];
 
+    // ✅ Format today's date as "6-Sep-2025" (without leading zero)
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const today = new Date();
-    const todayStr = today
-      .toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
-      .replace(/ /g, '-');
+    const day = today.getDate(); // no leading zero
+    const monthName = months[today.getMonth()];
+    const year = today.getFullYear();
+    const todayStr = `${day}-${monthName}-${year}`;
 
+    console.log("🔍 Checking for date:", todayStr, "and user:", username);
+
+    // ✅ Check if today's entry already exists
     let matchFound = false;
     for (let i = 1; i < rows.length; i++) {
       const row = rows[i];
       const sheetDate = (row[2] || "").trim(); // Column C
       const sheetUser = (row[3] || "").trim(); // Column D
+
       if (sheetDate === todayStr && sheetUser === username) {
         matchFound = true;
         break;
@@ -10050,7 +10053,6 @@ async function checkPopupCondition(username) {
 // ✅ Show Greeting Message
 function showGreeting(msg) {
   const messageDiv = document.getElementById("greetingMessage");
-
   if (messageDiv) {
     messageDiv.textContent = msg;
     messageDiv.style.display = "block";
@@ -10059,11 +10061,18 @@ function showGreeting(msg) {
   }
 }
 
-
 // ✅ Show popup
 function showATNPopup(username, today) {
   document.getElementById("popup-username").value = username;
-  document.getElementById("popup-date").value = today.toISOString().split('T')[0];
+
+  // ✅ Date in "6-Sep-2025" format
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const day = today.getDate();
+  const monthName = months[today.getMonth()];
+  const year = today.getFullYear();
+  const formattedDate = `${day}-${monthName}-${year}`;
+
+  document.getElementById("popup-date").value = formattedDate;
   document.getElementById("popupForm").style.display = "flex";
 }
 
@@ -10077,6 +10086,33 @@ function closeATNPopup() {
 <script>
 // ✅ Google Apps Script URL
 const scriptATNURL = 'https://script.google.com/macros/s/AKfycbxNCtOS7UZu2mw_Zuwkx-KHdORL1DATDoSp0Gv2Q5EQw6CKJOSPowawczVE_7uYHQw_/exec';
+
+// ✅ Set today's date automatically in popup-date input
+function setTodayDate() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  const formattedDate = `${year}-${month}-${day}`;
+
+  const dateInput = document.getElementById("popup-date");
+  if (dateInput) dateInput.value = formattedDate;
+}
+
+// ✅ Show popup function (updated to auto set date)
+function showATNPopup(username, today = new Date()) {
+  document.getElementById("popup-username").value = username;
+
+  // ✅ Always set today's date
+  setTodayDate();
+
+  document.getElementById("popupForm").style.display = "flex";
+}
+
+// ✅ Close popup
+function closeATNPopup() {
+  document.getElementById("popupForm").style.display = "none";
+}
 
 // ✅ Submit popup form
 document.addEventListener("submit", async function (e) {
@@ -10092,7 +10128,7 @@ document.addEventListener("submit", async function (e) {
   waitMsg.innerText = "Submitting...";
   waitMsg.style.display = "block";
 
-  // ✅ Timestamp add karo
+  // ✅ Add timestamp
   const now = new Date();
   document.getElementById('timestampATN').value =
     `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
@@ -10103,7 +10139,7 @@ document.addEventListener("submit", async function (e) {
     const result = await response.json();
 
     if (result.result === 'success') {
-      alert('✅ Success Have a Nice Day!');
+      alert('✅ Success! Have a Nice Day!');
       form.reset();
       closeATNPopup(); // ✅ auto close
     } else {
@@ -10118,8 +10154,13 @@ document.addEventListener("submit", async function (e) {
   }
 });
 
-// checkPopupCondition(user.displayName); remove this line in login section if username not showing auto
+// ✅ Optional: auto set today’s date when page loads
+document.addEventListener("DOMContentLoaded", setTodayDate);
+
+// ℹ️ Note: remove "checkPopupCondition(user.displayName);" in login section if username not showing auto
 </script>
 
 
+
 <!-- ================  Attendance  Confermation script and code stop hare ===============================-->
+
