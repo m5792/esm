@@ -129,58 +129,71 @@
   padding: 0 !important;
 }
 
-/* Table style */
-table {
-    width: 100%;           /* auto fit container width */
-    max-width: 100%;       /* prevent overflow */
-    margin: 0 auto;        /* center table */
-    border-collapse: collapse;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: clamp(10px, 1vw, 14px); /* dynamic text scaling */
-    transform: scale(1);   /* scale table to 70% */
-    transform-origin: top left; /* scale relative to top-left */
+/* Table Styling */
+/* Container to control table width and responsiveness */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
 }
 
-/* Adjusted table border & cell style */
-th, td {
-    border: 1px solid #dcdcdc;
-    padding: 8px 10px;
-    text-align: left;
-   
-    overflow: hidden;
-    text-overflow: ellipsis;
-    vertical-align: middle;
-}
+ 
+ /* Table container ************/
+table{
+    width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  background: #ffffff;
+  border: 1px solid #d0d0d0;
 
-/* Header design */
+  }
+
+/* Optional heder alwayas fix on top and table scrolling  */
+  table{
+  overflow-x: auto;
+  display: block;
+  max-height: 670px; /* Optional scrolling */
+  }
+
+  /* Table border & cell style */
 th {
-    background: linear-gradient(135deg, #070707, #616161);
-    color: #fff;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 13px;
-    letter-spacing: 0.5px;
+   background: #01305c;
+  color: #ffffff;
+  padding: 10px;
+  border: 1px solid #b5b5b5;
+  text-align: left;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  white-space: nowrap;
+  }
+
+
+ td {
+   padding: 8px 10px;
+  border: 1px solid #e0e0e0;
+  vertical-align: top;
+  word-wrap: break-word; /* Wrap long text */
+  white-space: normal;
+  }
+
+  /* Header design */
+
+
+  tr:nth-child(even) {
+  background-color: #f9f9f9;
 }
 
-/* Row styling */
-tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
+  /* Row hover effect */
+  tr:hover td {
+   background: #fccc49;
+ color: rgb(0, 15, 15);
+  transition: background-color 1s ease, color 1s ease;
+  }
+    
 
-/* Hover effect */
-tr:hover td {
-    background: #fce303;
-    transition: background 0.2s ease-in-out;
-}
-
-table tr:hover {
-    background-color: #f81404;
-    color: rgb(1, 20, 37);
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
 
   </style>
 </head>
@@ -384,19 +397,40 @@ table tr:hover {
 
  <!-- btn5 -cash ledger top part strat -->
         <div id="btn5-top" class="panel-content">
-              <label style="font-size: 20px; font-weight: bold;">Select User Name:</label>
-<select id="cu123" required style="width: 3in; font-size: 16px; text-align: center; background-color: #014060;color: white;">
-<option value="MA"> Mukhtiyar-MA </option>
-<option value="TA">Tushar (MD)-TA</option>
-<option value="BANK">Bank</option>
-</select>
-<br/><br/>
-  <label style="color: #014060; font-weight: bold;font-size: 18px;">Searchbar:</label>
-    <input type="text" id="searchCLedger" placeholder="🔍 Search in Table..." />
+
+          <div style="text-align:center; background-color: #dcdddd; color: #002630; font-weight: bold;"> <strong>Cash Ledger Report</strong></div> <br/>
 
 
-<button onclick="printCUSERTable()" style="border: none; background-color: white; color: rgb(0, 27, 37); font-weight: bold; font-size: 14px; cursor: pointer;">🖨️ Print Table</button>
-  
+  <!-- Ledger Filter -->
+  <div id="ledger5792Select" >
+    <span style="color: black;">Ledger Name:</span>
+    <input type="text" id="ledger5792Input"
+      style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width: 4in; background-color: rgb(241, 212, 212); font-size: 14px;"
+      placeholder="🔍 Type to search ledger...">
+    <div id="ledger5792Dropdown" class="dropdown"></div>
+
+    <button onclick="print5792Table()" style="background-color: white;  color: #00254d;border: none; cursor: pointer;">🖨️ Print Table</button>
+<button onclick="refresh5792Table()"  style="background-color: white;  color: #00254d; border: none; cursor: pointer;">🔄 Refresh Table</button>
+  </div>
+
+          <div id="search5792Bar">
+  <input type="text" id="search5792Input" placeholder="🔍 Search in current table...">
+
+  <strong style="color: white;"> Select User:</strong>
+    <select id="user5792">
+    <option value="">--Select Type--</option>
+    <option value="MA">MUKHTIYAR</option>
+    <option value="TA">TUSHAR AGARWAL</option>
+    <option value="BANK">BANK</option>
+  </select>
+
+  <label>From:</label>
+  <input type="date" id="start5792Date">
+  <label>To:</label>
+  <input type="date" id="end5792Date">
+  </div>
+      
+
         </div>
 <!-- btn5 -cash ledger top part stop -->
 
@@ -585,7 +619,7 @@ table tr:hover {
 
   <!-- btn5 -cash ledger bottam part start -->
         <div id="btn5-bottom" class="panel-content">
-          <div id="tableContainer"  style="background-color: #fef8f6;"></div>
+         <div id="table5792Container"></div> <br/><br/>
         </div>
   <!-- btn5 -cash ledger bottam part stop -->
 
@@ -1272,209 +1306,361 @@ loadAllData();
 
 
 
+<!-- ============== CASH LEDGER REPORT (5792) SCRIPT START HARE ================= -->
+<style>
+  #search5792Bar {
+    background-color: #424242;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+    box-sizing: border-box;
+  }
 
-  <!-- यह एक नोट है, cash ledger script Start Heare -->
+  #search5792Input {
+    flex: 1;
+    background-color: #fdfdf6;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+  }
+
+  #search5792Bar label {
+    font-weight: bold;
+    color: rgb(247, 244, 244);
+    margin-left: 10px;
+  }
+
+  #search5792Bar input[type="date"] {
+    padding: 4px 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+  }
+
+  #ledger5792Dropdown {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    max-height: 600px;
+    overflow-y: auto;
+    width: 4in;
+    display: none;
+    z-index: 999;
+  }
+
+  #ledger5792Dropdown div {
+    padding: 4px;
+    cursor: pointer;
+  }
+
+  #ledger5792Dropdown div:hover {
+    background: #eee;
+  }
+</style>
+
+
 
 <script>
-  const apiCLKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-  const sheetCLId = "1ECwXrxs8_FDWw1qAC6_qxEwP_HE3SGMM4qNKVZHlIS0";
-  const rangeCL = "DATAINDEX!A:G";
+const api5792Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheet5792Id = "1ECwXrxs8_FDWw1qAC6_qxEwP_HE3SGMM4qNKVZHlIS0";
+const range5792 = "FORM!A:G";
 
-  let fullData = [];
-  let filteredByAccount = [];
+let all5792Data = [];
+let filtered5792Data = [];
 
-  async function fetchSheetData() {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetCLId}/values/${rangeCL}?key=${apiCLKey}`;
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      return data.values || [];
-    } catch (err) {
-      console.error("Error fetching data:", err);
-      return [];
+// ✅ Convert "7-Oct-2025" → Date object
+function parseCustomDate(dateStr) {
+  if (!dateStr) return null;
+  const parts = dateStr.split("-");
+  if (parts.length !== 3) return null;
+  const day = parseInt(parts[0]);
+  const monthStr = parts[1].toLowerCase().substring(0, 3);
+  const year = parseInt(parts[2]);
+  const months = {
+    jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+    jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
+  };
+  const month = months[monthStr];
+  if (isNaN(day) || isNaN(year) || month === undefined) return null;
+  return new Date(year, month, day);
+}
+
+// ✅ Fetch Google Sheet Data
+async function fetch5792Data() {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet5792Id}/values/${range5792}?key=${api5792Key}`;
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    return data.values || [];
+  } catch (err) {
+    console.error("Error fetching data:", err);
+    return [];
+  }
+}
+
+// ✅ Process Rows (convert only JNP → MA)
+function processRows(rows) {
+  if (!rows || rows.length < 2) return [];
+  const headers = rows[0];
+
+  let data = rows.slice(1).map(r => {
+    let obj = {};
+    headers.forEach((h, i) => obj[h] = r[i] || "");
+    obj._serial = parseFloat(r[0]) || 0;
+    obj._user = (r[1] || "").trim().toUpperCase();
+    obj._type = (r[2] || "").trim().toLowerCase();
+    obj._dateStr = r[3] || "";
+    obj._date = parseCustomDate(r[3]);
+    obj._ledger = r[4] || "";
+    obj._amount = parseFloat(r[5]) || 0;
+
+    // ✅ Only JNP → MA (JNR unaffected)
+    if (obj._user === "JNP") obj._user = "MA";
+
+    return obj;
+  });
+
+  data.sort((a, b) => b._serial - a._serial);
+  return data;
+}
+
+// ✅ Render Table + Color Formatting
+function render5792Table(data) {
+  const container = document.getElementById("table5792Container");
+  if (!data.length) {
+    container.innerHTML = "<p>No records found.</p>";
+    return;
+  }
+
+  const headers = Object.keys(data[0]).filter(h => !h.startsWith("_"));
+  const html = `
+    <table id="myuserTable" border="1" style="border-collapse:collapse;width:100%;font-size:14px;">
+      <thead style="background:#004d80;color:white;">
+        <tr>${headers.map(h => `<th>${h}</th>`).join("")}<th>Running Balance</th></tr>
+      </thead>
+      <tbody>
+        ${data.map(r => {
+          let color = "";
+          const type = r._type.toLowerCase();
+          if (type === "receipt") color = "red";
+          else if (type === "salary") color = "blue";
+          else if (type === "billdr") color = "green";
+
+          return `
+            <tr style="color:${color};">
+              ${headers.map(h => `<td>${r[h]}</td>`).join("")}
+              <td class="runningBalance"></td>
+            </tr>`;
+        }).join("")}
+      </tbody>
+    </table>
+  `;
+  container.innerHTML = html;
+
+  // ✅ Ensure "JNP" converted to "MA" even after render
+  const rows = container.querySelectorAll("#myuserTable tbody tr");
+  rows.forEach(row => {
+    const userCell = row.cells[1];
+    if (!userCell) return;
+    const val = userCell.textContent.trim().toUpperCase();
+    if (val === "JNP") userCell.textContent = "MA"; // Only JNP → MA
+  });
+  //------------------
+  calculate5792RunningBalance();
+}
+
+// ✅ Calculate Running Balance
+function calculate5792RunningBalance() {
+  const rows = Array.from(document.querySelectorAll('#myuserTable tbody tr'));
+  if (rows.length === 0) return;
+
+  const lastRow = rows[rows.length - 1];
+  const lastCells = lastRow.querySelectorAll('td');
+  const lastType = lastCells[2]?.textContent.trim().toLowerCase();
+  const lastAmount = parseFloat(lastCells[5]?.textContent || 0);
+
+  const creditTypes = ["receipt", "salary", "billcr"];
+  let runningBalance = creditTypes.includes(lastType) ? lastAmount : -lastAmount;
+
+  lastRow.querySelector('.runningBalance').textContent = runningBalance.toFixed(2);
+
+  for (let i = rows.length - 2; i >= 0; i--) {
+    const cells = rows[i].querySelectorAll('td');
+    const type = cells[2]?.textContent.trim().toLowerCase();
+    const amount = parseFloat(cells[5]?.textContent || 0);
+
+    if (!isNaN(amount)) {
+      if (creditTypes.includes(type)) {
+        runningBalance += amount;
+      } else if (["payment", "billdr"].includes(type)) {
+        runningBalance -= amount;
+      }
     }
+    rows[i].querySelector('.runningBalance').textContent = runningBalance.toFixed();
   }
+}
 
-  function processRawData(rows) {
-    return rows.slice(1).map(row => ({
-      date: row[0],
-      cUser: row[1],
-      type: row[1],
-      dt: row[3] || "-",
-      drcr: row[2],
-      ldgr: row[4],
-      amount: parseFloat(row[5]) || 0,
-      narration: row[6] || "-"
-    }));
-  }
+// ✅ Apply Filters (Search + Ledger + User + Date)
+function apply5792Filters() {
+  const searchVal = document.getElementById("search5792Input")?.value.toLowerCase() || "";
+  const ledgerVal = document.getElementById("ledger5792Input")?.value.toLowerCase() || "";
+  const userVal = document.getElementById("user5792")?.value || "";
+  const startDateStr = document.getElementById("start5792Date")?.value;
+  const endDateStr = document.getElementById("end5792Date")?.value;
 
-  function renderTable(data) {
-    const tableContainer = document.getElementById("tableContainer");
-    if (!data || data.length === 0) {
-      tableContainer.innerHTML = "<p>No matching records found.</p>";
+  const startDate = startDateStr ? new Date(startDateStr) : null;
+  const endDate = endDateStr ? new Date(endDateStr) : null;
+
+  filtered5792Data = all5792Data.filter(row => {
+    const rowDate = row._date;
+    if (!rowDate) return false;
+
+    const rowTime = rowDate.setHours(0, 0, 0, 0);
+    const startTime = startDate ? startDate.setHours(0, 0, 0, 0) : null;
+    const endTime = endDate ? endDate.setHours(0, 0, 0, 0) : null;
+
+    // ✅ Start date inclusive
+    const inDateRange =
+      (!startTime || rowTime >= startTime) &&
+      (!endTime || rowTime <= endTime);
+
+    const matchesUser = !userVal || row._user === userVal;
+    const matchesLedger = !ledgerVal || (row._ledger || "").toLowerCase().includes(ledgerVal);
+    const matchesSearch = !searchVal || Object.values(row)
+      .some(v => String(v).toLowerCase().includes(searchVal));
+
+    return inDateRange && matchesUser && matchesLedger && matchesSearch;
+  });
+
+  filtered5792Data.sort((a, b) => b._serial - a._serial);
+  render5792Table(filtered5792Data);
+}
+
+// ✅ Ledger Dropdown Setup
+function setupLedger5792Dropdown() {
+  const ledgerInput = document.getElementById("ledger5792Input");
+  const dropdown = document.getElementById("ledger5792Dropdown");
+  if (!ledgerInput || !dropdown) return;
+  
+  const ledgers = [...new Set(all5792Data.map(r => r._ledger).filter(Boolean))];
+
+  ledgerInput.addEventListener("input", () => {
+    const value = ledgerInput.value.trim().toLowerCase();
+    dropdown.innerHTML = "";
+
+    if (!value) {
+      dropdown.style.display = "none";
+      apply5792Filters();
       return;
     }
 
-    let balance = 0;
-    const reversed = [...data].reverse();
-    const rowsWithBalance = reversed.map(row => {
-      const type = row.drcr.toLowerCase();
-      const isNegative = type === "payment" || type === "billdr";
-      const signed = isNegative ? -row.amount : row.amount;
-      balance += signed;
-      return { ...row, signedAmount: signed, running: balance };
-    }).reverse();
-
-    const table = document.createElement("table");
-    table.innerHTML = `
-      <thead>
-        <tr>
-          <th>T.No.</th>
-          <th>User</th>
-          <th>Type</th>
-          <th>Date</th>
-          <th>Ledger</th>
-          <th>Narration</th>
-          <th>Amount (₹)</th>
-          <th>Balance (₹)</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${rowsWithBalance.map(row => `
-          <tr style="${row.drcr.toLowerCase() === 'receipt' ? 'color: RED; background-color: rgb(248, 229, 229);' : ''}">
-            <td>${row.date}</td>
-            <td>${row.cUser}</td>
-            <td>${row.drcr}</td>
-            <td>${row.dt}</td>
-            <td>${row.ldgr}</td>
-            <td>${row.narration}</td>
-            <td class="${row.signedAmount < 0 ? 'negative' : 'positive'}">${row.signedAmount.toFixed()}</td>
-            <td>${row.running.toFixed()}</td>
-          </tr>
-        `).join("")}
-      </tbody>
-    `;
-    tableContainer.innerHTML = "";
-    tableContainer.appendChild(table);
-  }
-
-  function filterAndRender(accountType, ledgerFilter = "") {
-    filteredByAccount = fullData.filter(row => row.type === accountType);
-    let visible = filteredByAccount;
-
-    if (ledgerFilter.trim() !== "") {
-      visible = filteredByAccount.filter(row =>
-        row.ldgr.toLowerCase().includes(ledgerFilter.toLowerCase())
-      );
-    }
-
-    renderTable(visible);
-  }
-
-  function setupAccountSelect() {
-    const select = document.getElementById("cu123");
-    select.addEventListener("change", () => {
-      const selected = select.value;
-      document.getElementById("searchCLedger").value = ""; // Clear global search
-      filterAndRender(selected);
+    const matches = ledgers.filter(l => l.toLowerCase().includes(value));
+    matches.forEach(item => {
+      const div = document.createElement("div");
+      div.textContent = item;
+      div.style.padding = "4px";
+      div.style.cursor = "pointer";
+      div.onclick = () => {
+        ledgerInput.value = item;
+        dropdown.style.display = "none";
+        apply5792Filters();
+      };
+      dropdown.appendChild(div);
     });
-  }
 
-  function setupGlobalSearch() {
-    const input = document.getElementById("searchCLedger");
-    input.addEventListener("input", () => {
-      const query = input.value.trim().toLowerCase();
+    dropdown.style.display = matches.length ? "block" : "none";
+  });
 
-      if (query === "") {
-        const selected = document.getElementById("cu123").value;
-        filterAndRender(selected);
-        return;
-      }
-
-      const results = fullData.filter(row => {
-        return Object.values(row).some(val =>
-          String(val).toLowerCase().includes(query)
-        );
-      });
-
-      renderTable(results);
-    });
-  }
-
-  // print table
-  function printCUSERTable() {
-    const tableHTML = document.getElementById("tableContainer").innerHTML;
-    const style = `
-      <style>
-        body { font-family: Arial; padding: 20px; }
-        table {
-          width: 100%;
-          margin-top: 20px;
-          border-collapse: collapse;
-          border-radius: 8px;
-          overflow: hidden;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          font-size: 14px;
-        }
-        th, td {
-          border: 1px solid #e0e0e0;
-          padding: 10px 14px;
-          text-align: left;
-        }
-        th {
-          background-color: #004d80;
-          color: white;
-          font-weight: bold;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-        }
-        tr:nth-child(even) {
-          background-color: #f9f9f9;
-        }
-        .negative { color: black; }
-        .positive { color: red; }
-      </style>
-    `;
-    const win = window.open("", "_blank");
-    win.document.write(`
-      <html>
-        <head>
-          <title>Print Table</title>
-          ${style}
-        </head>
-        <body>
-          <h2>MIPL Cash Ledger</h2>
-          ${tableHTML}
-          <script>
-            window.onload = function() {
-              window.print();
-              window.onafterprint = function() { window.close(); };
-            };
-          <\/script>
-        </body>
-      </html>
-    `);
-    win.document.close();
-  }
-
-  document.addEventListener("DOMContentLoaded", async () => {
-    const raw = await fetchSheetData();
-    fullData = processRawData(raw);
-
-    setupAccountSelect();
-    setupGlobalSearch();
-
-    const defaultValue = document.getElementById("cu123").value;
-    if (defaultValue) {
-      filterAndRender(defaultValue);
+  document.addEventListener("click", e => {
+    if (!ledgerInput.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.style.display = "none";
     }
   });
+}
+
+// ✅ Setup Event Listeners
+function setup5792Events() {
+  document.getElementById("search5792Input")?.addEventListener("input", apply5792Filters);
+  document.getElementById("user5792")?.addEventListener("change", apply5792Filters);
+  document.getElementById("start5792Date")?.addEventListener("change", apply5792Filters);
+  document.getElementById("end5792Date")?.addEventListener("change", apply5792Filters);
+}
+
+// ✅ Refresh Function (Reload All)
+async function refresh5792Table() {
+  document.getElementById("search5792Input").value = "";
+  document.getElementById("ledger5792Input").value = "";
+  document.getElementById("user5792").value = "";
+  document.getElementById("start5792Date").value = "";
+  document.getElementById("end5792Date").value = "";
+  const rows = await fetch5792Data();
+  all5792Data = processRows(rows);
+  filtered5792Data = [...all5792Data];
+  render5792Table(all5792Data);
+  setupLedger5792Dropdown();
+}
+
+// ✅ Print Function
+// ✅ Print Function (with Ledger Name condition)
+function print5792Table() {
+  const table = document.getElementById("myuserTable");
+  if (!table) {
+    alert("No table data to print!");
+    return;
+  }
+
+  // 🔹 Ledger name fetch karo
+  const ledgerName = document.getElementById("ledger5792Input")?.value.trim() || "";
+  let ledgerHTML = "";
+  if (ledgerName) {
+    ledgerHTML = `<h4 style="text-align:center; margin-top:-10px;">Ledger: ${ledgerName}</h4>`;
+  }
+
+  const printWindow = window.open("", "_blank");
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print Table</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 20px; }
+          table { width:100%; border-collapse:collapse; font-size:14px; }
+          th, td { border:1px solid #444; padding:6px; text-align:left; }
+          th { background:#004d80; color:white; }
+          h3, h4 { text-align:center; }
+        </style>
+      </head>
+      <body>
+        <h3>Cash Ledger Report</h3>
+        ${ledgerHTML}
+        ${table.outerHTML}
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.print();
+}
+
+
+// ✅ Initialize
+document.addEventListener("DOMContentLoaded", async () => {
+  const rows = await fetch5792Data();
+  all5792Data = processRows(rows);
+  filtered5792Data = [...all5792Data];
+  render5792Table(all5792Data);
+  setupLedger5792Dropdown();
+  setup5792Events();
+});
 </script>
-  <!-- यह एक नोट है, cash ledger script stop Heare -->
 
 
 
+
+<!-- ============== CASH LEDGER REPORT (5792) SCRIPT STOP HARE ================= -->
 
 
 
@@ -2499,6 +2685,7 @@ document.addEventListener("submit", async function (e) {
 // checkPopupCondition(user.displayName); remove this line in login section if username not showing auto
 </script>
 <!-- ================ user lock/unlock script stop ===============================-->
+
 
 
 
