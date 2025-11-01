@@ -2483,7 +2483,7 @@ document.addEventListener("submit", async function (e) {
     if (result.result === 'success') {
       alert('✅ Success Have a Nice Day!');
       form.reset();
-      closePopup(); // ✅ auto close
+     // closePopup(); // ✅ auto close
     } else {
       alert(`❌ Error: ${result.error || 'Unknown error occurred.'}`);
     }
@@ -2499,6 +2499,7 @@ document.addEventListener("submit", async function (e) {
 // checkPopupCondition(user.displayName); remove this line in login section if username not showing auto
 </script>
 <!-- ================ user lock/unlock script stop ===============================-->
+
 
 
 
