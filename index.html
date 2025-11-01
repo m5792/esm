@@ -270,7 +270,7 @@ table{
   table{
   overflow-x: auto;
   display: block;
-  max-height: 700px; /* Optional scrolling */
+  max-height: 670px; /* Optional scrolling */
   }
 
   /* Table border & cell style */
@@ -782,6 +782,7 @@ th {
 <!-- section2B content start hare *********************************************************************************************************-->
       <div id="section2b" class="section hidden">
 
+<div style="text-align:center; background-color: #dcdddd; color: #002630; font-weight: bold;"> <strong>Cash Ledger Report</strong></div> <br/>
 
 
   <!-- Ledger Filter -->
@@ -792,8 +793,8 @@ th {
       placeholder="🔍 Type to search ledger...">
     <div id="ledger5792Dropdown" class="dropdown"></div>
 
-    <button onclick="print5792Table()">🖨️ Print Table</button>
-<button onclick="refresh5792Table()">🔄 Refresh Table</button>
+    <button onclick="print5792Table()" style="background-color: white;  color: #00254d;border: none; cursor: pointer;">🖨️ Print Table</button>
+<button onclick="refresh5792Table()"  style="background-color: white;  color: #00254d; border: none; cursor: pointer;">🔄 Refresh Table</button>
   </div>
 
           <div id="search5792Bar">
@@ -3319,13 +3320,6 @@ window.onload = () => {
 //
 //
 
-//
-    loadusrSheet();
-    document.getElementById('filterusrColumn1').addEventListener('change', filteruserTable);
-    document.getElementById('filteruserColumn2').addEventListener('change', filteruserTable);
-    document.getElementById('starusertDate').addEventListener('change', filteruserTable);
-    document.getElementById('enduserDate').addEventListener('change', filteruserTable);
-
 
 
     loadIVSheet();
@@ -3349,7 +3343,7 @@ window.onload = () => {
 
 
 
-<!-- user ma/ta script & code start   (CODE505) -->
+<!-- ============== CASH LEDGER REPORT (5792) SCRIPT START HARE ================= -->
 <style>
   #search5792Bar {
     background-color: #424242;
@@ -3408,12 +3402,6 @@ window.onload = () => {
 
 
 
-
-
-
-
-
-
 <script>
 const api5792Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheet5792Id = "1ECwXrxs8_FDWw1qAC6_qxEwP_HE3SGMM4qNKVZHlIS0";
@@ -3452,24 +3440,25 @@ async function fetch5792Data() {
   }
 }
 
-// ✅ Process Rows
+// ✅ Process Rows (convert only JNP → MA)
 function processRows(rows) {
   if (!rows || rows.length < 2) return [];
   const headers = rows[0];
+
   let data = rows.slice(1).map(r => {
     let obj = {};
     headers.forEach((h, i) => obj[h] = r[i] || "");
     obj._serial = parseFloat(r[0]) || 0;
-    obj._user = r[1] || "";
-    obj._type = r[2] || "";
+    obj._user = (r[1] || "").trim().toUpperCase();
+    obj._type = (r[2] || "").trim().toLowerCase();
     obj._dateStr = r[3] || "";
     obj._date = parseCustomDate(r[3]);
     obj._ledger = r[4] || "";
     obj._amount = parseFloat(r[5]) || 0;
 
-    // 🔹 JNP ko MA me convert kar do (display ke liye)
-    if (obj._user.trim().toUpperCase() === "JNP") obj._user = "MA";
-    
+    // ✅ Only JNP → MA (JNR unaffected)
+    if (obj._user === "JNP") obj._user = "MA";
+
     return obj;
   });
 
@@ -3495,7 +3484,7 @@ function render5792Table(data) {
         ${data.map(r => {
           let color = "";
           const type = r._type.toLowerCase();
-          if (type === "payment") color = "red";
+          if (type === "receipt") color = "red";
           else if (type === "salary") color = "blue";
           else if (type === "billdr") color = "green";
 
@@ -3509,6 +3498,16 @@ function render5792Table(data) {
     </table>
   `;
   container.innerHTML = html;
+
+  // ✅ Ensure "JNP" converted to "MA" even after render
+  const rows = container.querySelectorAll("#myuserTable tbody tr");
+  rows.forEach(row => {
+    const userCell = row.cells[1];
+    if (!userCell) return;
+    const val = userCell.textContent.trim().toUpperCase();
+    if (val === "JNP") userCell.textContent = "MA"; // Only JNP → MA
+  });
+  //------------------
   calculate5792RunningBalance();
 }
 
@@ -3698,7 +3697,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 
-<!-- user ma/ta script & code stop  (CODE505) -->
+<!-- ============== CASH LEDGER REPORT (5792) SCRIPT STOP HARE ================= -->
 
 
 
