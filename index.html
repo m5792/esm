@@ -780,7 +780,7 @@ th {
 
 
 <!-- section2B content start hare *********************************************************************************************************-->
-      <div id="section2b" class="section hidden">
+      <div id="section2b" class="section hidden" >
 
 <div style="text-align:center; background-color: #dcdddd; color: #002630; font-weight: bold;"> <strong>Cash Ledger Report</strong></div> <br/>
 
@@ -789,9 +789,9 @@ th {
   <div id="ledger5792Select" >
     <span style="color: black;">Ledger Name:</span>
     <input type="text" id="ledger5792Input"
-      style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width: 4in; background-color: rgb(241, 212, 212); font-size: 14px;"
+      style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width: 4in; background-color: rgb(236, 241, 212); font-size: 14px;"
       placeholder="🔍 Type to search ledger...">
-    <div id="ledger5792Dropdown" class="dropdown"></div>
+    <div id="ledger5792Dropdown" class="dp5792"></div>
 
     <button onclick="print5792Table()" style="background-color: white;  color: #00254d;border: none; cursor: pointer;">🖨️ Print Table</button>
 <button onclick="refresh5792Table()"  style="background-color: white;  color: #00254d; border: none; cursor: pointer;">🔄 Refresh Table</button>
@@ -801,11 +801,13 @@ th {
   <input type="text" id="search5792Input" placeholder="🔍 Search in current table...">
 
   <strong style="color: white;"> Select User:</strong>
-    <select id="user5792">
+    <select id="user5792" style="border-radius: 4px; ">
     <option value="">--Select Type--</option>
-    <option value="MA">MUKHTIYAR</option>
-    <option value="TA">TUSHAR AGARWAL</option>
+    <option value="MA">MUKHTIYAR (MA)</option>
+    <option value="TA">TUSHAR (TA)</option>
     <option value="BANK">BANK</option>
+    <option value="JLN">JOURNAL</option>
+    <option value="DB">DAYBOOK</option>
   </select>
 
   <label>From:</label>
@@ -817,7 +819,7 @@ th {
       </div>  <!-- section2B content stop hare *********************************************************************************************************-->
 
 
-      <div id="section2" class="section hidden"><div id="table5792Container"></div> <br/><br/><br/><br/><br/><br/><br/><br/></div>  <!--  sections2 start  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
+      <div id="section2" class="section hidden"><div id="table5792Container"></div> <br/><br/><br/><br/><br/></div>  <!--  sections2 start  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
       
       
       
@@ -852,6 +854,9 @@ th {
 }
 
 </style>
+
+<div style="text-align:center; background-color: #c1f1f3; color: #002630; font-weight: bold;"> <strong>Dishplay Ledger Report</strong></div> <br/>
+
 <br/>
 <div id="mipl2011Buttons" style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 10px;">
   <button class="filter-btn" data-value="search">🔍 Searchbar</button>
@@ -1013,8 +1018,63 @@ th {
 
 </style>
      
-      <div id="section4" class="section hidden"><table id="myIVTable"></table><br/><br/><br/><br/><br/><br/><br/><br/></div>    <!--  sections4 start  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
+      <div id="section4" class="section hidden">
+        
+ 
+<div style="text-align:center; background-color: #eef1ba; color: #002630; font-weight: bold;"> <strong>Imprest Voucher Report</strong></div> <br/>
+
+
+  <!-- Ledger Filter -->
+  <div id="ledger5793Select" >
+    <span style="color: black;">Ledger Name:</span>
+    <input type="text" id="ledger5793Input"
+      style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width: 4in; background-color: rgb(212, 241, 233); font-size: 14px;"
+      placeholder="🔍 Type to search ledger...">
+    <div id="ledger5793Dropdown" class="dp5793"></div>
+
+    <button onclick="print5793Table()" style="background-color: white;  color: #00254d;border: none; cursor: pointer;">🖨️ Print Table</button>
+<button onclick="refresh5793Table()"  style="background-color: white;  color: #00254d; border: none; cursor: pointer;">🔄 Refresh Table</button>
+  </div>
+
+          <div id="search5793Bar">
+  <input type="text" id="search5793Input" placeholder="🔍 Search in current table...">
+
+  <strong style="color: white;"> Select User:</strong>
+    <select id="user5793" style="border-radius: 4px; ">
+    <option value="">--Select Type--</option>
+    <option value="IV01">IV01-Amarbahadur</option>
+    <option value="IV02">IV02-Vijender Sharma</option>
+     <option value="IV03">IV03-Rahul</option>
+      <option value="IV04">IV04-Raju</option>
+     <option value="IV05">IV05- Mannu</option>
+     <option value="IV06">IV06- Aakash</option>
+     <option value="IV07">IV07- Manjeet</option>
+     <option value="IV08">IV08- Nitin Kumar</option>
+     <option value="IV09">IV09- Sunil Yadav</option> 
+     <option value="IV10">IV10- Ajay Kumar</option>
+     <option value="IV11">IV11- Ravinder Kumar</option>
+     <option value="DLT">Delete</option>
+
+
+    <option value="JLN">JOURNAL</option>
+    <option value="DB">DAYBOOK</option>
+  </select>
+
+  <label>From:</label>
+  <input type="date" id="start5793Date">
+  <label>To:</label>
+  <input type="date" id="end5793Date">
+  </div>
       
+      
+      </div>    <!--  sections4 start  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
+      
+      <!-- section4B content start hare *********************************************************************************************************-->
+       <div id="section4b" class="section hidden">
+<div id="table5793Container"></div> 
+ </div>  <!-- section4B content stop hare *********************************************************************************************************-->
+
+
 
       <!--  sections5 START  AAAAAAAAAAAAAAAAAAA  X -->
       <div id="section5" class="section hidden"> 
@@ -2636,42 +2696,6 @@ document.addEventListener("DOMContentLoaded", function () {
       
       </div> <!-- section5B content stop hare ****-->
 
-      <!-- section4B content start hare *********************************************************************************************************-->
-       <div id="section4b" class="section hidden">
-
-        <div id="totalsIV">
-                <span>Total Receipt:</span> <span id="totalIVReceipt">0</span> |
-                <span>Total Payment:</span> <span id="totalIVPayment">0</span> |
-                <span>Total Bill:</span> <span id="totalIVBill">0</span> |
-                <span>Total Salary:</span> <span id="totalIVSalary">0</span> |
-                <span>Balance:</span> <span id="totalIVDifference">0</span>
-            </div>
-
-         <div id="searchIVContainer">
-                <blink> <span style="color:#012400;font-size:120%;font-family:Arial Black;"id="resultIVDiv"> Imprest Voucher Report  </span> </blink> <br/>
-        
-                <label style="font-weight: bold;">Ledger:</label>
-                <select id="filterIVColumn4"></select>
-        
-                <label style="font-weight: bold;  color: red ;">From:</label>
-                <input type="date" id="starIVtDate">
-        
-                <label style="font-weight: bold;  color: red ;">To:</label>
-                <input type="date" id="endIVDate">
-        
-                <label style="font-weight: bold;">User:</label>
-                <select id="filterIVColumn1"></select>
-        
-                <label style="font-weight: bold;">Voucher:</label>
-                <select id="filterIVColumn2"></select>
-        
-                <button onclick="printIVTable()">🖨️ Print</button>  
-            </div>
-
-      </div>  <!-- section4B content stop hare *********************************************************************************************************-->
-
-
-
 
       <div id="section7b" class="section hidden">    <!--  sections7b start  *****************************************-->
 
@@ -3322,15 +3346,6 @@ window.onload = () => {
 
 
 
-    loadIVSheet();
-    document.getElementById('filterIVColumn1').addEventListener('change', filterIVTable);
-    document.getElementById('filterIVColumn2').addEventListener('change', filterIVTable);
-    document.getElementById('starIVtDate').addEventListener('change', filterIVTable);
-    document.getElementById('endIVDate').addEventListener('change', filterIVTable);
-
-   // document.getElementById('totalMonth').style.display = 'none';
-   // loadMonth();
- //   document.getElementById('myTable').style.display = 'none';
     
 };
     </script>
@@ -3366,38 +3381,14 @@ window.onload = () => {
     outline: none;
   }
 
-  #search5792Bar label {
-    font-weight: bold;
-    color: rgb(247, 244, 244);
-    margin-left: 10px;
-  }
+  #search5792Bar label { font-weight: bold; color: rgb(247, 244, 244); margin-left: 10px;}
+  #search5792Bar input[type="date"] { padding: 4px 6px; border-radius: 4px;border: 1px solid #ccc; font-size: 14px;}
 
-  #search5792Bar input[type="date"] {
-    padding: 4px 6px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-  }
 
-  #ledger5792Dropdown {
-    position: absolute;
-    background: white;
-    border: 1px solid #ccc;
-    max-height: 600px;
-    overflow-y: auto;
-    width: 4in;
-    display: none;
-    z-index: 999;
-  }
+.dp5792 { position: absolute;top: 80px;left: 0; right: 0;background: white; border: 6px solid #280101;height: 700px; width: 500px;overflow-y: auto; display: none; z-index: 100;background-color: #e4e4e6;}
+.dp5792 div { padding: 6px; cursor: pointer;}
+.dp5792 div:hover { background: #e8cd36; color: rgb(1, 3, 30);font-weight: bold;}
 
-  #ledger5792Dropdown div {
-    padding: 4px;
-    cursor: pointer;
-  }
-
-  #ledger5792Dropdown div:hover {
-    background: #eee;
-  }
 </style>
 
 
@@ -3476,7 +3467,7 @@ function render5792Table(data) {
 
   const headers = Object.keys(data[0]).filter(h => !h.startsWith("_"));
   const html = `
-    <table id="myuserTable" border="1" style="border-collapse:collapse;width:100%;font-size:14px;">
+    <table id="my5792Table" border="1" style="border-collapse:collapse;width:100%;font-size:14px;">
       <thead style="background:#004d80;color:white;">
         <tr>${headers.map(h => `<th>${h}</th>`).join("")}<th>Running Balance</th></tr>
       </thead>
@@ -3500,7 +3491,7 @@ function render5792Table(data) {
   container.innerHTML = html;
 
   // ✅ Ensure "JNP" converted to "MA" even after render
-  const rows = container.querySelectorAll("#myuserTable tbody tr");
+  const rows = container.querySelectorAll("#my5792Table tbody tr");
   rows.forEach(row => {
     const userCell = row.cells[1];
     if (!userCell) return;
@@ -3513,7 +3504,7 @@ function render5792Table(data) {
 
 // ✅ Calculate Running Balance
 function calculate5792RunningBalance() {
-  const rows = Array.from(document.querySelectorAll('#myuserTable tbody tr'));
+  const rows = Array.from(document.querySelectorAll('#my5792Table tbody tr'));
   if (rows.length === 0) return;
 
   const lastRow = rows[rows.length - 1];
@@ -3583,20 +3574,21 @@ function setupLedger5792Dropdown() {
   const ledgerInput = document.getElementById("ledger5792Input");
   const dropdown = document.getElementById("ledger5792Dropdown");
   if (!ledgerInput || !dropdown) return;
-  
-  const ledgers = [...new Set(all5792Data.map(r => r._ledger).filter(Boolean))];
 
+  // ✅ Create sorted ledger list
+  const ledgers = [...new Set(all5792Data.map(r => r._ledger).filter(Boolean))].sort((a, b) =>
+    a.localeCompare(b)
+  );
+
+  // ✅ On input → filter dropdown
   ledgerInput.addEventListener("input", () => {
     const value = ledgerInput.value.trim().toLowerCase();
     dropdown.innerHTML = "";
 
-    if (!value) {
-      dropdown.style.display = "none";
-      apply5792Filters();
-      return;
-    }
+    const matches = value
+      ? ledgers.filter(l => l.toLowerCase().includes(value))
+      : ledgers; // if no input, show all
 
-    const matches = ledgers.filter(l => l.toLowerCase().includes(value));
     matches.forEach(item => {
       const div = document.createElement("div");
       div.textContent = item;
@@ -3613,12 +3605,33 @@ function setupLedger5792Dropdown() {
     dropdown.style.display = matches.length ? "block" : "none";
   });
 
+  // ✅ On focus (click on input) → show full dropdown
+  ledgerInput.addEventListener("focus", () => {
+    dropdown.innerHTML = "";
+    ledgers.forEach(item => {
+      const div = document.createElement("div");
+      div.textContent = item;
+      div.style.padding = "4px";
+      div.style.cursor = "pointer";
+      div.onclick = () => {
+        ledgerInput.value = item;
+        dropdown.style.display = "none";
+        apply5792Filters();
+      };
+      dropdown.appendChild(div);
+    });
+    dropdown.style.display = ledgers.length ? "block" : "none";
+  });
+
+  // ✅ Hide dropdown when clicked outside
   document.addEventListener("click", e => {
     if (!ledgerInput.contains(e.target) && !dropdown.contains(e.target)) {
       dropdown.style.display = "none";
     }
   });
 }
+//-------------------------------------------------------
+
 
 // ✅ Setup Event Listeners
 function setup5792Events() {
@@ -3645,7 +3658,7 @@ async function refresh5792Table() {
 // ✅ Print Function
 // ✅ Print Function (with Ledger Name condition)
 function print5792Table() {
-  const table = document.getElementById("myuserTable");
+  const table = document.getElementById("my5792Table");
   if (!table) {
     alert("No table data to print!");
     return;
@@ -3769,7 +3782,7 @@ const currentLedgerFilter = document.getElementById("msaf54")?.value.trim() || "
 filterAndRender(currentAccountType, currentLedgerFilter);
 //  // cash user table refresh stop -------------------------
         loadusrSheet();
-        loadIVSheet();
+       
 
         // ✅ Remove DLT option if exists
         const msaf51Dropdown = document.getElementById("msaf51");
@@ -3830,7 +3843,7 @@ const currentLedgerFilter = document.getElementById("msaf54")?.value.trim() || "
 filterAndRender(currentAccountType, currentLedgerFilter);
 //  // cash user table refresh stop --------------------
         loadusrSheet();
-        loadIVSheet();
+        
 
         document.getElementById("submitIVMAButton").style.display = "inline-block";
         document.getElementById("modifyIVMAButton").style.display = "none";
@@ -4805,453 +4818,413 @@ if (![...SALEDropdown.options].some(opt => opt.value === "DLT")) {
 
  
 
-<!-- imprest voucher REPORT SCRIPT & CODE start Heare -->
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>IV Ledger Report</title>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-       
 
-         #searchIVContainer {
-            position: sticky;
-            top: 0;
-           left: 0;
-      width: 100%;
-      background: #ebecec;
-      padding: 10px 20px;
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      z-index: 1000;
-      color: #000;
-        }
 
-        .searchIVContainer select,
-    .searchIVContainer input {
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      cursor: pointer;
+
+<!-- ============== IMPERST LEDGER REPORT (5793) SCRIPT START HARE ================= -->
+<style>
+  #search5793Bar {
+    background-color: #014842;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+    box-sizing: border-box;
+  }
+
+  #search5793Input {
+    flex: 1;
+    background-color: #fdfdf6;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+  }
+
+  #search5793Bar label { font-weight: bold; color: rgb(247, 244, 244); margin-left: 10px;}
+  #search5793Bar input[type="date"] { padding: 4px 6px; border-radius: 4px;border: 1px solid #ccc; font-size: 14px;}
+
+
+.dp5793 { position: absolute;top: 80px;left: 0; right: 0;background: white; border: 6px solid #280101;height: 700px; width: 500px;overflow-y: auto; display: none; z-index: 100;background-color: #e4e4e6;}
+.dp5793 div { padding: 6px; cursor: pointer;}
+.dp5793 div:hover { background: #e8cd36; color: rgb(1, 3, 30);font-weight: bold;}
+
+</style>
+
+<style>
+
+#table5793Container {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  background: #ffffff;
+  border: 1px solid #d0d0d0;
+}
+
+#table5793Container thead th {
+  background: #01305c;
+  color: #ffffff;
+  padding: 10px;
+  border: 1px solid #b5b5b5;
+  text-align: left;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+#table5793Container tbody td {
+  padding: 8px 10px;
+  border: 1px solid #e0e0e0;
+  vertical-align: top;
+  word-wrap: break-word; /* Wrap long text */
+  white-space: normal;
+}
+
+#table5793Container tbody tr:nth-child(even) {
+  background: #f7faff;
+}
+
+#table5793Container tbody tr:hover {
+  background: #e2f0ff;
+  
+}
+
+#table5793Container {
+  overflow-x: auto;
+  display: block;
+  max-height: 800px; /* Optional scrolling */
+}
+
+</style>
+
+<script>
+const api5793Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheet5793Id = "1h3uC_0Ji4-NUhqrN0aIR-XwLZL5VdgilCBlIzC--SDA";
+const range5793 = "IVCR!W:AD";
+
+let all5793Data = [];
+let filtered5793Data = [];
+
+// ✅ Convert "7-Oct-2025" → Date object
+function parseCustomDate(dateStr) {
+  if (!dateStr) return null;
+  const parts = dateStr.split("-");
+  if (parts.length !== 3) return null;
+  const day = parseInt(parts[0]);
+  const monthStr = parts[1].toLowerCase().substring(0, 3);
+  const year = parseInt(parts[2]);
+  const months = {
+    jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+    jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
+  };
+  const month = months[monthStr];
+  if (isNaN(day) || isNaN(year) || month === undefined) return null;
+  return new Date(year, month, day);
+}
+
+// ✅ Fetch Google Sheet Data
+async function fetch5793Data() {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet5793Id}/values/${range5793}?key=${api5793Key}`;
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    return data.values || [];
+  } catch (err) {
+    console.error("Error fetching data:", err);
+    return [];
+  }
+}
+
+// ✅ Process Rows (convert only JNP → MA)
+function processRows(rows) {
+  if (!rows || rows.length < 2) return [];
+  const headers = rows[0];
+
+  let data = rows.slice(1).map(r => {
+    let obj = {};
+    headers.forEach((h, i) => obj[h] = r[i] || "");
+    obj._serial = parseFloat(r[0]) || 0;
+    obj._user = (r[1] || "").trim().toUpperCase();
+    obj._type = (r[2] || "").trim().toLowerCase();
+    obj._dateStr = r[3] || "";
+    obj._date = parseCustomDate(r[3]);
+    obj._ledger = r[4] || "";
+    obj._amount = parseFloat(r[5]) || 0;
+
+    // ✅ Only JNP → MA (JNR unaffected)
+    if (obj._user === "JNP") obj._user = "MA";
+
+    return obj;
+  });
+
+  data.sort((a, b) => b._serial - a._serial);
+  return data;
+}
+
+// ✅ Render Table + Color Formatting
+function render5793Table(data) {
+  const container = document.getElementById("table5793Container");
+  if (!data.length) {
+    container.innerHTML = "<p>No records found.</p>";
+    return;
+  }
+
+  const headers = Object.keys(data[0]).filter(h => !h.startsWith("_"));
+  const html = `
+    <table id="my5793Table" border="1" style="border-collapse:collapse;width:100%;font-size:14px;">
+      <thead style="background:#004d80;color:white;">
+        <tr>${headers.map(h => `<th>${h}</th>`).join("")}<th>Running Balance</th></tr>
+      </thead>
+      <tbody>
+        ${data.map(r => {
+          let color = "";
+          const type = r._type.toLowerCase();
+          if (type === "receipt") color = "red";
+          else if (type === "salary") color = "blue";
+          else if (type === "billdr") color = "green";
+
+          return `
+            <tr style="color:${color};">
+              ${headers.map(h => `<td>${r[h]}</td>`).join("")}
+              <td class="runningBalance"></td>
+            </tr>`;
+        }).join("")}
+      </tbody>
+    </table>
+  `;
+  container.innerHTML = html;
+
+  // ✅ Ensure "JNP" converted to "MA" even after render
+  const rows = container.querySelectorAll("#my5793Table tbody tr");
+  rows.forEach(row => {
+    const userCell = row.cells[1];
+    if (!userCell) return;
+    const val = userCell.textContent.trim().toUpperCase();
+    if (val === "JNP") userCell.textContent = "MA"; // Only JNP → MA
+  });
+  //------------------
+  calculate5793RunningBalance();
+}
+
+// ✅ Calculate Running Balance
+function calculate5793RunningBalance() {
+  const rows = Array.from(document.querySelectorAll('#my5793Table tbody tr'));
+  if (rows.length === 0) return;
+
+  const lastRow = rows[rows.length - 1];
+  const lastCells = lastRow.querySelectorAll('td');
+  const lastType = lastCells[2]?.textContent.trim().toLowerCase();
+  const lastAmount = parseFloat(lastCells[5]?.textContent || 0);
+
+  const creditTypes = ["receipt", "salary", "billcr"];
+  let runningBalance = creditTypes.includes(lastType) ? lastAmount : -lastAmount;
+
+  lastRow.querySelector('.runningBalance').textContent = runningBalance.toFixed(2);
+
+  for (let i = rows.length - 2; i >= 0; i--) {
+    const cells = rows[i].querySelectorAll('td');
+    const type = cells[2]?.textContent.trim().toLowerCase();
+    const amount = parseFloat(cells[5]?.textContent || 0);
+
+    if (!isNaN(amount)) {
+      if (creditTypes.includes(type)) {
+        runningBalance += amount;
+      } else if (["payment", "billdr"].includes(type)) {
+        runningBalance -= amount;
+      }
     }
+    rows[i].querySelector('.runningBalance').textContent = runningBalance.toFixed();
+  }
+}
 
-        .select2-container {
-            flex: 1;
-        }
+// ✅ Apply Filters (Search + Ledger + User + Date)
+function apply5793Filters() {
+  const searchVal = document.getElementById("search5793Input")?.value.toLowerCase() || "";
+  const ledgerVal = document.getElementById("ledger5793Input")?.value.toLowerCase() || "";
+  const userVal = document.getElementById("user5793")?.value || "";
+  const startDateStr = document.getElementById("start5793Date")?.value;
+  const endDateStr = document.getElementById("end5793Date")?.value;
 
-        tr.hidden {
-            display: none;
-        }
-        tr.receipt {
-            background-color: #ffe6e6;
-            color: #a10404;
-        }
+  const startDate = startDateStr ? new Date(startDateStr) : null;
+  const endDate = endDateStr ? new Date(endDateStr) : null;
 
-        tr.receipt2 {
-            background-color: #ffe6e6;
-            color: #5b0202;
-          }
-        tr.bill {
-            background-color: #e6f3ff;
-            color: #1d03c6;
-        }
-        #totalsIV {
-             font-size: 20px;
-            color: #f5f6f9;
-            background-color: #012400;
-        }
-        #noResultsMessage {
-            text-align: center;
-            margin-top: 10px;
-        }
-    </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script>
-        async function loadIVSheet() {
-            const apiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM"; // Replace with your API key
-            const sheetId = "1h3uC_0Ji4-NUhqrN0aIR-XwLZL5VdgilCBlIzC--SDA"; // Replace with your Sheet ID
-            const range = 'IVCR!W:AD'; // Replace with the correct range
-    
-            try {
-                const response = await fetch(
-                    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`
-                );
-                const data = await response.json();
-    
-                if (data.values) {
-                    populateIVTable(data.values);
-                    populateIVDropdowns(data.values);
-                } else {
-                    console.error("No data found in the specified range.");
-                }
-            } catch (error) {
-                console.error("Error fetching data from Google Sheets:", error);
-            }
-        }
-    
-        function populateIVTable(data) {
-            const table = document.getElementById('myIVTable');
-            table.innerHTML = ''; // Clear existing rows
-    
-            data.forEach((row, index) => {
-                const tr = document.createElement('tr');
-    
-                if (index === 0) {
-                    // Header row
-                    row.forEach(cell => {
-                        const th = document.createElement('th');
-                        th.textContent = cell;
-                        tr.appendChild(th);
-                    });
-    
+  filtered5793Data = all5793Data.filter(row => {
+    const rowDate = row._date;
+    if (!rowDate) return false;
 
-                    // Add "Running Balance" column to the header
-                    const thRunningBalance = document.createElement('th');
-                    thRunningBalance.textContent = 'Balance';
-                    tr.appendChild(thRunningBalance);
-                } else {
-                    // Data rows
-                    row.forEach((cell, cellIndex) => {
-                        const td = document.createElement('td');
-                        td.textContent = cell;
-                        tr.appendChild(td);
-    
-                        // Add class based on "Type" column
-                        if (cellIndex === 2) { // Assuming Type is in column 2
-                            if (cell.toLowerCase() === "receipt") {
-                                tr.classList.add('receipt');
-                            } else if (cell.toLowerCase() === "receipt ") {
-                                tr.classList.add('receipt2');
-                            } else if (cell.toLowerCase() === "bill") {
-                                tr.classList.add('bill');
-                            }
-                        }
-                    });
-    
-                    // Add empty cell for "Running Balance"
-                    const tdRunningBalance = document.createElement('td');
-                    tdRunningBalance.classList.add('runningBalance');
-                    tr.appendChild(tdRunningBalance);
-                }
-    
-                table.appendChild(tr);
-            });
-    
-            
-        }
-    
-    
-   
-// runnin balance start hare 
+    const rowTime = rowDate.setHours(0, 0, 0, 0);
+    const startTime = startDate ? startDate.setHours(0, 0, 0, 0) : null;
+    const endTime = endDate ? endDate.setHours(0, 0, 0, 0) : null;
 
+    // ✅ Start date inclusive
+    const inDateRange =
+      (!startTime || rowTime >= startTime) &&
+      (!endTime || rowTime <= endTime);
 
-        function calculateIVRunningBalance() {
-    // Select only visible rows after filtering (excluding the header row)
-    const rows = Array.from(document.querySelectorAll('#myIVTable tr:not(.hidden)')).slice(1); // Skip header row
+    const matchesUser = !userVal || row._user === userVal;
+    const matchesLedger = !ledgerVal || (row._ledger || "").toLowerCase().includes(ledgerVal);
+    const matchesSearch = !searchVal || Object.values(row)
+      .some(v => String(v).toLowerCase().includes(searchVal));
 
-    if (rows.length === 0) return; // Exit if no rows are visible
+    return inDateRange && matchesUser && matchesLedger && matchesSearch;
+  });
 
-    // Get the amount from the last visible row (latest transaction)
-    const lastRow = rows[rows.length - 1];
-    const lastRowCells = lastRow.querySelectorAll('td');
-    const lastRowTransactionType = lastRowCells[2]?.textContent.trim().toLowerCase(); // Type column
-    const lastRowAmount = parseFloat(lastRowCells[5]?.textContent || 0); // Amount column
+  filtered5793Data.sort((a, b) => b._serial - a._serial);
+  render5793Table(filtered5793Data);
+}
 
-    // Start the running balance with the amount from the last row
-    let runningBalance = lastRowTransactionType === "receipt" ? lastRowAmount : -lastRowAmount;
+// ✅ Ledger Dropdown Setup
+function setupLedger5793Dropdown() {
+  const ledgerInput = document.getElementById("ledger5793Input");
+  const dropdown = document.getElementById("ledger5793Dropdown");
+  if (!ledgerInput || !dropdown) return;
 
-    // Update the running balance cell in the last row
-    const lastRowBalanceCell = lastRow.querySelector('.runningBalance');
-    if (lastRowBalanceCell) {
-        lastRowBalanceCell.textContent = runningBalance.toFixed(2);
+  // ✅ Create sorted ledger list
+  const ledgers = [...new Set(all5793Data.map(r => r._ledger).filter(Boolean))].sort((a, b) =>
+    a.localeCompare(b)
+  );
+
+  // ✅ On input → filter dropdown
+  ledgerInput.addEventListener("input", () => {
+    const value = ledgerInput.value.trim().toLowerCase();
+    dropdown.innerHTML = "";
+
+    const matches = value
+      ? ledgers.filter(l => l.toLowerCase().includes(value))
+      : ledgers; // if no input, show all
+
+    matches.forEach(item => {
+      const div = document.createElement("div");
+      div.textContent = item;
+      div.style.padding = "4px";
+      div.style.cursor = "pointer";
+      div.onclick = () => {
+        ledgerInput.value = item;
+        dropdown.style.display = "none";
+        apply5793Filters();
+      };
+      dropdown.appendChild(div);
+    });
+
+    dropdown.style.display = matches.length ? "block" : "none";
+  });
+
+  // ✅ On focus (click on input) → show full dropdown
+  ledgerInput.addEventListener("focus", () => {
+    dropdown.innerHTML = "";
+    ledgers.forEach(item => {
+      const div = document.createElement("div");
+      div.textContent = item;
+      div.style.padding = "4px";
+      div.style.cursor = "pointer";
+      div.onclick = () => {
+        ledgerInput.value = item;
+        dropdown.style.display = "none";
+        apply5793Filters();
+      };
+      dropdown.appendChild(div);
+    });
+    dropdown.style.display = ledgers.length ? "block" : "none";
+  });
+
+  // ✅ Hide dropdown when clicked outside
+  document.addEventListener("click", e => {
+    if (!ledgerInput.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.style.display = "none";
     }
+  });
+}
+//-------------------------------------------------------
 
-    // Iterate upwards through the remaining rows
-    for (let index = rows.length - 2; index >= 0; index--) {
-        const row = rows[index];
-        const cells = row.querySelectorAll('td');
-        const transactionType = cells[2]?.textContent.trim().toLowerCase(); // Assuming "Type" column is at index 2
-        const amount = parseFloat(cells[5]?.textContent || 0); // Assuming "Amount" column is at index 5
 
-        if (!isNaN(amount)) {
-            if (transactionType === "receipt") {
-                runningBalance += amount; // Add for receipt
-            } else if (transactionType === "payment") {
-                runningBalance -= amount; // Subtract for payment
-            }else if (transactionType === "bill") {
-                runningBalance -= amount; // Subtract for payment
-            }else if (transactionType === "salary") {
-                runningBalance += amount; // Subtract for payment
-            }
-        }
-
-        // Update the running balance cell
-        const runningBalanceCell = row.querySelector('.runningBalance');
-        if (runningBalanceCell) {
-            runningBalanceCell.textContent = runningBalance.toFixed();
-        }
-    }
+// ✅ Setup Event Listeners
+function setup5793Events() {
+  document.getElementById("search5793Input")?.addEventListener("input", apply5793Filters);
+  document.getElementById("user5793")?.addEventListener("change", apply5793Filters);
+  document.getElementById("start5793Date")?.addEventListener("change", apply5793Filters);
+  document.getElementById("end5793Date")?.addEventListener("change", apply5793Filters);
 }
 
-// running balance funtion stop
-//calculateIVRunningBalance(); // Recalculate running balance after filtering
-
-
-function populateIVDropdowns(data) {
-    const dropdown1 = document.getElementById('filterIVColumn1');
-    const dropdown2 = document.getElementById('filterIVColumn2');
-    const dropdown4 = document.getElementById('filterIVColumn4');
-
-    const uniqueValues1 = [...new Set(data.slice(1).map(row => row[1]))]; // Column 1
-    const uniqueValues2 = [...new Set(data.slice(1).map(row => row[2]))]; // Column 2
-    const uniqueValues4 = [...new Set(data.slice(1).map(row => row[4]))]; // Column 4
-
-    populateIVDropdown(dropdown1, uniqueValues1);
-    populateIVDropdown(dropdown2, uniqueValues2);
-    populateIVDropdown(dropdown4, uniqueValues4);
-
-    // Initialize Select2 for searchable dropdown
-    $(dropdown4).select2({
-        placeholder: "-- Select --",
-        allowClear: true,
-        width: 'resolve'
-    });
-
-    // Bind filter event for Select2
-    $(dropdown4).on('change', filterIVTable);
-
-    // Map for dropdown1 values to corresponding names
-    const userMapping = {
-        IV01: "User | Amarbahadur",
-        IV02: "User | Vijender Sharma",
-        IV03: "User | Rahul",
-        IV04: "User | Raju - UK18CA4818",
-        IV05: "User | Mannu - UK18CA4819",
-        IV06: "User | Aakash - UK04CC1458",
-        IV07: "User | Manjeet - UK18CA8919",
-        IV08: "User | NITIN KUMAR",
-        IV09: "User | SUNIL YADAV",
-        IV10: "User | AJAY KUMAR-UK18CA3770"
-
-        //   <div id="resultIVDiv"></div>  user name show as per your requre
-    };
-
-    // Event listener for dropdown1 to show corresponding name
-    dropdown1.addEventListener('change', function () {
-        const selectedValue = dropdown1.value;
-        const resultIVDiv = document.getElementById('resultIVDiv');
-
-        if (userMapping[selectedValue]) {
-            resultIVDiv.textContent = userMapping[selectedValue]; // Show corresponding name
-        } else {
-            resultIVDiv.textContent = ""; // Clear the div if no valid option is selected
-        }
-    });
+// ✅ Refresh Function (Reload All)
+async function refresh5793Table() {
+  document.getElementById("search5793Input").value = "";
+  document.getElementById("ledger5793Input").value = "";
+  document.getElementById("user5793").value = "";
+  document.getElementById("start5793Date").value = "";
+  document.getElementById("end5793Date").value = "";
+  const rows = await fetch5793Data();
+  all5793Data = processRows(rows);
+  filtered5793Data = [...all5793Data];
+  render5793Table(all5793Data);
+  setupLedger5793Dropdown();
 }
 
-function populateIVDropdown(dropdown, values) {
-    dropdown.innerHTML = '<option value="">-- Select --</option>';
-    values.forEach(value => {
-        const option = document.createElement('option');
-        option.value = value;
-        option.textContent = value;
-        dropdown.appendChild(option);
-    });
-}
+// ✅ Print Function
+// ✅ Print Function (with Ledger Name condition)
+function print5793Table() {
+  const table = document.getElementById("my5793Table");
+  if (!table) {
+    alert("No table data to print!");
+    return;
+  }
 
+  // 🔹 Ledger name fetch karo
+  const ledgerName = document.getElementById("ledger5793Input")?.value.trim() || "";
 
+  // 🔹 User name fetch karo (select ke selected option ka text)
+  const userSelect = document.getElementById("user5793");
+  const userText = userSelect ? userSelect.options[userSelect.selectedIndex].text.trim() : "";
 
+  // 🔹 Ledger aur User dono ke HTML ready karo
+  let headerHTML = "";
+  if (ledgerName) headerHTML += `<h4 style="margin:4px 0;">Ledger: ${ledgerName}</h4>`;
+  if (userText) headerHTML += `<h4 style="margin:4px 0;">User: ${userText}</h4>`;
 
-        function filterIVTable() {
-    const filter1 = document.getElementById('filterIVColumn1').value.toLowerCase();
-    const filter2 = document.getElementById('filterIVColumn2').value.toLowerCase();
-    const filter4 = $('#filterIVColumn4').val()?.toLowerCase();
-
-    const starIVtDateInput = document.getElementById("starIVtDate").value;
-    const endIVDateInput = document.getElementById("endIVDate").value;
-
-    // ---- Convert input to pure date (ignore time) ----
-    const starIVtDate = starIVtDateInput ? new Date(starIVtDateInput + "T00:00:00") : null;
-    const endIVDate = endIVDateInput ? new Date(endIVDateInput + "T23:59:59") : null;
-
-    const rows = document.querySelectorAll('#myIVTable tr');
-    let visibleRows = 0;
-    let totalIVPayment = 0, totalIVReceipt = 0, totalIVBill = 0, totalIVSalary = 0;
-
-    rows.forEach((row, index) => {
-        if (index === 0) return; // Skip header row
-
-        const cells = row.querySelectorAll('td');
-        const rowDateStr = cells[3]?.textContent.trim();
-        const date = rowDateStr ? new Date(rowDateStr) : null;
-
-        const type = cells[2]?.textContent.trim().toUpperCase();
-        const amount = parseFloat(cells[5]?.textContent.trim()) || 0;
-
-        // ---- Date filter check (inclusive) ----
-        let dateMatches = true;
-        if (date && !isNaN(date)) {
-            if (starIVtDate && date < starIVtDate) dateMatches = false;
-            if (endIVDate && date > endIVDate) dateMatches = false;
-        }
-        // Agar date column blank/invalid hai → filter skip karega (row dikhegi)
-
-        // ---- Other filters ----
-        const matchesFilter1 = !filter1 || cells[1]?.textContent.toLowerCase() === filter1;
-        const matchesFilter2 = !filter2 || cells[2]?.textContent.toLowerCase() === filter2;
-        const matchesFilter4 = !filter4 || cells[4]?.textContent.toLowerCase() === filter4;
-
-        if (matchesFilter1 && matchesFilter2 && matchesFilter4 && dateMatches) {
-            row.classList.remove('hidden');
-            visibleRows++;
-
-            // ---- Totals update ----
-            if (type === "PAYMENT") {
-                totalIVPayment += amount;
-            } else if (type === "RECEIPT") {
-                totalIVReceipt += amount;
-            } else if (type === "BILL") {
-                totalIVBill += amount;
-            } else if (type === "SALARY") {
-                totalIVSalary += amount;
-            }
-        } else {
-            row.classList.add('hidden');
-        }
-    });
-
-    displayIVNoResultsMessage(visibleRows);
-    updateIVTotals(totalIVPayment, totalIVReceipt, totalIVBill, totalIVSalary);
-
-    // Recalculate running balance after filtering
-    calculateIVRunningBalance();
-}
-
-    
-        function displayIVNoResultsMessage(visibleRows) {
-            const noResultsMessage = document.getElementById('noResultsMessage');
-            if (!visibleRows) {
-                if (!noResultsMessage) {
-                    const message = document.createElement('p');
-                    message.id = 'noResultsMessage';
-                    message.textContent = 'No matching results found.';
-                    document.body.appendChild(message);
-                }
-            } else if (noResultsMessage) {
-                noResultsMessage.remove();
-            }
-        }
-    
-        function updateIVTotals(totalIVPayment, totalIVReceipt, totalIVBill, totalIVSalary) {
-            document.getElementById("totalIVPayment").textContent = totalIVPayment.toFixed();
-            document.getElementById("totalIVReceipt").textContent = totalIVReceipt.toFixed();
-            document.getElementById("totalIVBill").textContent = totalIVBill.toFixed();
-            document.getElementById("totalIVSalary").textContent = totalIVSalary.toFixed();
-            document.getElementById("totalIVDifference").textContent = (totalIVReceipt - totalIVPayment - totalIVBill + totalIVSalary).toFixed();
-        }
-    
-
-        function printIVTable() {
-    let printWindow = window.open('', '', 'height=500, width=800');
-
-    const styles = `
+  // 🔹 Print window open karo
+  const printWindow = window.open("", "_blank");
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print Table</title>
         <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
-            table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 12px; text-align: left; }
-            table th, table td { border: 1px solid #ddd; padding: 5px; }
-            table th { background-color: #f4f4f4; font-weight: bold; }
-            table tr.payment { background-color: white; color: black; }
-            table tr.receipt { background-color: blac; color: red; }
-            table tr.bill { background-color: blac; color: blue; }
-            .filter-summary { margin: 10px 0; font-size: 14px; }
-            .filter-summary span { display: inline-block; margin-right: 20px; }
+          body { font-family: Arial, sans-serif; margin: 20px; }
+          table { width:100%; border-collapse:collapse; font-size:14px; }
+          th, td { border:1px solid #444; padding:6px; text-align:left; }
+          th { background:#004d80; color:white; }
+          h3, h4 { text-align:center; }
         </style>
-    `;
-
-    // Fetch filter values
-    const ledger = document.getElementById("filterIVColumn4").value || "All";
-    const starIVtDate = document.getElementById("starIVtDate").value || "Not Set";
-    const endIVDate = document.getElementById("endIVDate").value || "Not Set";
-    const user = document.getElementById("filterIVColumn1").value || "All";
-    const voucher = document.getElementById("filterIVColumn2").value || "All";
-
-    // Create a summary of filter options
-    const filterSummary = `
-        <div class="filter-summary">
-            <span><strong>Ledger:</strong> ${ledger}</span>
-            <span><strong>From:</strong> ${starIVtDate}</span>
-            <span><strong>To:</strong> ${endIVDate}</span>
-            <span><strong>User:</strong> ${user}</span>
-            <span><strong>Voucher:</strong> ${voucher}</span>
-        </div>
-    `;
-
-    // Clone the table and remove hidden rows
-    let table = document.getElementById("myIVTable");
-    let tableClone = table.cloneNode(true);
-
-    let rows = tableClone.querySelectorAll('tr');
-    rows.forEach((row) => {
-        if (row.classList.contains('hidden')) {
-            row.remove(); // Remove hidden rows from the cloned table
-        } else {
-            // Retain only the first 7 columns for each row
-            while (row.cells.length > 9) {
-                row.deleteCell(7); // Remove extra columns starting from index 7
-            }
-        }
-    });
-
-    // Start writing to the print window
-    printWindow.document.write('<html><head><title>🖨️ Print</title></head><body>');
-    printWindow.document.write(styles);
-   
-    printWindow.document.write('<span style="color:grey;font-size:70%;font-family:Magneto;">eS|MTally</span> <br/> <span style="color:black;font-size:120%;font-family:Arial;">MIPL Cash Management</span>'); // Optional title
- 
-    printWindow.document.write(filterSummary); // Add the filter summary to the print view
-
-    // Add totalsIV section
-    printWindow.document.write(document.getElementById("totalsIV").outerHTML);
-
-    // Write the cloned table with only visible rows and limited columns
-    printWindow.document.write(tableClone.outerHTML);
-
-    // Close and print
-    printWindow.document.close();
-    printWindow.print();
+      </head>
+      <body>
+        <h3>Imprest Voucher Report</h3>
+        ${headerHTML}
+        ${table.outerHTML}
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.print();
 }
 
+// ✅ Initialize
+document.addEventListener("DOMContentLoaded", async () => {
+  const rows = await fetch5793Data();
+  all5793Data = processRows(rows);
+  filtered5793Data = [...all5793Data];
+  render5793Table(all5793Data);
+  setupLedger5793Dropdown();
+  setup5793Events();
+});
+</script>
 
-
-
-
-
-
-      //  window.onload = () => {
-        //    loadIVSheet();
-     //       document.getElementById('filterIVColumn1').addEventListener('change', filterIVTable);
-       //     document.getElementById('filterIVColumn2').addEventListener('change', filterIVTable);
-      //      document.getElementById('starIVtDate').addEventListener('change', filterIVTable);
-      //      document.getElementById('endIVDate').addEventListener('change', filterIVTable);
-   //     };
-    </script>
-
-
-</head>
-</html>
-
-
-<!-- imprest voucher REPORT SCRIPT & CODE STOP Heare -->
-
-
+<!-- ============== IMPERST LEDGER REPORT (5793) SCRIPT STOP HARE ================= -->
 
 
 
@@ -5303,7 +5276,7 @@ function populateIVDropdown(dropdown, values) {
         form.reset(); // FORM RESET
         document.getElementById("formModeIVCR").value = "new";
         loadIVCRSheet(); //REFRESH
-         loadIVSheet();  // REFRESH
+        
 
            // ✅ Remove DLT option after submit
         const voucherDropdown = document.getElementById("voucherType");
@@ -5410,7 +5383,7 @@ if (![...voucherDropdown.options].some(opt => opt.value === "DLT")) {
         form.reset();
         document.getElementById("formModeIVCR").value = "new"; // ✅ Reset to new
       loadIVCRSheet(); //REFRESH
-         loadIVSheet();  // REFRESH
+        
         document.getElementById("submitIVCRButton").style.display = "inline-block";
         document.getElementById("modifyIVCRButton").style.display = "none";
 
