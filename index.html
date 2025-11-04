@@ -814,6 +814,9 @@ th {
   <input type="date" id="start5792Date">
   <label>To:</label>
   <input type="date" id="end5792Date">
+
+  <button id="export5792" data-value="export5792" data-target="table5792Container" style="border: none; font-weight: bold; cursor: pointer; background-color: #424242; color: rgb(245, 242, 163);">🏢 Export</button>
+
   </div>
       
       </div>  <!-- section2B content stop hare *********************************************************************************************************-->
@@ -866,6 +869,7 @@ th {
   <button class="filter-btn" data-value="sale">🧾 Sale</button>
   <button class="filter-btn" data-value="address">🏢 Address</button>
   <button class="filter-btn" data-value="atn">🏢 Attendance</button>
+  <button class="filter-btn" data-value="psw">🏢 ID/Password</button>
 
 <button onclick="print2011Report()" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer; background-color: white;">🖨️ Print Report</button>
 <button id="refresh2011Btn" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer; background-color: white;"> 🔄 Refresh</button>
@@ -878,7 +882,8 @@ th {
   <label>To:</label>
   <input type="date" id="end2011Date">
 
-   <button id="exportBtn" data-value="exportBtn" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer; background-color: #027175; color: rgb(245, 242, 163);">🏢 Export</button>
+   
+   <button id="exportBtn" data-value="exportBtn" data-target="mipl2011Table" style="border: none; font-weight: bold; cursor: pointer; background-color: #027175; color: rgb(245, 242, 163);">🏢 Export</button>
 
 </div>   <!-- <div id="search2011Bar"> stop  -->
 
@@ -1064,6 +1069,10 @@ th {
   <input type="date" id="start5793Date">
   <label>To:</label>
   <input type="date" id="end5793Date">
+
+  
+<button id="export5793" data-value="export5793"  data-target="table5793Container" style="border: none; font-weight: bold; cursor: pointer; background-color: #014842; color: rgb(245, 242, 163);">🏢 Export</button>
+
   </div>
       
       
@@ -1089,83 +1098,6 @@ th {
 
 <div id="section7" class="section hidden">   <!--  sections7 start  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
   
-<div class="container">  <div class="left" style="background-color: rgb(200, 249, 234);color:#004d80;font-weight: bold;">   <!-- यह एक नोट है, vertical Two Part Div (30-70) left content start ((CODE501)) -->
-
-<!-- यह एक नोट है, Admin Table div body start Heare -->
-<style>
-  .adminGrid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 12px;
-    max-width: 700px;
-    margin-top: 10px;
-  }
-
-  .adminGrid label {
-    align-self: center;
-    font-weight: bold;
-  }
-
-  .adminGrid select,
-  .adminGrid input[type="date"],
-  .adminGrid input[type="text"] {
-    width: 100%;
-    padding: 4px 6px;
-    box-sizing: border-box;
-  }
-
-  .adminDiv {
-    padding: 20px;
-    border: 1px solid #ddd;
-    margin: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-  }
-
-  button {
-    margin-right: 8px;
-  }
-
- 
-</style>
-
-<div class="adminDiv">
-  <h4>📋 Select Sheet to Load</h4>
-
-  <div class="adminGrid">
-    
-
-    <label for="adminColumn1">User:</label>
-    <select id="adminColumn1"></select>
-
-    <label for="adminColumn2">Voucher:</label>
-    <select id="adminColumn2"></select>
-
-    <label for="adminColumn4">Ledger:</label>
-    <select id="adminColumn4" style="width:200px;"></select>
-
-    <label for="startAdmintDate">From:</label>
-    <input type="date" id="startAdmintDate" />
-
-    <label for="endAdminDate">To:</label>
-    <input type="date" id="endAdminDate" />
-
-    
-
-    <div></div> <!-- empty for spacing -->
-    <div>
-      <h3>📤 Export</h3>
-      <button onclick="downloadAdminHTML()">Download as HTML</button>
-      <button onclick="downloadAsExcel()">Download as Excel (.xls)</button>
-    </div>
-  </div>
-
-  <div id="resultDiv"></div>
-</div>
-
-<!-- यह एक नोट है, Admin Table div body stop Heare -->
-
-
 <BR/>
 <!-- यह एक नोट है, Dropdown URL  Script Start Heare -->
 <!DOCTYPE html>
@@ -1228,26 +1160,6 @@ th {
 
  <a href="http://192.168.1.49:8000/" target="_blank"><img src="https://cdn-icons-png.freepik.com/512/7575/7575914.png" alt="You Tube" width="60" height="60" /></a>
                             
-
-
-        </div> <!-- यह एक नोट है, vertical Two Part Div (30-70) left content stop -->
-<div class="right"> <!-- यह एक नोट है, vertical Two Part Div (30-70) right content start -->
-
-
-
-
-<!-- Admin Table Section -->
-<h3>📊 Admin Data Table</h3>
-<table id="userTable">
-  <thead id="userTableHead"></thead>
-  <tbody id="userTableBody"></tbody>
-</table>
-
-
-
-</div> </div>  <!-- यह एक नोट है, vertical Two Part Div (30-70) container content stop  Heare ((CODE501)) -->
-
-
 
 </div>  <!--  sections7 stop  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
 
@@ -3327,30 +3239,19 @@ setInterval(displayCurrentDateTime, 1000);
  
 
     <script>
-
-     
 // -------------------- Onload --------------------
 window.onload = () => {
-    loadusrAdminSheet();
+
     jobbPOReffload();
     loadIVCRSheet();
     filterSKHR();
     fetchUserData();
     filterDp();
     document.getElementById("designUSER").value = "CREAT";
-    showForm("CREAT");
-
-    
-//
-//
-
-
-
-    
+    showForm("CREAT");  
 };
     </script>
-</body>
-</html>
+
 
 
 <!-- monthly sale & receipt Script & code stop  Heare  (CODE504)--> 
@@ -3419,12 +3320,21 @@ function parseCustomDate(dateStr) {
 }
 
 // ✅ Fetch Google Sheet Data
+// ✅ Fetch Google Sheet Data (skip rows where column B == "DLT")
 async function fetch5792Data() {
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet5792Id}/values/${range5792}?key=${api5792Key}`;
   try {
     const res = await fetch(url);
     const data = await res.json();
-    return data.values || [];
+    let rows = data.values || [];
+
+    // 🔹 Skip header row (first row)
+    const header = rows[0];
+    const filtered = rows.slice(1).filter(row => (row[1] || "").trim().toUpperCase() !== "DLT");
+
+    // 🔹 Combine header + filtered rows
+    const finalData = [header, ...filtered];
+    return finalData;
   } catch (err) {
     console.error("Error fetching data:", err);
     return [];
@@ -4914,7 +4824,7 @@ let all5793Data = [];
 let filtered5793Data = [];
 
 // ✅ Convert "7-Oct-2025" → Date object
-function parseCustomDate(dateStr) {
+function parseCustom5793Date(dateStr) {
   if (!dateStr) return null;
   const parts = dateStr.split("-");
   if (parts.length !== 3) return null;
@@ -4955,7 +4865,7 @@ function processRows(rows) {
     obj._user = (r[1] || "").trim().toUpperCase();
     obj._type = (r[2] || "").trim().toLowerCase();
     obj._dateStr = r[3] || "";
-    obj._date = parseCustomDate(r[3]);
+    obj._date = parseCustom5793Date(r[3]);
     obj._ledger = r[4] || "";
     obj._amount = parseFloat(r[5]) || 0;
 
@@ -6692,7 +6602,7 @@ table tr:hover {
       filterDp();  // SRR TABLE 
       loadDATAMIPLTABLE();
       loadIVCRSheet();   // IVCR ENTRY FORM TABLE
-      loadusrAdminSheet();  // ADMIN USER 
+
       loadNoticeBoard();  // loding summry notice board
     }
 
@@ -6710,235 +6620,6 @@ table tr:hover {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- यह एक नोट है, Admin Section SCript STart -->
-<!-- Admin Section Combined Script Start -->
-<script>
-  async function loadusrAdminSheet() {
-    const sheetConfigs = {
-      mpr: {
-        apiKey: "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM",
-        sheetId: "1ECwXrxs8_FDWw1qAC6_qxEwP_HE3SGMM4qNKVZHlIS0",
-        range: "MPR!J:R"
-      },
-      ivcr: {
-        apiKey: "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM",
-        sheetId: "1h3uC_0Ji4-NUhqrN0aIR-XwLZL5VdgilCBlIzC--SDA",
-        range: "IVCR!W:AD"
-      },
-      sale: {
-        apiKey: "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM",
-        sheetId: "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4",
-        range: "ADMIN!A:L"
-      },
-      po: {
-        apiKey: "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM",
-        sheetId: "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4",
-        range: "POINDEX!G:Q"
-      },
-      psw: {
-        apiKey: "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM",
-        sheetId: "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4",
-        range: "M1000!A:J"
-      }
-    };
-
-    const selectedSheet = document.getElementById("sheetSelector").value;
-    const { apiKey, sheetId, range } = sheetConfigs[selectedSheet];
-
-    try {
-      const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`);
-      const data = await response.json();
-
-      if (data.values && data.values.length > 0) {
-        populateAdminTable(data.values);
-        populateAdminDropdowns(data.values);
-      } else {
-        console.error("No data found");
-        document.getElementById("userTableHead").innerHTML = "";
-        document.getElementById("userTableBody").innerHTML = "<tr><td>No data found</td></tr>";
-      }
-    } catch (error) {
-      console.error("Error fetching sheet:", error);
-      document.getElementById("userTableBody").innerHTML = "<tr><td>Error loading data</td></tr>";
-    }
-  }
-
-  function populateAdminTable(data) {
-    const tableHead = document.getElementById("userTableHead");
-    const tableBody = document.getElementById("userTableBody");
-    tableHead.innerHTML = "";
-    tableBody.innerHTML = "";
-
-    const headerRow = document.createElement("tr");
-    data[0].forEach(headerText => {
-      const th = document.createElement("th");
-      th.textContent = headerText;
-      headerRow.appendChild(th);
-    });
-    tableHead.appendChild(headerRow);
-
-    for (let i = 1; i < data.length; i++) {
-      const row = document.createElement("tr");
-      data[i].forEach((cellText, cellIndex) => {
-        const td = createCell(cellText, "td");
-        row.appendChild(td);
-//***
-        if (cellIndex === 2) {
-          const type = cellText.trim().toLowerCase();
-          if (type === "receipt") row.classList.add("receipt");
-          else if (type === "billdr") row.classList.add("billdr");
-          else if (type === "billcr") row.classList.add("billcr");
-          else if (type === "bank") row.classList.add("billdr");
-        }
-        //***
-      });
-      tableBody.appendChild(row);
-    }
-  }
-
-  function createCell(value, type) {
-    const cell = document.createElement(type);
-    if (typeof value === "string" && (value.startsWith("http") || value.startsWith("www"))) {
-      const link = document.createElement("a");
-      link.href = value;
-      link.innerHTML = "🔗";
-      link.target = "_blank";
-      cell.appendChild(link);
-    } else {
-      cell.textContent = value;
-    }
-    return cell;
-  }
-
-  function populateAdminDropdowns(data) {
-    const dropdown1 = document.getElementById('adminColumn1');
-    const dropdown2 = document.getElementById('adminColumn2');
-    const dropdown4 = document.getElementById('adminColumn4');
-
-    const unique1 = [...new Set(data.slice(1).map(r => r[1]))].filter(Boolean);
-    const unique2 = [...new Set(data.slice(1).map(r => r[2]))].filter(Boolean);
-    const unique4 = [...new Set(data.slice(1).map(r => r[4]))].filter(Boolean);
-
-    setDropdown(dropdown1, unique1);
-    setDropdown(dropdown2, unique2);
-    setDropdown(dropdown4, unique4);
-
-    $(dropdown4).select2({ placeholder: "-- Select --", allowClear: true });
-
-    dropdown1.onchange = filterAdminTable;
-    dropdown2.onchange = filterAdminTable;
-    dropdown4.onchange = filterAdminTable;
-    document.getElementById('startAdmintDate').onchange = filterAdminTable;
-    document.getElementById('endAdminDate').onchange = filterAdminTable;
-    document.getElementById('searchbarAdmin').addEventListener('input', filterAdminTable);
-  }
-
-  function setDropdown(dropdown, items) {
-    dropdown.innerHTML = '<option value="">-- Select --</option>';
-    items.forEach(val => {
-      const opt = document.createElement('option');
-      opt.value = val;
-      opt.textContent = val;
-      dropdown.appendChild(opt);
-    });
-  }
-
-  function filterAdminTable() {
-    const f1 = document.getElementById('adminColumn1').value.toLowerCase();
-    const f2 = document.getElementById('adminColumn2').value.toLowerCase();
-    const f4 = $('#adminColumn4').val()?.toLowerCase();
-    const fromDate = new Date(document.getElementById('startAdmintDate').value);
-    const toDate = new Date(document.getElementById('endAdminDate').value);
-    const searchQuery = document.getElementById('searchbarAdmin').value.toLowerCase().trim();
-    const rows = document.querySelectorAll('#userTableBody tr');
-
-    rows.forEach(row => {
-      const cells = row.querySelectorAll("td");
-      const date = new Date(cells[3]?.textContent.trim());
-      const val1 = cells[1]?.textContent.toLowerCase();
-      const val2 = cells[2]?.textContent.toLowerCase();
-      const val4 = cells[4]?.textContent.toLowerCase();
-
-      const match1 = !f1 || val1 === f1;
-      const match2 = !f2 || val2 === f2;
-      const match4 = !f4 || val4 === f4;
-      const matchDate = (!isNaN(fromDate) ? date >= fromDate : true) && (!isNaN(toDate) ? date <= toDate : true);
-
-      let searchMatch = !searchQuery;
-
-      cells.forEach(cell => {
-        const link = cell.querySelector("a");
-        const textToCheck = link ? link.href.toLowerCase() : cell.textContent.toLowerCase();
-        if (!link) cell.innerHTML = cell.textContent;
-
-        if (searchQuery && textToCheck.includes(searchQuery)) {
-          searchMatch = true;
-          if (!link) {
-            const regex = new RegExp(`(${searchQuery})`, 'gi');
-            cell.innerHTML = cell.textContent.replace(regex, '<mark>$1</mark>');
-          }
-        }
-      });
-
-      row.classList.toggle('hidden', !(match1 && match2 && match4 && matchDate && searchMatch));
-    });
-  }
-
-  function downloadAdminHTML() {
-    const table = document.getElementById("userTable").cloneNode(true);
-    const rows = table.querySelectorAll("tr");
-    rows.forEach(r => r.classList.contains("hidden") && r.remove());
-
-    const htmlContent = `<html><head><title>Filtered Table</title></head><body>${table.outerHTML}</body></html>`;
-    const blob = new Blob([htmlContent], { type: "text/html" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "filtered_table.html";
-    a.click();
-  }
-
-  function downloadAsExcel() {
-    const table = document.getElementById("userTable").cloneNode(true);
-    const rows = table.querySelectorAll("tr");
-    rows.forEach(r => r.classList.contains("hidden") && r.remove());
-
-    const excelContent = `
-      <html xmlns:o="urn:schemas-microsoft-com:office:office"
-            xmlns:x="urn:schemas-microsoft-com:office:excel"
-            xmlns="http://www.w3.org/TR/REC-html40">
-        <head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
-          <x:Name>Sheet1</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>
-        </x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head>
-        <body>${table.outerHTML}</body>
-      </html>
-    `;
-    const blob = new Blob([excelContent], { type: "application/vnd.ms-excel" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "filtered_table.xls";
-    a.click();
-  }
-
-  // Optional Auto Load
-  // window.onload = loadusrAdminSheet;
-</script>
-
-
-<!-- यह एक नोट है, Admin Section SCript stop -->
 
 
 
@@ -7650,84 +7331,64 @@ function displayJOBNOSummary() {
 
 <!-- job/reff TOP 10 ENTRY WITH TOTAL JOB BY USER  script stop hare -->
 
-
-
+<!-- Finction Key Attech SCript Start  hare  ================= -->
 <script>
-  function openDialog() {
-    document.getElementById("daybookDialog").style.display = "block";
-    document.getElementById("overlay").style.display = "block";
+// ✅ Keyboard shortcuts
+document.addEventListener("keydown", function(event) {
+  // 🟢 F1
+  if (event.key === "F1") {
+    event.preventDefault();
+    document.getElementById("f1")?.click();
+    setTimeout(() => document.getElementById("closeDialog")?.focus(), 50);
   }
 
-  function closeDialog() {
-    document.getElementById("daybookDialog").style.display = "none";
-    document.getElementById("overlay").style.display = "none";
+  // 🟢 F2
+  if (event.key === "F2") {
+    event.preventDefault();
+    document.getElementById("f2")?.click();
   }
 
-  // ✅ Keyboard shortcuts
-  document.addEventListener("keydown", function(event) {
-    if (event.key === "F1") {
-      event.preventDefault(); // Default browser help block kare
-      document.getElementById("f1").click(); // F1: only open dialog
-    }
+  // 🟢 F3
+  if (event.key === "F3") {
+    event.preventDefault();
+    document.getElementById("f3")?.click();
+    setTimeout(() => document.getElementById("searchBar")?.focus(), 50);
+  }
 
-    if (event.key === "F1") {
-      event.preventDefault(); // Prevent default F2 action
-      document.getElementById("f1").click(); // First open the dialog
+  // 🟢 F4
+  if (event.key === "F4") {
+    event.preventDefault();
+    document.getElementById("f4")?.click();
+    setTimeout(() => document.getElementById("search123Input")?.focus(), 50);
+  }
 
-      // Wait for DOM to update before focusing the search bar
-      setTimeout(function() {
-        const searchInput = document.getElementById("closeDialog");
-        if (searchInput) {
-          searchInput.focus();
-        }
-      }, 50); // small delay to ensure dialog is visible
-    }
+  // 🟢 F6
+  if (event.key === "F6") {
+    event.preventDefault();
+    document.getElementById("f6")?.click();
+    setTimeout(() => document.getElementById("searchADMINInput")?.focus(), 50);
+  }
 
-     if (event.key === "F2") {
-      event.preventDefault(); // Default browser help block kare
-      document.getElementById("f2").click(); // F1: only open dialog
-    }
+  // 🟢 F9 (New)
+  if (event.key === "F9") {
+    event.preventDefault();
+    document.getElementById("f3")?.click(); // Step 1: Click f3
 
-    if (event.key === "F3") {
-      event.preventDefault(); // Prevent default F2 action
-      document.getElementById("f3").click(); // First open the dialog
+    // Step 2: Wait and click button with data-value="psw"
+    setTimeout(() => {
+      const pswButton = document.querySelector('button[data-value="psw"]');
+      if (pswButton) pswButton.click();
 
-      // Wait for DOM to update before focusing the search bar
-      setTimeout(function() {
-        const searchInput = document.getElementById("searchBar");
-        if (searchInput) {
-          searchInput.focus();
-        }
-      }, 50); // small delay to ensure dialog is visible
-    }
-
-     if (event.key === "F4") {
-      event.preventDefault(); // Prevent default F4 action
-      document.getElementById("f4").click(); // First open the dialog
-
-      // Wait for DOM to update before focusing the search bar
-      setTimeout(function() {
-        const searchInput = document.getElementById("search123Input");
-        if (searchInput) {
-          searchInput.focus();
-        }
-      }, 50); // small delay to ensure dialog is visible
-    }
-
-     if (event.key === "F6") {
-      event.preventDefault(); // Prevent default F6 action
-      document.getElementById("f6").click(); // First open the dialog
-
-      // Wait for DOM to update before focusing the search bar
-      setTimeout(function() {
-        const searchInput = document.getElementById("searchbarAdmin");
-        if (searchInput) {
-          searchInput.focus();
-        }
-      }, 50); // small delay to ensure dialog is visible
-    }
-  });
+      // Step 3: Focus the input box after everything is ready
+      setTimeout(() => {
+        const input = document.getElementById("search2011Input");
+        if (input) input.focus();
+      }, 100);
+    }, 100);
+  }
+});
 </script>
+<!-- Finction Key Attech SCript stop  hare  ================= -->
 
 
 
@@ -9118,11 +8779,13 @@ const api2011Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheet2011Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
 const range2011 = "FORM!A:M";
 const addressrange2011 = "ADDRESS!A:M"; //xxxxxxxxxxxxxxxxxx
+const pswrange2011 = "M1000!A:F";
 const atnrange2011 = "ATN!A:M";
 const apiFileUrl = "https://script.google.com/macros/s/AKfycbyKeTGzkEsRd26seiog3jtfEXcLXNK4_fvt9b6D7kYtFXhInLr3J4PqCCgMxmsJ7rim/exec";
 
 let sheetData = [];
 let addressData = [];
+let pswData = [];
 let atnData = [];
 let filteredData = [];
 let currentFilterType = "";
@@ -9137,7 +8800,8 @@ const tableConfig = {
   receipt: { headers:["Sr No","Type","Date","Ledger","Amount","V .Type"], cols:[0,1,2,3,4,10]},
   sale: { headers:["Sr No","Type","Date","Ledger","Inv. No.","Reff. No.","Amount","Weight","Rate","Vehicle No.","V.Type"], cols:[0,1,2,3,4,5,6,7,8,9,10]},
   address: { headers:["Clint","Address","State","Type","GSTIN","Contect Details"], cols:[0,1,2,3,4,5]},
-  atn: { headers:["Sr No","Type","Date","Employee","P/A","Login Time"], cols:[0,1,2,3,4,5]}
+  atn: { headers:["Sr No","Type","Date","Employee","P/A","Login Time"], cols:[0,1,2,3,4,5]},
+  psw: { headers:["Sr No","Type","Firm","User ID/ Password","Account Details","Other"], cols:[0,1,2,3,4,5]}
 };
 
 // === Load Sheet Data ===
@@ -9150,6 +8814,10 @@ async function load2011Data() {
     const resAddr = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheet2011Id}/values/${addressrange2011}?key=${api2011Key}`);
     const dataAddr = await resAddr.json();
     addressData = dataAddr.values || [];
+
+     const respsw = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheet2011Id}/values/${pswrange2011}?key=${api2011Key}`);
+    const datapsw = await respsw.json();
+    pswData = datapsw.values || [];
 
      const resAtn = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheet2011Id}/values/${atnrange2011}?key=${api2011Key}`);
     const dataAtn = await resAtn.json();
@@ -9474,7 +9142,9 @@ function applySearch() {
     );
   } else if (currentFilterType === "address") {
     dataToSearch = addressData;
-  } else if (currentFilterType === "atn") {
+  } else if (currentFilterType === "psw") {
+    dataToSearch = pswData;
+  }  else if (currentFilterType === "atn") {
     dataToSearch = atnData;
   }
 
@@ -9529,9 +9199,10 @@ document.querySelectorAll("#mipl2011Buttons .filter-btn").forEach(btn => {
 
 // === Filter Buttons Permission Control ===
 function applyButtonPermissions() {
-  const authText = document.getElementById("reportauth").innerText.trim();
+  const authText = document.getElementById("reportauth")?.innerText.trim() || "";
   const allowed = authText.split(",").map(a => a.trim());
 
+  // ✅ Map of data-value → permission number
   const buttonMap = {
     "search": "1",
     "ledger": "2",
@@ -9540,46 +9211,35 @@ function applyButtonPermissions() {
     "sale": "5",
     "address": "6",
     "atn": "7",
-    "exportBtn": "8"
+     "psw": "8",
+    "exportBtn": "9",
+    "export5792": "10",
+    "export5793": "11"
   };
 
-  document.querySelectorAll("#mipl2011Buttons .filter-btn")
-    .forEach(btn => {
-      const val = btn.dataset.value;
-      if (allowed.includes(buttonMap[val])) {
-        btn.style.display = "inline-block"; // ✅ Show
-      } else {
-        btn.style.display = "none"; // ❌ Hide
-      }
-    });
+  // ✅ Handle all buttons with a data-value attribute
+  document.querySelectorAll("button[data-value]").forEach(btn => {
+    const val = btn.dataset.value;
 
-     // ✅ Additionally handle Export button by ID
-  const exportButton = document.getElementById("exportBtn");
-  if (exportButton) {
-    if (allowed.includes(buttonMap["exportBtn"])) {
-      exportButton.style.display = "inline-block";
+    // Show only if data-value exists in buttonMap and its mapped number is allowed
+    if (buttonMap[val] && allowed.includes(buttonMap[val])) {
+      btn.style.display = "inline-block";
     } else {
-      exportButton.style.display = "none";
+      btn.style.display = "none";
     }
-  } //--
+  });
 }
 
-// Call when user login or after permissions loaded
-applyButtonPermissions();
-
-
-
-// ✅ Wait for reportauth text update before applying permissions
+// ✅ Wait for reportauth text to load/update before applying permissions
 function waitForReportAuth() {
   const authSpan = document.getElementById("reportauth");
   if (!authSpan) return;
 
-  // Observe text change
   const observer = new MutationObserver(() => {
     const text = authSpan.innerText.trim();
     if (text !== "") {
-      applyButtonPermissions();  // ✅ Now apply filtering
-      observer.disconnect(); // ✅ Stop watching once done
+      applyButtonPermissions();
+      observer.disconnect(); // stop observing once done
     }
   });
 
@@ -9587,6 +9247,7 @@ function waitForReportAuth() {
 }
 
 // ✅ Start observing for changes
+applyButtonPermissions();
 waitForReportAuth();
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -9757,26 +9418,34 @@ document.getElementById("refresh2011Btn")?.addEventListener("click", refresh2011
 
 </style>
 
-
-<div class="export-menu" id="exportMenu">
-  <button data-type="html">as HTML</button>
-  <button data-type="excel">as Excel</button>
+<!-- ====== Export Menu ====== -->
+<div id="exportMenu" style="display:none; flex-direction:column; position:absolute; background:#fff; border:1px solid #ccc; padding:5px; z-index:999;">
+  <button data-type="html">⬇️ Export HTML</button>
+  <button data-type="excel">📊 Export Excel</button>
 </div>
 
+
+<!-- ====== Script Section ====== -->
 <script>
 // === Export Menu Toggle ===
-const exportBtn = document.getElementById("exportBtn");
 const exportMenu = document.getElementById("exportMenu");
+let currentTargetId = null;
 
-exportBtn.addEventListener("click", (e) => {
-  const rect = exportBtn.getBoundingClientRect();
-  exportMenu.style.top = rect.bottom + "px";
-  exportMenu.style.left = rect.left + "px";
-  exportMenu.style.display = exportMenu.style.display === "flex" ? "none" : "flex";
+// Handle all export buttons dynamically
+document.querySelectorAll("[id^='export']").forEach(btn => {
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const rect = btn.getBoundingClientRect();
+    exportMenu.style.top = rect.bottom + "px";
+    exportMenu.style.left = rect.left + "px";
+    exportMenu.style.display = "flex";
+    currentTargetId = btn.dataset.target;
+  });
 });
 
+// Hide menu on outside click
 document.addEventListener("click", (e) => {
-  if (!exportBtn.contains(e.target) && !exportMenu.contains(e.target)) {
+  if (!exportMenu.contains(e.target)) {
     exportMenu.style.display = "none";
   }
 });
@@ -9785,34 +9454,38 @@ document.addEventListener("click", (e) => {
 document.querySelectorAll("#exportMenu button").forEach(btn => {
   btn.addEventListener("click", () => {
     const type = btn.dataset.type;
-    exportRenderedTable(type);
+    exportRenderedTable(currentTargetId, type);
     exportMenu.style.display = "none";
   });
 });
 
 // === Export Rendered Table Function ===
-function exportRenderedTable(type) {
-  const table = document.getElementById("mipl2011Table");
-  if (!table || table.style.display === "none") {
+function exportRenderedTable(targetId, type) {
+  const targetElement = document.getElementById(targetId);
+
+  if (!targetElement) {
     alert("⚠️ No table data to export!");
     return;
   }
 
-  // ✅ Export only what is currently rendered (no re-rendering)
-  const clonedTable = table.cloneNode(true);
+  // clone the table or div
+  const cloned = targetElement.cloneNode(true);
   const wrapper = document.createElement("div");
-  wrapper.appendChild(clonedTable);
+  wrapper.appendChild(cloned);
   const htmlData = wrapper.innerHTML;
 
+  let blob;
+  let filename;
+
   if (type === "html") {
-    const blob = new Blob([htmlData], { type: "text/html" });
-    triggerDownload(blob, "RenderedTable.html");
+    blob = new Blob([htmlData], { type: "text/html" });
+    filename = `${targetId}.html`;
+  } else if (type === "excel") {
+    blob = new Blob([htmlData], { type: "application/vnd.ms-excel" });
+    filename = `${targetId}.xls`;
   }
 
-  else if (type === "excel") {
-    const blob = new Blob([htmlData], { type: "application/vnd.ms-excel" });
-    triggerDownload(blob, "RenderedTable.xls");
-  }
+  triggerDownload(blob, filename);
 }
 
 function triggerDownload(blob, filename) {
@@ -9822,8 +9495,6 @@ function triggerDownload(blob, filename) {
   link.click();
   URL.revokeObjectURL(link.href);
 }
-
-
 </script>
 <!-- ========= file export in excel & html script stop ============ -->
 
@@ -10048,3 +9719,21 @@ document.addEventListener("DOMContentLoaded", setTodayDate);
 
 
 <!-- ================  Attendance  Confermation script and code stop hare ===============================-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
