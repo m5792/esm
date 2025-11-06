@@ -7599,7 +7599,6 @@ loadNoticeBoard();
 
 
 <!---------------------------- DATAMIPLTABLE SCRIPT START HARE ---------------------------------------- -->
-
 <script>
 const apidbookKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheetdbookId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
@@ -7631,30 +7630,27 @@ async function loadDATAMIPLTABLE() {
     }
 
     const header = data.values[0];
-   // const rows = data.values.slice(1).filter(r => {
-     // const type = r[10]?.toUpperCase().trim();
-    //  return type === "SALE" || type === "RECEIPT" || type === "TDS";
-   // });
+    const allRows = data.values.slice(1);
 
-   //  NOTE :- MIPLDATATABLE TABLE ME SABHI ROW KO DIKHANE KE LYE UPER WALE TINO LINE KO UNHIDE KRO AUR NICHE WALI LINE KO HIDE KRO
+    // ✅ Table rows — only show where column K (index 10) = "SALE"
+    const tableRows = allRows.filter(r => r[10]?.toUpperCase().trim() === "SALE");
+    tableRows.sort((a, b) => Number(b[0]) - Number(a[0]));
+    allTableData = [header, ...tableRows];
 
-   // ✅ Filter only rows where column K (index 10) = "SALE"  ---------------
-    const rows = data.values.slice(1).filter(r => r[10]?.toUpperCase().trim() === "SALE");
-
-    //---------
-    rows.sort((a, b) => Number(b[0]) - Number(a[0]));
-    allTableData = [header, ...rows];
-
-    // ✅ Monthly totals store
+    // ✅ Monthly totals from *all* rows (SALE + RECEIPT etc.)
     monthlyData = {};
-    rows.forEach(r => {
+    allRows.forEach(r => {
       const month = getMonthFromDate(r[2]);
       if (!month) return;
-      if (!monthlyData[month]) monthlyData[month] = { bank: 0, taxInvoice: 0 };
+      if (!monthlyData[month]) monthlyData[month] = { receipt: 0, sale: 0 };
 
-      const type = r[1]?.toUpperCase();
-      if (type === "BANK") monthlyData[month].bank += Number(r[4]) || 0;
-      if (type === "TAX INVOICE") monthlyData[month].taxInvoice += Number(r[6]) || 0;
+      const type = r[1]?.toUpperCase().trim();
+      if (["BANK", "RECEIPT"].includes(type)) {
+        monthlyData[month].receipt += Number(r[4]) || 0;
+      }
+      if (type === "TAX INVOICE") {
+        monthlyData[month].sale += Number(r[6]) || 0;
+      }
     });
 
     populateMonthDropdown(Object.keys(monthlyData));
@@ -7662,7 +7658,7 @@ async function loadDATAMIPLTABLE() {
     // ✅ Show only latest 10 entries at start
     renderDATAMIPLTABLE(allTableData, true);
 
-    // ✅ Show current month totals only
+    // ✅ Show current month totals
     const today = new Date();
     const currentKey = today.toLocaleString('default', { month: 'short' }) + "-" + today.getFullYear();
     const dropdown = document.getElementById("monthDropdown");
@@ -7698,7 +7694,7 @@ function populateMonthDropdown(months) {
   });
 }
 
-// ✅ Filter table by month
+// ✅ Filter table by month (still only "SALE" rows)
 function filterMonthTable(month) {
   const filtered = [
     allTableData[0],
@@ -7711,8 +7707,8 @@ function filterMonthTable(month) {
 function updateMonthlyTotalsDisplay(t) {
   if (!t) return;
   document.getElementById("monthlyTotals").innerHTML = `
-    <span style="color:#4067DD;font-weight:bold;">Receipt: ₹${t.bank.toFixed()}</span> | 
-    <span style="color:#08BF36;font-weight:bold;">Sale: ₹${t.taxInvoice.toFixed()}</span>
+    <span style="color:#4067DD;font-weight:bold;">Receipt: ₹${t.receipt.toFixed()}</span> | 
+    <span style="color:#08BF36;font-weight:bold;">Sale: ₹${t.sale.toFixed()}</span>
   `;
 }
 
@@ -7735,13 +7731,13 @@ function renderDATAMIPLTABLE(data, limit10 = false) {
   thead.appendChild(trh);
 
   let rows = data.slice(1);
-  if (limit10) rows = rows.slice(0, 9);  // change the no 9 for no of row startup
+  if (limit10) rows = rows.slice(0, 9); // startup limit
 
   rows.forEach(r => {
     const tr = document.createElement("tr");
+    const type = r[1]?.toUpperCase();
 
     // ✅ Color logic
-    const type = r[1]?.toUpperCase();
     if (type === "BANK") tr.style.color = "red";
     if (type === "CREDIT NOTE") tr.style.color = "grey";
     if (type === "CHALLAN") tr.style.color = "green";
@@ -7808,8 +7804,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("DATASEARCMIPL").addEventListener("keyup", searchDataMIPL);
 });
 </script>
-
-
 
 
 <!---------------------------- DATAMIPLTABLE SCRIPT START STOP ---------------------------------------- -->
@@ -9787,6 +9781,7 @@ document.addEventListener("DOMContentLoaded", setTodayDate);
 
 
 <!-- ================  Attendance  Confermation script and code stop hare ===============================-->
+
 
 
 
