@@ -1060,9 +1060,6 @@ th {
      <option value="IV11">IV11- Ravinder Kumar</option>
      <option value="DLT">Delete</option>
 
-
-    <option value="JLN">JOURNAL</option>
-    <option value="DB">DAYBOOK</option>
   </select>
 
   <label>From:</label>
@@ -3375,6 +3372,34 @@ function render5792Table(data) {
     return;
   }
 
+  // ✅ Ensure each record has parsed date before sorting  ---------------
+  data.forEach(r => {
+    if (!r._date && r["Date"]) {
+      const d = r["Date"].trim();
+      const parts = d.split("-");
+      if (parts.length === 3) {
+        const day = parseInt(parts[0]);
+        const mon = parts[1].substring(0, 3).toLowerCase();
+        const yr = parseInt(parts[2]);
+        const months = {
+          jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+          jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
+        };
+        r._date = new Date(yr, months[mon], day);
+      } else {
+        r._date = null;
+      }
+    }
+  });
+
+  // ✅ Sort by date descending (latest → oldest)
+  data.sort((a, b) => {
+    const da = a._date ? a._date.getTime() : 0;
+    const db = b._date ? b._date.getTime() : 0;
+    return db - da;
+  });
+//----- DATE WISE TABLE SHORT ----------------
+
   const headers = Object.keys(data[0]).filter(h => !h.startsWith("_"));
   const html = `
     <table id="my5792Table" border="1" style="border-collapse:collapse;width:100%;font-size:14px;">
@@ -4887,6 +4912,34 @@ function render5793Table(data) {
     return;
   }
 
+
+  // ✅ Ensure each record has parsed date before sorting  ---------------
+  data.forEach(r => {
+    if (!r._date && r["Date"]) {
+      const d = r["Date"].trim();
+      const parts = d.split("-");
+      if (parts.length === 3) {
+        const day = parseInt(parts[0]);
+        const mon = parts[1].substring(0, 3).toLowerCase();
+        const yr = parseInt(parts[2]);
+        const months = {
+          jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+          jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
+        };
+        r._date = new Date(yr, months[mon], day);
+      } else {
+        r._date = null;
+      }
+    }
+  });
+
+  // ✅ Sort by date descending (latest → oldest)
+  data.sort((a, b) => {
+    const da = a._date ? a._date.getTime() : 0;
+    const db = b._date ? b._date.getTime() : 0;
+    return db - da;
+  });
+//----- DATE WISE TABLE SHORT ----------------
   const headers = Object.keys(data[0]).filter(h => !h.startsWith("_"));
   const html = `
     <table id="my5793Table" border="1" style="border-collapse:collapse;width:100%;font-size:14px;">
@@ -7578,11 +7631,17 @@ async function loadDATAMIPLTABLE() {
     }
 
     const header = data.values[0];
-    const rows = data.values.slice(1).filter(r => {
-      const type = r[10]?.toUpperCase().trim();
-      return type === "SALE" || type === "RECEIPT" || type === "TDS";
-    });
+   // const rows = data.values.slice(1).filter(r => {
+     // const type = r[10]?.toUpperCase().trim();
+    //  return type === "SALE" || type === "RECEIPT" || type === "TDS";
+   // });
 
+   //  NOTE :- MIPLDATATABLE TABLE ME SABHI ROW KO DIKHANE KE LYE UPER WALE TINO LINE KO UNHIDE KRO AUR NICHE WALI LINE KO HIDE KRO
+
+   // ✅ Filter only rows where column K (index 10) = "SALE"  ---------------
+    const rows = data.values.slice(1).filter(r => r[10]?.toUpperCase().trim() === "SALE");
+
+    //---------
     rows.sort((a, b) => Number(b[0]) - Number(a[0]));
     allTableData = [header, ...rows];
 
@@ -9565,6 +9624,12 @@ async function checkPopupCondition(username) {
       return; // ✅ Stop here — no popup check
     }
 
+
+// ✅ Delay 5 seconds before checking popup condition
+    setTimeout(async () => {
+      console.log("⏳ Waiting 5 seconds before popup check...");
+//
+
      // ✅ If time is ok → Check match from Sheet
      
     // ✅ Fetch Sheet Data
@@ -9600,6 +9665,9 @@ async function checkPopupCondition(username) {
     if (!matchFound) {
       showATNPopup(username, today);
     }
+
+    }, 4000); // ⏰ 5 second  // 5 SECOND BAAD OPEN POUP
+
 
   } catch (err) {
     console.error("Error checking popup condition:", err);
