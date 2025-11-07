@@ -868,7 +868,7 @@ th {
   <button class="filter-btn" data-value="receipt">💰 Receipt</button>
   <button class="filter-btn" data-value="sale">🧾 Sale</button>
   <button class="filter-btn" data-value="address">🏢 Address</button>
-  <button class="filter-btn" data-value="atn">🏢 Attendance</button>
+  <button class="filter-btn" id="openULUBtn" data-value="atn">🏢 Attendance</button>
   <button class="filter-btn" data-value="psw">🏢 ID/Password</button>
 
 <button onclick="print2011Report()" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer; background-color: white;">🖨️ Print Report</button>
@@ -3400,6 +3400,7 @@ function render5792Table(data) {
   });
 //----- DATE WISE TABLE SHORT ----------------
 
+
   const headers = Object.keys(data[0]).filter(h => !h.startsWith("_"));
   const html = `
     <table id="my5792Table" border="1" style="border-collapse:collapse;width:100%;font-size:14px;">
@@ -3716,7 +3717,7 @@ const currentLedgerFilter = document.getElementById("msaf54")?.value.trim() || "
 // Re-render the table with current filters
 filterAndRender(currentAccountType, currentLedgerFilter);
 //  // cash user table refresh stop -------------------------
-        loadusrSheet();
+      
        
 
         // ✅ Remove DLT option if exists
@@ -3777,9 +3778,7 @@ const currentLedgerFilter = document.getElementById("msaf54")?.value.trim() || "
 // Re-render the table with current filters
 filterAndRender(currentAccountType, currentLedgerFilter);
 //  // cash user table refresh stop --------------------
-        loadusrSheet();
-        
-
+       
         document.getElementById("submitIVMAButton").style.display = "inline-block";
         document.getElementById("modifyIVMAButton").style.display = "none";
 
@@ -4022,7 +4021,7 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
         <tr>
           <th>T.No.</th>
           <th>User</th>
-         
+         <th>Type</th>
           <th>Date</th>
           <th>Ledger</th>
           <th>Narration</th>
@@ -4035,7 +4034,7 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
           <tr style="${row.drcr.toLowerCase() === 'receipt' ? 'color: RED; background-color: rgb(248,229,229);' : ''}">
             <td>${row.date}</td>
             <td>${row.cUser}</td>
-           
+           <td>${row.drcr}</td>
             <td>${row.dt}</td>
             <td>${row.ldgr}</td>
             <td>${row.narration}</td>
@@ -4940,6 +4939,8 @@ function render5793Table(data) {
     return db - da;
   });
 //----- DATE WISE TABLE SHORT ----------------
+
+
   const headers = Object.keys(data[0]).filter(h => !h.startsWith("_"));
   const html = `
     <table id="my5793Table" border="1" style="border-collapse:collapse;width:100%;font-size:14px;">
@@ -7587,18 +7588,8 @@ loadNoticeBoard();
 
 
 
+<!---------------------------- DATAMIPLTABLE SCRIPT START HERE ---------------------------------------- -->
 
-
-
-
-
-
-
-
-
-
-
-<!---------------------------- DATAMIPLTABLE SCRIPT START HARE ---------------------------------------- -->
 <script>
 const apidbookKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheetdbookId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
@@ -7805,17 +7796,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
-
-<!---------------------------- DATAMIPLTABLE SCRIPT START STOP ---------------------------------------- -->
-
-
-
-
-
-
-
-
-
+<!---------------------------- DATAMIPLTABLE SCRIPT STOP ---------------------------------------- -->
 
 
 
@@ -9786,17 +9767,195 @@ document.addEventListener("DOMContentLoaded", setTodayDate);
 
 
 
+<!-- ================  id unlock by admin (ULU) script and code start hare ===============================-->
 
+<button class="filter-btn" id="openULUBtn" data-value="ULU">🏢 Attendance</button>
 
+<!-- 🔹 Popup Form Container -->
+<div id="ULUPopup" class="popupULU-overlay">
+  <div class="popupULU-content slide-in">
+    <span id="closeULUBtn" class="close-btn">&times;</span>
 
+    <form id="mainULUForm" style="display:flex; align-items:center; gap:10px; flex-wrap:nowrap;">
+      <input type="hidden" name="SNo" id="sNo" />
+      <input type="hidden" name="User" readonly value="ATN">
 
+      <!-- Date -->
+      <label style="font-size:13px;font-weight:bold;">Date:</label>
+      <input id="popupULU-date" type="date" name="Date" style="padding:4px 6px; border-radius:6px; border:1px solid #ccc;">
 
+      <!-- Ledger -->
+      <label style="font-size:13px;font-weight:bold;">User:</label>
+      <select name="Ledger" required style="padding:4px 6px; border-radius:6px; border:1px solid #ccc;">
+        <option value="">Select</option>
+        <option>Rahul Kumar</option>
+        <option>Anchal</option>
+        <option>V.K Giri</option>
+        <option>Harshit</option>
+        <option>Prakhar</option>
+        <option>Suryabhan</option>
+        <option>Mukhtar (Admin)</option>
+        <option>NITIN</option>
+        <option>Divesh</option>
+        <option>Vijender Kumar Sharma</option>
+      </select>
 
+      <!-- Status -->
+      <label style="font-size:13px;font-weight:bold;">Status:</label>
+      <select name="cl1" required style="padding:4px 6px; border-radius:6px; border:1px solid #ccc;">
+        <option value="">Select</option>
+        <option>P</option>
+        <option>A</option>
+        <option>O</option>
+      </select>
 
+      <!-- Hidden inputs -->
+      <input type="hidden" id="timestampULU" name="timestampULU">
+      <input type="hidden" name="cl2" id="cl2">
 
+      <!-- Submit -->
+      <input type="submit" id="submitULUButton" value="Submit"
+        style="padding:6px 14px; background:#035b67; color:white; border:none; border-radius:6px; cursor:pointer;">
+    </form>
 
+  </div>
+</div>
 
+<!-- ✅ CSS -->
+<style>
+.filter-btn {
+  background: #035b67;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.filter-btn:hover { background: #058a9b; }
 
+/* Popup Overlay */
+.popupULU-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);  /* 40% transparent background */
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* Popup Box */
+.popupULU-content {
+  background: rgba(255,255,255,0.7); /* light transparent white */
+  padding: 10px 16px;
+  border-radius: 12px;
+  width: 12in;
+  height: 0.3in;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: all 0.4s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+/* Slide-in Animation */
+.popupULU-overlay.active .popupULU-content {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.close-btn {
+  position: absolute;
+  top: 5px;
+  right: 12px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  color: #035b67;
+}
+</style>
+
+<!-- ✅ JavaScript -->
+<script>
+
+  // ------------- note :- jis button se ye open poup ope karna hai usme id="openULUBtn" ye add kro
+const popup = document.getElementById("ULUPopup");
+const openBtn = document.getElementById("openULUBtn");
+const closeBtn = document.getElementById("closeULUBtn");
+const scriptULUURL = 'https://script.google.com/macros/s/AKfycbxNCtOS7UZu2mw_Zuwkx-KHdORL1DATDoSp0Gv2Q5EQw6CKJOSPowawczVE_7uYHQw_/exec';
+
+// 🔹 Open Popup
+openBtn.addEventListener("click", () => {
+  popup.classList.add("active");
+  popup.style.display = "flex";
+
+  // Auto set today's date
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById("popupULU-date").value = today;
+
+  // Set timestamp + cl2
+  const now = new Date();
+  const timestamp = now.toLocaleString("en-GB", { hour12: false });
+  document.getElementById("timestampULU").value = timestamp;
+  document.getElementById("cl2").value = `UBA-${timestamp}`;
+});
+
+// 🔹 Close Popup Function
+function closePopup() {
+  popup.classList.remove("active");
+  setTimeout(() => popup.style.display = "none", 400);
+}
+
+// 🔹 Close Button
+closeBtn.addEventListener("click", closePopup);
+
+// 🔹 Click outside form closes popup
+popup.addEventListener("click", (e) => {
+  if (e.target.id === "ULUPopup") closePopup();
+});
+
+// 🔹 Submit Form
+document.addEventListener("submit", async function (e) {
+  const form = e.target;
+  if (form.id !== "mainULUForm") return;
+  e.preventDefault();
+
+  const submitBtn = document.getElementById("submitULUButton");
+  // const waitMsg = document.getElementById("waitULUMessage");
+
+  submitBtn.disabled = true;
+  submitBtn.value = "Please wait...";
+ // waitMsg.innerText = "Submitting...";
+// waitMsg.style.display = "block";
+
+  try {
+    const formData = new FormData(form);
+    const response = await fetch(scriptULUURL, { method: 'POST', body: formData });
+    const result = await response.json();
+
+    if (result.result === 'success') {
+      alert('✅ Attendance Submitted Successfully!');
+      form.reset();
+      closePopup(); // Auto close popup
+    } else {
+      alert(`❌ Error: ${result.error || 'Unknown error occurred.'}`);
+    }
+  } catch (err) {
+    alert(`❌ Error submitting form: ${err.message}`);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.value = "Submit";
+   // setTimeout(() => (waitMsg.style.display = 'none'), 2000);
+  }
+});
+</script>
+<!-- ================  id unlock by admin (ULU) script and code stop hare ===============================-->
 
 
 
