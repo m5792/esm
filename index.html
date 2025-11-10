@@ -8829,7 +8829,7 @@ let selectedPO = ""; // sales btn ke poreff  ke lye po dropdown
 // === HEADERS and COLUMN MAPS ===
 const tableConfig = {
   search: { headers: ["Sr No","Type","Date","Ledger","Rcpt/Inv. No.","Tr./Ty","Reff. No.","Amount","Weight","Rate","Vehicle No.","V.Type"], cols:[0,1,2,3,4,11,5,6,7,8,9,10]},
-  ledger: { headers: ["Sr No","Type","Date","Ledger","Rcpt/Inv. No.","Tr./Ty","Reff. No.","Amount","Weight","Rate","Vehicle No.","V.Type"], cols:[0,1,2,3,4,11,5,6,7,8,9,10]},
+  ledger: { headers: ["Sr No","Type","Date","Ledger","Rcpt/Inv. No.","Reff. No.","Amount","Weight","Rate","Vehicle No.","V.Type"], cols:[0,1,2,3,4,5,6,7,8,9,10]},
   poreff: { headers: ["Sr No","User","Order By","Clint Name","Project Name","Address","PO/Reff No.","Status","PO Amt.","PO Weight","V.Type"], cols:[0,1,2,3,4,5,6,7,8,9,10]},
   receipt: { headers:["Sr No","Type","Date","Ledger","Amount","V .Type"], cols:[0,1,2,3,4,10]},
   sale: { headers:["Sr No","Type","Date","Ledger","Inv. No.","Reff. No.","Amount","Weight","Rate","Vehicle No.","V.Type"], cols:[0,1,2,3,4,5,6,7,8,9,10]},
@@ -9907,17 +9907,17 @@ openBtn.addEventListener("click", () => {
 });
 
 // 🔹 Close Popup Function
-function closePopup() {
+function closeULUPopup() {
   popup.classList.remove("active");
   setTimeout(() => popup.style.display = "none", 400);
 }
 
 // 🔹 Close Button
-closeBtn.addEventListener("click", closePopup);
+closeBtn.addEventListener("click", closeULUPopup);
 
 // 🔹 Click outside form closes popup
 popup.addEventListener("click", (e) => {
-  if (e.target.id === "ULUPopup") closePopup();
+  if (e.target.id === "ULUPopup") closeULUPopup();
 });
 
 // 🔹 Submit Form
@@ -9942,7 +9942,7 @@ document.addEventListener("submit", async function (e) {
     if (result.result === 'success') {
       alert('✅ Attendance Submitted Successfully!');
       form.reset();
-      closePopup(); // Auto close popup
+      closeULUPopup(); // Auto close popup
     } else {
       alert(`❌ Error: ${result.error || 'Unknown error occurred.'}`);
     }
