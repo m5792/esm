@@ -2522,77 +2522,115 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    
+  <!-- ============ website open navgation buttan code start start  ========= -->  
+<style>
+    :root{ --gap:12px; --btn-bg:#013956; --btn-border:#0478b2; --radius:10px; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; }
+    body{ margin:20px; background:#f8fafc; display:flex; justify-content:center; }
+    .row{ display:flex; gap:var(--gap); align-items:center; flex-wrap:wrap; }
 
- 
-<table style="background-color:#011d30 ;text-align: center; color:WHITE; border: none;">
+    .item{ display:flex; align-items:center; gap:10px; padding:8px 12px; background:var(--btn-bg); border:1px solid var(--btn-border); border-radius:var(--radius); box-shadow:0 6px 18px rgba(0,0,0,0.05); text-decoration:none; color:#111; }
+    .item img{ width:30px; height:30px; object-fit:cover; border-radius:8px; }
+    .name{ font-weight:700; font-size:14px; color: white;}
 
-<td style="text-align: center; color:WHITE; border: none; background-color: #011d30;">
-    <a href="https://www.google.co.in/" target="_blank"><img src="https://cdn.dribbble.com/users/1717214/screenshots/4124610/g-logo.gif" alt="Gmail" width="50" height="50" /></a>
-    </td>
-    <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
-    <a href="https://accounts.zoho.in/signin?servicename=VirtualOffice&signupurl=https://www.zoho.com/mail/zohomail-pricing.html&serviceurl=https://mail.zoho.in" target="_blank"><img src="https://zenatta.com/wp-content/uploads/2020/08/mail-256-300x300.png" alt="Gmail" width="60" height="60" /></a>
-    </td>
-    <td style="text-align: center; color:WHITE;border: none;">
-    <a href="https://mail.google.com/mail/u/0/" target="_blank"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjpEIz6vZxfKx_cLh8Y6tDWalIuwi08MCggUEXk8cXLAy8NUilIHwNgrsjtFIxgEWCWAE&usqp=CAU" alt="You Tube" width="50" height="50" /></a>
-    </td>
-    <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
-    <a href="https://ibanking.pnb.bank.in/" target="_blank"><img src="https://cracku.in/latest-govt-jobs/wp-content/uploads/2021/01/PNB-Logo.png" alt="Google" width="50" height="50" /></a>
-    </td>
-    <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
-    <a href="https://retail.onlinesbi.sbi/retail/login.htm" target="_blank"><img src="https://image3.mouthshut.com/images/ImagesR/2015/12/State-Bank-Anywhere-925771560-7182350-1.png" width="50" height="50" /></a>
-    </td>
-    <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
-    <a href="https://netbanking.hdfcbank.com/netbanking/"  target="_blank"><img src="https://p.kindpng.com/picc/s/284-2843275_online-donation-shri-ramakrishna-ashrama-rajkot-using-hdfc.png" alt="You Tube" width="50" height="50" /></a>
-    </td>
-    
-    <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
-    <a href="https://www.youtube.com/" target="_blank"><img src="https://cliply.co/wp-content/uploads/2019/07/371907120_YOUTUBE_ICON_TRANSPARENT_400.gif" alt="You Tube" width="50" height="50" /></a>
-    </td>
-    
-    <td style="text-align: center; color:WHITE;border: none; background-color: #011d30; ">
-    <a href="https://www.facebook.com/" target="_blank"><img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNTZuaHQ1ZjdnajNwMWtrZHVhN3Q4djdwMDZmYWZuYzRoYTA0Ymx4MiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/IeRI0TleieCJ6ytPUr/giphy.gif" alt="You Tube" width="50" height="50" /></a>
-     </td>
-    
-    <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
-      <a href="https://web.whatsapp.com/" target="_blank"><img src="https://cliply.co/wp-content/uploads/2021/08/372108180_WHATSAPP_ICON_400.gif" alt="You Tube" width="50" height="50" /></a>
-        </td>
+    @media (max-width:560px){ .row{ width:100%; flex-direction:column; align-items:stretch; } .item{ width:100%; } }
+  </style>
+</head>
+<body>
+  <nav class="row" aria-label="Quick image links">
 
 
-              <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
-                <a href="https://ssp.elcom.digital/" target="_blank"><img src="https://tallyerp9download.com/wp-content/uploads/2020/11/tally-prime-server-1-300x56.jpg" alt="You Tube" width="100" height="30" /></a>
-                  </td>
-                
+     <!-- Google (favicon used as image) -->
+    <a class="item" href="https://www.google.com/" target="_blank" rel="noopener noreferrer">
+      <img src="https://cdn.dribbble.com/users/1717214/screenshots/4124610/g-logo.gif" alt="Google" width="50" height="50" />
+      <span class="name">Google</span>
+    </a>
 
-                      <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
-                        <a href="https://chatgpt.com/" target="_blank"><img src="https://static.vecteezy.com/system/resources/previews/022/841/114/original/chatgpt-logo-transparent-background-free-png.png" alt="You Tube" width="60" height="50" /></a>
-                          </td>
+     <!-- Gmail (favicon used as image) -->
+    <a class="item" href="https://mail.google.com/mail/u/0/" target="_blank" rel="noopener noreferrer">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjpEIz6vZxfKx_cLh8Y6tDWalIuwi08MCggUEXk8cXLAy8NUilIHwNgrsjtFIxgEWCWAE&usqp=CAU" alt="Google" width="50" height="50" />
+      <span class="name">Gmail</span>
+    </a>
 
-                      <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
-                        
+     <!-- zoho (favicon used as image) -->
+    <a class="item" href="https://accounts.zoho.in/signin?servicename=VirtualOffice&signupurl=https://www.zoho.com/mail/zohomail-pricing.html&serviceurl=https://mail.zoho.in" target="_blank" rel="noopener noreferrer">
+      <img src="https://zenatta.com/wp-content/uploads/2020/08/mail-256-300x300.png" alt="zoho" width="50" height="50" />
+      <span class="name">Gmail</span>
+    </a>
+
+      <!-- youtube (favicon used as image) -->
+    <a class="item" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">
+      <img src="https://cliply.co/wp-content/uploads/2019/07/371907120_YOUTUBE_ICON_TRANSPARENT_400.gif" alt="Google" width="50" height="50" />
+      <span class="name">You Tube</span>
+    </a>
+
+       <!-- pnb natbanking (favicon used as image) -->
+    <a class="item" href="https://ibanking.pnb.bank.in/" target="_blank" rel="noopener noreferrer">
+      <img src="https://i0.wp.com/www.logotaglines.com/wp-content/uploads/2016/08/Punjab-National-Bank-Logo.jpg?resize=400%2C391" alt="pnb" width="50" height="50" />
+      <span class="name">PNB Natbanking</span>
+    </a>
+
+       <!-- hdfc natbanking (favicon used as image) -->
+    <a class="item" href="https://netbanking.hdfcbank.com/netbanking/" target="_blank" rel="noopener noreferrer">
+      <img src="https://p.kindpng.com/picc/s/284-2843275_online-donation-shri-ramakrishna-ashrama-rajkot-using-hdfc.png" alt="hdfc" width="50" height="50" />
+      <span class="name">HDFC Natbanking</span>
+    </a>
+
+       <!-- sbi natbanking (favicon used as image) -->
+    <a class="item" href="https://retail.onlinesbi.sbi/retail/login.htm" target="_blank" rel="noopener noreferrer">
+      <img src="https://image3.mouthshut.com/images/ImagesR/2015/12/State-Bank-Anywhere-925771560-7182350-1.png" alt="sbi" width="50" height="50" />
+      <span class="name">SBI Natbanking</span>
+    </a>
+
+    <!-- WhatsApp (user-provided gif) -->
+    <a class="item" href="https://web.whatsapp.com/" target="_blank" rel="noopener noreferrer">
+      <img src="https://cliply.co/wp-content/uploads/2021/08/372108180_WHATSAPP_ICON_400.gif" alt="WhatsApp" width="50" height="50" />
+      <span class="name">WhatsApp</span>
+    </a>
+
+    <!-- Facebook (user-provided gif) -->
+    <a class="item" href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">
+      <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNTZuaHQ1ZjdnajNwMWtrZHVhN3Q4djdwMDZmYWZuYzRoYTA0Ymx4MiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/IeRI0TleieCJ6ytPUr/giphy.gif" alt="Facebook" width="50" height="50" />
+      <span class="name">Facebook</span>
+    </a>
+
+   
+
+    <!-- Chat GPT (favicon) -->
+    <a class="item" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">
+      <img src="https://static.vecteezy.com/system/resources/previews/022/841/114/original/chatgpt-logo-transparent-background-free-png.png" alt="Gmail" width="50" height="50" />
+      <span class="name">Chat GPT</span>
+    </a>
+
+    <!-- html ( favicon) -->
+    <a class="item" href="https://m5792.github.io/esmTally/AFI.html" target="_blank" rel="noopener noreferrer">
+      <img src="https://cdn-icons-png.flaticon.com/512/1197/1197396.png" alt="PNB Netbanking" width="50" height="50" />
+      <span class="name">AFI Dashboard</span>
+    </a>
+
+     <!-- gst login ( favicon) -->
+    <a class="item" href="https://services.gst.gov.in/services/login" target="_blank" rel="noopener noreferrer">
+      <img src="https://cdn.uxhack.co/product_logos/gstn_logo.jpg" alt="gst" width="50" height="50" />
+      <span class="name">GST Login</span>
+    </a>
+
+       <!-- eway bill login ( favicon) -->
+    <a class="item" href="https://ewaybillgst.gov.in/Login.aspx" target="_blank" rel="noopener noreferrer">
+      <img src="https://bizdesk.in/wp-content/uploads/2019/11/E-Way-Bills-as-Per-New-GST-Rules.png" alt="gst" width="50" height="50" />
+      <span class="name">Eway Login</span>
+    </a>
 
 
-                        <span style="color:#fcfcff;font-size:130%;font-family:Magneto;">eS |</span> 
-                                    <span style="color:#cacacc;font-size:130%;font-family:Magneto;">MTally</span> 
-                       </td>
+  </nav>
 
-                       <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
-                        <a href="https://services.gst.gov.in/services/login" target="_blank"><img src="https://cdn.uxhack.co/product_logos/gstn_logo.jpg" alt="You Tube" width="60" height="60" /></a>
-                          </td>
-
-                          <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
-                            <a href="https://ewaybillgst.gov.in/Login.aspx" target="_blank"><img src="https://bizdesk.in/wp-content/uploads/2019/11/E-Way-Bills-as-Per-New-GST-Rules.png" alt="You Tube" width="60" height="60" /></a>
-                              </td>
-                              <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">
-                                <a href="https://einvoice1.gst.gov.in/Others/GetPinCodeDistance" target="_blank"><img src="https://www.shutterstock.com/image-vector/distance-pin-icon-flat-style-260nw-1416511856.jpg" alt="You Tube" width="60" height="60" /></a>
-                                  </td>
-                                  <td style="text-align: center; color:WHITE;border: none;background-color: #011d30;">
-                                <a href="https://m5792.github.io/esm/" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/1197/1197396.png" alt="You Tube" width="60" height="60" /></a>
-                                  </td>
+  <!-- small script: open links with Enter when focused for accessibility -->
+  <script>
+    document.querySelectorAll('.item').forEach(el=>{
+      el.addEventListener('keydown', e=>{ if(e.key === 'Enter' || e.key === ' ') el.click(); });
+    });
+  </script>
+<!-- ============ website open navgation buttan code start stop  ========= -->
 
 
-  
-</table>
 
  </div>  <!-- section1B content stop hare *********************************************************************************************************-->
 
@@ -2724,18 +2762,13 @@ document.addEventListener("DOMContentLoaded", function () {
             
 <div style="display: flex; flex-direction: row; align-items: center; background-color: #002044; color: rgb(249, 252, 229); font-size: 20px; font-weight: bold;">
   
+
+  
   <!-- Current Time -->
-  <div id="currentDateTime" style="padding: 10px 20px; white-space: nowrap;"></div>
+  <div id="currentDateTime" style="padding: 10px 20px; white-space: nowrap; font-size: 16px; "></div>
 
-  <span id="reportauth" style="color: #002044;"></span>
+    <span id="reportauth" style="color: #002044;"></span>
   <span id="username" style="color: #002044;"></span>
-
-  <!-- Scrolling News Ticker -->
-  <marquee behavior="scroll" direction="left" scrollamount="5" style="flex: 1;">
-    <div style="display: inline-flex; align-items: center; gap: 8px;">
-    
-    </div>
-  </marquee>
 
 </div>
  
