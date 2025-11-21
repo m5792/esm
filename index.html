@@ -725,7 +725,7 @@ th {
 
 
 
-<div style="height:460px; overflow-y:auto; overflow-x:auto; border:1px solid #ccc; padding:8px; background-color: #f4faf3;" >
+<div style="height:480px; overflow-y:auto; overflow-x:auto; border:1px solid #ccc; padding:8px; background-color: #f4faf3;" >
 
    <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">    
     <label style="color: rgb(1, 26, 71);"> Daybook Search :</label>                            <!-- Search Box -->
@@ -739,7 +739,7 @@ th {
 
 </td>
 
-  <style> #MIPLDATATABLE {overflow-x: auto; display: block; max-height: 390px; /*heder alwayas fix on top and table scrolling  */} </style>
+  <style> #MIPLDATATABLE {overflow-x: auto; display: block; max-height: 430px; /*heder alwayas fix on top and table scrolling  */} </style>
 <table id="MIPLDATATABLE"></table>
 </div>
 
@@ -2525,7 +2525,7 @@ document.addEventListener("DOMContentLoaded", function () {
   <!-- ============ website open navgation buttan code start start  ========= -->  
 <style>
     :root{ --gap:12px; --btn-bg:#013956; --btn-border:#0478b2; --radius:10px; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; }
-   /*   body{ margin:20px; background:#f8fafc; display:flex; justify-content:center; }      */
+  
     .row{ display:flex; gap:var(--gap); align-items:center; flex-wrap:wrap; }
 
     .item{ display:flex; align-items:center; gap:10px; padding:8px 12px; background:var(--btn-bg); border:1px solid var(--btn-border); border-radius:var(--radius); box-shadow:0 6px 18px rgba(0,0,0,0.05); text-decoration:none; color:#111; }
@@ -2554,31 +2554,31 @@ document.addEventListener("DOMContentLoaded", function () {
      <!-- zoho (favicon used as image) -->
     <a class="item" href="https://accounts.zoho.in/signin?servicename=VirtualOffice&signupurl=https://www.zoho.com/mail/zohomail-pricing.html&serviceurl=https://mail.zoho.in" target="_blank" rel="noopener noreferrer">
       <img src="https://zenatta.com/wp-content/uploads/2020/08/mail-256-300x300.png" alt="zoho" width="50" height="50" />
-      <span class="name">Zoho Mail</span>
+      <span class="name">Gmail</span>
     </a>
 
       <!-- youtube (favicon used as image) -->
     <a class="item" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">
       <img src="https://cliply.co/wp-content/uploads/2019/07/371907120_YOUTUBE_ICON_TRANSPARENT_400.gif" alt="Google" width="50" height="50" />
-      <span class="name">You Tube</span>
+      <span class="name">YouTube</span>
     </a>
 
        <!-- pnb natbanking (favicon used as image) -->
     <a class="item" href="https://ibanking.pnb.bank.in/" target="_blank" rel="noopener noreferrer">
       <img src="https://i0.wp.com/www.logotaglines.com/wp-content/uploads/2016/08/Punjab-National-Bank-Logo.jpg?resize=400%2C391" alt="pnb" width="50" height="50" />
-      <span class="name">PNB Natbanking</span>
+      <span class="name">PNB Netbanking</span>
     </a>
 
        <!-- hdfc natbanking (favicon used as image) -->
     <a class="item" href="https://netbanking.hdfcbank.com/netbanking/" target="_blank" rel="noopener noreferrer">
       <img src="https://p.kindpng.com/picc/s/284-2843275_online-donation-shri-ramakrishna-ashrama-rajkot-using-hdfc.png" alt="hdfc" width="50" height="50" />
-      <span class="name">HDFC Natbanking</span>
+      <span class="name">HDFC Netbanking</span>
     </a>
 
        <!-- sbi natbanking (favicon used as image) -->
     <a class="item" href="https://retail.onlinesbi.sbi/retail/login.htm" target="_blank" rel="noopener noreferrer">
       <img src="https://image3.mouthshut.com/images/ImagesR/2015/12/State-Bank-Anywhere-925771560-7182350-1.png" alt="sbi" width="50" height="50" />
-      <span class="name">SBI Natbanking</span>
+      <span class="name">SBI Netbanking</span>
     </a>
 
     <!-- WhatsApp (user-provided gif) -->
@@ -8383,6 +8383,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     .reset-btn:hover { background:#a71d2a; }
 
     /* 🔹 Print settings */
+    
     @media print {
       body { background:white; }
       .LRScontainer { box-shadow:none; border:none; }
@@ -8868,7 +8869,7 @@ const tableConfig = {
   receipt: { headers:["Sr No","Type","Date","Ledger","Amount","V .Type"], cols:[0,1,2,3,4,10]},
   sale: { headers:["Sr No","Type","Date","Ledger","Inv. No.","Reff. No.","Amount","Weight","Rate","Vehicle No.","V.Type"], cols:[0,1,2,3,4,5,6,7,8,9,10]},
   address: { headers:["Clint","Address","State","Type","GSTIN","Contect Details"], cols:[0,1,2,3,4,5]},
-  atn: { headers:["Sr No","Type","Date","Employee","P/A","Login Time"], cols:[0,1,2,3,4,5]},
+  atn: { headers:["Sr No","Type","Date","Employee","P/A","Login Time","IP Details"], cols:[0,1,2,3,4,5,6]},
   psw: { headers:["Sr No","Type","Firm","User ID/ Password","Account Details","Other"], cols:[0,1,2,3,4,5]}
 };
 
@@ -9588,6 +9589,24 @@ function triggerDownload(blob, filename) {
     <form id="mainATNForm">
       <input type="hidden" name="SNo" id="sNo" />
 
+
+
+      <input type="hidden" id="ipatnBox" name="cl3" readonly placeholder="IP Loading..." 
+       style="padding:8px; width:250px; border:1px solid #aaa; border-radius:6px;">
+
+<script>
+// IP Fetch Function
+fetch("https://api.ipify.org?format=json")
+  .then(response => response.json())
+  .then(data => {
+     document.getElementById("ipatnBox").value = data.ip; // Input me IP set
+  })
+  .catch(() => {
+     document.getElementById("ipatnBox").value = "Error fetching IP";
+  });
+</script>
+
+
       <label style="color:#fd0505;font-size:90%;font-family:Arial; font-weight: bold;">User Details</label>
       <input type="hidden" name="User" readonly value="ATN" style="width:100%; margin-bottom:8px; padding:6px;"><br>
 
@@ -9758,7 +9777,7 @@ document.addEventListener("submit", async function (e) {
 
   submitBtn.disabled = true;
   submitBtn.value = "Please wait...";
-  waitMsg.innerText = "Submitting...";
+  waitMsg.innerText = "Conforming...";
   waitMsg.style.display = "block";
 
   // ✅ Add timestamp
@@ -9813,6 +9832,26 @@ document.addEventListener("DOMContentLoaded", setTodayDate);
     <form id="mainULUForm" style="display:flex; align-items:center; gap:10px; flex-wrap:nowrap;">
       <input type="hidden" name="SNo" id="sNo" />
       <input type="hidden" name="User" readonly value="ATN">
+
+
+
+<label style="font-size:13px;font-weight:bold;">IP No.:</label>
+      <input type="text" id="ipBox" name="cl3" readonly placeholder="IP Loading..." 
+       style="padding:8px; width:250px; border:1px solid #aaa; border-radius:6px;">
+
+<script>
+// IP Fetch Function
+fetch("https://api.ipify.org?format=json")
+  .then(response => response.json())
+  .then(data => {
+     document.getElementById("ipBox").value = data.ip; // Input me IP set
+  })
+  .catch(() => {
+     document.getElementById("ipBox").value = "Error fetching IP";
+  });
+</script>
+
+
 
       <!-- Date -->
       <label style="font-size:13px;font-weight:bold;">Date:</label>
@@ -9990,8 +10029,6 @@ document.addEventListener("submit", async function (e) {
 });
 </script>
 <!-- ================  id unlock by admin (ULU) script and code stop hare ===============================-->
-
-
 
 
 
