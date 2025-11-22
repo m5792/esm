@@ -168,13 +168,15 @@
   justify-content: space-between;
   align-items: center;
   padding: 2px;
-  background-color: #026186;
+  background-color: #060606;
   color: white;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 999;
+   border: 4px solid #7e7d7d;
+   border-radius: 8px;
 }
 
 .button-div {
@@ -189,7 +191,7 @@
   flex: 0 0 auto;                 /* ✅ fixed width, no shrink/wrap */
   min-width: 200px;
   padding: 10px 10px;
-  background-color: #026186;
+  background-color: #060606;
   color: white;
   border: none;
   border-radius: 0px;
@@ -199,8 +201,8 @@
 
 
 .button-div button:hover {
-  background-color: #01384e;
-  color: rgb(233, 248, 26);
+  background-color: #cfcfcf;
+  color: rgb(0, 9, 16);
 }
 
 
@@ -411,7 +413,7 @@ th {
     <header>
     <div id="top-bar">
   <div class="button-div">
-    <button onclick="showSection(1)" id="f1" style="color: rgb(245, 245, 247); font-weight: bold;">HOME &nbsp;<span style="color:  red;font-weight: bold;">(F1)</span> </button>
+    <button onclick="showSection(1)" id="f1" style="color: rgb(1, 250, 105); font-weight: bold;">HOME &nbsp;<span style="color:  red;font-weight: bold;">(F1)</span> </button>
     <button onclick="showSection(2)">Cash Ledger Report</button>
     <button onclick="showSection(3)" id="f3">Display Reports &nbsp;<span style="color: red; font-weight: bold;">(F3)</button>
     <button onclick="showSection(4)">Imprest Voucher Report</button>
@@ -422,7 +424,7 @@ th {
     
      <!-- <button onclick="showSection(6)">Job/Reff</button> -->
   
-    <button onclick="showSection(7)" id="f6" style="color: rgb(250, 184, 184);" >Admin* &nbsp;<span style="color:  red;font-weight: bold;">(F6)</span></button>
+    <button onclick="showSection(7)" id="f6" style="color: rgb(2, 79, 245);" >Admin* &nbsp;<span style="color:  red;font-weight: bold;">(F6)</span></button>
  
       
   
@@ -666,7 +668,7 @@ th {
   }
 
   .voucher-button-panel button {
-    background-color: #035e97;
+    background-color: #00090f;
     color: rgb(248, 249, 250);
     border: none;
     font-size: 18px;
@@ -680,7 +682,7 @@ th {
   }
 
   .voucher-button-panel button:hover {
-    background-color: #a5d4f0;
+    background-color: #113954;
   }
 </style>
 
@@ -728,7 +730,7 @@ th {
 <div style="height:480px; overflow-y:auto; overflow-x:auto; border:1px solid #ccc; padding:8px; background-color: #f4faf3;" >
 
    <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">    
-    <label style="color: rgb(1, 26, 71);"> Daybook Search :</label>                            <!-- Search Box -->
+    <label style="color: rgb(1, 26, 71); font-weight: bold;"> Daybook Search :</label>                            <!-- Search Box -->
 <input type="text" id="DATASEARCMIPL" placeholder="🔍 Search Ledger, Invoice, Reff, Vehicle No...." style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width:200px; width: 4in; background-color: rgb(241, 212, 212);" />
 
 
@@ -2504,24 +2506,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
-
-
-
-
-
-    <!-- section1B content start hare *********************************************************************************************************-->
-<div id="section1b" class="section hidden" style="background-color: rgb(1, 51, 92);border: none;">
-
-
-
-  
-
-
- </div>  <!-- section1B content stop hare *********************************************************************************************************-->
-
-
- 
      
 
       <div id="section5b" class="section hidden" style="background-color: #d7d9dc;">  <!-- section5B content START hare ****-->
@@ -2622,11 +2606,11 @@ document.addEventListener("DOMContentLoaded", function () {
  
 <!-- ============ website open navgation buttan code start start  ========= -->  
 <style>
-    :root{ --gap:5px; --btn-bg:#1e1d1d; --btn-border:#5ca59b; --radius:10px; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; }
+    :root{ --gap:5px; --btn-bg:#1e1d1d; --btn-border:#6a6a6a; --radius:10px; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; }
   
     .row{ display:flex; gap:var(--gap); align-items:center; flex-wrap:wrap; justify-content: center;}
 
-    .item{ display:flex; align-items:center; gap:10px; padding:8px 12px; background:var(--btn-bg); border:1px solid var(--btn-border); border-radius:var(--radius); box-shadow:0 6px 18px rgba(0,0,0,0.05); text-decoration:none; color:#111; }
+    .item{ display:flex; align-items:center; gap:10px; padding:4px 12px; background:var(--btn-bg); border:1px solid var(--btn-border); border-radius:var(--radius); box-shadow:0 6px 18px rgba(0,0,0,0.05); text-decoration:none; color:#111; }
     .item img{ width:25px; height:25px; object-fit:cover; border-radius:8px; }
     .name{ font-weight:700; font-size:14px; color: white;}
 
