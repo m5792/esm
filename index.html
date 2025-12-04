@@ -291,6 +291,7 @@ th {
   top: 0;
   z-index: 1;
   white-space: nowrap;
+  border-bottom:5px solid #dfc206;
   }
 
 
@@ -842,19 +843,20 @@ th {
 
 <style>
  .filter-btn {
-  background: #035b67;
+  background: rgb(0, 47, 74);
   color: white;
   border: none;
   padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
+ 
   transition: background 0.2s ease;
   min-width: 90px;            /* optional: makes buttons uniform width */
   text-align: center;
 }
 .filter-btn:hover {
-  background: #058091;
+  background: rgb(1, 76, 119);
 }
 .filter-btn.active {
   background: #932001;
@@ -866,8 +868,12 @@ th {
 
 <div style="text-align:center; background-color: #c1f1f3; color: #002630; font-weight: bold;"> <strong>Dishplay Ledger Report</strong></div> <br/>
 
-<br/>
-<div id="mipl2011Buttons" style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 10px;">
+
+ <!--  mipl2011Buttons div start  -->
+<div id="mipl2011Buttons" style="display: flex; gap: 8px;  border-bottom:5px solid #822501;  flex-wrap: wrap; justify-content: center; margin-bottom: 10px; background-color: rgb(0, 47, 74); padding: 2px 2px; ">
+  
+   <strong style="color: rgb(2, 98, 153); font-size: 25px; font-weight: bold;">|</strong>
+
   <button class="filter-btn" data-value="search">🔍 Searchbar</button>
   <button class="filter-btn" data-value="ledger">📘 Ledger</button>
   <button class="filter-btn" data-value="poreff">📄 PO/REFF</button>
@@ -877,9 +883,61 @@ th {
   <button class="filter-btn" id="openULUBtn" data-value="atn">🏢 Attendance</button>
   <button class="filter-btn" data-value="psw">🏢 ID/Password</button>
 
-<button onclick="print2011Report()" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer; background-color: white;">🖨️ Print Report</button>
-<button id="refresh2011Btn" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer; background-color: white;"> 🔄 Refresh</button>
-</div>
+<button onclick="print2011Report()" style="border: none; color: rgb(251, 197, 197); font-weight: bold;  cursor: pointer; background-color: rgb(0, 47, 74);;">🖨️ Print Report</button>
+<button id="refresh2011Btn" style="border: none; color: rgb(196, 248, 181); font-weight: bold;  cursor: pointer; background-color: rgb(0, 47, 74);;"> 🔄 Refresh</button>
+
+   <strong style="color: rgb(2, 98, 153); font-size: 25px; font-weight: bold;">|</strong>
+
+
+
+
+<!-- यह एक नोट है, Dropdown URL  Script Start Heare -->
+
+    <script>
+        // Function to handle dropdown selection
+        function handleDropdownChange() {
+            const dropdown = document.getElementById('linkDropdown');
+            const selectedOption = dropdown.options[dropdown.selectedIndex];
+
+            if (selectedOption.value) {
+                // Open the link in a new tab
+                window.open(selectedOption.value, '_blank');
+            }
+        }
+    </script>
+ 
+
+
+    <select id="linkDropdown" onchange="handleDropdownChange()"  data-value="url" style="background-color: rgb(0, 47, 74);color: white; font-size: 16px;  border-radius: 8px; border: none;">
+        <option value="" style="text-align: center; font-weight: bold; ">Google Sheet Links </option>
+        <option value="https://docs.google.com/spreadsheets/d/1FXdbotep3MTk34gUdSF0e0h_hN_Uz66AL0Gnvc-pt_s/edit?gid=475142657#gid=475142657">	Party Weight Sheet</option>
+        <option value="https://docs.google.com/spreadsheets/d/1EMIe8Y50_vMXg7y9zT7lXV0vgLyOZuSKdthf8C5XUXc/edit?gid=1752231070#gid=1752231070">	Mukhtiyar</option>
+        <option value="https://docs.google.com/spreadsheets/d/1F3Wf5V8sLxENPJFtHij-0GDGBXfeYByGx0DSafDucgM/edit?gid=90095763#gid=90095763">	Tushar</option>
+	<option value="https://www.google.com/android/find/">	Find My Device</option>
+  <option value="https://maps.app.goo.gl/znrnuQTZatuzQJGC6">	Find My Device - Mukhtiyar</option>
+	<option value="https://docs.google.com/spreadsheets/d/1wvsPdAQA57HxhTxA3cCcQvUEz93IWkBre_Ix-qvzwss/edit?gid=627393391#gid=627393391">	Store Database SHeet*</option>
+	<option value="https://docs.google.com/spreadsheets/d/1U_jwvZNtFuP91Gljjrbz_cpmb1OIkeDHnKa7aDe7F20/edit?gid=1511450281#gid=1511450281">	Clint List Sheet*</option>
+	<option value="https://docs.google.com/spreadsheets/d/17GZv2O6uupdA5r6p7-zqKZ8AQgZozbGQf2aXPlUzhDA/edit?gid=1122888223#gid=1122888223">	Mipl Office</option>
+	<option value="https://docs.google.com/spreadsheets/d/13N0HBuorZJM-ARnlTh36EUaD1-uQckaC6sLLzMnWAks/edit?gid=696561165#gid=696561165">	Office Noida</option>
+	<option value="https://docs.google.com/spreadsheets/d/1Rw_6cDYP-ETicn9YhHkdF_Sgmi8ps5JhjhlrkWvtwRQ/edit?gid=2123243236#gid=2123243236">	GUPTA CAMUNICATION Sheet*</option>
+    <option value="https://docs.google.com/spreadsheets/d/1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4/edit?gid=0#gid=0">	INDEX SHEET MIPL Sheet*</option>
+    <option value="https://docs.google.com/spreadsheets/d/1B6dyXPay3Tyl_7RzGuL9Rg8AhkzdBNhJNRu-T-3kmvI/edit?gid=147958071#gid=147958071">	MIPL Clint Cash Ledger Sheet*</option>
+     <option value="https://docs.google.com/spreadsheets/d/1ECwXrxs8_FDWw1qAC6_qxEwP_HE3SGMM4qNKVZHlIS0/edit?gid=0#gid=0">	Cash Management Sheet*</option>
+     <option value="https://docs.google.com/spreadsheets/d/1h3uC_0Ji4-NUhqrN0aIR-XwLZL5VdgilCBlIzC--SDA/edit?gid=0#gid=0">	Imprest Voucher Sheet*</option>
+      <option value="https://docs.google.com/spreadsheets/d/1B6dyXPay3Tyl_7RzGuL9Rg8AhkzdBNhJNRu-T-3kmvI/edit?pli=1&gid=207048997#gid=207048997">	MIPL Party Weight REport*</option>
+     <option value="MULTITECH V.2023.html">	MIPL DASHBOARD OLD</option>
+     <option value="MULTITECH2023.html">MIPL Old Dashboard</option>
+     <option value="https://github.com/">	github (mukhtarahamadksp@gmail.com)</option>
+     <option value="eTally.html">	eTally Dashboard</option>
+		  <option value="https://m5792.github.io/esmTally/AFI.html"> A.F.I Medical Dashboard </option>
+		<option value="DAYBOOK.html">Daybook</option>
+    </select>
+
+
+<!-- यह एक नोट है, Dropdown URL  Script Stop Heare -->
+
+
+</div>   <!--  mipl2011Buttons div stop  -->
 
 <div id="search2011Bar">
   <input type="text" id="search2011Input" placeholder="🔍 Search in Dishplay Report table...">
@@ -993,14 +1051,15 @@ th {
 #mipl2011Table thead th {
   background: #01305c;
   color: #ffffff;
-  padding: 10px;
-  border: 1px solid #b5b5b5;
+  padding: 8px 5px;
+  border: 1px solid #013a70;
   text-align: left;
   font-weight: 600;
   position: sticky;
   top: 0;
   z-index: 1;
   white-space: nowrap;
+  border-bottom:5px solid #4a4a4a;
 }
 
 #mipl2011Table tbody td {
@@ -1102,61 +1161,6 @@ th {
 <div id="section7" class="section hidden">   <!--  sections7 start  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
   
 <BR/>
-<!-- यह एक नोट है, Dropdown URL  Script Start Heare -->
-<!DOCTYPE html>
-<html>
-<head>
-
-    <script>
-        // Function to handle dropdown selection
-        function handleDropdownChange() {
-            const dropdown = document.getElementById('linkDropdown');
-            const selectedOption = dropdown.options[dropdown.selectedIndex];
-
-            if (selectedOption.value) {
-                // Open the link in a new tab
-                window.open(selectedOption.value, '_blank');
-            }
-        }
-    </script>
-    <style>
-        select {
-            padding:5px;
-            font-size: 14px;
-            margin: 2px 0;
-        }
-    </style>
-</head>
-<body>
-
- <label style="color: #000;"> Google Sheet Links</label>
-    <select id="linkDropdown" onchange="handleDropdownChange()">
-        <option value="">--Google Sheet Links --</option>
-        <option value="https://docs.google.com/spreadsheets/d/1FXdbotep3MTk34gUdSF0e0h_hN_Uz66AL0Gnvc-pt_s/edit?gid=475142657#gid=475142657">	Party Weight Sheet</option>
-        <option value="https://docs.google.com/spreadsheets/d/1EMIe8Y50_vMXg7y9zT7lXV0vgLyOZuSKdthf8C5XUXc/edit?gid=1752231070#gid=1752231070">	Mukhtiyar</option>
-        <option value="https://docs.google.com/spreadsheets/d/1F3Wf5V8sLxENPJFtHij-0GDGBXfeYByGx0DSafDucgM/edit?gid=90095763#gid=90095763">	Tushar</option>
-	<option value="https://www.google.com/android/find/">	Find My Device</option>
-	<option value="https://docs.google.com/spreadsheets/d/1wvsPdAQA57HxhTxA3cCcQvUEz93IWkBre_Ix-qvzwss/edit?gid=627393391#gid=627393391">	Store Database SHeet*</option>
-	<option value="https://docs.google.com/spreadsheets/d/1U_jwvZNtFuP91Gljjrbz_cpmb1OIkeDHnKa7aDe7F20/edit?gid=1511450281#gid=1511450281">	Clint List Sheet*</option>
-	<option value="https://docs.google.com/spreadsheets/d/17GZv2O6uupdA5r6p7-zqKZ8AQgZozbGQf2aXPlUzhDA/edit?gid=1122888223#gid=1122888223">	Mipl Office</option>
-	<option value="https://docs.google.com/spreadsheets/d/13N0HBuorZJM-ARnlTh36EUaD1-uQckaC6sLLzMnWAks/edit?gid=696561165#gid=696561165">	Office Noida</option>
-	<option value="https://docs.google.com/spreadsheets/d/1Rw_6cDYP-ETicn9YhHkdF_Sgmi8ps5JhjhlrkWvtwRQ/edit?gid=2123243236#gid=2123243236">	GUPTA CAMUNICATION Sheet*</option>
-    <option value="https://docs.google.com/spreadsheets/d/1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4/edit?gid=0#gid=0">	INDEX SHEET MIPL Sheet*</option>
-    <option value="https://docs.google.com/spreadsheets/d/1B6dyXPay3Tyl_7RzGuL9Rg8AhkzdBNhJNRu-T-3kmvI/edit?gid=147958071#gid=147958071">	MIPL Clint Cash Ledger Sheet*</option>
-     <option value="https://docs.google.com/spreadsheets/d/1ECwXrxs8_FDWw1qAC6_qxEwP_HE3SGMM4qNKVZHlIS0/edit?gid=0#gid=0">	Cash Management Sheet*</option>
-     <option value="https://docs.google.com/spreadsheets/d/1h3uC_0Ji4-NUhqrN0aIR-XwLZL5VdgilCBlIzC--SDA/edit?gid=0#gid=0">	Imprest Voucher Sheet*</option>
-      <option value="https://docs.google.com/spreadsheets/d/1B6dyXPay3Tyl_7RzGuL9Rg8AhkzdBNhJNRu-T-3kmvI/edit?pli=1&gid=207048997#gid=207048997">	MIPL Party Weight REport*</option>
-     <option value="MULTITECH V.2023.html">	MIPL DASHBOARD OLD</option>
-     <option value="MULTITECH2023.html">MIPL Old Dashboard</option>
-     <option value="https://github.com/">	github (mukhtarahamadksp@gmail.com)</option>
-     <option value="eTally.html">	eTally Dashboard</option>
-		  <option value="https://m5792.github.io/esmTally/AFI.html"> A.F.I Medical Dashboard </option>
-		<option value="DAYBOOK.html">Daybook</option>
-    </select>
-</body>
-</html>
-
-<!-- यह एक नोट है, Dropdown URL  Script Stop Heare -->
 
 
 
@@ -2244,22 +2248,6 @@ document.addEventListener("DOMContentLoaded", function () {
 <!--  --------------------------------------------------------------------------------------------------------------------------------------------------------- -->
 
 
-<!--  --------------------------------------------------------------------------------------------------------------------------------------------------------- -->
-
- <!-- Panel 3a -->
-<div id="4a" class="contentEMS">
-  
-   <span style="color:#024494;font-size:120%;font-family:Arial Black;">A.F.I Medical- Medicine Serch </span> <br/>
-
-            <div id="searchAFIM">
-                <input type="text" id="inputAFIMArea" placeholder="Search Medicine,Salt, and Many More ..." />
-            </div>
-
-</div>
-
-<!--  --------------------------------------------------------------------------------------------------------------------------------------------------------- -->
-
-
 
 
 
@@ -2429,17 +2417,6 @@ document.addEventListener("DOMContentLoaded", function () {
     <button onclick="printLoanBalance()">🖨 Print Loans Overview</button>
     <div id="loanbalance"></div>
 
-
- </div>
-<!--  --------------------------------------------------------------------------------------------------------------------------------------------------------- -->
-
-
-
-<!-- Panel 4 -->
- <div id="4" class="contentEMS">
-
- <!-- 📋 Data Table -->
-    <table id="AFIMlTable"></table>
 
  </div>
 <!--  --------------------------------------------------------------------------------------------------------------------------------------------------------- -->
@@ -8541,229 +8518,6 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 
 
-<!-- AFI MEDICAL DIV CODE START HARE ...................................... -->
-
-
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-    <meta charset="UTF-8">
-    <title>ID | PASSWORD ESS</title>
-    <style>
-      
-
-        /* 🔍 Search Bar */
-        #searchAFIM {
-            position: sticky;
-            top: 0;
-            background: #ffffff;
-            padding: 10px;
-            border-bottom: 2px solid #ccc;
-            z-index: 1000;
-        }
-        #inputAFIMArea {
-            padding: 10px;
-            width: 100%;
-            font-size: 15px;
-            border: 2px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
-       
-
-        /* 🔵 Highlighted search text */
-        .highlight {
-            background-color: rgb(21, 215, 241);
-            font-weight: bold;
-        }
-
-        /* 🎨 Row color types */
-        tr.red td {
-            background: #ffe5e5;
-        }
-        tr.blue td {
-            background: #e6f0ff;
-        }
-
-        /* 🫥 Hide row */
-        tr.hidden {
-            display: none;
-        }
-
-        /* 🚫 No result message */
-        #noResultsAFIMMessage {
-            text-align: center;
-            margin-top: 10px;
-            font-weight: bold;
-            color: #888;
-        }
-
-        /* ⏳ Loader */
-        #loader {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 16px;
-            color: #444;
-        }
-    </style>
-</head>
-<body>
-
-  
-
-    <!-- ⏳ Loader -->
-    <div id="loader">⏳ Fetching data from Google Sheets...</div>
-
-
-
-
-    <script>
-        async function AFIM() {
-            const apiAFIMKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-            const sheetAFIMId = "1C4EeSbCDaVGmJjU3QY2VNfI_IEZn0tZsqXw0ss3G58k";
-            const rangeAFIM = 'AFIM!A:E';
-
-            const loader = document.getElementById('loader');
-            const table = document.getElementById('AFIMlTable');
-
-            try {
-                const response = await fetch(
-                    `https://sheets.googleapis.com/v4/spreadsheets/${sheetAFIMId}/values/${rangeAFIM}?key=${apiAFIMKey}`
-                );
-                const data = await response.json();
-
-                loader.textContent = ""; // remove loader
-
-                if (data.values && data.values.length > 0) {
-                    table.innerHTML = '';
-
-                    data.values.forEach((row, index) => {
-                        const tr = document.createElement('tr');
-
-                        if (index === 0) {
-                            // Header Row
-                            row.forEach(cell => {
-                                const th = document.createElement('th');
-                                th.textContent = cell;
-                                tr.appendChild(th);
-                            });
-                        } else {
-                            // Data Rows
-                            row.forEach((cell, cellIndex) => {
-                                const td = document.createElement('td');
-
-                                // If cell contains a link
-                                if (typeof cell === 'string' && (cell.startsWith('http') || cell.startsWith('www'))) {
-                                    const a = document.createElement('a');
-                                    a.href = cell.startsWith('http') ? cell : `http://${cell}`;
-                                    a.innerHTML = "&#128221; Click to View PO";
-                                    a.target = "_blank";
-                                    td.appendChild(a);
-                                } else {
-                                    td.textContent = cell;
-                                }
-
-                                // Colorize rows based on first column
-                                if (cellIndex === 0) {
-                                    if (cell.toLowerCase() === "credit note") tr.classList.add('blue');
-                                    if (cell.toLowerCase() === "bank") tr.classList.add('red');
-                                }
-
-                                tr.appendChild(td);
-                            });
-                        }
-                        table.appendChild(tr);
-                    });
-                } else {
-                    loader.textContent = "⚠️ No data found in the sheet.";
-                }
-            } catch (error) {
-                loader.textContent = "❌ Error fetching data from Google Sheets.";
-                console.error(error);
-            }
-        }
-
-        function serchAFIMProfile() {
-            const query = document.getElementById('inputAFIMArea').value.toLowerCase();
-            const table = document.getElementById('AFIMlTable');
-            const rows = document.querySelectorAll('#AFIMlTable tr');
-            let visibleRows = 0;
-
-            rows.forEach((row, index) => {
-                if (index === 0) return;
-
-                row.querySelectorAll('td').forEach(cell => {
-                    cell.innerHTML = cell.textContent;
-                });
-
-                if (query.trim() === '') {
-                    row.classList.add('hidden');
-                } else {
-                    const rowText = Array.from(row.querySelectorAll('td'))
-                        .map(cell => cell.textContent.toLowerCase())
-                        .join(' ');
-
-                    if (rowText.includes(query)) {
-                        row.classList.remove('hidden');
-                        visibleRows++;
-
-                        // Highlight matching text
-                        row.querySelectorAll('td').forEach(cell => {
-                            const regex = new RegExp(`(${query})`, 'gi');
-                            cell.innerHTML = cell.textContent.replace(regex, '<span class="highlight">$1</span>');
-                        });
-                    } else {
-                        row.classList.add('hidden');
-                    }
-                }
-            });
-
-            // Show/hide no results message
-            let msg = document.getElementById('noResultsAFIMMessage');
-            if (!visibleRows && query.trim() !== '') {
-                if (!msg) {
-                    msg = document.createElement('p');
-                    msg.id = 'noResultsAFIMMessage';
-                    msg.textContent = 'No matching results found.';
-                    document.body.appendChild(msg);
-                }
-            } else if (msg) {
-                msg.remove();
-            }
-
-            // Show table only if visible rows
-            table.style.display = visibleRows ? 'table' : 'none';
-        }
-
-        // ✅ Safe DOM Load
-        document.addEventListener("DOMContentLoaded", () => {
-            document.getElementById('AFIMlTable').style.display = 'none';
-            AFIM();
-            document.getElementById('inputAFIMArea').addEventListener('input', serchAFIMProfile);
-        });
-    </script>
-</body>
-</html>
-
-
-
-<!-- AFI MEDICAL DIV CODE STOP HARE ...................................... -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <!-- 2011 table code and script start HARE ...................................... -->
 
@@ -9236,11 +8990,14 @@ function applyButtonPermissions() {
      "psw": "8",
     "exportBtn": "9",
     "export5792": "10",
-    "export5793": "11"
+    "export5793": "11",
+    "url": "12"
   };
 
   // ✅ Handle all buttons with a data-value attribute
-  document.querySelectorAll("button[data-value]").forEach(btn => {
+  //  document.querySelectorAll("button[data-value]").forEach(btn => {    "is line lo add kro agar kewar hide unhide logic kewal buttan ke lye lagana ho aur niche wali line ko hide kro "
+
+     document.querySelectorAll("[data-value]").forEach(btn => {
     const val = btn.dataset.value;
 
     // Show only if data-value exists in buttonMap and its mapped number is allowed
@@ -9849,16 +9606,7 @@ fetch("https://api.ipify.org?format=json")
 
 <!-- ✅ CSS -->
 <style>
-.filter-btn {
-  background: #035b67;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-}
-.filter-btn:hover { background: #058a9b; }
+
 
 /* Popup Overlay */
 .popupULU-overlay {
