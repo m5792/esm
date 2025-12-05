@@ -704,19 +704,21 @@ th {
   <button onclick="showSection(12)">Imprest Voucher</button><br/>
   <button onclick="showSection(13)">Job/Ref Voucher </button><br/>
    <button onclick="showSection(14)">Chander Shekher Voucher</button><br/>
+
+ 
 </div>
 
 <br/><br/>
 <div style="height:230px; overflow-y:auto; overflow-x:auto; border:1px solid #ccc; padding:8px; background-color: #f4faf3;" >
-        <span style="color: #901803; font-weight: bold;font-size: 16px;">Important Points</span>
-<ul id="pointsList"></ul>
 
-
+<div id="section1b" class="section hidden" style="background-color: rgb(211, 212, 212);border: none;"></div>    
 <!-- ========================= -->
 <span  style="color: rgb(1, 26, 116); font-size: 16px; font-weight: bold;">Notice Board:</span><br/>
       <span id="globalMessage" style="color: rgb(16, 15, 15); font-size: 16px;"></span>
 
-   <div id="section1b" class="section hidden" style="background-color: rgb(1, 51, 92);border: none;"></div>    
+     
+
+   
 
       <div id="greetingMessage" 
      style="display:none; font-size:18px; 
@@ -760,17 +762,9 @@ th {
 </div>
 
 <div class="rightdiv" style="max-height: 350px;width: 800px; overflow-y: auto; border: 3px solid #013342; padding: 5px; border-radius: 6px;background-color: #f3f9f8;"  >
- <!-- event & reminder  body start -->
 
-<div class="event-section" id="allEvents" style="max-height: 250px; overflow-y: auto; border: 3px solid #011632; padding: 10px; border-radius: 6px; padding: 10px; border-radius: 6px; background-color: #fcfbeb;">
-  <span style="font-size: 20px; font-weight: bold; color: #000;">📅 Event Reminders</span>
-
-  
-  <input type="text" id="searchInput" placeholder="🔍 Search events..." 
-         style="padding: 4px 8px; width: 98%; max-width: 250px; margin-bottom: 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;background-color: #f6e0e0;">
-  
-  <ul style="list-style-type: none; padding-left: 0; margin: 0;"></ul>
-</div>
+ <span style="color: #901803; font-weight: bold;font-size: 16px;">Important Points</span>
+<ul id="pointsList"></ul>
 
 
  
@@ -2174,7 +2168,7 @@ document.addEventListener("DOMContentLoaded", function () {
            <option value="1"> UPCL Bill Calculator</option>
            <option value="2"> Loan Calculator</option>
            <option value="3"> Repayment Schedule</option>
-           <option value="4"> A.F.I Medical</option>
+           <option value="4"> Employee/Event Search</option>
         </select>
 
 
@@ -2422,6 +2416,25 @@ document.addEventListener("DOMContentLoaded", function () {
 <!--  --------------------------------------------------------------------------------------------------------------------------------------------------------- -->
 
 
+<!-- Panel 4 -->
+ <div id="4" class="contentEMS">
+
+<!-- SEARCH INPUT -->
+<input type="text" id="searchEVENTInput" placeholder="Search..." 
+       style="padding:6px;width:100%;border-radius:6px;border:1px solid #999;margin:10px 0;" />
+
+<!-- DROPDOWN -->
+<div id="eventDropdown" 
+     style="display:none;border:1px solid #ccc;border-radius:6px;padding:5px;background:#fff;position:relative;z-index:99;">
+</div>
+<!-- NOTES SHOW DIV -->
+<div id="eventDetails" style="margin-top:10px;font-weight:bold;color:#444; background-color: white;"></div>
+
+
+ </div>
+<!--  --------------------------------------------------------------------------------------------------------------------------------------------------------- -->
+
+
 
 
 </div> </div>  <!-- यह एक नोट है, vertical Two Part Div (30-70) container content stop  Heare ((CODE501)) -->
@@ -2579,7 +2592,13 @@ document.addEventListener("DOMContentLoaded", function () {
 <div style="display: flex; justify-content: center; align-items: center; background-color: #f7f8fa; color: rgb(1, 1, 1); font-size: 12px; font-weight: bold;  border: 5px solid #003444; ">
   
   <!-- Current Time -->
-  <div id="currentDateTime" style="padding: 5px 10px; white-space: nowrap; font-size: 16px; "></div>
+  <div id="currentDateTime" style="padding: 5px 10px; white-space: nowrap; font-size: 16px; background-color: blue; color: white; "></div>
+
+ 
+
+   <marquee behavior="left" direction="RIG" scrollamount="5">
+  <span id="todayEvent" style="color: rgb(0, 65, 69);font-weight: bold;font-size: 14px; "></span>
+  </marquee>
 
     <span id="reportauth" style="color: #f7f8fa;"></span>
   <span id="username" style="color: #f7f8fa;font-size: 12px;"></span>
@@ -2828,249 +2847,197 @@ setInterval(displayCurrentDateTime, 1000);
 
 
 
-
-  
-<!-- eventa & reminder script stop home section stop site -->
-
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Event Reminder</title>
-  <style>
-    body { font-family: Arial; padding: 20px; background: #f0f0f0; }
-    .event-section { margin-bottom: 20px; padding: 15px; background: white; border-radius: 10px; }
-    h2 { margin-bottom: 10px; color: #004080; }
-    ul { padding-left: 20px; }
-    li { margin-bottom: 5px; cursor: default; }
-    li.clickable:hover { text-decoration: underline; cursor: pointer; }
-
-    /* Popup Modal */
-    #popupOverlay {
-      position: fixed; top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: none; justify-content: center; align-items: center;
-    }
-    #popupBox {
-      background: rgb(248, 242, 180); padding: 20px; border-radius: 10px;
-      max-width: 800px; box-shadow: 0 0 10px gray;
-      width: 6in;
-      height: 4in;
-    }
-    #closeBtn {
-      float: right; cursor: pointer; color: red; font-weight: bold;
-    }
-    #popupContent a {
-      text-decoration: none;
-      font-size: 18px;
-      color: #015187;
-      margin-left: 5px;
-    }
-    #popupContent a:hover {
-      text-decoration: underline;
-      color: #d00;
-    }
-  </style>
-</head>
-<body>
-
-
-
-<!-- Popup Box -->
-<div id="popupOverlay">
-  <div id="popupBox">
-    <span id="closeBtn" onclick="closePopup()">✖</span>
-    <div id="popupContent"></div>
-  </div>
-</div>
-
+<!-- =============== today events script start ===================== -->
 
 <script>
-  // ------------------ STYLES ------------------
-  const style = document.createElement("style");
-  style.textContent = `
-    .monthly { color: #871301; }
-    .yearly { color: #007509; }
-    .today { color: #015187; }
-    .clickable { cursor: pointer; }
-    .clickable:hover { text-decoration: underline; }
-  `;
-  document.head.appendChild(style);
+const apiEVENTKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheetEVENTId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
+const rangeEVENT = "HOLIDAY!A:D"; // A=Type, B=Name, C=Date, D=Optional Notes
 
-  // ------------------ CONFIG ------------------
-  const apiEVENTKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-  const sheetEVENTId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
-  const rangeEVENT = 'HOLIDAY!A:D';
-  const today = new Date();
+function convertToDate(str) {
+    const [d, m, y] = str.split("-");
+    const mon = {
+        Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5,
+        Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11
+    }[m];
 
-  let allEventRows = []; // global cache for events
+    if (mon === undefined) return null;
 
-  // ------------------ HELPER: PARSE DATE ------------------
-  function parseDate(input) {
-    const parts = input.split("-");
-    if (parts.length === 3) {
-      const day = parseInt(parts[0]);
-      const month = new Date(Date.parse(parts[1] + " 1, 2000")).getMonth();
-      const year = parts[2].length === 2 ? parseInt("20" + parts[2]) : parseInt(parts[2]);
-      return new Date(year, month, day);
-    } else if (parts.length === 2) {
-      const day = parseInt(parts[0]);
-      const month = new Date(Date.parse(parts[1] + " 1, 2000")).getMonth();
-      return new Date(today.getFullYear(), month, day);
-    }
-    return null;
-  }
+    let year = Number(y);
+    if (year < 100) year = 2000 + year;
 
-  // ------------------ POPUP HANDLING ------------------
-  function showPopup(content) {
-    const popupContent = document.getElementById('popupContent');
-    popupContent.innerHTML = '';
-    const urlPattern = /"(https?:\/\/[^"]+)"/;
-    const match = content.match(urlPattern);
+    return new Date(year, mon, Number(d));
+}
 
-    if (match) {
-      const url = match[1];
-      const text = content.replace(urlPattern, '').trim();
-
-      const span = document.createElement("span");
-      span.textContent = text;
-
-      const icon = document.createElement("a");
-      icon.href = url;
-      icon.target = "_blank";
-      icon.innerText = "📝";
-
-      popupContent.appendChild(span);
-      popupContent.appendChild(icon);
-    } else {
-      popupContent.innerText = content;
-    }
-
-    document.getElementById('popupOverlay').style.display = 'flex';
-  }
-
-  function closePopup() {
-    document.getElementById('popupOverlay').style.display = 'none';
-  }
-
-  // ------------------ LOAD REMINDERS ------------------
-  async function loadReminder() {
+async function loadTodayEvent() {
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetEVENTId}/values/${rangeEVENT}?key=${apiEVENTKey}`;
-    const response = await fetch(url);
-    const data = await response.json();
 
-    const rows = data.values.slice(1);
-    allEventRows = rows; // cache for search use
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const rows = data.values || [];
 
-    const allList = document.querySelector("#allEvents ul");
-    allList.innerHTML = "";
+        let todayEvents = [];
+        let yearlyRemaining = [];
+        let monthlyRemaining = [];
 
-    window.originalEvents = [];
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const today_dd = today.getDate();
+        const today_mm = today.getMonth();
 
-    rows.forEach((row) => {
-      if (!row || row.length < 3 || !row[0] || !row[1] || !row[2]) return;
+        rows.forEach(row => {
+            const type = row[0]; 
+            const name = row[1];
+            const dateStr = row[2];
 
-      const [type, title, dateStr, extra] = row;
-      const eventDate = parseDate(dateStr);
-      if (!eventDate) return;
+            if (!dateStr || !name) return;
 
-      const eventDay = eventDate.getDate();
-      const eventMonth = eventDate.getMonth();
-      let li = null;
+            let eventDate = convertToDate(dateStr);
+            if (!eventDate) return;
 
-      for (let i = 0; i <= 2; i++) {
-        const futureDate = new Date(today);
-        futureDate.setDate(today.getDate() + i);
-        const fDay = futureDate.getDate();
-        const fMonth = futureDate.getMonth();
+            eventDate.setHours(0,0,0,0);
 
-        const label = type.toLowerCase();
+            // --- YEARLY ---
+            if (type === "Yearly") {
+                eventDate.setFullYear(today.getFullYear());
+                const diffDays = Math.floor((eventDate - today) / (1000*60*60*24));
 
-        if (label === "monthly" && fDay === eventDay) {
-          li = document.createElement("li");
-          li.textContent = i === 0 ? `Today:- ${title}` : `Monthly:- ${title} Due on ${fDay}-${fMonth + 1}`;
-          li.classList.add(i === 0 ? "today" : "monthly");
-          break;
-        }
+                if (diffDays === 0) todayEvents.push(name);
+                if (diffDays === 1 || diffDays === 2) {
+                    yearlyRemaining.push(
+                        `<span style="color:grey"> ✨ <span style="color:red">${diffDays} Days Left –</span> ${name}</span>`
+                    );
+                }
+            }
 
-        if (label === "yearly" && fDay === eventDay && fMonth === eventMonth) {
-          li = document.createElement("li");
-          li.textContent = i === 0 ? `Today:- ${title}` : `Yearly:- ${title} Due on ${fDay}-${fMonth + 1}`;
-          li.classList.add(i === 0 ? "today" : "yearly");
-          break;
-        }
+            // --- MONTHLY ---
+            if (type === "Monthly") {
+                // match only date (ignore month/year)
+                let eventDay = eventDate.getDate();
+                let diffDays = eventDay - today_dd;
 
-        if (i === 0 && eventDate.toDateString() === today.toDateString()) {
-          li = document.createElement("li");
-          li.textContent = `Today:- ${title}`;
-          li.classList.add("today");
-          break;
-        }
-      }
+                // handle prev month wrap (if diff < 0)
+                if (diffDays < 0) diffDays += new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
 
-      if (!li) return;
+                if (diffDays === 0) todayEvents.push(name);
+                if (diffDays === 1 || diffDays === 2) {
+                    monthlyRemaining.push(
+                        `<span style="color:#026c96"> ✦ <span style="color:red">${diffDays} Days Left –</span> ${name}</span>`
+                    );
+                }
+            }
 
-      if (extra && extra.trim() !== "") {
-        li.classList.add("clickable");
-        li.addEventListener("click", () => {
-          showPopup(extra.trim());
+            // --- SINGLE DAY Event ---
+            if (type === "Event") {
+                if (
+                    eventDate.getDate() === today_dd &&
+                    eventDate.getMonth() === today_mm
+                ) todayEvents.push(name);
+            }
         });
-      }
 
-      window.originalEvents.push({ li, row });
-      allList.appendChild(li);
-    });
-  }
+        let finalOutput = [];
 
-  // ------------------ SEARCH FILTER ------------------
-  document.getElementById("searchInput").addEventListener("input", function () {
-    const query = this.value.trim().toLowerCase();
-    const ul = document.querySelector("#allEvents ul");
-    ul.innerHTML = "";
+        if (todayEvents.length > 0) {
+            finalOutput.push(`<span>✭ <strong>Today: </strong> ${todayEvents.join(" ✨ ")} ✭</span>`);
+        }
 
-    if (!query) {
-      // Reload original list if input empty
-      loadReminder();
-      return;
+        if (yearlyRemaining.length > 0) finalOutput = finalOutput.concat(yearlyRemaining);
+        if (monthlyRemaining.length > 0) finalOutput = finalOutput.concat(monthlyRemaining);
+
+        document.getElementById("todayEvent").innerHTML =
+            finalOutput.length > 0 ? finalOutput.join(" | ") : "";
+
+    } catch (err) {
+        console.error(err);
+        document.getElementById("todayEvent").innerHTML = "Error loading events";
+    }
+}
+
+loadTodayEvent();
+
+
+
+/* ===================================================================
+   🔵 INDEPENDENT SEARCH FUNCTIONS (NO MIXING WITH OLD SCRIPT)
+=================================================================== */
+
+let EVENT_DATA = []; // ONLY for search dropdown, NOT used by old script
+
+// Load only for search dropdown
+async function loadEventSearchData() {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetEVENTId}/values/${rangeEVENT}?key=${apiEVENTKey}`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        EVENT_DATA = data.values || [];
+
+    } catch (err) {
+        console.error("Search data load error:", err);
+    }
+}
+
+loadEventSearchData(); // Run ONLY for search feature
+
+
+/* ===================================================================
+   🔵 SEARCHABLE DROPDOWN (FULLY SEPARATE FUNCTION)
+=================================================================== */
+
+const searchInput = document.getElementById("searchEVENTInput");
+const dropdown = document.getElementById("eventDropdown");
+const eventDetails = document.getElementById("eventDetails");
+
+searchInput.addEventListener("keyup", () => {
+    let q = searchInput.value.trim().toLowerCase();
+    dropdown.innerHTML = "";
+
+    if (q.length < 1) {
+        dropdown.style.display = "none";
+        return;
     }
 
-    const shown = new Set();
-
-    allEventRows.forEach((row) => {
-      if (!row || row.length < 3) return;
-      const [type, title, dateStr, extra] = row;
-      const matchStr = `${type} ${title} ${dateStr} ${extra || ""}`.toLowerCase();
-
-      if (matchStr.includes(query)) {
-        const uniqueKey = `${type}-${title}-${dateStr}`.toLowerCase();
-        if (shown.has(uniqueKey)) return; // skip duplicates
-        shown.add(uniqueKey);
-
-        const li = document.createElement("li");
-        li.textContent = `${type}:- ${title} (${dateStr})`;
-        li.classList.add(type.toLowerCase());
-
-        if (extra && extra.trim()) {
-          li.classList.add("clickable");
-          li.addEventListener("click", () => {
-            showPopup(extra.trim());
-          });
-        }
-
-        ul.appendChild(li);
-      }
+    let filtered = EVENT_DATA.filter(row => {
+        let name = row[1] ? row[1].toLowerCase() : "";
+        let date = row[2] ? row[2].toLowerCase() : "";
+        return name.includes(q) || date.includes(q);
     });
-  });
 
-  // ------------------ INITIAL LOAD ------------------
-  loadReminder();
+    if (filtered.length === 0) {
+        dropdown.style.display = "none";
+        return;
+    }
+
+    dropdown.style.display = "block";
+
+    filtered.forEach(row => {
+        let name = row[1];
+        let date = row[2];
+        let notes = row[3] || "";
+
+        let item = document.createElement("div");
+        item.style.padding = "6px";
+        item.style.cursor = "pointer";
+        item.style.borderBottom = "1px solid #eee";
+
+        item.innerHTML = `<strong>${name}</strong> <span style="color:#888">(${date})</span>`;
+
+        item.onclick = () => {
+            searchInput.value = name;
+            dropdown.style.display = "none";
+            eventDetails.innerHTML = `<span style="color:#c20;font-size:14px;">${notes}</span>`;
+        };
+
+        dropdown.appendChild(item);
+    });
+});
+//******************
 </script>
 
-</body>
-</html>
 
-
-<!-- eventa & reminder script stop home section right site -->
+<!-- =============== today events script stop ===================== -->
 
 
   
@@ -9730,7 +9697,5 @@ document.addEventListener("submit", async function (e) {
 });
 </script>
 <!-- ================  id unlock by admin (ULU) script and code stop hare ===============================-->
-
-
 
 
