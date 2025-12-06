@@ -2856,6 +2856,7 @@ const rangeEVENT = "HOLIDAY!A:D"; // A=Type, B=Name, C=Date, D=Optional Notes
 
 function convertToDate(str) {
     const [d, m, y] = str.split("-");
+
     const mon = {
         Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5,
         Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11
@@ -2864,6 +2865,8 @@ function convertToDate(str) {
     if (mon === undefined) return null;
 
     let year = Number(y);
+
+    // allow "yy" and "yyyy"
     if (year < 100) year = 2000 + year;
 
     return new Date(year, mon, Number(d));
@@ -2885,6 +2888,7 @@ async function loadTodayEvent() {
         today.setHours(0,0,0,0);
         const today_dd = today.getDate();
         const today_mm = today.getMonth();
+        const today_yy = today.getFullYear();
 
         rows.forEach(row => {
             const type = row[0]; 
@@ -2898,9 +2902,9 @@ async function loadTodayEvent() {
 
             eventDate.setHours(0,0,0,0);
 
-            // --- YEARLY ---
+            // --- YEARLY EVENTS ---
             if (type === "Yearly") {
-                eventDate.setFullYear(today.getFullYear());
+                eventDate.setFullYear(today_yy);
                 const diffDays = Math.floor((eventDate - today) / (1000*60*60*24));
 
                 if (diffDays === 0) todayEvents.push(name);
@@ -2911,14 +2915,13 @@ async function loadTodayEvent() {
                 }
             }
 
-            // --- MONTHLY ---
+            // --- MONTHLY EVENTS ---
             if (type === "Monthly") {
-                // match only date (ignore month/year)
-                let eventDay = eventDate.getDate();
+                const eventDay = eventDate.getDate();
                 let diffDays = eventDay - today_dd;
 
-                // handle prev month wrap (if diff < 0)
-                if (diffDays < 0) diffDays += new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
+                if (diffDays < 0)
+                    diffDays += new Date(today_yy, today_mm + 1, 0).getDate();
 
                 if (diffDays === 0) todayEvents.push(name);
                 if (diffDays === 1 || diffDays === 2) {
@@ -2928,23 +2931,31 @@ async function loadTodayEvent() {
                 }
             }
 
-            // --- SINGLE DAY Event ---
+            // --- SINGLE EVENT (Exact Date: dd-mm-yyyy) ---
             if (type === "Event") {
                 if (
                     eventDate.getDate() === today_dd &&
-                    eventDate.getMonth() === today_mm
-                ) todayEvents.push(name);
+                    eventDate.getMonth() === today_mm &&
+                    eventDate.getFullYear() === today_yy     // FIX Added
+                ) {
+                    todayEvents.push(name);
+                }
             }
         });
 
         let finalOutput = [];
 
         if (todayEvents.length > 0) {
-            finalOutput.push(`<span>✭ <strong>Today: </strong> ${todayEvents.join(" ✨ ")} ✭</span>`);
+            finalOutput.push(
+                `<span>✭ <strong>Today: </strong> ${todayEvents.join(" ✨ ")} ✭</span>`
+            );
         }
 
-        if (yearlyRemaining.length > 0) finalOutput = finalOutput.concat(yearlyRemaining);
-        if (monthlyRemaining.length > 0) finalOutput = finalOutput.concat(monthlyRemaining);
+        if (yearlyRemaining.length > 0) 
+            finalOutput = finalOutput.concat(yearlyRemaining);
+
+        if (monthlyRemaining.length > 0) 
+            finalOutput = finalOutput.concat(monthlyRemaining);
 
         document.getElementById("todayEvent").innerHTML =
             finalOutput.length > 0 ? finalOutput.join(" | ") : "";
