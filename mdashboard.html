@@ -1,133 +1,177 @@
-<body style="background-color: rgb(115, 1, 9);"></body>
 
+  <!-- 🔹 Footer -->
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daybook MIPL</title>
   <style>
-    :root {
-      --card-bg: #ffffff;
-      --border: #e5e7eb;
-    }
+  body {
+    margin: 0;
+    padding-bottom: 60px; /* Footer ke liye space */
+    font-family: Arial, sans-serif;
+  }
 
-    * { box-sizing: border-box; }
+  /* 🔹 Fixed Footer */
+  .fixed-footer {
+      position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #a7a8a8;
+    color: rgb(1, 49, 77);
 
-    body {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      margin: 0;
-      background: #f7f7f8;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      
-    }
+    text-align: center;
+    padding: 2px 2px; /* Top-Bottom = 0, Left-Right = 10px gap */
+    font-size: 14px;
+    z-index: 1000;
+    box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.3);
+  }
+</style>
 
-    /* Modal container  10/17*/
-    .modalvcr { 
-      width: 10in;
-      height: 17in;
-      background: var(--card-bg); 
-      border-radius: 20px; 
-      overflow: hidden; 
-      border: 1px solid var(--border);
-      
-      box-shadow: 0 12px 30px rgba(0,0,0,.15);
-      display: flex; 
-      flex-direction: column;
-    }
+<!-- footer start hare) -->
+  <div class="fixed-footer">
 
-    /* Header */
-    .modalvcr-header { 
-      display: flex; 
-      flex-direction: column; 
-      padding: 16px 18px; 
-      border-bottom:1px solid var(--border);
-      background-color: #0111c3; 
-      flex-shrink: 0;
-    }
+    
+<!-- ============ website open navgation buttan code start hare  ========= -->
+<style>
+    :root{ --gap:5px; --btn-bg:#1e1d1d; --btn-border:#6a6a6a; --radius:10px; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; }
+  
+    .rownav{ display:flex; gap:var(--gap); align-items:center; flex-wrap:wrap; justify-content: center;}
 
-    .modalvcr-title { font-size: 1.05rem; font-weight:700; color: #b5edeb; }
-    .muted { color:#b5edeb; font-weight:bold; }
+    .item{ display:flex; align-items:center; gap:10px; padding:4px 12px; background:var(--btn-bg); border:1px solid var(--btn-border); border-radius:var(--radius); box-shadow:0 6px 18px rgba(0,0,0,0.05); text-decoration:none; color:#111; }
+    .item img{ width:25px; height:25px; object-fit:cover; border-radius:8px; }
+    .name{ font-weight:700; font-size:14px; color: white;}
 
-    /* Navigation */
-    nav {
-      background-color: #323fcb;
-      display: flex;
-      justify-content: center;
-      border-radius: 8px;
-    }
+    @media (max-width:560px){ .rownav{ width:100%; flex-direction:column; align-items:stretch; } .item{ width:100%; } }
+  </style>
+</head>
+<body>
+  <nav class="rownav" aria-label="Quick image links" style=" border: 3px solid #03495a; padding: 5px 10px;background-color: black;">
 
-    nav a {
-      color: #fff;
-      text-decoration: none;
-      padding: 8px 14px;
-      display: block;
-      font-weight: bold;
-      transition: background 0.3s;
-      cursor: pointer;
-      border-radius: 4px;
-      margin: 2px;
-    }
 
-    nav a:hover { background: #3277cb; }
-    nav a.active { background: #65a9f3; }
+     <!-- Google (favicon used as image) -->
+    <a class="item" href="https://www.google.com/" target="_blank" rel="noopener noreferrer">
+      <img src="https://cdn.dribbble.com/users/1717214/screenshots/4124610/g-logo.gif" alt="Google" width="50" height="50" />
+      <span class="name">Google</span>
+    </a>
 
-    /* Body with 20/80 top-bottom split */
-    .modalvcr-body {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      min-height: 0;
-      overflow: hidden;
-    }
+     <!-- Gmail (favicon used as image) -->
+    <a class="item" href="https://mail.google.com/mail/u/0/" target="_blank" rel="noopener noreferrer">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjpEIz6vZxfKx_cLh8Y6tDWalIuwi08MCggUEXk8cXLAy8NUilIHwNgrsjtFIxgEWCWAE&usqp=CAU" alt="Google" width="50" height="50" />
+      <span class="name">Gmail</span>
+    </a>
 
-    .top-panel, .bottom-panel {
-      flex-shrink: 0;
-      position: relative;
-      overflow: hidden;
-    }
+      <!-- youtube (favicon used as image) -->
+    <a class="item" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">
+      <img src="https://cliply.co/wp-content/uploads/2019/07/371907120_YOUTUBE_ICON_TRANSPARENT_400.gif" alt="Google" width="50" height="50" />
+      <span class="name">You Tube</span>
+    </a>
 
-    .top-panel { flex: 0 0 30%; border-bottom:1px solid var(--border); }
-    .bottom-panel { flex: 0 0 70%; }
+       <!-- pnb natbanking (favicon used as image) -->
+    <a class="item" href="https://ibanking.pnb.bank.in/" target="_blank" rel="noopener noreferrer">
+      <img src="https://i0.wp.com/www.logotaglines.com/wp-content/uploads/2016/08/Punjab-National-Bank-Logo.jpg?resize=400%2C391" alt="Google" width="50" height="50" />
+      <span class="name">PNB Natbanking</span>
+    </a>
 
-    .panel-content {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      padding: 16px;
-      overflow: auto;
-      display: none;
-    }
+    <!-- WhatsApp (user-provided gif) -->
+    <a class="item" href="https://web.whatsapp.com/" target="_blank" rel="noopener noreferrer">
+      <img src="https://cliply.co/wp-content/uploads/2021/08/372108180_WHATSAPP_ICON_400.gif" alt="WhatsApp" width="50" height="50" />
+      <span class="name">WhatsApp</span>
+    </a>
 
-    .panel-content.active { display: block; }
+    <!-- Facebook (user-provided gif) -->
+    <a class="item" href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">
+      <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNTZuaHQ1ZjdnajNwMWtrZHVhN3Q4djdwMDZmYWZuYzRoYTA0Ymx4MiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/IeRI0TleieCJ6ytPUr/giphy.gif" alt="Facebook" width="50" height="50" />
+      <span class="name">Facebook</span>
+    </a>
 
    
 
-    .modalvcr-footer {
-      display: flex; 
-      justify-content: flex-start; 
-      gap: 5px; 
-      padding: 12px 16px; 
-      border-top: 1px solid var(--border);
-      background-color: #e9e7e7;
-      flex-shrink: 0;   
-    }
+    <!-- Chat GPT (favicon) -->
+    <a class="item" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">
+      <img src="https://static.vecteezy.com/system/resources/previews/022/841/114/original/chatgpt-logo-transparent-background-free-png.png" alt="Gmail" width="50" height="50" />
+      <span class="name">Chat GPT</span>
+    </a>
+
+    <!-- html mipl (PNB favicon) -->
+    <a class="item" href="https://m5792.github.io/esmTally/AFI.html" target="_blank" rel="noopener noreferrer">
+      <img src="https://cdn-icons-png.flaticon.com/512/1197/1197396.png" alt="AFI" width="50" height="50" />
+      <span class="name">A.F.I Dashboard</span>
+    </a>
+
+      <!-- html mipl (PNB favicon) -->
+    <a class="item" href="https://www.netflix.com/browse" target="_blank" rel="noopener noreferrer">
+      <img src="https://media.tenor.com/miBRlkp03LkAAAAj/netflix.gif" alt="Netflix" width="50" height="50" />
+      <span class="name">Netflix</span>
+    </a>
+
+
+  <!-- small script: open links with Enter when focused for accessibility -->
+  <script>
+    document.querySelectorAll('.item').forEach(el=>{
+      el.addEventListener('keydown', e=>{ if(e.key === 'Enter' || e.key === ' ') el.click(); });
+    });
+  </script>
+
+
+<!-- ============ website open navgation buttan code start stop  ========= -->
+
+
+  </nav>
+  </div>  <!-- footer stop hare -->
 
 
 
-    /* Container for table to manage height inside bottom panel */
-.bottom-panel .table-container {
-    height: 100%;          /* take full bottom panel height */
-    overflow: auto;        /* scroll if content exceeds */
-    padding: 8px;          /* optional padding */
-    box-sizing: border-box;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ==========  ------------------------------------------xxxxxxxxxxxxxxxxxxxxx-----------------------------------------======================= -->
+
+
+
+
+<style>
+ .filter-btn {
+  background: rgb(0, 47, 74);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+ 
+  transition: background 0.2s ease;
+  min-width: 90px;            /* optional: makes buttons uniform width */
+  text-align: center;
+}
+.filter-btn:hover {
+  background: rgb(1, 76, 119);
+}
+.filter-btn.active {
+  background: #932001;
+  color: rgb(252, 250, 250);
+  font-weight: bold;
 }
 
-#home-bottom.panel-content {
-  padding: 0 !important;
-}
+
+
 
 /* Table Styling */
 /* Container to control table width and responsiveness */
@@ -153,7 +197,7 @@ table{
   table{
   overflow-x: auto;
   display: block;
-  max-height: 670px; /* Optional scrolling */
+  max-height: 1200px; /* Optional scrolling */
   }
 
   /* Table border & cell style */
@@ -168,6 +212,7 @@ th {
   top: 0;
   z-index: 1;
   white-space: nowrap;
+  border-bottom:5px solid #dfc206;
   }
 
 
@@ -193,113 +238,159 @@ th {
   transition: background-color 1s ease, color 1s ease;
   }
     
+</style>
+
+<div style="text-align:center; background-color: #013b42; color: #f8f8f8; font-weight: bold;"> <strong>Multitech Infracon Pvt. Ltd. Accounting System</strong></div> <br/>
 
 
-  </style>
-</head>
-<body>
-  <div class="modalvcr">
-    <!-- Header -->
-    <div class="modalvcr-header">
-      <div>
-        <div class="modalvcr-title"><div id="currentDateTime"  style="color:#caddf5;font-size:100%;font-family:Arial;"> </div> </div>
-       
-      </div>
-      <br/>
-      <nav>
-        <a class="active" data-target="home">Home</a>
-        <a data-target="btn2">Ration Card</a>
-        <a data-target="btn3">UPCL Calculator</a>
-        <a data-target="btn4">ID/Password</a>
-        <a data-target="btn5">Cash Ledger</a>
-     
+ <!--  mipl2011Buttons div start  -->
+<div id="mipl2011Buttons" style="display: flex; gap: 8px;  border-bottom:5px solid #822501;  flex-wrap: wrap; justify-content: center; margin-bottom: 10px; background-color: rgb(0, 47, 74); padding: 2px 2px; ">
+  
+   <strong style="color: rgb(2, 98, 153); font-size: 25px; font-weight: bold;">|</strong>
 
-           <!-- Dropdown -->
-        <select id="navDropdown" style="background-color: #323fcb; color: yellow; border: #323fcb;">
-          <option value="">More Options</option>
-          <option value="https://m5792.github.io/esm/DAYBOOK.html">Job/Reff View</option>
-          <option value="https://docs.google.com/spreadsheets/d/1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4/edit?gid=509691788#gid=509691788">MIPL Index File</option>
-          <option value="https://www.wikipedia.org">Wikipedia</option>
-          <option value="https://www.github.com">GitHub</option>
-          <option value="https://www.openai.com">OpenAI</option>
-          <option value="cash-ledger" data-target="btn6">Loan Calculator</option>
-          <option  data-target="btn7">A.F.I Medical</option>
-          <option  data-target="btn8">User Lock/Unlock</option>
-        <option value="https://m5792.github.io/esm/NOINDEX.html">MIPL Noida Office Index</option>
-        </select>
+  <button class="filter-btn" data-value="search">&#128269 Searchbar</button>
+  <button class="filter-btn" data-value="ledger">&#128211 Ledger</button>
+  <button class="filter-btn" data-value="poreff">&#128179 PO/REFF</button>
+  <button class="filter-btn" data-value="receipt">&#128176 Receipt</button>
+  <button class="filter-btn" data-value="sale">&#128184 Sale</button>
+  <button class="filter-btn" data-value="address">&#128205 Address</button>
+  <button class="filter-btn" id="openULUBtn" data-value="atn">&#128197 Attendance</button>
+  <button class="filter-btn" data-value="psw">&#128273 ID/Password</button>
 
-      </nav>
-    </div>
+<button onclick="print2011Report()" style="border: none; color: rgb(251, 197, 197); font-weight: bold;  cursor: pointer; background-color: rgb(0, 47, 74);;">&#128424 Print Report</button>
+<button id="refresh2011Btn" style="border: none; color: rgb(196, 248, 181); font-weight: bold;  cursor: pointer; background-color: rgb(0, 47, 74);;"> &#128260 Refresh</button>
 
-    <!-- Body -->
-    <div class="modalvcr-body">
-      <!-- Top panel -->
-      <div class="top-panel">
+   <strong style="color: rgb(2, 98, 153); font-size: 25px; font-weight: bold;">|</strong>
 
-<!-- home btn top part start -->   
-        <div id="home-top" class="panel-content active">
 
-       
+
+
+
+<!-- DROPDOWN -->
+<select id="navDropdown"style="background-color: rgb(0, 47, 74);color: white; font-size: 16px;  border-radius: 8px; border: none;">
+    <option value="" style="text-align: center; font-weight: bold; ">More Options</option>
+
+      <option data-target="home">Home</option>
+      <option data-target="btn2">Cash Ledger</option>
+
+<option value="https://www.google.com/android/find/">	Find My Device</option>
+	<option value="https://docs.google.com/spreadsheets/d/1wvsPdAQA57HxhTxA3cCcQvUEz93IWkBre_Ix-qvzwss/edit?gid=627393391#gid=627393391">	Store Database Sheet*</option>
+	<option value="https://docs.google.com/spreadsheets/d/1U_jwvZNtFuP91Gljjrbz_cpmb1OIkeDHnKa7aDe7F20/edit?gid=1511450281#gid=1511450281">	Clint List Sheet*</option>
+	<option value="https://docs.google.com/spreadsheets/d/17GZv2O6uupdA5r6p7-zqKZ8AQgZozbGQf2aXPlUzhDA/edit?gid=1122888223#gid=1122888223">	Mipl Office</option>
+	<option value="https://docs.google.com/spreadsheets/d/13N0HBuorZJM-ARnlTh36EUaD1-uQckaC6sLLzMnWAks/edit?gid=696561165#gid=696561165">	Office Noida</option>
+	<option value="https://docs.google.com/spreadsheets/d/1Rw_6cDYP-ETicn9YhHkdF_Sgmi8ps5JhjhlrkWvtwRQ/edit?gid=2123243236#gid=2123243236">	GUPTA CAMUNICATION Sheet*</option>
+    <option value="https://docs.google.com/spreadsheets/d/1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4/edit?gid=0#gid=0">	INDEX SHEET MIPL Sheet*</option>
+    <option value="https://docs.google.com/spreadsheets/d/1B6dyXPay3Tyl_7RzGuL9Rg8AhkzdBNhJNRu-T-3kmvI/edit?gid=147958071#gid=147958071">	MIPL Clint Cash Ledger Sheet*</option>
+     <option value="https://docs.google.com/spreadsheets/d/1ECwXrxs8_FDWw1qAC6_qxEwP_HE3SGMM4qNKVZHlIS0/edit?gid=0#gid=0">	Cash Management Sheet*</option>
+     <option value="https://docs.google.com/spreadsheets/d/1h3uC_0Ji4-NUhqrN0aIR-XwLZL5VdgilCBlIzC--SDA/edit?gid=0#gid=0">	Imprest Voucher Sheet*</option>
+      <option value="https://docs.google.com/spreadsheets/d/1B6dyXPay3Tyl_7RzGuL9Rg8AhkzdBNhJNRu-T-3kmvI/edit?pli=1&gid=207048997#gid=207048997">	MIPL Party Weight REport*</option>
+     <option value="https://docs.google.com/spreadsheets/d/1C4EeSbCDaVGmJjU3QY2VNfI_IEZn0tZsqXw0ss3G58k/edit?gid=809921823#gid=809921823" style="color: rgb(175, 219, 246);">	ESS Google Index Sheet*</option>
+       <option value="https://docs.google.com/spreadsheets/d/1EOO0QzwNaPhwIfZN_DCLlhQB9yeC-j-GpmtM_6JMRmw/edit?gid=2031012173#gid=2031012173" style="color: rgb(246, 175, 175);">	Password  Google  Sheet*</option> 
+     <option value="https://docs.google.com/spreadsheets/d/1g_hAVEIFZRnRNFFQWF275Y_AXKBTw0UIP0xiH4_C2V0/edit?gid=0#gid=0" style="color: rgb(239, 246, 175);">	A.F.I Google Index Sheet*</option> 
+     <option value="https://m5792.github.io/esm/">	MIPL DASHBOARD</option>
+     <option value="https://m5792.github.io/esm/MULTITECH2023.html">MIPL Old Dashboard</option>
+     <option value="https://github.com/">	github (mukhtarahamadksp@gmail.com)</option>
+     <option value="https://m5792.github.io/esm/eTally.html">	eTally Dashboard</option>
+</select>
+
+
 
 
 <style>
- .filter-btn {
-  background: #035b67;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.2s ease;
-  min-width: 90px;            /* optional: makes buttons uniform width */
-  text-align: center;
+
+
+
+/* Sections */
+.section {
+    display: none;
+    padding: 15px;
+    border: 1px solid #012e61;
+    margin-top: 15px;
+    background: #ffffff;
 }
-.filter-btn:hover {
-  background: #058091;
+
+/* Default visible: HOME */
+#home {
+    display: block;
 }
-.filter-btn.active {
-  background: #932001;
-  color: rgb(252, 250, 250);
-  font-weight: bold;
-}
+
+
+
 
 </style>
-<br/>
-<div id="mipl2011Buttons" style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 10px;">
-  <button class="filter-btn" data-value="search">🔍 Searchbar</button>
-  <button class="filter-btn" data-value="ledger">📘 Ledger</button>
-  <button class="filter-btn" data-value="poreff">📄 PO/REFF</button>
-  <button class="filter-btn" data-value="receipt">💰 Receipt</button>
-  <button class="filter-btn" data-value="sale">🧾 Sale</button>
-  <button class="filter-btn" data-value="address">🏢 Address</button>
-  <button class="filter-btn" data-value="atn">🏢 Attendance</button>
 
-<button onclick="print2011Report()" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer; background-color: white;">🖨️ Print Report</button>
-<button id="refresh2011Btn" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer; background-color: white;"> 🔄 Refresh</button>
-</div>
+<script>
+// -----------------------------------------
+// FUNCTION: SHOW ONLY THE TARGETED SECTION
+// -----------------------------------------
+function showSection(targetId) {
+    document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
+    document.getElementById(targetId).style.display = 'block';
+}
+
+// ----- BUTTON CLICK -----
+document.querySelectorAll('.menu-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+        showSection(this.getAttribute('data-target'));
+    });
+});
+
+// ----- DROPDOWN CHANGE -----
+document.getElementById('navDropdown').addEventListener('change', function () {
+    let selected = this.options[this.selectedIndex];
+    let target = selected.getAttribute('data-target');
+    let url = selected.value;
+
+    if (target) {
+        showSection(target);
+    }
+    else if (url !== "") {
+        window.open(url, "_blank");
+    }
+
+    this.value = "";  // dropdown reset
+});
+</script>
+
+
+</div>   <!--  mipl2011Buttons div stop  -->
 
 
 
 
+
+
+
+
+
+<!-- =================== home buttan start hare =============================== -->
+<div class="section" id="home">
+    <div class="divA">    <!-- BTN Home Div A Start hare -->
+
+
+<div style="text-align:center; background-color: #c1f1f3; color: #002630; font-weight: bold;"> <strong>Dishplay Ledger Report</strong></div> <br/>
 
 
 <div id="search2011Bar">
-  <input type="text" id="search2011Input" placeholder="🔍 Search in current table...">
+  <input type="text" id="search2011Input" placeholder="&#128269 Search in Dishplay Report table...">
   <label>From:</label>
   <input type="date" id="start2011Date">
   <label>To:</label>
   <input type="date" id="end2011Date">
-</div>
+
+   
+   <button id="exportBtn" data-value="exportBtn" data-target="mipl2011Table" style="border: none; font-weight: bold; cursor: pointer; background-color: #027175; color: rgb(245, 242, 163);">&#128228 Export</button>
+
+</div>   <!-- <div id="search2011Bar"> stop  -->
 
 <style>
   #search2011Bar {
-    background-color: #5f0300; /* blue */
+    background-color: #027175; /* blue */
     width: 100%;
     height: 20px;
     display: flex;
     align-items: center;
-    padding: 30px;
+    padding: 20px;
     gap: 10px;
     box-sizing: border-box;
   }
@@ -309,7 +400,7 @@ th {
     background-color: #fdfdf6; /* grey */
     border: none;
     padding: 6px 10px;
-    border-radius: 8px;
+    border-radius: 4px;
     font-size: 14px;
     outline: none;
   }
@@ -336,7 +427,7 @@ th {
   <!-- Ledger Filter -->
 <div id="ledger2011Select" class="filter-container">
  <span style="color: black;">Ledger Name:</span>
-  <input type="text" id="ledger2011Input" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width:200px; width: 4in; background-color: rgb(241, 212, 212); font-size: 14px;" placeholder="Type to search ledger...">
+  <input type="text" id="ledger2011Input" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width:200px; width: 4in; background-color: rgb(241, 212, 212); font-size: 14px;" placeholder="🔍 Type to search ledger...">
   <div id="ledger2011Dropdown" class="dropdown"></div>
 
   <span id="address2011"></span>
@@ -348,8 +439,7 @@ th {
   <span>Total Credit Note:</span> <span id="totalCn">0</span> |
   <span>Total Weight:</span> <span id="totalPEBWeight">0</span> |
   <span>Balance:</span> <span id="totalDifference">0</span>
-</div>    
-   
+</div>       
 
 
 <!-- PO Filter -->
@@ -368,111 +458,13 @@ th {
   </div>
 </div>
 
-        </div>
-<!-- home btn top part stop --> 
-
-<!-- btn2 -ration card top part start -->
-        <div id="btn2-top" class="panel-content">
-            <span style="color:#024494;font-size:120%;font-family:Arial Black;">Ration Card </span> <br/>
-         <input type="text" id="searchInput" placeholder="Search By Ration Card No. Name, Last 4 Digit Adhar & Mobail...." onkeyup="rationcardsearch()" style="font-size:18px; padding:5px; width:650px;">
-
-        </div>
-<!-- btn2 -ration card top part stop -->
-
-<!-- btn3 -upcl calculator top part start -->
-        <div id="btn3-top" class="panel-content">
-          <label>Enter Your  Units: </label>
-  <input type="number" id="units" placeholder="Enter units">
-  <button onclick="calculateBill()">Calculate</button>
-  <button onclick="resetDefaults()">Reset Defaults</button>
-        </div>
-<!-- btn3 -upcl calculator top part stop -->
-
-<!-- btn4 -ID/PASSWORD top part START -->
-        <div id="btn4-top" class="panel-content">
-            <span style="font-size: 120%; font-weight: bold;">ID Password Search bar</span>
-          <input type="text" id="inputArea" placeholder="🔍 Search here..." />
-        </div>
- <!-- btn4 -ID/PASSWORD top part stop -->
-
- <!-- btn5 -cash ledger top part strat -->
-        <div id="btn5-top" class="panel-content">
-
-          <div style="text-align:center; background-color: #dcdddd; color: #002630; font-weight: bold;"> <strong>Cash Ledger Report</strong></div> <br/>
-
-
-  <!-- Ledger Filter -->
-  <div id="ledger5792Select" >
-    <span style="color: black;">Ledger Name:</span>
-    <input type="text" id="ledger5792Input"
-      style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width: 4in; background-color: rgb(241, 212, 212); font-size: 14px;"
-      placeholder="🔍 Type to search ledger...">
-    <div id="ledger5792Dropdown" class="dropdown"></div>
-
-    <button onclick="print5792Table()" style="background-color: white;  color: #00254d;border: none; cursor: pointer;">🖨️ Print Table</button>
-<button onclick="refresh5792Table()"  style="background-color: white;  color: #00254d; border: none; cursor: pointer;">🔄 Refresh Table</button>
-  </div>
-
-          <div id="search5792Bar">
-  <input type="text" id="search5792Input" placeholder="🔍 Search in current table...">
-
-  <strong style="color: white;"> Select User:</strong>
-    <select id="user5792">
-    <option value="">--Select Type--</option>
-    <option value="MA">MUKHTIYAR</option>
-    <option value="TA">TUSHAR AGARWAL</option>
-    <option value="BANK">BANK</option>
-  </select>
-
-  <label>From:</label>
-  <input type="date" id="start5792Date">
-  <label>To:</label>
-  <input type="date" id="end5792Date">
-  </div>
-      
-
-        </div>
-<!-- btn5 -cash ledger top part stop -->
-
-
- <!-- btn6 -Loan Calculator top part strat -->
-        <div id="btn6-top" class="panel-content">
-              <label style="font-size: 20px; font-weight: bold;">Loan Calculator:</label>
-
-        </div>
-<!-- btn6 -cash ledger top part stop -->
-
-
- <!-- btn7 -Loan Calculator top part strat -->
-        <div id="btn7-top" class="panel-content">
-              <span style="color:#024494;font-size:120%;font-family:Arial Black;">A.F.I Medical- Medicine Serch </span> <br/>
-
-            <div id="searchAFIM">
-                <input type="text" id="inputAFIMArea" placeholder="Search User ID/Password, Atm, Credit Details, Adhar card, PAN Card and Many More ..." />
-            </div>
-
-        </div>
-<!-- btn7 -cash ledger top part stop -->
-
-
- <!-- btn8 -user lock/unlock top part strat -->
-        <div id="btn8-top" class="panel-content">
-           
-<strong> MIPL User Lock/Unlock </strong>
-        </div>
-<!-- btn8 -cash ledger top part stop -->
-
-      </div>
 
 
 
-      <!-- Bottom panel -->
-      <div class="bottom-panel">
 
-<!-- home btn bottam part start --> 
-        <div id="home-bottom" class="panel-content active">
 
-          <style>
+
+<style>
 
 #mipl2011Table {
   width: 100%;
@@ -482,19 +474,23 @@ th {
   font-size: 14px;
   background: #ffffff;
   border: 1px solid #d0d0d0;
+
+
+   
 }
 
 #mipl2011Table thead th {
   background: #01305c;
   color: #ffffff;
-  padding: 10px;
-  border: 1px solid #b5b5b5;
+  padding: 8px 5px;
+  border: 1px solid #013a70;
   text-align: left;
-  font-weight: 600;
+  font-weight: bold;
   position: sticky;
   top: 0;
   z-index: 1;
   white-space: nowrap;
+  border-bottom:5px solid #4a4a4a;
 }
 
 #mipl2011Table tbody td {
@@ -517,1542 +513,105 @@ th {
 #mipl2011Table {
   overflow-x: auto;
   display: block;
-  max-height: 400px; /* Optional scrolling */
+  max-height: 1200px; /* Optional scrolling */
 }
 
 
 </style>
-     
-        <table id="mipl2011Table"><thead id="tableHead"></thead> <tbody id="table2011Body"></tbody></table>
-<br/><br/><br/><br/>
-        </div>
-<!-- home btn bottam part start --> 
 
- <!-- btn2 -ration card bottam part start -->
-        <div id="btn2-bottom" class="panel-content"> 
-            <div id="results"></div>
-        </div>   
- <!-- btn2 -ration card bottam part stop -->
 
- <!-- btn3 -upcl calculator bottam part start -->
-        <div id="btn3-bottom" class="panel-content">
- <span style="max-width:300px; text-align:center; margin:10px 0 20px; font-size:22px; line-height:1.5; color: rgb(7, 7, 7);">
-   Uttarakhand Power Corporation Ltd. Energy Charge Calculator
-    </span>
-<br/>
-   <span style="max-width:300px; text-align:center; margin:10px 0 20px; font-size:16px; line-height:1.5; color: rgb(13, 2, 173);">
-     *All Rate & Amt only educational and calculation purpose. 
-    </span>
-<br/><br/>
-           <!-- ===== VALUE KO EDITABLE BANANE KE LYE <td> "contenteditable="true" class="editable"" add kro ===== -->
-  <table>
-    <tr>
-      <th>Description</th>
-      <th>Units</th>
-      <th>Rate</th>
-      <th>Amount</th>
-    </tr>
-    <tr>
-      <td>S1 (0–98.63)</td>
-      <td id="s1u">0</td>
-      <td contenteditable="true" class="editable" id="r1">3.65</td>
-      <td id="s1c">0</td>
-    </tr>
-    <tr>
-      <td>S2 (98.63–197.26)</td>
-      <td id="s2u">0</td>
-      <td contenteditable="true" class="editable" id="r2">5.25</td>
-      <td id="s2c">0</td>
-    </tr>
-    <tr>
-      <td>S3 (197.26–394.52)</td>
-      <td id="s3u">0</td>
-      <td contenteditable="true" class="editable" id="r3">7.15</td>
-      <td id="s3c">0</td>
-    </tr>
-    <tr>
-      <td>S4 (Above 394.52)</td>
-      <td id="s4u">0</td>
-      <td contenteditable="true" class="editable" id="r4">7.8</td>
-      <td id="s4c">0</td>
-    </tr>
-    <tr class="total">
-      <td colspan="3">Total Energy Charge</td>
-      <td id="totalEnergy">0</td>
-    </tr>
-    <tr>
-      <td>Fixed Charge (₹/kW) × Load</td>
-      
-      <td contenteditable="true" class="editable" id="fixedLoad" style="background-color: rgb(248, 202, 202);">3</td>
-      <td  id="fixedRate">85</td>
-      <td id="fixedAmt">0</td>
-    </tr>
-    <tr>
-      <td>Electricity Duty (/kWh)</td>
-      <td id="dutyUnits">0</td>
-      <td  id="dutyRate">0.15</td>
-      <td id="dutyAmt">0</td>
-    </tr>
-    <tr>
-      <td>Fuel Adjustment (/kWh)</td>
-      <td id="fuelUnits">0</td>
-      <td  id="fuelRate">0.14</td>
-      <td id="fuelAmt">0</td>
-    </tr>
-    <tr class="total">
-      <td colspan="3">TOTAL BILL AMOUNT</td>
-      <td id="grandTotal">0</td>
-    </tr>
-  </table>
+ <div   style="max-height: 1200px;color: black;overflow-y: auto;"> <table id="mipl2011Table"><thead id="tableHead"></thead> <tbody id="table2011Body"></tbody></table> </div> <br/>
 
-   <p style="max-width:300px; text-align:center; margin:10px 0 20px; font-size:14px; line-height:1.5; color: red;">
-     *All Rate as per Uttarakhand Power Corporation ltd Monthly Bill August 2025 
-    </p>
-        </div>
- <!-- btn3 -upcl calculator bottam part stop -->
 
-  <!-- btn4 -ID/PASSWORD bottam part START -->
-        <div id="btn4-bottom" class="panel-content">
-       <table id="m1000lTable"></table>
-        </div>
- <!-- btn4 -ID/PASSWORD bottam part stop -->
 
-  <!-- btn5 -cash ledger bottam part start -->
-        <div id="btn5-bottom" class="panel-content">
-         <div id="table5792Container"></div> <br/><br/>
-        </div>
-  <!-- btn5 -cash ledger bottam part stop -->
+</div>  <!-- home btn Div A stop hare -->
+</div> <!-- =================== home button stop =============================== -->
 
-   <!-- btn6 -cash ledger bottam part start -->
-        <div id="btn6-bottom" class="panel-content">
-        
-          
- <!-- ...................................Loan Calculator code strat .........................................................................-->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Loan Calculator</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f7f7f7;
-      padding: 20px;
-    }
-    .box {
-      background: #fff;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
-      max-width: 400px;
-      margin: auto;
-    }
-    h2 { margin-top: 0; }
-    label { display: block; margin: 8px 0 4px; }
-    input {
-      width: 100%;
-      padding: 6px;
-      margin-bottom: 10px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-    }
-    .summary {
-      margin-top: 20px;
-      background: #f0f4ff;
-      padding: 10px;
-      border-radius: 8px;
-    }
-    .summary b { color: #222; }
-  </style>
-</head>
-<body>
-  <div class="box">
-    <h2>Loan Calculator</h2>
 
-    <label>Loan Amount (₹):</label>
-    <input type="number" id="loan" onblur="calculateLoan()">
 
-    <label>Rate of Interest (% p.a.):</label>
-    <input type="number" step="0.01" id="rate" onblur="calculateLoan()">
 
-    <label>EMI (₹):</label>
-    <input type="number" id="emi" onblur="calculateLoan()">
 
-    <label>Tenure (Months):</label>
-    <input type="number" id="months" onblur="calculateLoan()">
 
-    <label>Installment Start Date:</label>
-    <input type="date" id="startDate">
 
-    <div class="summary" id="summary">
-      <h3>📌 Loan Summary</h3>
-      <p><b>Loan Amount:</b> ₹<span id="sLoan">-</span></p>
-      <p><b>Rate of Interest:</b> <span id="sRate">-</span> % p.a.</p>
-      <p><b>EMI:</b> ₹<span id="sEmi">-</span></p>
-      <p><b>Tenure:</b> <span id="sMonths">-</span> months</p>
-      <p><b>Start Date:</b> <span id="sDate">-</span></p>
-    </div>
+
+
+
+
+
+
+<!-- =================== btn2  start hare =============================== -->
+<div class="section" id="btn2">
+    <div class="divA">     <!-- btn2 Div A Start hare -->
+
+  <div style="text-align:center; background-color: #dcdddd; color: #002630; font-weight: bold;"> <strong>Cash Ledger Report</strong></div> <br/>
+
+
+  <!-- Ledger Filter -->
+  <div id="ledger5792Select" >
+    <span style="color: black;">Ledger Name:</span>
+    <input type="text" id="ledger5792Input"
+      style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width: 4in; background-color: rgb(236, 241, 212); font-size: 14px;"
+      placeholder="&#128269 Type to search ledger...">
+    <div id="ledger5792Dropdown" class="dp5792"></div>
+
+    <button onclick="print5792Table()" style="background-color: white;  color: #00254d;border: none; cursor: pointer;">&#128424 Print Table</button>
+<button onclick="refresh5792Table()"  style="background-color: white;  color: #00254d; border: none; cursor: pointer;">&#128260 Refresh Table</button>
   </div>
 
-  <script>
-    function calculateLoan() {
-      let P = parseFloat(document.getElementById("loan").value);   // Loan Amount
-      let R = parseFloat(document.getElementById("rate").value);   // Annual Interest %
-      let EMI = parseFloat(document.getElementById("emi").value);  // EMI
-      let N = parseFloat(document.getElementById("months").value); // Tenure in Months
 
-      let r = (R/100)/12; // monthly rate
+    <div id="search5792Bar" style="padding: 5px 10px;">
+  <input type="text" id="search5792Input" placeholder="&#128269 Search in Cash Ledger  table...">
 
-      // 1️⃣ EMI निकालें
-      if (!EMI && P && R && N) {
-        EMI = (P * r * Math.pow(1+r, N)) / (Math.pow(1+r, N) - 1);
-        document.getElementById("emi").value = EMI.toFixed(2);
-      }
+  <strong style="color: white;"> Select User:</strong>
+    <select id="user5792" style="border-radius: 4px; ">
+    <option value="">--Select Type--</option>
+    <option value="MA">MUKHTIYAR (MA)</option>
+    <option value="TA">TUSHAR (TA)</option>
+    <option value="BANK">BANK</option>
+    <option value="JLN">JOURNAL</option>
+    <option value="DB">DAYBOOK</option>
+  </select>
 
-      // 2️⃣ Tenure निकालें
-      else if (!N && P && R && EMI) {
-        N = Math.log(EMI / (EMI - P*r)) / Math.log(1+r);
-        document.getElementById("months").value = Math.round(N);
-      }
+  <label>From:</label>
+  <input type="date" id="start5792Date">
+  <label>To:</label>
+  <input type="date" id="end5792Date">
 
-      // 3️⃣ Loan Amount निकालें
-      else if (!P && EMI && R && N) {
-        P = (EMI * (Math.pow(1+r, N) - 1)) / (r * Math.pow(1+r, N));
-        document.getElementById("loan").value = P.toFixed(2);
-      }
+  <button id="export5792" data-value="export5792" data-target="table5792Container" style="border: none; font-weight: bold; cursor: pointer; background-color: #424242; color: rgb(245, 242, 163);">&#128228 Export</button>
 
-      // 4️⃣ Rate निकालें (iterative method)
-      else if (!R && P && EMI && N) {
-        let guess = 0.01;
-        let maxIter = 1000;
-        for (let i = 0; i < maxIter; i++) {
-          let emiCalc = (P * guess * Math.pow(1+guess, N)) / (Math.pow(1+guess, N) - 1);
-          if (Math.abs(emiCalc - EMI) < 0.1) break;
-          if (emiCalc > EMI) guess -= 0.0001;
-          else guess += 0.0001;
-        }
-        R = guess * 12 * 100;
-        document.getElementById("rate").value = R.toFixed(2);
-      }
-
-      // Summary update
-      document.getElementById("sLoan").innerText = P ? P.toFixed(2) : "-";
-      document.getElementById("sRate").innerText = R ? R.toFixed(2) : "-";
-      document.getElementById("sEmi").innerText = EMI ? EMI.toFixed(2) : "-";
-      document.getElementById("sMonths").innerText = N ? N : "-";
-      
-      let d = document.getElementById("startDate").value;
-      document.getElementById("sDate").innerText = d ? d : "-";
-    }
-  </script>
-</body>
-</html>
-
- <!-- ...................................Loan Calculator code stop .........................................................................-->
-
-
-
-        </div>
-  <!-- btn6 -cash ledger bottam part stop -->
-
-
-
-
-     <!-- btn7 -cash ledger bottam part start -->
-        <div id="btn7-bottom" class="panel-content">    <table id="AFIMlTable"></table>   </div>
-  <!-- btn7 -cash ledger bottam part stop -->
-
-     <!-- btn8 -user lock/unlock bottam part start -->
-        <div id="btn8-bottom" class="panel-content">    
-            
-          <div style="background:white; padding:20px; border-radius:10px; width:300px; text-align:center;">
-    <h3>Daily Confirmation</h3>
-   
-    <!-- ✅ FORM -->
-    <form id="mainATNForm">
-      <input type="hidden" name="SNo" id="sNo" />
-
-      <label style="color:#fd0505;font-size:90%;font-family:Arial; font-weight: bold;">User Details</label>
-      <input type="hidden" name="User" readonly value="ATN" style="width:100%; margin-bottom:8px; padding:6px;"><br>
-
-
-      <input id="popup-date" type="date" name="Date"  style="width:100%; margin-bottom:8px; padding:6px;"><br>
-
-<script>
-  // ✅ Automatically set today's date
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById("popup-date").value = today;
-</script>
-
-
-
-<label ><b>Select User Name:</b></label><br>
-<select  name="Ledger" required style="width:100%; padding:6px; margin-bottom:8px; border-radius:6px;">
-  <option value="">-- Select Name --</option>
-  <option>Rahul Kumar</option>
-  <option>Anchal</option>
-  <option>V.K Giri</option>
-  <option>Harshit</option>
-  <option>Prakhar</option>
-  <option>Suryabhan</option>
-  <option>Mukhtar (Admin)</option>
-  <option>NITIN</option>
-  <option>Divesh</option>
-  <option>Vijender Kumar Sharma</option>
-</select>
-
-
-
-
-<label><b>Select Status:</b></label><br>
-<select  name="cl1" required style="width:100%; padding:6px; margin-bottom:8px; border-radius:6px;">
-  <option value="">-- Select Name --</option>
-  <option>P</option>
-  <option>A</option>
-  <option>O</option>
-</select>
-
-   <!-- Hidden inputs -->
-<input type="hidden" id="timestampATN" value="">
-<input type="hidden" name="cl2" id="cl2">
-
-<script>
-  // 🔹 Step 1: Ensure timestampATN already has date-time value
-  // (agar aapka system pehle se set kar raha hai, to ye line optional hai)
-  if (!document.getElementById("timestampATN").value) {
-    const now = new Date();
-    document.getElementById("timestampATN").value = now.toLocaleString("en-GB", { hour12: false });
-  }
-
-  // 🔹 Step 2: Combine UBA + timestampATN value
-  const prefix = "UBA";
-  const timestamp = document.getElementById("timestampATN").value;
-  document.getElementById("cl2").value = `${prefix}-${timestamp}`;
-</script>
-
-
-      <input type="submit" id="submitATNButton" value="Submit" style="padding:8px 16px; background:#035b67; color:white; border:none; border-radius:6px; cursor:pointer;">
- 
-
-      <div id="waitATNMessage" style="display:none; color:red; font-size:16px; font-weight:bold; margin-top:10px;"></div>
-    </form>
-  </div>
-        
-        
-        </div>
-  <!-- btn8 -user lock/unlock bottam part stop -->
-
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="modalvcr-footer">
-      <div>
-     
-
-<table id="noticeBoard">  <thead ><tr> <th>Type</th><th>Date</th> <th>Name</th><th>Vehicle No.</th><th>Job No.</th> <th>Status</th> <th>Inv. No.</th></tr></thead><tbody></tbody></table>
-<br/>
-      
-       
-      </div>
-    </div>
   </div>
 
+</div>   <!-- btn2 Div A Stop hare -->
+
+ <div class="divB">     <!-- btn2 Div B Start hare -->
+ <div id="table5792Container"></div> <br/><br/><br/><br/><br/>
+</div>   <!-- btn2 Div B stop hare -->
+
+</div>  <!-- =================== btn2  stop hare =============================== -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ==========  ------------------------------------------xxxxxxxxxxxxxxxxxxxxx-----------------------------------------======================= -->
  
- 
-
-  <script>
-  const navLinks = document.querySelectorAll('nav a');
-
-  // Navigation links click handler
-  navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      // Update active link
-      navLinks.forEach(l => l.classList.remove('active'));
-      link.classList.add('active');
-
-      const target = link.dataset.target;
-
-      // Update top panels
-      document.querySelectorAll('.top-panel .panel-content').forEach(p => p.classList.remove('active'));
-      const top = document.getElementById(`${target}-top`);
-      if (top) top.classList.add('active');
-
-      // Update bottom panels
-      document.querySelectorAll('.bottom-panel .panel-content').forEach(p => p.classList.remove('active'));
-      const bottom = document.getElementById(`${target}-bottom`);
-      if (bottom) bottom.classList.add('active');
-    });
-  });
-
-  // Dropdown handler
-  const dropdown = document.getElementById('navDropdown');
-  dropdown.addEventListener('change', () => {
-    const val = dropdown.value;
-    const target = dropdown.options[dropdown.selectedIndex].getAttribute("data-target");
-
-    if (val) {
-      if (target) {
-        // same-page navigation (trigger like nav link)
-        navLinks.forEach(l => l.classList.remove('active'));
-        const navLink = document.querySelector(`nav a[data-target="${target}"]`);
-        if (navLink) {
-          navLink.classList.add('active');
-        }
-
-        // Panels update
-        document.querySelectorAll('.top-panel .panel-content').forEach(p => p.classList.remove('active'));
-        const top = document.getElementById(`${target}-top`);
-        if (top) top.classList.add('active');
-
-        document.querySelectorAll('.bottom-panel .panel-content').forEach(p => p.classList.remove('active'));
-        const bottom = document.getElementById(`${target}-bottom`);
-        if (bottom) bottom.classList.add('active');
-
-      } else {
-        // external link → open in new tab
-        window.open(val, "_blank");
-      }
-    }
-
-    dropdown.selectedIndex = 0; // reset to "More Options"
-  });
-</script>
-</body>
-</html>
-
-
-
-
-
-
-
-
-<!-- ------------------  ration card script and code start -------------------------------------- -->
-<script>
-const apiRCKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-const sheetRCId = "1E9bwBJjHRo1DhUSNayuJ2j62ilqILvMzBvf3TrQGA9s";
-
-let allData = [];  // { sheet, header, row }
-
-// ✅ Step 1: Get all sheet names
-async function rationcardsheets() {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetRCId}?key=${apiRCKey}`;
-    const res = await fetch(url);
-    const data = await res.json();
-    return data.sheets.map(s => s.properties.title);
-}
-
-// ✅ Step 2: Load all sheets data (header + rows)
-async function loadAllData() {
-    const sheetNames = await rationcardsheets();
-    for (let name of sheetNames) {
-        // Get header (Row 1)
-        const headerUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetRCId}/values/${encodeURIComponent(name + "!A1:Z1")}?key=${apiRCKey}`;
-        const headerRes = await fetch(headerUrl);
-        const headerData = await headerRes.json();
-        const headerRow = headerData.values ? headerData.values[0] : [];
-
-        // Get data rows (From A2)
-        const range = `${name}!A2:Z`;
-        const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetRCId}/values/${encodeURIComponent(range)}?key=${apiRCKey}`;
-        const res = await fetch(url);
-        const data = await res.json();
-
-        if (data.values) {
-            data.values.forEach(row => {
-                allData.push({ sheet: name, header: headerRow, row });
-            });
-        }
-    }
-    console.log("All data loaded:", allData);
-}
-
-// ✅ Step 3: Search with Highlight + Show Header Once
-function rationcardsearch() {
-    const query = document.getElementById("searchInput").value.toLowerCase();
-    const resultsDiv = document.getElementById("results");
-    resultsDiv.innerHTML = "";
-
-    if (query.trim() === "") return;
-
-    const filtered = allData.filter(item =>
-        item.row.some(cell => cell.toLowerCase().includes(query))
-    );
-
-    if (filtered.length === 0) {
-        resultsDiv.innerHTML = "<p>No results found</p>";
-        return;
-    }
-
-    let lastSheet = "";
-
-    filtered.forEach(item => {
-        // Show header if sheet changes
-        if (lastSheet !== item.sheet) {
-            const headerDiv = document.createElement("div");
-            headerDiv.style.backgroundColor = "#f0f0f0";
-            headerDiv.style.fontWeight = "bold";
-            headerDiv.style.padding = "5px";
-            headerDiv.innerHTML = `<b>${item.sheet}</b> → ${item.header.join(" | ")}`;
-            resultsDiv.appendChild(headerDiv);
-            lastSheet = item.sheet;
-        }
-
-        // Highlight match
-        const highlightedRow = item.row.map(cell => {
-            if (cell.toLowerCase().includes(query)) {
-                const regex = new RegExp(`(${query})`, "gi");
-                return cell.replace(regex, `<span style="background-color:blue; color:white;">$1</span>`);
-            }
-            return cell;
-        });
-
-        // Add result row
-        const div = document.createElement("div");
-        div.style.padding = "5px";
-        div.style.borderBottom = "1px solid #ccc";
-        div.innerHTML = highlightedRow.join(" | ");
-        resultsDiv.appendChild(div);
-    });
-}
-
-// ✅ Start
-loadAllData();
-</script>
-
-<!-- ------------------  ration card script and code stop -------------------------------------- -->
-
-
-<!-- ------------------  upcl bill calculator start -------------------------------------- -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Energy Charge Calculator</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background:#f4f6f9; }
-    h2 { color:#333; }
-    
-    input { padding:5px; width:200px; }
-    .total { font-weight:bold; background:#e6f7ff; }
-    .editable { background:#fff8dc; }
-  </style>
-</head>
-<body>
-
-<script>
-  // Default Values
-  const defaults = {
-    r1: 3.65,
-    r2: 5.25,
-    r3: 7.15,
-    r4: 7.80,
-    fixedRate: 85,
-    fixedLoad: 3,
-    dutyRate: 0.15,
-    fuelRate: 0.14
-  };
-
-  // Reset function
-  function resetDefaults() {
-    for (let key in defaults) {
-      document.getElementById(key).innerText = defaults[key];
-    }
-    document.getElementById("units").value = "";
-    document.querySelectorAll("td[id$='u'], td[id$='c'], #totalEnergy, #grandTotal, #fixedAmt, #dutyAmt, #fuelAmt, #dutyUnits, #fuelUnits")
-      .forEach(el => el.innerText = "0");
-    document.getElementById("fixedLoad").innerText = defaults.fixedLoad;
-  }
-
-  // Calculation
-  function calculateBill() {
-    let units = parseFloat(document.getElementById("units").value) || 0;
-
-    let rate1 = parseFloat(document.getElementById("r1").innerText) || defaults.r1;
-    let rate2 = parseFloat(document.getElementById("r2").innerText) || defaults.r2;
-    let rate3 = parseFloat(document.getElementById("r3").innerText) || defaults.r3;
-    let rate4 = parseFloat(document.getElementById("r4").innerText) || defaults.r4;
-
-    let fixedRate = parseFloat(document.getElementById("fixedRate").innerText) || defaults.fixedRate;
-    let fixedLoad = parseFloat(document.getElementById("fixedLoad").innerText) || defaults.fixedLoad;
-    let dutyRate = parseFloat(document.getElementById("dutyRate").innerText) || defaults.dutyRate;
-    let fuelRate = parseFloat(document.getElementById("fuelRate").innerText) || defaults.fuelRate;
-
-    // Slabs
-    let s1 = Math.min(units, 98.63);
-    let s2 = (units > 98.63) ? Math.min(units - 98.63, 98.63) : 0;
-    let s3 = (units > 197.26) ? Math.min(units - 197.26, 197.26) : 0;
-    let s4 = (units > 394.52) ? (units - 394.52) : 0;
-
-    let c1 = s1 * rate1;
-    let c2 = s2 * rate2;
-    let c3 = s3 * rate3;
-    let c4 = s4 * rate4;
-
-    let totalEnergy = c1 + c2 + c3 + c4;
-    let fixed = fixedRate * fixedLoad;
-    let duty = units * dutyRate;
-    let fuel = units * fuelRate;
-    let grandTotal = totalEnergy + fixed + duty + fuel;
-
-    // Update table
-    document.getElementById("s1u").innerText = s1.toFixed(2);
-    document.getElementById("s2u").innerText = s2.toFixed(2);
-    document.getElementById("s3u").innerText = s3.toFixed(2);
-    document.getElementById("s4u").innerText = s4.toFixed(2);
-
-    document.getElementById("s1c").innerText = c1.toFixed(2);
-    document.getElementById("s2c").innerText = c2.toFixed(2);
-    document.getElementById("s3c").innerText = c3.toFixed(2);
-    document.getElementById("s4c").innerText = c4.toFixed(2);
-
-    document.getElementById("totalEnergy").innerText = totalEnergy.toFixed(2);
-
-    document.getElementById("fixedAmt").innerText = fixed.toFixed(2);
-    document.getElementById("dutyUnits").innerText = units.toFixed(2);
-    document.getElementById("dutyAmt").innerText = duty.toFixed(2);
-    document.getElementById("fuelUnits").innerText = units.toFixed(2);
-    document.getElementById("fuelAmt").innerText = fuel.toFixed(2);
-
-    document.getElementById("grandTotal").innerText = grandTotal.toFixed(2);
-  }
-
-  // Use DOMContentLoaded instead of window.onload
-  document.addEventListener("DOMContentLoaded", resetDefaults);
-</script>
-
-
-</body>
-</html>
-<!-- ------------------  upcl bill calculator stop -------------------------------------- -->
-
-
-<!-- यह एक नोट है, M1000 - ID/PASWORD OTHER DETAILS Start Heare -->
-
- <!DOCTYPE html>
- <html>
- <head>
-     <title>ID | PASSWORD ESS</title>
-     <style>
-         body {
-             margin: 0;
-             font-family: Arial, sans-serif;
-         }
-         #searchDiv {
-             position: sticky;
-             top: 0;
-             background: #f8f9fa;
-             padding: 10px;
-             border-bottom: 2px solid #ccc;
-             z-index: 1000; /* Ensure it stays above the table */
-         }
-         
-         tr.hidden {
-             display: none;
-         }
-         #noResultsMessage {
-             text-align: center;
-             margin-top: 10px;
-         }
- 
-        
-         /* यह एक नोट है, Highlight the search value colour in table */
-         .highlight {
-     background-color: rgb(21, 215, 241);
-     font-weight: bold;
- }
-     </style>
-     <script>
-        async function M1000() {
-            const apiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-            const sheetId = "1EOO0QzwNaPhwIfZN_DCLlhQB9yeC-j-GpmtM_6JMRmw";
-            const range = 'PASSWORD!A:E';
-
-            try {
-                const response = await fetch(
-                    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`
-                );
-                const data = await response.json();
-
-                if (data.values) {
-                    const table = document.getElementById('m1000lTable');
-                    table.innerHTML = ''; // Clear existing table content
-
-                    data.values.forEach((row, index) => {
-                        const tr = document.createElement('tr');
-
-                        if (index === 0) {
-                            // Header row
-                            row.forEach((cell) => {
-                                const th = document.createElement('th');
-                                th.textContent = cell;
-                                tr.appendChild(th);
-                            });
-                        } else {
-                            // Data rows
-                            row.forEach((cell, cellIndex) => {
-                                const td = document.createElement('td');
-
-                                // Check if the cell contains a URL and create a clickable link
-                                if (typeof cell === 'string' && (cell.startsWith('http') || cell.startsWith('www'))) {
-                                    const a = document.createElement('a');
-                                    a.href = cell.startsWith('http') ? cell : `http://${cell}`; // Add http:// if missing
-                                    a.innerHTML = "&#128221; Click to View PO"; // Use icon as link text
-                                    a.target = "_blank";
-                                    td.appendChild(a);
-                                } else {
-                                    td.textContent = cell;
-                                }
-
-                                // Highlight row based on column value
-                                if (cellIndex === 0) {
-                                    if (cell.toLowerCase() === "credit note") {
-                                        tr.classList.add('blue');
-                                    } else if (cell.toLowerCase() === "bank") {
-                                        tr.classList.add('red');
-                                    }
-                                }
-
-                                tr.appendChild(td);
-                            });
-                        }
-                        table.appendChild(tr);
-                    });
-                } else {
-                    console.error("No data found in the specified range.");
-                }
-            } catch (error) {
-                console.error("Error fetching data from Google Sheets:", error);
-            }
-        }
-
-        function serchProfile() {
-            const query = document.getElementById('inputArea').value.toLowerCase();
-            const table = document.getElementById('m1000lTable');
-            const rows = document.querySelectorAll('#m1000lTable tr');
-            let visibleRows = 0; // Track the number of visible rows
-
-            rows.forEach((row, index) => {
-                if (index === 0) return; // Skip header row
-
-                // Remove previous highlights
-                row.querySelectorAll('td').forEach(cell => {
-                    cell.innerHTML = cell.textContent; // Reset any highlights
-                });
-
-                if (query.trim() === '') {
-                    row.classList.add('hidden'); // Hide all rows if search bar is blank
-                } else {
-                    const cells = row.querySelectorAll('td');
-                    const rowText = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join(' ');
-
-                    if (rowText.includes(query)) {
-                        row.classList.remove('hidden');
-                        visibleRows++;
-
-                        // Highlight the search term within the row
-                        cells.forEach(cell => {
-                            const cellText = cell.textContent;
-                            const regex = new RegExp(`(${query})`, 'gi');
-                            const highlightedText = cellText.replace(regex, '<span class="highlight">$1</span>');
-                            cell.innerHTML = highlightedText; // Apply highlighting
-                        });
-                    } else {
-                        row.classList.add('hidden');
-                    }
-                }
-            });
-
-            // Show the table if there are visible rows
-            if (visibleRows > 0) {
-                table.style.display = 'table';
-            } else {
-                table.style.display = 'none';
-            }
-
-            // Display a message if no rows are visible
-            const noResultsMessage = document.getElementById('noResultsMessage');
-            if (!visibleRows && query.trim() !== '') {
-                if (!noResultsMessage) {
-                    const message = document.createElement('p');
-                    message.id = 'noResultsMessage';
-                    message.textContent = 'No matching results found.';
-                    document.body.appendChild(message);
-                }
-            } else if (noResultsMessage) {
-                noResultsMessage.remove();
-            }
-        }
-
-        window.onload = () => {
-            // Hide table initially
-           document.getElementById('m1000lTable').style.display = 'none';
-
-            // Load data and set up search
-              M1000();
-           document.getElementById('inputArea').addEventListener('input', serchProfile);
-           };
-    </script>
- </head>
- <body>
-     
-
-    
- </body>
- </html>
- <!-- यह एक नोट है, M1000 - ID/PASWORD OTHER DETAILS stop Heare -->
-
-
-
-
-<!-- ============== CASH LEDGER REPORT (5792) SCRIPT START HARE ================= -->
-<style>
-  #search5792Bar {
-    background-color: #424242;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    flex-wrap: wrap;
-    gap: 10px;
-    box-sizing: border-box;
-  }
-
-  #search5792Input {
-    flex: 1;
-    background-color: #fdfdf6;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 4px;
-    font-size: 14px;
-    outline: none;
-  }
-
-  #search5792Bar label {
-    font-weight: bold;
-    color: rgb(247, 244, 244);
-    margin-left: 10px;
-  }
-
-  #search5792Bar input[type="date"] {
-    padding: 4px 6px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-  }
-
-  #ledger5792Dropdown {
-    position: absolute;
-    background: white;
-    border: 1px solid #ccc;
-    max-height: 600px;
-    overflow-y: auto;
-    width: 4in;
-    display: none;
-    z-index: 999;
-  }
-
-  #ledger5792Dropdown div {
-    padding: 4px;
-    cursor: pointer;
-  }
-
-  #ledger5792Dropdown div:hover {
-    background: #eee;
-  }
-</style>
-
-
-
-<script>
-const api5792Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-const sheet5792Id = "1ECwXrxs8_FDWw1qAC6_qxEwP_HE3SGMM4qNKVZHlIS0";
-const range5792 = "FORM!A:G";
-
-let all5792Data = [];
-let filtered5792Data = [];
-
-// ✅ Convert "7-Oct-2025" → Date object
-function parseCustomDate(dateStr) {
-  if (!dateStr) return null;
-  const parts = dateStr.split("-");
-  if (parts.length !== 3) return null;
-  const day = parseInt(parts[0]);
-  const monthStr = parts[1].toLowerCase().substring(0, 3);
-  const year = parseInt(parts[2]);
-  const months = {
-    jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
-    jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
-  };
-  const month = months[monthStr];
-  if (isNaN(day) || isNaN(year) || month === undefined) return null;
-  return new Date(year, month, day);
-}
-
-// ✅ Fetch Google Sheet Data
-async function fetch5792Data() {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet5792Id}/values/${range5792}?key=${api5792Key}`;
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
-    return data.values || [];
-  } catch (err) {
-    console.error("Error fetching data:", err);
-    return [];
-  }
-}
-
-// ✅ Process Rows (convert only JNP → MA)
-function processRows(rows) {
-  if (!rows || rows.length < 2) return [];
-  const headers = rows[0];
-
-  let data = rows.slice(1).map(r => {
-    let obj = {};
-    headers.forEach((h, i) => obj[h] = r[i] || "");
-    obj._serial = parseFloat(r[0]) || 0;
-    obj._user = (r[1] || "").trim().toUpperCase();
-    obj._type = (r[2] || "").trim().toLowerCase();
-    obj._dateStr = r[3] || "";
-    obj._date = parseCustomDate(r[3]);
-    obj._ledger = r[4] || "";
-    obj._amount = parseFloat(r[5]) || 0;
-
-    // ✅ Only JNP → MA (JNR unaffected)
-    if (obj._user === "JNP") obj._user = "MA";
-
-    return obj;
-  });
-
-  data.sort((a, b) => b._serial - a._serial);
-  return data;
-}
-
-// ✅ Render Table + Color Formatting
-function render5792Table(data) {
-  const container = document.getElementById("table5792Container");
-  if (!data.length) {
-    container.innerHTML = "<p>No records found.</p>";
-    return;
-  }
-
-  const headers = Object.keys(data[0]).filter(h => !h.startsWith("_"));
-  const html = `
-    <table id="myuserTable" border="1" style="border-collapse:collapse;width:100%;font-size:14px;">
-      <thead style="background:#004d80;color:white;">
-        <tr>${headers.map(h => `<th>${h}</th>`).join("")}<th>Running Balance</th></tr>
-      </thead>
-      <tbody>
-        ${data.map(r => {
-          let color = "";
-          const type = r._type.toLowerCase();
-          if (type === "receipt") color = "red";
-          else if (type === "salary") color = "blue";
-          else if (type === "billdr") color = "green";
-
-          return `
-            <tr style="color:${color};">
-              ${headers.map(h => `<td>${r[h]}</td>`).join("")}
-              <td class="runningBalance"></td>
-            </tr>`;
-        }).join("")}
-      </tbody>
-    </table>
-  `;
-  container.innerHTML = html;
-
-  // ✅ Ensure "JNP" converted to "MA" even after render
-  const rows = container.querySelectorAll("#myuserTable tbody tr");
-  rows.forEach(row => {
-    const userCell = row.cells[1];
-    if (!userCell) return;
-    const val = userCell.textContent.trim().toUpperCase();
-    if (val === "JNP") userCell.textContent = "MA"; // Only JNP → MA
-  });
-  //------------------
-  calculate5792RunningBalance();
-}
-
-// ✅ Calculate Running Balance
-function calculate5792RunningBalance() {
-  const rows = Array.from(document.querySelectorAll('#myuserTable tbody tr'));
-  if (rows.length === 0) return;
-
-  const lastRow = rows[rows.length - 1];
-  const lastCells = lastRow.querySelectorAll('td');
-  const lastType = lastCells[2]?.textContent.trim().toLowerCase();
-  const lastAmount = parseFloat(lastCells[5]?.textContent || 0);
-
-  const creditTypes = ["receipt", "salary", "billcr"];
-  let runningBalance = creditTypes.includes(lastType) ? lastAmount : -lastAmount;
-
-  lastRow.querySelector('.runningBalance').textContent = runningBalance.toFixed(2);
-
-  for (let i = rows.length - 2; i >= 0; i--) {
-    const cells = rows[i].querySelectorAll('td');
-    const type = cells[2]?.textContent.trim().toLowerCase();
-    const amount = parseFloat(cells[5]?.textContent || 0);
-
-    if (!isNaN(amount)) {
-      if (creditTypes.includes(type)) {
-        runningBalance += amount;
-      } else if (["payment", "billdr"].includes(type)) {
-        runningBalance -= amount;
-      }
-    }
-    rows[i].querySelector('.runningBalance').textContent = runningBalance.toFixed();
-  }
-}
-
-// ✅ Apply Filters (Search + Ledger + User + Date)
-function apply5792Filters() {
-  const searchVal = document.getElementById("search5792Input")?.value.toLowerCase() || "";
-  const ledgerVal = document.getElementById("ledger5792Input")?.value.toLowerCase() || "";
-  const userVal = document.getElementById("user5792")?.value || "";
-  const startDateStr = document.getElementById("start5792Date")?.value;
-  const endDateStr = document.getElementById("end5792Date")?.value;
-
-  const startDate = startDateStr ? new Date(startDateStr) : null;
-  const endDate = endDateStr ? new Date(endDateStr) : null;
-
-  filtered5792Data = all5792Data.filter(row => {
-    const rowDate = row._date;
-    if (!rowDate) return false;
-
-    const rowTime = rowDate.setHours(0, 0, 0, 0);
-    const startTime = startDate ? startDate.setHours(0, 0, 0, 0) : null;
-    const endTime = endDate ? endDate.setHours(0, 0, 0, 0) : null;
-
-    // ✅ Start date inclusive
-    const inDateRange =
-      (!startTime || rowTime >= startTime) &&
-      (!endTime || rowTime <= endTime);
-
-    const matchesUser = !userVal || row._user === userVal;
-    const matchesLedger = !ledgerVal || (row._ledger || "").toLowerCase().includes(ledgerVal);
-    const matchesSearch = !searchVal || Object.values(row)
-      .some(v => String(v).toLowerCase().includes(searchVal));
-
-    return inDateRange && matchesUser && matchesLedger && matchesSearch;
-  });
-
-  filtered5792Data.sort((a, b) => b._serial - a._serial);
-  render5792Table(filtered5792Data);
-}
-
-// ✅ Ledger Dropdown Setup
-function setupLedger5792Dropdown() {
-  const ledgerInput = document.getElementById("ledger5792Input");
-  const dropdown = document.getElementById("ledger5792Dropdown");
-  if (!ledgerInput || !dropdown) return;
-  
-  const ledgers = [...new Set(all5792Data.map(r => r._ledger).filter(Boolean))];
-
-  ledgerInput.addEventListener("input", () => {
-    const value = ledgerInput.value.trim().toLowerCase();
-    dropdown.innerHTML = "";
-
-    if (!value) {
-      dropdown.style.display = "none";
-      apply5792Filters();
-      return;
-    }
-
-    const matches = ledgers.filter(l => l.toLowerCase().includes(value));
-    matches.forEach(item => {
-      const div = document.createElement("div");
-      div.textContent = item;
-      div.style.padding = "4px";
-      div.style.cursor = "pointer";
-      div.onclick = () => {
-        ledgerInput.value = item;
-        dropdown.style.display = "none";
-        apply5792Filters();
-      };
-      dropdown.appendChild(div);
-    });
-
-    dropdown.style.display = matches.length ? "block" : "none";
-  });
-
-  document.addEventListener("click", e => {
-    if (!ledgerInput.contains(e.target) && !dropdown.contains(e.target)) {
-      dropdown.style.display = "none";
-    }
-  });
-}
-
-// ✅ Setup Event Listeners
-function setup5792Events() {
-  document.getElementById("search5792Input")?.addEventListener("input", apply5792Filters);
-  document.getElementById("user5792")?.addEventListener("change", apply5792Filters);
-  document.getElementById("start5792Date")?.addEventListener("change", apply5792Filters);
-  document.getElementById("end5792Date")?.addEventListener("change", apply5792Filters);
-}
-
-// ✅ Refresh Function (Reload All)
-async function refresh5792Table() {
-  document.getElementById("search5792Input").value = "";
-  document.getElementById("ledger5792Input").value = "";
-  document.getElementById("user5792").value = "";
-  document.getElementById("start5792Date").value = "";
-  document.getElementById("end5792Date").value = "";
-  const rows = await fetch5792Data();
-  all5792Data = processRows(rows);
-  filtered5792Data = [...all5792Data];
-  render5792Table(all5792Data);
-  setupLedger5792Dropdown();
-}
-
-// ✅ Print Function
-// ✅ Print Function (with Ledger Name condition)
-function print5792Table() {
-  const table = document.getElementById("myuserTable");
-  if (!table) {
-    alert("No table data to print!");
-    return;
-  }
-
-  // 🔹 Ledger name fetch karo
-  const ledgerName = document.getElementById("ledger5792Input")?.value.trim() || "";
-  let ledgerHTML = "";
-  if (ledgerName) {
-    ledgerHTML = `<h4 style="text-align:center; margin-top:-10px;">Ledger: ${ledgerName}</h4>`;
-  }
-
-  const printWindow = window.open("", "_blank");
-  printWindow.document.write(`
-    <html>
-      <head>
-        <title>Print Table</title>
-        <style>
-          body { font-family: Arial, sans-serif; margin: 20px; }
-          table { width:100%; border-collapse:collapse; font-size:14px; }
-          th, td { border:1px solid #444; padding:6px; text-align:left; }
-          th { background:#004d80; color:white; }
-          h3, h4 { text-align:center; }
-        </style>
-      </head>
-      <body>
-        <h3>Cash Ledger Report</h3>
-        ${ledgerHTML}
-        ${table.outerHTML}
-      </body>
-    </html>
-  `);
-  printWindow.document.close();
-  printWindow.print();
-}
-
-
-// ✅ Initialize
-document.addEventListener("DOMContentLoaded", async () => {
-  const rows = await fetch5792Data();
-  all5792Data = processRows(rows);
-  filtered5792Data = [...all5792Data];
-  render5792Table(all5792Data);
-  setupLedger5792Dropdown();
-  setup5792Events();
-});
-</script>
-
-
-
-
-<!-- ============== CASH LEDGER REPORT (5792) SCRIPT STOP HARE ================= -->
-
-
-
-
-
-
-
-
-
-
-<!-- loading summry  script start hare -->
-
-<script>
-// ===== CSS injected via JS (no <style> tag used) =====
-const css = `
-   /* Status Colors */
-  .status-loading    { background-color: #ff4d4d; color: #fff; font-weight: bold; }
-  .status-processing { background-color: #fd2222; color: #fff; font-weight: bold; }
-  .status-processed  { background-color: #28a745; color: #fff; font-weight: bold; }
-  .status-complete   { background-color: #28a745; color: #fff; font-weight: bold; }
-  .status-unloading  { background-color: #39b3d8; color: #fff; font-weight: bold; }
-`;
-(function applyCSS(c){
-  const s = document.createElement('style');
-  s.textContent = c;
-  document.head.appendChild(s);
-})(css);
-
-// ===== Notice Board Script =====
-const apiNBKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-const sheetNBId = "1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4";
-const rangeNB = "DATABASE!K:R";
-
-async function loadNoticeBoard() {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetNBId}/values/${rangeNB}?key=${apiNBKey}`;
-  const response = await fetch(url);
-  const data = await response.json();
-  
-  const rows = data.values;
-  const tbody = document.querySelector("#noticeBoard tbody");
-  tbody.innerHTML = "";
-
-  if (!rows || rows.length <= 1) {
-    tbody.innerHTML = `<tr><td colspan="7">No Data Found</td></tr>`;
-    return;
-  }
-
-  // Last 3 days range
-  const today = new Date();
-  let allowedDates = [];
-  for (let i = 0; i < 3; i++) {
-    let d = new Date();
-    d.setDate(today.getDate() - i);
-    allowedDates.push(formatDateToYYYYMMDD(d));
-  }
-
-  rows.forEach((row, index) => {
-    if (index === 0) return; // skip header
-
-    const dateInL = row[1]; // Column L
-    const formattedDate = dateInL ? formatCustomDate(dateInL) : "";
-
-    if (allowedDates.includes(formattedDate)) {
-      const tr = document.createElement("tr");
-
-      for (let i = 0; i <= 6; i++) {
-        const td = document.createElement("td");
-        td.textContent = row[i] || "";
-
-        // Status color coding
-        if (i === 5) {
-          const status = (row[i] || "").toUpperCase();
-          if (status === "LOADING") td.classList.add("status-loading");
-          else if (status === "PROCESSING") td.classList.add("status-processing");
-          else if (status === "PROCESSED") td.classList.add("status-processed");
-          else if (status === "UNLOADING") td.classList.add("status-unloading");
-          else if (status === "COMPLETE") td.classList.add("status-complete");
-        }
-        tr.appendChild(td);
-      }
-
-      tbody.appendChild(tr);
-    }
-  });
-}
-
-// Format date to YYYY-MM-DD
-function formatDateToYYYYMMDD(dateObj) {
-  const y = dateObj.getFullYear();
-  const m = String(dateObj.getMonth() + 1).padStart(2, "0");
-  const d = String(dateObj.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
-}
-
-// Convert "13-Aug-2025" to YYYY-MM-DD
-function formatCustomDate(dateStr) {
-  const months = {
-    Jan: "01", Feb: "02", Mar: "03", Apr: "04", May: "05", Jun: "06",
-    Jul: "07", Aug: "08", Sep: "09", Oct: "10", Nov: "11", Dec: "12"
-  };
-  const parts = dateStr.split("-");
-  if (parts.length === 3) {
-    const day = parts[0].padStart(2, "0");
-    const month = months[parts[1]];
-    const year = parts[2];
-    return `${year}-${month}-${day}`;
-  }
-  return "";
-}
-
-loadNoticeBoard();
-</script>
-<!-- loading summry  script stop hare -->
-
-
-<!-- Current date and time will be displayed here -->
-                    
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-            
-<script>
-    function displayCurrentDateTime() {
-        const now = new Date();
-        
-        // Formatting options
-        const options = { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric', 
-            hour: '2-digit', 
-            minute: '2-digit', 
-            second: '2-digit' 
-        };
-        
-        // Formatting date and time
-        const formattedDateTime = now.toLocaleString('en-US', options);
-        
-        // Displaying in the div
-        document.getElementById("currentDateTime").textContent = `Today: ${formattedDateTime}`;
-    }
-
-    // Call the function on page load to show the current date and time
-    displayCurrentDateTime();
-    
-    // Update the date and time every second
-    setInterval(displayCurrentDateTime, 1000);
-</script>
- <!-- Current date and time will be displayed Stop -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
-<!-- AFI MEDICAL DIV CODE START HARE ...................................... -->
-
-
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-    <meta charset="UTF-8">
-    <title>ID | PASSWORD ESS</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-        }
-
-        /* 🔍 Search Bar */
-        #searchAFIM {
-            position: sticky;
-            top: 0;
-            background: #ffffff;
-            padding: 10px;
-            border-bottom: 2px solid #ccc;
-            z-index: 1000;
-        }
-        #inputAFIMArea {
-            padding: 10px;
-            width: 100%;
-            font-size: 15px;
-            border: 2px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
-       
-
-        /* 🔵 Highlighted search text */
-        .highlight {
-            background-color: rgb(21, 215, 241);
-            font-weight: bold;
-        }
-
-        /* 🎨 Row color types */
-        tr.red td {
-            background: #ffe5e5;
-        }
-        tr.blue td {
-            background: #e6f0ff;
-        }
-
-        /* 🫥 Hide row */
-        tr.hidden {
-            display: none;
-        }
-
-        /* 🚫 No result message */
-        #noResultsAFIMMessage {
-            text-align: center;
-            margin-top: 10px;
-            font-weight: bold;
-            color: #888;
-        }
-
-        /* ⏳ Loader */
-        #loader {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 16px;
-            color: #444;
-        }
-    </style>
-</head>
-<body>
-
-  
-
-    <!-- ⏳ Loader -->
-    <div id="loader">⏳ Fetching data from Google Sheets...</div>
-
- 
-
-
-
-    <script>
-        async function AFIM() {
-            const apiAFIMKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-            const sheetAFIMId = "1C4EeSbCDaVGmJjU3QY2VNfI_IEZn0tZsqXw0ss3G58k";
-            const rangeAFIM = 'AFIM!A:E';
-
-            const loader = document.getElementById('loader');
-            const table = document.getElementById('AFIMlTable');
-
-            try {
-                const response = await fetch(
-                    `https://sheets.googleapis.com/v4/spreadsheets/${sheetAFIMId}/values/${rangeAFIM}?key=${apiAFIMKey}`
-                );
-                const data = await response.json();
-
-                loader.textContent = ""; // remove loader
-
-                if (data.values && data.values.length > 0) {
-                    table.innerHTML = '';
-
-                    data.values.forEach((row, index) => {
-                        const tr = document.createElement('tr');
-
-                        if (index === 0) {
-                            // Header Row
-                            row.forEach(cell => {
-                                const th = document.createElement('th');
-                                th.textContent = cell;
-                                tr.appendChild(th);
-                            });
-                        } else {
-                            // Data Rows
-                            row.forEach((cell, cellIndex) => {
-                                const td = document.createElement('td');
-
-                                // If cell contains a link
-                                if (typeof cell === 'string' && (cell.startsWith('http') || cell.startsWith('www'))) {
-                                    const a = document.createElement('a');
-                                    a.href = cell.startsWith('http') ? cell : `http://${cell}`;
-                                    a.innerHTML = "&#128221; Click to View PO";
-                                    a.target = "_blank";
-                                    td.appendChild(a);
-                                } else {
-                                    td.textContent = cell;
-                                }
-
-                                // Colorize rows based on first column
-                                if (cellIndex === 0) {
-                                    if (cell.toLowerCase() === "credit note") tr.classList.add('blue');
-                                    if (cell.toLowerCase() === "bank") tr.classList.add('red');
-                                }
-
-                                tr.appendChild(td);
-                            });
-                        }
-                        table.appendChild(tr);
-                    });
-                } else {
-                    loader.textContent = "⚠️ No data found in the sheet.";
-                }
-            } catch (error) {
-                loader.textContent = "❌ Error fetching data from Google Sheets.";
-                console.error(error);
-            }
-        }
-
-        function serchAFIMProfile() {
-            const query = document.getElementById('inputAFIMArea').value.toLowerCase();
-            const table = document.getElementById('AFIMlTable');
-            const rows = document.querySelectorAll('#AFIMlTable tr');
-            let visibleRows = 0;
-
-            rows.forEach((row, index) => {
-                if (index === 0) return;
-
-                row.querySelectorAll('td').forEach(cell => {
-                    cell.innerHTML = cell.textContent;
-                });
-
-                if (query.trim() === '') {
-                    row.classList.add('hidden');
-                } else {
-                    const rowText = Array.from(row.querySelectorAll('td'))
-                        .map(cell => cell.textContent.toLowerCase())
-                        .join(' ');
-
-                    if (rowText.includes(query)) {
-                        row.classList.remove('hidden');
-                        visibleRows++;
-
-                        // Highlight matching text
-                        row.querySelectorAll('td').forEach(cell => {
-                            const regex = new RegExp(`(${query})`, 'gi');
-                            cell.innerHTML = cell.textContent.replace(regex, '<span class="highlight">$1</span>');
-                        });
-                    } else {
-                        row.classList.add('hidden');
-                    }
-                }
-            });
-
-            // Show/hide no results message
-            let msg = document.getElementById('noResultsAFIMMessage');
-            if (!visibleRows && query.trim() !== '') {
-                if (!msg) {
-                    msg = document.createElement('p');
-                    msg.id = 'noResultsAFIMMessage';
-                    msg.textContent = 'No matching results found.';
-                    document.body.appendChild(msg);
-                }
-            } else if (msg) {
-                msg.remove();
-            }
-
-            // Show table only if visible rows
-            table.style.display = visibleRows ? 'table' : 'none';
-        }
-
-        // ✅ Safe DOM Load
-        document.addEventListener("DOMContentLoaded", () => {
-            document.getElementById('AFIMlTable').style.display = 'none';
-            AFIM();
-            document.getElementById('inputAFIMArea').addEventListener('input', serchAFIMProfile);
-        });
-    </script>
-</body>
-</html>
-
-
-
-<!-- AFI MEDICAL DIV CODE STOP HARE ...................................... -->
-
-
-
-
-
-
-
-
-
-<!-- 2011 table code and script start HARE ...................................... -->
+<!-- ===================================  2011 table code and script start HARE ================================== -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -2082,17 +641,19 @@ loadNoticeBoard();
 </style>
 </head>
 <body>
-
+<!-- ================================================ Dishplay Report Script start hare ========================================================= -->
 <script>
 const api2011Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheet2011Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
 const range2011 = "FORM!A:M";
 const addressrange2011 = "ADDRESS!A:M"; //xxxxxxxxxxxxxxxxxx
+const pswrange2011 = "M1000!A:F";
 const atnrange2011 = "ATN!A:M";
 const apiFileUrl = "https://script.google.com/macros/s/AKfycbyKeTGzkEsRd26seiog3jtfEXcLXNK4_fvt9b6D7kYtFXhInLr3J4PqCCgMxmsJ7rim/exec";
 
 let sheetData = [];
 let addressData = [];
+let pswData = [];
 let atnData = [];
 let filteredData = [];
 let currentFilterType = "";
@@ -2102,12 +663,13 @@ let selectedPO = ""; // sales btn ke poreff  ke lye po dropdown
 // === HEADERS and COLUMN MAPS ===
 const tableConfig = {
   search: { headers: ["Sr No","Type","Date","Ledger","Rcpt/Inv. No.","Tr./Ty","Reff. No.","Amount","Weight","Rate","Vehicle No.","V.Type"], cols:[0,1,2,3,4,11,5,6,7,8,9,10]},
-  ledger: { headers: ["Sr No","Type","Date","Ledger","Rcpt/Inv. No.","Tr./Ty","Reff. No.","Amount","Weight","Rate","Vehicle No.","V.Type"], cols:[0,1,2,3,4,11,5,6,7,8,9,10]},
+  ledger: { headers: ["Sr No","Type","Date","Ledger","Rcpt/Inv. No.","Reff. No.","Amount","Weight","Rate","Vehicle No.","V.Type"], cols:[0,1,2,3,4,5,6,7,8,9,10]},
   poreff: { headers: ["Sr No","User","Order By","Clint Name","Project Name","Address","PO/Reff No.","Status","PO Amt.","PO Weight","V.Type"], cols:[0,1,2,3,4,5,6,7,8,9,10]},
   receipt: { headers:["Sr No","Type","Date","Ledger","Amount","V .Type"], cols:[0,1,2,3,4,10]},
   sale: { headers:["Sr No","Type","Date","Ledger","Inv. No.","Reff. No.","Amount","Weight","Rate","Vehicle No.","V.Type"], cols:[0,1,2,3,4,5,6,7,8,9,10]},
   address: { headers:["Clint","Address","State","Type","GSTIN","Contect Details"], cols:[0,1,2,3,4,5]},
-  atn: { headers:["Sr No","Type","Date","Employee","P/A","Login Time"], cols:[0,1,2,3,4,5]}
+  atn: { headers:["Sr No","Type","Date","Employee","P/A","Login Time","IP Details"], cols:[0,1,2,3,4,5,6]},
+  psw: { headers:["Sr No","Type","Firm","User ID/ Password","Account Details","Other"], cols:[0,1,2,3,4,5]}
 };
 
 // === Load Sheet Data ===
@@ -2120,6 +682,10 @@ async function load2011Data() {
     const resAddr = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheet2011Id}/values/${addressrange2011}?key=${api2011Key}`);
     const dataAddr = await resAddr.json();
     addressData = dataAddr.values || [];
+
+     const respsw = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheet2011Id}/values/${pswrange2011}?key=${api2011Key}`);
+    const datapsw = await respsw.json();
+    pswData = datapsw.values || [];
 
      const resAtn = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheet2011Id}/values/${atnrange2011}?key=${api2011Key}`);
     const dataAtn = await resAtn.json();
@@ -2232,8 +798,8 @@ function render2011Table(rows){
       const amount = parseFloat(r[6]) || 0;
       const weight = parseFloat(r[7]) || 0;
       if(type==="TDS") totalTds+=receipt;
-      else if(typeCell==="BANK" || typeCell === "CASH") totalReceipt+=receipt;
-      else if(type==="TAX INVOICE"){ totalBill+=amount; totalPEBWeight+=weight;}
+      else if(type === "BANK" || type === "CASH") totalReceipt+=receipt;
+      else if(type==="TAX INVOICE"   || type === "CHALLAN"){ totalBill+=amount; totalPEBWeight+=weight;}
       else if(type==="CREDIT NOTE") totalCn+=amount;
     }
   });
@@ -2310,7 +876,7 @@ function updateTotals(totalTds,totalReceipt,totalBill,totalCn,totalPEBWeight){
   document.getElementById("totalBill").textContent=totalBill.toFixed(0);
   document.getElementById("totalCn").textContent=totalCn.toFixed(0);
   document.getElementById("totalPEBWeight").textContent=totalPEBWeight.toFixed(0);
-  const difference = totalBill-totalReceipt-totalTds+totalCn;
+  const difference = totalBill-totalReceipt-totalTds+totalCn;         // BALANCE CALCULATION
   const diffElement=document.getElementById("totalDifference");
   diffElement.textContent=difference.toFixed(0);
   diffElement.style.color = difference<0 ? "red":"green";
@@ -2444,7 +1010,9 @@ function applySearch() {
     );
   } else if (currentFilterType === "address") {
     dataToSearch = addressData;
-  } else if (currentFilterType === "atn") {
+  } else if (currentFilterType === "psw") {
+    dataToSearch = pswData;
+  }  else if (currentFilterType === "atn") {
     dataToSearch = atnData;
   }
 
@@ -2627,49 +1195,323 @@ document.getElementById("refresh2011Btn")?.addEventListener("click", refresh2011
 </script>
 
 
-
+ 
+<!-- ===================================  2011 table code and script stop HARE ================================== -->
 
 </body>
 </html>
 
-<!-- 2011 table code and script stop HARE ...................................... -->
 
 
+<!-- ========= file export in excel & html script start ============ -->
+   <style>
+  .export-menu {
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    border-radius: 6px;
+    display: none;
+    flex-direction: column;
+    min-width: 100px;
+    z-index: 100;
+  }
+
+  .export-menu button {
+    padding: 8px 8px;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .export-menu button:hover {
+    background: #f0f0f0;
+    color: #0026ff;
+  }
+
+</style>
+
+<!-- ====== Export Menu ====== -->
+<div id="exportMenu" style="display:none; flex-direction:column; position:absolute; background:#fff; border:1px solid #ccc; padding:5px; z-index:999;">
+  <button data-type="html">⬇️ Export HTML</button>
+  <button data-type="excel">📊 Export Excel</button>
+</div>
 
 
-<!-- ================ user lock/unlock script strat ===============================-->
+<!-- ====== Script Section ====== -->
 <script>
-// ✅ Google Apps Script URL
-const scriptATNURL = 'https://script.google.com/macros/s/AKfycbxNCtOS7UZu2mw_Zuwkx-KHdORL1DATDoSp0Gv2Q5EQw6CKJOSPowawczVE_7uYHQw_/exec';
+// === Export Menu Toggle ===
+const exportMenu = document.getElementById("exportMenu");
+let currentTargetId = null;
 
-// ✅ Submit popup form
+// Handle all export buttons dynamically
+document.querySelectorAll("[id^='export']").forEach(btn => {
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const rect = btn.getBoundingClientRect();
+    exportMenu.style.top = rect.bottom + "px";
+    exportMenu.style.left = rect.left + "px";
+    exportMenu.style.display = "flex";
+    currentTargetId = btn.dataset.target;
+  });
+});
+
+// Hide menu on outside click
+document.addEventListener("click", (e) => {
+  if (!exportMenu.contains(e.target)) {
+    exportMenu.style.display = "none";
+  }
+});
+
+// === Export Buttons Action ===
+document.querySelectorAll("#exportMenu button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const type = btn.dataset.type;
+    exportRenderedTable(currentTargetId, type);
+    exportMenu.style.display = "none";
+  });
+});
+
+// === Export Rendered Table Function ===
+function exportRenderedTable(targetId, type) {
+  const targetElement = document.getElementById(targetId);
+
+  if (!targetElement) {
+    alert("⚠️ No table data to export!");
+    return;
+  }
+
+  // clone the table or div
+  const cloned = targetElement.cloneNode(true);
+  const wrapper = document.createElement("div");
+  wrapper.appendChild(cloned);
+  const htmlData = wrapper.innerHTML;
+
+  let blob;
+  let filename;
+
+  if (type === "html") {
+    blob = new Blob([htmlData], { type: "text/html" });
+    filename = `${targetId}.html`;
+  } else if (type === "excel") {
+    blob = new Blob([htmlData], { type: "application/vnd.ms-excel" });
+    filename = `${targetId}.xls`;
+  }
+
+  triggerDownload(blob, filename);
+}
+
+function triggerDownload(blob, filename) {
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+</script>
+<!-- ========= file export in excel & html script stop ============ -->
+
+
+
+<!-- ================================================ Dishplay Report Script stop hare ========================================================= -->
+
+
+<!-- ==========  ------------------------------------------xxxxxxxxxxxxxxxxxxxxx-----------------------------------------======================= -->
+
+
+
+
+
+
+
+
+
+<!-- ================  id unlock by admin (ULU) script and code start hare ===============================-->
+
+<!-- 🔹 Popup Form Container -->
+<div id="ULUPopup" class="popupULU-overlay">
+  <div class="popupULU-content slide-in">
+    <span id="closeULUBtn" class="close-btn">&times;</span>
+
+    <form id="mainULUForm" style="display:flex; align-items:center; gap:10px; flex-wrap:nowrap;">
+      <input type="hidden" name="SNo" id="sNo" />
+      <input type="hidden" name="User" readonly value="ATN">
+
+
+
+<label style="font-size:13px;font-weight:bold;">IP No.:</label>
+      <input type="text" id="ipBox" name="cl3" readonly placeholder="IP Loading..." 
+       style="padding:8px; width:250px; border:1px solid #aaa; border-radius:6px;">
+
+<script>
+// IP Fetch Function
+fetch("https://api.ipify.org?format=json")
+  .then(response => response.json())
+  .then(data => {
+     document.getElementById("ipBox").value = data.ip; // Input me IP set
+  })
+  .catch(() => {
+     document.getElementById("ipBox").value = "Error fetching IP";
+  });
+</script>
+
+
+
+      <!-- Date -->
+      <label style="font-size:13px;font-weight:bold;">Date:</label>
+      <input id="popupULU-date" type="date" name="Date" style="padding:4px 6px; border-radius:6px; border:1px solid #ccc;">
+
+      <!-- Ledger -->
+      <label style="font-size:13px;font-weight:bold;">User:</label>
+      <select name="Ledger" required style="padding:4px 6px; border-radius:6px; border:1px solid #ccc;">
+        <option value="">Select</option>
+        <option>Rahul Kumar</option>
+        <option>Anchal</option>
+        <option>V.K Giri</option>
+        <option>Harshit</option>
+        <option>Prakhar</option>
+        <option>Suryabhan</option>
+        <option>Mukhtar (Admin)</option>
+        <option>NITIN</option>
+        <option>Divesh</option>
+        <option>Vijender Kumar Sharma</option>
+      </select>
+
+      <!-- Status -->
+      <label style="font-size:13px;font-weight:bold;">Status:</label>
+      <select name="cl1" required style="padding:4px 6px; border-radius:6px; border:1px solid #ccc;">
+        <option value="">Select</option>
+        <option>P</option>
+        <option>A</option>
+        <option>O</option>
+      </select>
+
+      <!-- Hidden inputs -->
+      <input type="hidden" id="timestampULU" name="timestampULU">
+      <input type="hidden" name="cl2" id="cl2">
+
+      <!-- Submit -->
+      <input type="submit" id="submitULUButton" value="Submit"
+        style="padding:6px 14px; background:#035b67; color:white; border:none; border-radius:6px; cursor:pointer;">
+    </form>
+
+  </div>
+</div>
+
+<!-- ✅ CSS -->
+<style>
+
+
+/* Popup Overlay */
+.popupULU-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);  /* 40% transparent background */
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* Popup Box */
+.popupULU-content {
+  background: rgba(255,255,255,0.7); /* light transparent white */
+  padding: 10px 16px;
+  border-radius: 12px;
+  width: 12in;
+  height: 0.3in;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: all 0.4s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+/* Slide-in Animation */
+.popupULU-overlay.active .popupULU-content {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.close-btn {
+  position: absolute;
+  top: 5px;
+  right: 12px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  color: #035b67;
+}
+</style>
+
+<!-- ✅ JavaScript -->
+<script>
+
+  // ------------- note :- jis button se ye open poup ope karna hai usme id="openULUBtn" ye add kro
+const popup = document.getElementById("ULUPopup");
+const openBtn = document.getElementById("openULUBtn");
+const closeBtn = document.getElementById("closeULUBtn");
+const scriptULUURL = 'https://script.google.com/macros/s/AKfycbxNCtOS7UZu2mw_Zuwkx-KHdORL1DATDoSp0Gv2Q5EQw6CKJOSPowawczVE_7uYHQw_/exec';
+
+// 🔹 Open Popup
+openBtn.addEventListener("click", () => {
+  popup.classList.add("active");
+  popup.style.display = "flex";
+
+  // Auto set today's date
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById("popupULU-date").value = today;
+
+  // Set timestamp + cl2
+  const now = new Date();
+  const timestamp = now.toLocaleString("en-GB", { hour12: false });
+  document.getElementById("timestampULU").value = timestamp;
+  document.getElementById("cl2").value = `UBA-${timestamp}`;
+});
+
+// 🔹 Close Popup Function
+function closeULUPopup() {
+  popup.classList.remove("active");
+  setTimeout(() => popup.style.display = "none", 400);
+}
+
+// 🔹 Close Button
+closeBtn.addEventListener("click", closeULUPopup);
+
+// 🔹 Click outside form closes popup
+popup.addEventListener("click", (e) => {
+  if (e.target.id === "ULUPopup") closeULUPopup();
+});
+
+// 🔹 Submit Form
 document.addEventListener("submit", async function (e) {
   const form = e.target;
-  if (form.id !== "mainATNForm") return;
+  if (form.id !== "mainULUForm") return;
   e.preventDefault();
 
-  const submitBtn = document.getElementById("submitATNButton");
-  const waitMsg = document.getElementById("waitATNMessage");
+  const submitBtn = document.getElementById("submitULUButton");
+  // const waitMsg = document.getElementById("waitULUMessage");
 
   submitBtn.disabled = true;
   submitBtn.value = "Please wait...";
-  waitMsg.innerText = "Submitting...";
-  waitMsg.style.display = "block";
-
-  // ✅ Timestamp add karo
-  const now = new Date();
-  document.getElementById('timestampATN').value =
-    `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+ // waitMsg.innerText = "Submitting...";
+// waitMsg.style.display = "block";
 
   try {
     const formData = new FormData(form);
-    const response = await fetch(scriptATNURL, { method: 'POST', body: formData });
+    const response = await fetch(scriptULUURL, { method: 'POST', body: formData });
     const result = await response.json();
 
     if (result.result === 'success') {
-      alert('✅ Success Have a Nice Day!');
+      alert('✅ Attendance Submitted Successfully!');
       form.reset();
-     // closePopup(); // ✅ auto close
+      closeULUPopup(); // Auto close popup
     } else {
       alert(`❌ Error: ${result.error || 'Unknown error occurred.'}`);
     }
@@ -2678,13 +1520,11 @@ document.addEventListener("submit", async function (e) {
   } finally {
     submitBtn.disabled = false;
     submitBtn.value = "Submit";
-    setTimeout(() => (waitMsg.style.display = 'none'), 2000);
+   // setTimeout(() => (waitMsg.style.display = 'none'), 2000);
   }
 });
-
-// checkPopupCondition(user.displayName); remove this line in login section if username not showing auto
 </script>
-<!-- ================ user lock/unlock script stop ===============================-->
+<!-- ================  id unlock by admin (ULU) script and code stop hare ===============================-->
 
 
 
@@ -2694,3 +1534,629 @@ document.addEventListener("submit", async function (e) {
 
 
 
+
+
+
+
+
+
+
+
+
+<!-- ============== CASH LEDGER REPORT (5792) SCRIPT START HARE ================= -->
+<style>
+  #search5792Bar {
+    background-color: #424242;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+    box-sizing: border-box;
+  }
+
+  #search5792Input {
+    flex: 1;
+    background-color: #fdfdf6;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+  }
+
+  #search5792Bar label { font-weight: bold; color: rgb(247, 244, 244); margin-left: 10px;}
+  #search5792Bar input[type="date"] { padding: 4px 6px; border-radius: 4px;border: 1px solid #ccc; font-size: 14px;}
+
+
+.dp5792 { position: absolute;top: 80px;left: 0; right: 0;background: white; border: 6px solid #280101;height: 700px; width: 500px;overflow-y: auto; display: none; z-index: 100;background-color: #e4e4e6;}
+.dp5792 div { padding: 6px; cursor: pointer;}
+.dp5792 div:hover { background: #e8cd36; color: rgb(1, 3, 30);font-weight: bold;}
+
+</style>
+
+
+
+<script>
+const api5792Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheet5792Id = "1ECwXrxs8_FDWw1qAC6_qxEwP_HE3SGMM4qNKVZHlIS0";
+const range5792 = "FORM!A:G";
+
+let all5792Data = [];
+let filtered5792Data = [];
+
+// ✅ Convert "7-Oct-2025" → Date object
+function parseCustomDate(dateStr) {
+  if (!dateStr) return null;
+  const parts = dateStr.split("-");
+  if (parts.length !== 3) return null;
+  const day = parseInt(parts[0]);
+  const monthStr = parts[1].toLowerCase().substring(0, 3);
+  const year = parseInt(parts[2]);
+  const months = {
+    jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+    jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
+  };
+  const month = months[monthStr];
+  if (isNaN(day) || isNaN(year) || month === undefined) return null;
+  return new Date(year, month, day);
+}
+
+// ✅ Fetch Google Sheet Data
+// ✅ Fetch Google Sheet Data (skip rows where column B == "DLT")
+async function fetch5792Data() {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet5792Id}/values/${range5792}?key=${api5792Key}`;
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    let rows = data.values || [];
+
+    // 🔹 Skip header row (first row)
+    const header = rows[0];
+    const filtered = rows.slice(1).filter(row => (row[1] || "").trim().toUpperCase() !== "DLT");
+
+    // 🔹 Combine header + filtered rows
+    const finalData = [header, ...filtered];
+    return finalData;
+  } catch (err) {
+    console.error("Error fetching data:", err);
+    return [];
+  }
+}
+
+// ✅ Process Rows (convert only JNP → MA)
+function processRows(rows) {
+  if (!rows || rows.length < 2) return [];
+  const headers = rows[0];
+
+  let data = rows.slice(1).map(r => {
+    let obj = {};
+    headers.forEach((h, i) => obj[h] = r[i] || "");
+    obj._serial = parseFloat(r[0]) || 0;
+    obj._user = (r[1] || "").trim().toUpperCase();
+    obj._type = (r[2] || "").trim().toLowerCase();
+    obj._dateStr = r[3] || "";
+    obj._date = parseCustomDate(r[3]);
+    obj._ledger = r[4] || "";
+    obj._amount = parseFloat(r[5]) || 0;
+
+    // ✅ Only JNP → MA (JNR unaffected)
+    if (obj._user === "JNP") obj._user = "MA";
+
+    return obj;
+  });
+
+  data.sort((a, b) => b._serial - a._serial);
+  return data;
+}
+
+// ✅ Render Table + Color Formatting
+function render5792Table(data) {
+  const container = document.getElementById("table5792Container");
+  if (!data.length) {
+    container.innerHTML = "<p>No records found.</p>";
+    return;
+  }
+
+  // ✅ Ensure each record has parsed date before sorting  ---------------
+  data.forEach(r => {
+    if (!r._date && r["Date"]) {
+      const d = r["Date"].trim();
+      const parts = d.split("-");
+      if (parts.length === 3) {
+        const day = parseInt(parts[0]);
+        const mon = parts[1].substring(0, 3).toLowerCase();
+        const yr = parseInt(parts[2]);
+        const months = {
+          jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+          jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
+        };
+        r._date = new Date(yr, months[mon], day);
+      } else {
+        r._date = null;
+      }
+    }
+  });
+
+  // ✅ Sort by date descending (latest → oldest)
+  data.sort((a, b) => {
+    const da = a._date ? a._date.getTime() : 0;
+    const db = b._date ? b._date.getTime() : 0;
+    return db - da;
+  });
+//----- DATE WISE TABLE SHORT ----------------
+
+
+  const headers = Object.keys(data[0]).filter(h => !h.startsWith("_"));
+  const html = `
+    <table id="my5792Table" border="1" style="border-collapse:collapse;width:100%;font-size:14px;">
+      <thead style="background:#004d80;color:white;">
+        <tr>${headers.map(h => `<th>${h}</th>`).join("")}<th>Running Balance</th></tr>
+      </thead>
+      <tbody>
+        ${data.map(r => {
+          let color = "";
+          const type = r._type.toLowerCase();
+          if (type === "receipt") color = "red";
+          else if (type === "salary") color = "blue";
+          else if (type === "billdr") color = "green";
+
+          return `
+            <tr style="color:${color};">
+              ${headers.map(h => `<td>${r[h]}</td>`).join("")}
+              <td class="runningBalance"></td>
+            </tr>`;
+        }).join("")}
+      </tbody>
+    </table>
+  `;
+  container.innerHTML = html;
+
+  // ✅ Ensure "JNP" converted to "MA" even after render
+  const rows = container.querySelectorAll("#my5792Table tbody tr");
+  rows.forEach(row => {
+    const userCell = row.cells[1];
+    if (!userCell) return;
+    const val = userCell.textContent.trim().toUpperCase();
+    if (val === "JNP") userCell.textContent = "MA"; // Only JNP → MA
+  });
+  //------------------
+  calculate5792RunningBalance();
+}
+
+// ✅ Calculate Running Balance
+function calculate5792RunningBalance() {
+  const rows = Array.from(document.querySelectorAll('#my5792Table tbody tr'));
+  if (rows.length === 0) return;
+
+  const lastRow = rows[rows.length - 1];
+  const lastCells = lastRow.querySelectorAll('td');
+  const lastType = lastCells[2]?.textContent.trim().toLowerCase();
+  const lastAmount = parseFloat(lastCells[5]?.textContent || 0);
+
+  const creditTypes = ["receipt", "salary", "billcr"];
+  let runningBalance = creditTypes.includes(lastType) ? lastAmount : -lastAmount;
+
+  lastRow.querySelector('.runningBalance').textContent = runningBalance.toFixed(2);
+
+  for (let i = rows.length - 2; i >= 0; i--) {
+    const cells = rows[i].querySelectorAll('td');
+    const type = cells[2]?.textContent.trim().toLowerCase();
+    const amount = parseFloat(cells[5]?.textContent || 0);
+
+    if (!isNaN(amount)) {
+      if (creditTypes.includes(type)) {
+        runningBalance += amount;
+      } else if (["payment", "billdr"].includes(type)) {
+        runningBalance -= amount;
+      }
+    }
+    rows[i].querySelector('.runningBalance').textContent = runningBalance.toFixed();
+  }
+}
+
+// ✅ Apply Filters (Search + Ledger + User + Date)
+function apply5792Filters() {
+  const searchVal = document.getElementById("search5792Input")?.value.toLowerCase() || "";
+  const ledgerVal = document.getElementById("ledger5792Input")?.value.toLowerCase() || "";
+  const userVal = document.getElementById("user5792")?.value || "";
+  const startDateStr = document.getElementById("start5792Date")?.value;
+  const endDateStr = document.getElementById("end5792Date")?.value;
+
+  const startDate = startDateStr ? new Date(startDateStr) : null;
+  const endDate = endDateStr ? new Date(endDateStr) : null;
+
+  filtered5792Data = all5792Data.filter(row => {
+    const rowDate = row._date;
+    if (!rowDate) return false;
+
+    const rowTime = rowDate.setHours(0, 0, 0, 0);
+    const startTime = startDate ? startDate.setHours(0, 0, 0, 0) : null;
+    const endTime = endDate ? endDate.setHours(0, 0, 0, 0) : null;
+
+    // ✅ Start date inclusive
+    const inDateRange =
+      (!startTime || rowTime >= startTime) &&
+      (!endTime || rowTime <= endTime);
+
+    const matchesUser = !userVal || row._user === userVal;
+    const matchesLedger = !ledgerVal || (row._ledger || "").toLowerCase().includes(ledgerVal);
+    const matchesSearch = !searchVal || Object.values(row)
+      .some(v => String(v).toLowerCase().includes(searchVal));
+
+    return inDateRange && matchesUser && matchesLedger && matchesSearch;
+  });
+
+  filtered5792Data.sort((a, b) => b._serial - a._serial);
+  render5792Table(filtered5792Data);
+}
+
+// ✅ Ledger Dropdown Setup
+function setupLedger5792Dropdown() {
+  const ledgerInput = document.getElementById("ledger5792Input");
+  const dropdown = document.getElementById("ledger5792Dropdown");
+  if (!ledgerInput || !dropdown) return;
+
+  // ✅ Create sorted ledger list
+  const ledgers = [...new Set(all5792Data.map(r => r._ledger).filter(Boolean))].sort((a, b) =>
+    a.localeCompare(b)
+  );
+
+  // ✅ On input → filter dropdown
+  ledgerInput.addEventListener("input", () => {
+    const value = ledgerInput.value.trim().toLowerCase();
+    dropdown.innerHTML = "";
+
+    const matches = value
+      ? ledgers.filter(l => l.toLowerCase().includes(value))
+      : ledgers; // if no input, show all
+
+    matches.forEach(item => {
+      const div = document.createElement("div");
+      div.textContent = item;
+      div.style.padding = "4px";
+      div.style.cursor = "pointer";
+      div.onclick = () => {
+        ledgerInput.value = item;
+        dropdown.style.display = "none";
+        apply5792Filters();
+      };
+      dropdown.appendChild(div);
+    });
+
+    dropdown.style.display = matches.length ? "block" : "none";
+  });
+
+  // ✅ On focus (click on input) → show full dropdown
+  ledgerInput.addEventListener("focus", () => {
+    dropdown.innerHTML = "";
+    ledgers.forEach(item => {
+      const div = document.createElement("div");
+      div.textContent = item;
+      div.style.padding = "4px";
+      div.style.cursor = "pointer";
+      div.onclick = () => {
+        ledgerInput.value = item;
+        dropdown.style.display = "none";
+        apply5792Filters();
+      };
+      dropdown.appendChild(div);
+    });
+    dropdown.style.display = ledgers.length ? "block" : "none";
+  });
+
+  // ✅ Hide dropdown when clicked outside
+  document.addEventListener("click", e => {
+    if (!ledgerInput.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.style.display = "none";
+    }
+  });
+}
+//-------------------------------------------------------
+
+
+// ✅ Setup Event Listeners
+function setup5792Events() {
+  document.getElementById("search5792Input")?.addEventListener("input", apply5792Filters);
+  document.getElementById("user5792")?.addEventListener("change", apply5792Filters);
+  document.getElementById("start5792Date")?.addEventListener("change", apply5792Filters);
+  document.getElementById("end5792Date")?.addEventListener("change", apply5792Filters);
+}
+
+// ✅ Refresh Function (Reload All)
+async function refresh5792Table() {
+  document.getElementById("search5792Input").value = "";
+  document.getElementById("ledger5792Input").value = "";
+  document.getElementById("user5792").value = "";
+  document.getElementById("start5792Date").value = "";
+  document.getElementById("end5792Date").value = "";
+  const rows = await fetch5792Data();
+  all5792Data = processRows(rows);
+  filtered5792Data = [...all5792Data];
+  render5792Table(all5792Data);
+  setupLedger5792Dropdown();
+}
+
+// ✅ Print Function
+// ✅ Print Function (with Ledger Name condition)
+function print5792Table() {
+  const table = document.getElementById("my5792Table");
+  if (!table) {
+    alert("No table data to print!");
+    return;
+  }
+
+  // 🔹 Ledger name fetch karo
+  const ledgerName = document.getElementById("ledger5792Input")?.value.trim() || "";
+  let ledgerHTML = "";
+  if (ledgerName) {
+    ledgerHTML = `<h4 style="text-align:center; margin-top:-10px;">Ledger: ${ledgerName}</h4>`;
+  }
+
+  const printWindow = window.open("", "_blank");
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print Table</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 20px; }
+          table { width:100%; border-collapse:collapse; font-size:14px; }
+          th, td { border:1px solid #444; padding:6px; text-align:left; }
+          th { background:#004d80; color:white; }
+          h3, h4 { text-align:center; }
+        </style>
+      </head>
+      <body>
+        <h3>Cash Ledger Report</h3>
+        ${ledgerHTML}
+        ${table.outerHTML}
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.print();
+}
+
+
+// ✅ Initialize
+document.addEventListener("DOMContentLoaded", async () => {
+  const rows = await fetch5792Data();
+  all5792Data = processRows(rows);
+  filtered5792Data = [...all5792Data];
+  render5792Table(all5792Data);
+  setupLedger5792Dropdown();
+  setup5792Events();
+});
+</script>
+
+
+
+
+<!-- ============== CASH LEDGER REPORT (5792) SCRIPT STOP HARE ================= -->
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- loading summry poup box start  script start hare +++++++++++++++++++++++++++++++++++++++++++++-->
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>4x6 inch popupLoadStatus</title>
+  <style>
+    :root{
+      --popupLoadStatus-bg:#ffffff;
+      --popupLoadStatus-text:#111827;
+      --popupLoadStatus-border:#e5e7eb;
+      --popupLoadStatus-shadow:0 12px 30px rgba(0,0,0,.15);
+      --popupLoadStatus-radius:14px;
+    }
+
+    .popupLoadStatus {
+      position: fixed;
+      left: 16px;
+      bottom: 60px;
+      width: 900px;   /* 6 inch */
+      height: 450px;  /* 4 inch */
+      background: var(--popupLoadStatus-bg);
+      color: var(--popupLoadStatus-text);
+      border: 1px solid var(--popupLoadStatus-border);
+      border-radius: var(--popupLoadStatus-radius);
+      box-shadow: var(--popupLoadStatus-shadow);
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(20px);
+      pointer-events: none;
+      transition: opacity .25s ease, transform .25s ease;
+      z-index: 9999;
+    }
+
+    .popupLoadStatus.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .popupLoadStatus__header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:10px 12px;
+      background: #d2d2d2;
+      border-bottom:1px solid var(--popupLoadStatus-border);
+    }
+    .popupLoadStatus__title{
+      margin:0;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .popupLoadStatus__close{
+      border:1px solid var(--popupLoadStatus-border);
+      background:#fff;
+      border-radius:10px;
+      width:30px;
+      height:30px;
+      cursor:pointer;
+      font-size:18px;
+    }
+    .popupLoadStatus__close:hover{ background:#f3f4f6; }
+
+    .popupLoadStatus__body{
+      padding:12px;
+      font-size:14px;
+      height: calc(100% - 52px); /* header ke niche bacha hua area */
+      overflow:auto; /* scroll agar zyada content ho */
+      background-color: #f8ebe0;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="bottomLeftpopupLoadStatus" class="popupLoadStatus">
+    <div class="popupLoadStatus__header">
+      <h3 class="popupLoadStatus__title">Loading Status</h3>
+      <button class="popupLoadStatus__close" id="popupLoadStatuscloseLSBtn">&times;</button>
+    </div>
+    <div class="popupLoadStatus__body">
+   
+     
+      
+     
+<table id="noticeBoard">  <thead ><tr> <th>Type</th><th>Date</th> <th>Name</th><th>Vehicle No.</th><th>Job No.</th> <th>Status</th> <th>Inv. No.</th></tr></thead><tbody></tbody></table>
+
+
+    </div>
+  </div>
+
+  <script>
+    const popupLoadStatus = document.getElementById('bottomLeftpopupLoadStatus');
+    const closeLSBtn = document.getElementById('popupLoadStatuscloseLSBtn');
+
+    window.addEventListener('load', ()=> popupLoadStatus.classList.add('show'));
+    closeLSBtn.addEventListener('click', ()=> popupLoadStatus.classList.remove('show'));
+  </script>
+</body>
+</html>
+
+<!-- loading summry poup box start  script stop hare +++++++++++++++++++++++++++++++++++++++++++++-->
+
+
+
+
+
+
+
+<!-- loading summry  script start hare -->
+
+<script>
+// ===== CSS injected via JS (no <style> tag used) =====
+const css = `
+   /* Status Colors */
+  .status-loading    { background-color: #ff4d4d; color: #fff; font-weight: bold; }
+  .status-processing { background-color: #fd2222; color: #fff; font-weight: bold; }
+  .status-processed  { background-color: #28a745; color: #fff; font-weight: bold; }
+  .status-complete   { background-color: #28a745; color: #fff; font-weight: bold; }
+  .status-unloading  { background-color: #39b3d8; color: #fff; font-weight: bold; }
+`;
+(function applyCSS(c){
+  const s = document.createElement('style');
+  s.textContent = c;
+  document.head.appendChild(s);
+})(css);
+
+// ===== Notice Board Script =====
+const apiNBKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheetNBId = "1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4";
+const rangeNB = "DATABASE!K:R";
+
+async function loadNoticeBoard() {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetNBId}/values/${rangeNB}?key=${apiNBKey}`;
+  const response = await fetch(url);
+  const data = await response.json();
+  
+  const rows = data.values;
+  const tbody = document.querySelector("#noticeBoard tbody");
+  tbody.innerHTML = "";
+
+  if (!rows || rows.length <= 1) {
+    tbody.innerHTML = `<tr><td colspan="7">No Data Found</td></tr>`;
+    return;
+  }
+
+  // Last 3 days range
+  const today = new Date();
+  let allowedDates = [];
+  for (let i = 0; i < 3; i++) {
+    let d = new Date();
+    d.setDate(today.getDate() - i);
+    allowedDates.push(formatDateToYYYYMMDD(d));
+  }
+
+  rows.forEach((row, index) => {
+    if (index === 0) return; // skip header
+
+    const dateInL = row[1]; // Column L
+    const formattedDate = dateInL ? formatCustomDate(dateInL) : "";
+
+    if (allowedDates.includes(formattedDate)) {
+      const tr = document.createElement("tr");
+
+      for (let i = 0; i <= 6; i++) {
+        const td = document.createElement("td");
+        td.textContent = row[i] || "";
+
+        // Status color coding
+        if (i === 5) {
+          const status = (row[i] || "").toUpperCase();
+          if (status === "LOADING") td.classList.add("status-loading");
+          else if (status === "PROCESSING") td.classList.add("status-processing");
+          else if (status === "PROCESSED") td.classList.add("status-processed");
+          else if (status === "UNLOADING") td.classList.add("status-unloading");
+          else if (status === "COMPLETE") td.classList.add("status-complete");
+        }
+        tr.appendChild(td);
+      }
+
+      tbody.appendChild(tr);
+    }
+  });
+}
+
+// Format date to YYYY-MM-DD
+function formatDateToYYYYMMDD(dateObj) {
+  const y = dateObj.getFullYear();
+  const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+  const d = String(dateObj.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+// Convert "13-Aug-2025" to YYYY-MM-DD
+function formatCustomDate(dateStr) {
+  const months = {
+    Jan: "01", Feb: "02", Mar: "03", Apr: "04", May: "05", Jun: "06",
+    Jul: "07", Aug: "08", Sep: "09", Oct: "10", Nov: "11", Dec: "12"
+  };
+  const parts = dateStr.split("-");
+  if (parts.length === 3) {
+    const day = parts[0].padStart(2, "0");
+    const month = months[parts[1]];
+    const year = parts[2];
+    return `${year}-${month}-${day}`;
+  }
+  return "";
+}
+
+loadNoticeBoard();
+</script>
+<!-- loading summry  script stop hare -->
