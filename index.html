@@ -2637,7 +2637,7 @@ document.addEventListener("DOMContentLoaded", function () {
      <!-- zoho (favicon used as image) -->
     <a class="item" href="https://accounts.zoho.in/signin?servicename=VirtualOffice&signupurl=https://www.zoho.com/mail/zohomail-pricing.html&serviceurl=https://mail.zoho.in" target="_blank" rel="noopener noreferrer">
       <img src="https://zenatta.com/wp-content/uploads/2020/08/mail-256-300x300.png" alt="zoho" width="50" height="50" />
-      <span class="name">Gmail</span>
+      <span class="name">Zoho Mail</span>
     </a>
 
       <!-- youtube (favicon used as image) -->
@@ -3297,7 +3297,13 @@ function processRows(rows) {
     obj._amount = parseFloat(r[5]) || 0;
 
     // ✅ Only JNP → MA (JNR unaffected)
-    if (obj._user === "JNP") obj._user = "MA";
+      if (obj._user === "JNP") obj._user = "MA";
+
+    // ✅ Convert JNP & JNR → MA
+//  if (obj._user === "JNP" || obj._user === "JNR") {
+  //  obj._user = "MA";
+//    }
+
 
     return obj;
   });
@@ -3374,7 +3380,13 @@ function render5792Table(data) {
     const userCell = row.cells[1];
     if (!userCell) return;
     const val = userCell.textContent.trim().toUpperCase();
-    if (val === "JNP") userCell.textContent = "MA"; // Only JNP → MA
+  //  if (val === "JNP") userCell.textContent = "MA"; // Only JNP → MA
+
+if (val === "JNP" || val === "JNR") {
+    userCell.textContent = "MA";
+}
+
+
   });
   //------------------
   calculate5792RunningBalance();
