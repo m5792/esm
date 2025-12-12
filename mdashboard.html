@@ -272,6 +272,7 @@ th {
 
       <option data-target="home">Home</option>
       <option data-target="btn2">Cash Ledger</option>
+      <option data-target="btn3">Payroll</option>
 
 <option value="https://www.google.com/android/find/">	Find My Device</option>
 	<option value="https://docs.google.com/spreadsheets/d/1wvsPdAQA57HxhTxA3cCcQvUEz93IWkBre_Ix-qvzwss/edit?gid=627393391#gid=627393391">	Store Database Sheet*</option>
@@ -591,7 +592,45 @@ document.getElementById('navDropdown').addEventListener('change', function () {
 
 
 
+<!-- =================== btn3  start hare =============================== -->
+<div class="section" id="btn3">
+    <div class="divA">     <!-- btn3 Div A Start hare -->
 
+  <div style="text-align:center; background-color: #dcdddd; color: #002630; font-weight: bold;"> <strong>Employees Attendance - Payroll</strong></div> <br/>
+
+   <style>
+     
+        .absent { color: red; font-weight: bold; }
+        .pwl { color: rgb(0, 122, 131);  }
+        select { padding: 8px; margin-right: 10px; }
+    </style>
+</head>
+<body>
+
+
+<div  style="display: flex; gap: 8px;  border-bottom:5px solid #00462e;  flex-wrap: wrap; justify-content: center; margin-bottom: 10px; background-color: rgb(8, 161, 128); padding: 1px 1px; ">
+
+
+<select id="monthPRLSelect" onchange="showPayroll()" style="background-color: rgb(8, 161, 128);color: white; font-size: 16px;  border-radius: 8px; border: none;"></select>
+
+
+<select id="viewType" onchange="showPayroll()" style="background-color: rgb(8, 161, 128);color: white; font-size: 16px;  border-radius: 8px; border: none;">
+    <option value="pa">P/A Wise</option>
+    <option value="time">In Time Wise</option>
+</select>
+
+<button onclick="printPayroll()" style="background-color: rgb(8, 161, 128) ; color: rgb(248, 224, 224); border: none; font-weight: bold;"> Print</button>
+
+</div>
+ 
+
+</div>   <!-- btn2 Div A Stop hare -->
+
+ <div class="divB">     <!-- btn3 Div B Start hare -->
+ <div id="attendancePRLTable"></div>
+</div>   <!-- btn2 Div B stop hare -->
+
+</div>  <!-- =================== btn3  stop hare =============================== -->
 
 
 
@@ -1338,25 +1377,8 @@ function triggerDownload(blob, filename) {
       <input type="hidden" name="SNo" id="sNo" />
       <input type="hidden" name="User" readonly value="ATN">
 
-
-
-<label style="font-size:13px;font-weight:bold;">IP No.:</label>
-      <input type="text" id="ipBox" name="cl3" readonly placeholder="IP Loading..." 
-       style="padding:8px; width:250px; border:1px solid #aaa; border-radius:6px;">
-
-<script>
-// IP Fetch Function
-fetch("https://api.ipify.org?format=json")
-  .then(response => response.json())
-  .then(data => {
-     document.getElementById("ipBox").value = data.ip; // Input me IP set
-  })
-  .catch(() => {
-     document.getElementById("ipBox").value = "Error fetching IP";
-  });
-</script>
-
-
+<input type="text"  name="cl3" readonly  value="UBU"
+       style="padding:8px; width:100px; border:1px solid #aaa; border-radius:6px;">
 
       <!-- Date -->
       <label style="font-size:13px;font-weight:bold;">Date:</label>
@@ -1472,7 +1494,7 @@ openBtn.addEventListener("click", () => {
   const now = new Date();
   const timestamp = now.toLocaleString("en-GB", { hour12: false });
   document.getElementById("timestampULU").value = timestamp;
-  document.getElementById("cl2").value = `UBA-${timestamp}`;
+   document.getElementById("cl2").value = `${timestamp}`; // agar time stamp "UBA-01/11/2025, 13:27:56" is fromat me chaye "UBA" - TYPE KRO
 });
 
 // 🔹 Close Popup Function
@@ -1642,7 +1664,13 @@ function processRows(rows) {
     obj._amount = parseFloat(r[5]) || 0;
 
     // ✅ Only JNP → MA (JNR unaffected)
-    if (obj._user === "JNP") obj._user = "MA";
+      if (obj._user === "JNP") obj._user = "MA";
+
+    // ✅ Convert JNP & JNR → MA
+//  if (obj._user === "JNP" || obj._user === "JNR") {
+  //  obj._user = "MA";
+//    }
+
 
     return obj;
   });
@@ -1719,7 +1747,13 @@ function render5792Table(data) {
     const userCell = row.cells[1];
     if (!userCell) return;
     const val = userCell.textContent.trim().toUpperCase();
-    if (val === "JNP") userCell.textContent = "MA"; // Only JNP → MA
+  //  if (val === "JNP") userCell.textContent = "MA"; // Only JNP → MA
+
+if (val === "JNP" || val === "JNR") {
+    userCell.textContent = "MA";
+}
+
+
   });
   //------------------
   calculate5792RunningBalance();
@@ -1934,6 +1968,217 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 <!-- ============== CASH LEDGER REPORT (5792) SCRIPT STOP HARE ================= -->
+
+
+
+
+
+
+<!-- ================  Payroll Attandse script start hare ===============================-->
+<script>
+/* --------------------- CONFIG --------------------- */
+const apiPRLKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";   
+const sheetPRLId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
+const rangePRL = "ATN!A:M";
+
+let sheetPRLData = [];
+
+/* --------------------- LOAD SHEET DATA --------------------- */
+async function loadPRLSheet() {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetPRLId}/values/${rangePRL}?key=${apiPRLKey}`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const ignoreValues = [
+        "152.59","152.58","49.36","106.205","103.93","117.99"
+    ];
+
+    // data.values → filter rows where column H (index 7) does NOT contain any ignore value
+    sheetPRLData = (data.values || []).filter(row => {
+        const colH = row[7];   // H column
+        if (!colH) return true; // if empty, keep row
+
+        return !ignoreValues.some(v => colH.includes(v));
+    });
+
+    loadPRLMonths();
+}
+
+
+/* --------------------- LOAD MONTHS INTO DROPDOWN --------------------- */
+function loadPRLMonths() {
+    const monthPRLSelect = document.getElementById("monthPRLSelect");
+    let months = new Set();
+
+    for (let i = 1; i < sheetPRLData.length; i++) {
+        let r = sheetPRLData[i];
+        let dt = r[2]; // Column C
+        if (!dt) continue;
+        let d = new Date(dt);
+        if (!isNaN(d)) months.add(`${d.getFullYear()}-${d.getMonth() + 1}`);
+    }
+
+    let sorted = [...months].sort((a,b)=>{
+        let [ya, ma] = a.split("-").map(Number);
+        let [yb, mb] = b.split("-").map(Number);
+        return yb - ya || mb - ma;
+    });
+
+    const currentMonthKey = `${new Date().getFullYear()}-${new Date().getMonth()+1}`;
+
+    monthPRLSelect.innerHTML = "";
+    sorted.forEach(m=>{
+        let [y, mo] = m.split("-");
+        let dateObj = new Date(y, mo-1, 1);
+        let opt = document.createElement("option");
+        opt.value = m;
+        opt.textContent = dateObj.toLocaleString("en-GB",{month:"long", year:"numeric"});
+        if(m===currentMonthKey) opt.selected=true;
+        monthPRLSelect.appendChild(opt);
+    });
+
+    showPayroll();
+}
+
+/* --------------------- SHOW ATTENDANCE TABLE --------------------- */
+function showPayroll() {
+    const m = document.getElementById("monthPRLSelect").value;
+    const viewMode = document.getElementById("viewType").value;
+    if(!m) return;
+
+    let [year, month] = m.split("-").map(Number); month-=1;
+    let first = new Date(year, month, 1);
+    let last = new Date(year, month+1, 0);
+
+    let dates=[];
+    for(let d=new Date(first); d<=last; d.setDate(d.getDate()+1)) dates.push(new Date(d));
+
+    let today=new Date(); today.setHours(0,0,0,0);
+
+    // Employees list from row 2
+    let employees=new Set();
+    for(let i=1;i<sheetPRLData.length;i++) if(sheetPRLData[i][3]) employees.add(sheetPRLData[i][3]);
+    employees=[...employees];
+
+    // Map employee -> date -> {status, time}
+    let map={}; employees.forEach(e=>map[e]={});
+    for(let i=1;i<sheetPRLData.length;i++){
+        let r=sheetPRLData[i];
+        let name=r[3], dt=r[2]; if(!name || !dt) continue;
+        let d=new Date(dt);
+        if(d.getMonth()===month && d.getFullYear()===year){
+            let dateStr=d.toISOString().split("T")[0];
+            let rawTime=r[5]||"", onlyTime="";
+            if(rawTime.includes(" ")){
+                let parts=rawTime.split(" ");
+                let timePart=parts.length>1?parts[1]:parts[0];
+                let timeMatch=timePart.match(/^(\d{1,2}:\d{2})/);
+                onlyTime = timeMatch ? timeMatch[1] : timePart;
+            }
+            map[name][dateStr]={status:r[4]||"P", time:onlyTime||""};
+        }
+    }
+
+    // BUILD TABLE
+    let html=`<table><tr><th>Employee</th>`;
+    dates.forEach(d=>html+=`<th>${d.getDate()}</th>`);
+    html+=`<th>Total P</th><th>Total A</th></tr>`;
+
+    // Day names
+    html+=`<tr><th></th>`;
+    dates.forEach(d=>html+=`<th>${d.toLocaleDateString("en-US",{weekday:"short"})}</th>`);
+    html+=`<th></th><th></th></tr>`;
+
+    employees.forEach(name=>{
+        let totalP=0, totalA=0;
+        html+=`<tr><td>${name}</td>`;
+        dates.forEach(d=>{
+            let dateStr=d.toISOString().split("T")[0];
+            let entry=map[name][dateStr];
+            let showValue="-";
+
+            if(d>today) showValue="-";
+            else{
+                if(viewMode==="pa"){
+                    let st = entry?entry.status:"A";
+                    if(d.getDay()===0) st="P";
+                    showValue=st;
+                } else if(viewMode==="time"){
+                    if(d.getDay()===0) showValue="PWL";
+                    else if(entry) showValue=entry.time?entry.time:"A";
+                    else showValue="A";
+                }
+            }
+
+            // TOTAL P/A
+            if(viewMode==="time"){
+                if(showValue==="PWL") totalP++;
+                else if(/^\d{1,2}:\d{2}$/.test(showValue)) totalP++;
+                else if(showValue==="A") totalA++;
+            } else {
+                if(showValue==="P") totalP++;
+                else if(showValue==="A") totalA++;
+            }
+
+            // CLASS
+            let cls="";
+            if(showValue==="A") cls="absent";
+            else if(showValue==="PWL") cls="pwl";
+
+            html+=`<td class="${cls}">${showValue}</td>`;
+        });
+
+        html+=`<td>${totalP}</td><td>${totalA}</td></tr>`;
+    });
+
+    html+=`</table>`;
+    document.getElementById("attendancePRLTable").innerHTML=html;
+}
+
+/* --------------------- PRINT FUNCTION --------------------- */
+function printPayroll() {
+    // Get the current selected month text from dropdown
+    const monthSelect = document.getElementById("monthPRLSelect");
+    const monthText = monthSelect.options[monthSelect.selectedIndex].text;
+
+    // Get the attendance table content
+    const content = document.getElementById("attendancePRLTable").innerHTML;
+
+    const printWindow = window.open("", "", "width=1200,height=800");
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Attendance Print</title>
+            <style>
+                body { font-family: Arial; padding: 20px; }
+                table { border-collapse: collapse; width: 100%; }
+                th, td { border: 1px solid #666; padding: 6px; text-align: center; }
+                th { background: #eee; }
+                .absent { color: red; font-weight: bold; }
+                .pwl { color: rgb(67, 104, 0); font-weight: bold; }
+            </style>
+        </head>
+        <body>
+            <h2 style="text-align:center;">Attendance Sheet - ${monthText}</h2>
+            ${content}
+        </body>
+        </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => { printWindow.print(); }, 500);
+}
+
+
+/* --------------------- INIT --------------------- */
+loadPRLSheet();
+
+</script>
+
+<!-- ================  Payroll Attandse script stop hare ===============================-->
+
+
 
 
 
@@ -2160,3 +2405,4 @@ function formatCustomDate(dateStr) {
 loadNoticeBoard();
 </script>
 <!-- loading summry  script stop hare -->
+
