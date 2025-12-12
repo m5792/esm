@@ -727,21 +727,40 @@ th {
 
 
 
+<br><br>
+
+<span id="statusText" style="font-weight:bold;"></span><br>
+<span style="color: blue;">Your Network ID:- </span>
+<span id="ipBox" style="color: rgb(78, 78, 243);"></span>
 
 <script>
-// IP Fetch Function
+// Allowed Office Network Starting Values
+const officeList = ["152.59", "152.58", "49.36", "106.205", "103.93", "117.99"];
+
+// Fetch IP
 fetch("https://api.ipify.org?format=json")
   .then(response => response.json())
   .then(data => {
-     document.getElementById("ipBox").innerText = data.ip; // span me IP show
+    const ip = data.ip;
+    document.getElementById("ipBox").innerText = ip;
+
+    // First two segments of IP -> (e.g. 203.81)
+    const ipStart = ip.split(".")[0] + "." + ip.split(".")[1];
+
+    // Check match
+    const statusSpan = document.getElementById("statusText");
+
+    if (officeList.includes(ipStart)) {
+      statusSpan.innerHTML = `<span style="color:red;">Office Network Not Connected</span>`;
+    } else {
+      statusSpan.innerHTML = `<span style="color:green;">Office Network Connected</span>`;
+    }
   })
   .catch(() => {
-     document.getElementById("ipBox").innerText = "Error fetching IP";
+    document.getElementById("ipBox").innerText = "Error fetching IP";
   });
 </script>
 
-<span style="color: blue;">Your Natwork ID:-</span>
-<span id="ipBox" style="color: rgb(78, 78, 243);"></span>
 
 
     </div> 
@@ -9345,6 +9364,7 @@ function triggerDownload(blob, filename) {
   background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
   <div style="background:white; padding:20px; border-radius:10px; width:300px; text-align:center;">
     <h3>Daily Confirmation</h3>
+
    
     <!-- ✅ FORM -->
     <form id="mainATNForm">
@@ -9497,42 +9517,77 @@ function closeATNPopup() {
 
 
 <script>
-// ✅ Google Apps Script URL
+// ===================== Google Apps Script URL =====================
 const scriptATNURL = 'https://script.google.com/macros/s/AKfycbxNCtOS7UZu2mw_Zuwkx-KHdORL1DATDoSp0Gv2Q5EQw6CKJOSPowawczVE_7uYHQw_/exec';
 
-// ✅ Set today's date automatically in popup-date input
-function setTodayDate() {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const day = String(today.getDate()).padStart(2, '0');
-  const formattedDate = `${year}-${month}-${day}`;
 
+// ===================== Auto today's date =====================
+function setTodayDate() {
+  const t = new Date();
+  const y = t.getFullYear();
+  const m = String(t.getMonth() + 1).padStart(2,'0');
+  const d = String(t.getDate()).padStart(2,'0');
+  const f = `${y}-${m}-${d}`;
   const dateInput = document.getElementById("popup-date");
-  if (dateInput) dateInput.value = formattedDate;
+  if (dateInput) dateInput.value = f;
 }
 
-// ✅ Show popup function (updated to auto set date)
-function showATNPopup(username, today = new Date()) {
+
+// ===================== Show Popup =====================
+function showATNPopup(username) {
   document.getElementById("popup-username").value = username;
-
-  // ✅ Always set today's date
   setTodayDate();
-
   document.getElementById("popupForm").style.display = "flex";
 }
 
-// ✅ Close popup
+
+// ===================== Close Popup =====================
 function closeATNPopup() {
   document.getElementById("popupForm").style.display = "none";
 }
 
-// ✅ Submit popup form
-document.addEventListener("submit", async function (e) {
+
+
+// ********************************************************
+// 🔥 OFC NETWORK BLOCKER — IP FIRST TWO BLOCK CHECK
+// ********************************************************
+
+const officeIPList = ["152.59","152.58","49.36","106.205","103.93","117.99"];
+
+function isOfficeNetwork(ip) {
+  if (!ip) return false;
+
+  // Extract first two blocks: "203.81" from "203.81.240.100"
+  const parts = ip.split(".");
+  if (parts.length < 2) return false;
+
+  const firstTwo = parts[0] + "." + parts[1];
+
+  return officeIPList.includes(firstTwo);   // true = office IP detected
+}
+
+
+
+// ===================== FORM SUBMIT =====================
+document.addEventListener("submit", async function(e) {
   const form = e.target;
   if (form.id !== "mainATNForm") return;
   e.preventDefault();
 
+  // 🔥 GET IP FROM HIDDEN INPUT
+  const ip = document.getElementById("ipatnBox").value;
+
+  // -------------------------------------------
+  //  BLOCK SUBMIT IF IP MATCHES OFFICE NETWORK
+  // -------------------------------------------
+  if (isOfficeNetwork(ip)) {
+      alert("You are Not Conect Office Natwork");
+      return;   // STOP HERE
+  }
+
+  // -------------------------------------------
+  //  IF IP NOT MATCH → Allow Submit
+  // -------------------------------------------
   const submitBtn = document.getElementById("submitATNButton");
   const waitMsg = document.getElementById("waitATNMessage");
 
@@ -9541,36 +9596,46 @@ document.addEventListener("submit", async function (e) {
   waitMsg.innerText = "Conforming...";
   waitMsg.style.display = "block";
 
-  // ✅ Add timestamp
+  // Add timestamp
   const now = new Date();
   document.getElementById('timestampATN').value =
-    `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+    `${now.getMonth()+1}/${now.getDate()}/${now.getFullYear()} `+
+    `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
 
+
+  // *************** FORM SUBMIT ***************
   try {
     const formData = new FormData(form);
-    const response = await fetch(scriptATNURL, { method: 'POST', body: formData });
+    const response = await fetch(scriptATNURL, {
+      method: "POST",
+      body: formData
+    });
+
     const result = await response.json();
 
-    if (result.result === 'success') {
-      alert('✅ Success! Have a Nice Day!');
+    if (result.result === "success") {
+      alert("✅ Success! Have a Nice Day!");
       form.reset();
-      closeATNPopup(); // ✅ auto close
+      closeATNPopup();   // SUCCESS → CLOSE POPUP
     } else {
-      alert(`❌ Error: ${result.error || 'Unknown error occurred.'}`);
+      alert("❌ Error: " + (result.error || "Unknown Error"));
     }
+
   } catch (err) {
-    alert(`❌ Error submitting form: ${err.message}`);
+    alert("❌ Error submitting form: " + err.message);
+
   } finally {
     submitBtn.disabled = false;
     submitBtn.value = "Submit";
-    setTimeout(() => (waitMsg.style.display = 'none'), 2000);
+    setTimeout(() => waitMsg.style.display = "none", 2000);
   }
+
 });
 
-// ✅ Optional: auto set today’s date when page loads
+
+// Auto set date on load
 document.addEventListener("DOMContentLoaded", setTodayDate);
 
-// ℹ️ Note: remove "checkPopupCondition(user.displayName);" in login section if username not showing auto
 </script>
 
 
