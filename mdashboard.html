@@ -273,6 +273,7 @@ th {
       <option data-target="home">Home</option>
       <option data-target="btn2">Cash Ledger</option>
       <option data-target="btn3">Payroll</option>
+       <option data-target="btn4">Ration Card</option>
 
 <option value="https://www.google.com/android/find/">	Find My Device</option>
 	<option value="https://docs.google.com/spreadsheets/d/1wvsPdAQA57HxhTxA3cCcQvUEz93IWkBre_Ix-qvzwss/edit?gid=627393391#gid=627393391">	Store Database Sheet*</option>
@@ -628,13 +629,36 @@ document.getElementById('navDropdown').addEventListener('change', function () {
 
  <div class="divB">     <!-- btn3 Div B Start hare -->
  <div id="attendancePRLTable"></div>
-</div>   <!-- btn2 Div B stop hare -->
+</div>   <!-- btn3 Div B stop hare -->
 
 </div>  <!-- =================== btn3  stop hare =============================== -->
 
 
 
 
+
+
+
+<!-- =================== btn4  start hare =============================== -->
+<div class="section" id="btn4">
+    <div class="divA">     <!-- btn4 Div A Start hare -->
+
+<div style="text-align:center; background-color: #dcdddd; color: #002630; font-weight: bold;"> <strong>Ration Card</strong></div> <br/>
+
+      
+
+<div  style="display: flex; gap: 8px;  border-bottom:5px solid #00462e;  flex-wrap: wrap; justify-content: center; margin-bottom: 10px; background-color: rgb(8, 161, 128); padding: 1px 1px; ">
+
+         <input type="text" id="searchInput" placeholder="Search By Ration Card No. Name, Last 4 Digit Adhar & Mobail...." onkeyup="rationcardsearch()" style="font-size:18px; padding:5px; width:750px; background-color: #fefaf6;">
+
+</div>
+</div>   <!-- btn4 Div A Stop hare -->
+
+ <div class="divB">     <!-- btn4 Div B Start hare -->
+<div id="results"></div>
+</div>   <!-- btn4 Div B stop hare -->
+
+</div>  <!-- =================== btn4  stop hare =============================== -->
 
 
 
@@ -2177,6 +2201,104 @@ loadPRLSheet();
 </script>
 
 <!-- ================  Payroll Attandse script stop hare ===============================-->
+
+
+
+
+<!-- ------------------  ration card script and code start -------------------------------------- -->
+<script>
+const apiRCKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheetRCId = "1E9bwBJjHRo1DhUSNayuJ2j62ilqILvMzBvf3TrQGA9s";
+
+let allData = [];  // { sheet, header, row }
+
+// ✅ Step 1: Get all sheet names
+async function rationcardsheets() {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetRCId}?key=${apiRCKey}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    return data.sheets.map(s => s.properties.title);
+}
+
+// ✅ Step 2: Load all sheets data (header + rows)
+async function loadRationCardData() {
+    const sheetNames = await rationcardsheets();
+    for (let name of sheetNames) {
+        // Get header (Row 1)
+        const headerUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetRCId}/values/${encodeURIComponent(name + "!A1:Z1")}?key=${apiRCKey}`;
+        const headerRes = await fetch(headerUrl);
+        const headerData = await headerRes.json();
+        const headerRow = headerData.values ? headerData.values[0] : [];
+
+        // Get data rows (From A2)
+        const range = `${name}!A2:Z`;
+        const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetRCId}/values/${encodeURIComponent(range)}?key=${apiRCKey}`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.values) {
+            data.values.forEach(row => {
+                allData.push({ sheet: name, header: headerRow, row });
+            });
+        }
+    }
+    console.log("All data loaded:", allData);
+}
+
+// ✅ Step 3: Search with Highlight + Show Header Once
+function rationcardsearch() {
+    const query = document.getElementById("searchInput").value.toLowerCase();
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "";
+
+    if (query.trim() === "") return;
+
+    const filtered = allData.filter(item =>
+        item.row.some(cell => cell.toLowerCase().includes(query))
+    );
+
+    if (filtered.length === 0) {
+        resultsDiv.innerHTML = "<p>No results found</p>";
+        return;
+    }
+
+    let lastSheet = "";
+
+    filtered.forEach(item => {
+        // Show header if sheet changes
+        if (lastSheet !== item.sheet) {
+            const headerDiv = document.createElement("div");
+            headerDiv.style.backgroundColor = "#f0f0f0";
+            headerDiv.style.fontWeight = "bold";
+            headerDiv.style.padding = "5px";
+            headerDiv.innerHTML = `<b>${item.sheet}</b> → ${item.header.join(" | ")}`;
+            resultsDiv.appendChild(headerDiv);
+            lastSheet = item.sheet;
+        }
+
+        // Highlight match
+        const highlightedRow = item.row.map(cell => {
+            if (cell.toLowerCase().includes(query)) {
+                const regex = new RegExp(`(${query})`, "gi");
+                return cell.replace(regex, `<span style="background-color:blue; color:white;">$1</span>`);
+            }
+            return cell;
+        });
+
+        // Add result row
+        const div = document.createElement("div");
+        div.style.padding = "5px";
+        div.style.borderBottom = "1px solid #ccc";
+        div.innerHTML = highlightedRow.join(" | ");
+        resultsDiv.appendChild(div);
+    });
+}
+
+// ✅ Start
+loadRationCardData();
+</script>
+
+<!-- ------------------  ration card script and code stop -------------------------------------- -->
 
 
 
