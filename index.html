@@ -772,7 +772,7 @@ fetch("https://api.ipify.org?format=json")
 
 
 
-<div style="height:480px; overflow-y:auto; overflow-x:auto; border:1px solid #ccc; padding:8px; background-color: #f4faf3;" >
+<div style="height:480px; overflow-y:auto; overflow-x:auto; border:5px solid #002b46;border-radius: 10px; padding:8px; background-color: #dff8fc;" >
 
    <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">    
     <label style="color: rgb(1, 26, 71); font-weight: bold;"> Daybook Search :</label>                            <!-- Search Box -->
@@ -944,8 +944,10 @@ fetch("https://api.ipify.org?format=json")
 
 
     <select id="linkDropdown" onchange="handleDropdownChange()"  data-value="url" style="background-color: rgb(0, 47, 74);color: white; font-size: 16px;  border-radius: 8px; border: none;">
-        <option value="" style="text-align: center; font-weight: bold; ">Google Sheet Links </option>
-		<option value="https://drive.google.com/drive/folders/1Dc4In3NfpKdFdOLqcgyTFNC2tch7b6q2?usp=sharing"   style="color: rgb(239, 246, 175);">AFI Drive</option>
+        <option value="" style="text-align: center; font-weight: bold; ">Other Option </option>
+
+        <option value="https://drive.google.com/drive/folders/1Dc4In3NfpKdFdOLqcgyTFNC2tch7b6q2?usp=sharing"   style="color: rgb(248, 160, 148); font-weight: bold;">AFI Drive</option>
+
         <option value="https://docs.google.com/spreadsheets/d/1FXdbotep3MTk34gUdSF0e0h_hN_Uz66AL0Gnvc-pt_s/edit?gid=475142657#gid=475142657">	Party Weight Sheet</option>
         <option value="https://docs.google.com/spreadsheets/d/1EMIe8Y50_vMXg7y9zT7lXV0vgLyOZuSKdthf8C5XUXc/edit?gid=1752231070#gid=1752231070">	Mukhtiyar</option>
         <option value="https://docs.google.com/spreadsheets/d/1F3Wf5V8sLxENPJFtHij-0GDGBXfeYByGx0DSafDucgM/edit?gid=90095763#gid=90095763">	Tushar</option>
@@ -1159,6 +1161,7 @@ fetch("https://api.ipify.org?format=json")
      <option value="IV09">IV09- Sunil Yadav</option> 
      <option value="IV10">IV10- Ajay Kumar</option>
      <option value="IV11">IV11- Ravinder Kumar</option>
+     <option value="IV12">IV12- Mahender</option>
      <option value="DLT">Delete</option>
 
   </select>
@@ -1857,14 +1860,15 @@ const allivuserOptions = [
   { value: "IV05", text: "MANNU-IV05" },
    { value: "IV06", text: "AAKASH-IV06" },
   { value: "IV07", text: "MANJEET-IV07" },
-  { value: "IV10", text: "AJAY KUMAR-IV10" }
+  { value: "IV10", text: "AJAY KUMAR-IV10" },
+  { value: "IV12", text: "MAHENDER-IV12" }
 ];
 
 // 2. Which user sees which options
 const userOptionsivuserMap = {
    "NITIN": [0,2],          // 
-  "Anchal": [0,2, 3,4,5,6,7,8],              // 
-  "Mukhtar (Admin)": [0, 1, 2, 3,4,5,6,7,8],   // All options
+  "Anchal": [0,2, 3,4,5,6,7,8,9],              // 
+  "Mukhtar (Admin)": [0, 1, 2, 3,4,5,6,7,8,9],   // All options
    "Rahul Kumar": [0,1]   // All options
 };
 
@@ -3967,6 +3971,7 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
   #ledgerDropdown.dropdownList li:hover {
     background-color: #007BFF;
     color: white;
+   
   }
 
   /* Optional: remove border from last item */
@@ -7737,7 +7742,7 @@ function updateMonthlyTotalsDisplay(t) {
   if (!t) return;
   document.getElementById("monthlyTotals").innerHTML = `
     <span style="color:#4067DD;font-weight:bold;">Receipt: ₹${t.receipt.toFixed()}</span> | 
-    <span style="color:#08BF36;font-weight:bold;">Sale: ₹${t.sale.toFixed()}</span>
+    <span style="color:#710000;font-weight:bold;">Sale: ₹${t.sale.toFixed()}</span>
   `;
 }
 
@@ -10053,4 +10058,3 @@ loadPRLSheet();
 </script>
 
 <!-- ================  Payroll Attandse script stop hare ===============================-->
-
