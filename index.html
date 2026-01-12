@@ -3736,7 +3736,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const result = await response.json();
 
       if (result.result === 'success') {
-        alert('✔ Entry saved successfully!');
+        alert('✔ ');
         form.reset();
 
         // ✅ Clear mode & sNo after reset
@@ -4327,7 +4327,7 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
       const result = await response.json();
 
       if (result.result === 'success') {
-        alert('✔ Entry saved successfully!');
+        alert('✔ ');
         form.reset(); // FORM RESET
         document.getElementById("formModeBANK").value = "new";
        fetchData();  // ✅ Refresh dropdowns or UI
@@ -4496,7 +4496,7 @@ if (![...BANKDropdown.options].some(opt => opt.value === "DLT")) {
       const result = await response.json();
 
       if (result.result === 'success') {
-        alert('✔ Entry saved successfully!');
+        alert('✔ ');
         form.reset(); // FORM RESET
         document.getElementById("formModeVCR").value = "new";
        fetchData();  // ✅ Refresh dropdowns or UI
@@ -5279,7 +5279,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const result = await response.json();
 
       if (result.result === 'success') {
-        alert('✔ Entry saved successfully!');
+        alert('✔ ');
         form.reset(); // FORM RESET
         document.getElementById("formModeIVCR").value = "new";
         loadIVCRSheet(); //REFRESH
@@ -5686,7 +5686,7 @@ function populateDropdownList(data) {
       const result = await response.json();
 
       if (result.result === 'success') {
-        alert('✔ Entry saved successfully!');
+        alert('✔ ');
         form.reset();
         document.getElementById("formModeSRR").value = "new";
         filterDp();
@@ -6186,7 +6186,7 @@ text-align: left;
       const result = await response.json();
 
       if (result.result === 'success') {
-        alert('✔ Entry saved successfully!');
+        alert('✔ ');
         form.reset(); // FORM RESET
         document.getElementById("formModeSKHR").value = "new";
         filterSKHR();  // ✅ Refresh 
@@ -6984,7 +6984,7 @@ brand.addEventListener('mouseleave', () => {
       const result = await response.json();
 
       if (result.result === 'success') {
-        alert('✔ Entry saved successfully!');
+        alert('✔ ');
         form.reset(); // FORM RESET
         document.getElementById("formModeREFFNO").value = "new";
      
@@ -10058,5 +10058,6 @@ loadPRLSheet();
 </script>
 
 <!-- ================  Payroll Attandse script stop hare ===============================-->
+
 
 
