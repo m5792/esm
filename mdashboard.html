@@ -43,6 +43,10 @@
   </style>
 </head>
 <body>
+
+
+  
+
   <nav class="rownav" aria-label="Quick image links" style=" border: 3px solid #03495a; padding: 5px 10px;background-color: black;">
 
 
@@ -246,6 +250,7 @@ th {
  <!--  mipl2011Buttons div start  -->
 <div id="mipl2011Buttons" style="display: flex; gap: 8px;  border-bottom:5px solid #822501;  flex-wrap: wrap; justify-content: center; margin-bottom: 10px; background-color: rgb(0, 47, 74); padding: 2px 2px; ">
   
+   <button onclick="openDocDiv()"  class="filter-btn">Download</button>
    <strong style="color: rgb(2, 98, 153); font-size: 25px; font-weight: bold;">|</strong>
 
   <button class="filter-btn" data-value="search">&#128269 Searchbar</button>
@@ -276,6 +281,8 @@ th {
       <option data-target="btn2">Cash Ledger</option>
       <option data-target="btn3">Payroll</option>
        <option data-target="btn4">Ration Card</option>
+
+  
 
 <option value="https://www.google.com/android/find/">	Find My Device</option>
 	<option value="https://docs.google.com/spreadsheets/d/1wvsPdAQA57HxhTxA3cCcQvUEz93IWkBre_Ix-qvzwss/edit?gid=627393391#gid=627393391">	Store Database Sheet*</option>
@@ -2529,5 +2536,174 @@ function formatCustomDate(dateStr) {
 loadNoticeBoard();
 </script>
 <!-- loading summry  script stop hare -->
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ================  DOCUMENT DOWNLODE CODE AND SCRIPT STAR HARE  hare ===============================-->
+
+<style>
+  /* DOC-overlay background */
+#DOC-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* overlay same rahe */
+}
+
+/* Docbox */
+#Docbox {
+  width: 7in;
+  height: 0.1in;
+
+  /* 10% transparent background */
+  background: rgba(12, 12, 12, 0.3);  /* 0.9 = 90% visible, 10% transparent */
+
+  border: 2px solid black;
+  padding: 15px;
+
+  position: absolute;
+  top: 3in;          /* 🔹 top se 1 inch */
+  left: 50%;
+  transform: translateX(-50%); /* sirf horizontal center */
+}
+
+
+  /* Close button */
+  .closedocdiv-btn {
+    float: right;
+    background: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+</style>
+</head>
+
+
+<div id="DOC-overlay">
+  <div id="Docbox">
+    <button class="closedocdiv-btn" onclick="closeDocDiv()">X</button>
+   
+    <input type="text" id="docSearch" placeholder="Type document name..." style=" margin-bottom: 8px; padding: 6px; width: 600px; font-size: 15px; border-radius: 6px; background-color: #faf0d5;">
+<br>
+<!-- Docdropdown container -->
+<div id="DocDPContainer" style=" position: relative; width: 600px;"></div>
+
+
+  </div>
+</div>
+
+<script>
+  function openDocDiv() {
+    document.getElementById("DOC-overlay").style.display = "block";
+  }
+
+  function closeDocDiv() {
+    document.getElementById("DOC-overlay").style.display = "none";
+  }
+</script>
+
+
+
+
+<script>
+const apiDocUrl =
+  "https://script.google.com/macros/s/AKfycbwOHYec5NXGIbTO1SOMjnz1TrZKBh7QacaXDb2E_AUT0StNVA61PafvML9IRA-j_ufH/exec?list=1";
+
+let allFiles = [];
+
+/* ===== FETCH FILES ===== */
+fetch(apiDocUrl)
+  .then(res => res.json())
+  .then(files => {
+    allFiles = files || [];
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Files load nahi ho pa rahi hain.");
+  });
+
+const input = document.getElementById("docSearch");
+const container = document.getElementById("DocDPContainer");
+
+/* ===== CREATE Docdropdown ELEMENT ===== */
+const Docdropdown = document.createElement("ul");
+Docdropdown.style.listStyle = "none";
+Docdropdown.style.padding = "0";
+Docdropdown.style.margin = "0";
+Docdropdown.style.border = "1px solid #ccc";
+Docdropdown.style.borderRadius = "6px";
+Docdropdown.style.backgroundColor = "#002f4a";
+Docdropdown.style.color = "#f4dada";
+Docdropdown.style.maxHeight = "500px";
+Docdropdown.style.overflowY = "auto";
+Docdropdown.style.position = "absolute";
+Docdropdown.style.width = "100%";
+Docdropdown.style.display = "none";
+Docdropdown.style.zIndex = "1000";
+container.appendChild(Docdropdown);
+
+/* ===== SHOW Docdropdown ON TYPE ===== */
+input.addEventListener("input", function() {
+  const keyword = this.value.toLowerCase().trim();
+  Docdropdown.innerHTML = "";
+
+  if (!keyword) {
+    Docdropdown.style.display = "none";
+    return;
+  }
+
+  const filtered = allFiles.filter(f =>
+    f.name.toLowerCase().includes(keyword)
+  );
+
+  if (filtered.length === 0) {
+    Docdropdown.style.display = "none";
+    return;
+  }
+
+  filtered.forEach(file => {
+    const li = document.createElement("li");
+    li.textContent = file.name;
+    li.style.padding = "6px";
+    li.style.cursor = "pointer";
+    li.addEventListener("mouseenter", () => li.style.backgroundColor = "#004080");
+    li.addEventListener("mouseleave", () => li.style.backgroundColor = "#002f4a");
+
+    // Click to download
+    li.addEventListener("click", () => {
+      window.open(file.downloadUrl, "_blank");
+      Docdropdown.style.display = "none";
+      input.value = file.name;
+    });
+
+    Docdropdown.appendChild(li);
+  });
+
+  Docdropdown.style.display = "block";
+});
+
+/* ===== HIDE Docdropdown ON CLICK OUTSIDE ===== */
+document.addEventListener("click", function(e) {
+  if (!container.contains(e.target)) {
+    Docdropdown.style.display = "none";
+  }
+});
+</script>
+
+<!-- ================  DOCUMENT DOWNLODE CODE AND SCRIPT STOP HARE  hare ===============================-->
 
 
