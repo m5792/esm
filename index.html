@@ -432,6 +432,7 @@ th {
     <button onclick="showSection(7)" id="f6" style="color: rgb(2, 79, 245);" >Admin* &nbsp;<span style="color:  red;font-weight: bold;">(F6)</span></button>
  
       
+    
   
   </div>
   <div class="user-info">
@@ -660,6 +661,20 @@ th {
 <!-- यह एक नोट है, vertical Two Part Div (30-70) container content start  Heare ((CODE501)) -->
     <div class="container">  <div class="left" style="background-color: #f5f5f5; border: none;">   <!-- यह एक नोट है, vertical Two Part Div (30-70) left content start -->
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <style>
   .voucher-button-panel {
     background-color: #cfcfcf;
@@ -709,7 +724,7 @@ th {
 </div>
 
 <br/><br/>
-<div style="height:230px; overflow-y:auto; overflow-x:auto; border:1px solid #ccc; padding:8px; background-color: #f4faf3;" >
+<div style="height:200px; overflow-y:auto; overflow-x:auto; border:1px solid #ccc; padding:8px; background-color: #f4faf3;" >
 
 <div id="section1b" class="section hidden" style="background-color: rgb(211, 212, 212);border: none;"></div>    
 <!-- ========================= -->
@@ -763,9 +778,9 @@ fetch("https://api.ipify.org?format=json")
 
 
 
+
     </div> 
    
-      
 
         </div> <!-- यह एक नोट है, vertical Two Part Div (30-70) left content stop -->
 <div class="right" style="background-color: white;"> <!-- यह एक नोट है, vertical Two Part Div (30-70) right content start -->
@@ -973,6 +988,10 @@ fetch("https://api.ipify.org?format=json")
 
 
 <!-- यह एक नोट है, Dropdown URL  Script Stop Heare -->
+
+
+
+
 
 
 </div>   <!--  mipl2011Buttons div stop  -->
@@ -1316,6 +1335,7 @@ const allOptions = [
 // 2. Which user sees which options
 const userOptionsMap = {
   "Anchal": [0,2, 3,4],              // TUSHAR, JOURNAL, BANK
+  "Gurpreet": [0,2, 3,4],              // TUSHAR, JOURNAL, BANK
   "Mukhtar (Admin)": [0, 1, 2, 3,4,5]   // All options
 };
 
@@ -1456,6 +1476,7 @@ const allmsaf99Options = [
 // 2. User-specific options by index
 const userOptionsmsaf99Map = {
   "Anchal": [0,5,6],
+  "Gurpreet": [0,5,6],
   "Mukhtar (Admin)": [0, 1, 2, 3, 4,5,6],
   "Suryabhan": [0, 1,2,3,4],
   "Divesh": [0, 1,2,3,4]
@@ -1868,6 +1889,7 @@ const allivuserOptions = [
 const userOptionsivuserMap = {
    "NITIN": [0,2],          // 
   "Anchal": [0,2, 3,4,5,6,7,8,9],              // 
+   "Gurpreet": [0,2, 3,4,5,6,7,8,9],              // 
   "Mukhtar (Admin)": [0, 1, 2, 3,4,5,6,7,8,9],   // All options
    "Rahul Kumar": [0,1]   // All options
 };
@@ -2197,10 +2219,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
-
-
-
 <!--  sections15 start  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA -->
       <div id="section15" class="section hidden">
 
@@ -2220,6 +2238,7 @@ document.addEventListener("DOMContentLoaded", function () {
            <option value="3"> Repayment Schedule</option>
            <option value="4"> Employee/Event Search</option>
             <option value="5"> Payroll</option>
+         
         </select>
 
 
@@ -2293,6 +2312,9 @@ document.addEventListener("DOMContentLoaded", function () {
 <!--  --------------------------------------------------------------------------------------------------------------------------------------------------------- -->
 
 
+
+
+<!--  --------------------------------------------------------------------------------------------------------------------------------------------------------- -->
 
 
 
@@ -2690,6 +2712,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     <span id="reportauth" style="color: #f7f8fa;"></span>
   <span id="username" style="color: #f7f8fa;font-size: 12px;"></span>
+
+  <button onclick="openDocDiv()"  data-value="docdownlode">Download</button>
+
 
 </div>
  
@@ -4682,7 +4707,7 @@ function attachManualOption(select, type) {
 
   const manualOption = document.createElement("option");
   manualOption.value = "__manual__";
-  manualOption.textContent = "➕ Create New Entry";
+  manualOption.textContent = "➕ Create";
   manualOption.style.color = "red";
 
   select.insertBefore(manualOption, select.children[1]);
@@ -7724,7 +7749,9 @@ loadNoticeBoard();
 const apidbookKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheetdbookId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
 const rangedbook = 'FORM!A:K';
-const apipdfUrl = "https://script.google.com/macros/s/AKfycbwRAHlS8JeIXSEbPVjUNVrXkpfVOmNc2z95OZsygdzebtk-sgLV-86eWyZ20jVHspYe/exec";
+const apipdfUrl = "https://script.google.com/macros/s/AKfycbwOHYec5NXGIbTO1SOMjnz1TrZKBh7QacaXDb2E_AUT0StNVA61PafvML9IRA-j_ufH/exec";
+
+// https://script.google.com/macros/s/AKfycbwRAHlS8JeIXSEbPVjUNVrXkpfVOmNc2z95OZsygdzebtk-sgLV-86eWyZ20jVHspYe/exec
 
 let allTableData = [];
 let monthlyData = {};
@@ -9157,7 +9184,8 @@ function applyButtonPermissions() {
     "exportBtn": "9",
     "export5792": "10",
     "export5793": "11",
-    "url": "12"
+    "url": "12",
+    "docdownlode": "13"
   };
 
   // ✅ Handle all buttons with a data-value attribute
@@ -9781,6 +9809,7 @@ document.addEventListener("DOMContentLoaded", setTodayDate);
         <option>NITIN</option>
         <option>Divesh</option>
         <option>Vijender Kumar Sharma</option>
+        <option>Gurpreet</option>
       </select>
 
       <!-- Status -->
@@ -10145,3 +10174,176 @@ loadPRLSheet();
 </script>
 
 <!-- ================  Payroll Attandse script stop hare ===============================-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ================  DOCUMENT DOWNLODE CODE AND SCRIPT STAR HARE  hare ===============================-->
+
+<style>
+  /* DOC-overlay background */
+#DOC-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* overlay same rahe */
+}
+
+/* Docbox */
+#Docbox {
+  width: 7in;
+  height: 0.1in;
+
+  /* 10% transparent background */
+  background: rgba(12, 12, 12, 0.3);  /* 0.9 = 90% visible, 10% transparent */
+
+  border: 2px solid black;
+  padding: 15px;
+
+  position: absolute;
+  top: 1in;          /* 🔹 top se 1 inch */
+  left: 50%;
+  transform: translateX(-50%); /* sirf horizontal center */
+}
+
+
+  /* Close button */
+  .closedocdiv-btn {
+    float: right;
+    background: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+</style>
+</head>
+
+
+<div id="DOC-overlay">
+  <div id="Docbox">
+    <button class="closedocdiv-btn" onclick="closeDocDiv()">X</button>
+   
+    <input type="text" id="docSearch" placeholder="Type document name..." style=" margin-bottom: 8px; padding: 6px; width: 600px; font-size: 15px; border-radius: 6px; background-color: #faf0d5;">
+<br>
+<!-- Docdropdown container -->
+<div id="DocDPContainer" style=" position: relative; width: 600px;"></div>
+
+
+  </div>
+</div>
+
+<script>
+  function openDocDiv() {
+    document.getElementById("DOC-overlay").style.display = "block";
+  }
+
+  function closeDocDiv() {
+    document.getElementById("DOC-overlay").style.display = "none";
+  }
+</script>
+
+
+
+
+<script>
+const apiDocUrl =
+  "https://script.google.com/macros/s/AKfycbwOHYec5NXGIbTO1SOMjnz1TrZKBh7QacaXDb2E_AUT0StNVA61PafvML9IRA-j_ufH/exec?list=1";
+
+let allFiles = [];
+
+/* ===== FETCH FILES ===== */
+fetch(apiDocUrl)
+  .then(res => res.json())
+  .then(files => {
+    allFiles = files || [];
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Files load nahi ho pa rahi hain.");
+  });
+
+const input = document.getElementById("docSearch");
+const container = document.getElementById("DocDPContainer");
+
+/* ===== CREATE Docdropdown ELEMENT ===== */
+const Docdropdown = document.createElement("ul");
+Docdropdown.style.listStyle = "none";
+Docdropdown.style.padding = "0";
+Docdropdown.style.margin = "0";
+Docdropdown.style.border = "1px solid #ccc";
+Docdropdown.style.borderRadius = "6px";
+Docdropdown.style.backgroundColor = "#002f4a";
+Docdropdown.style.color = "#f4dada";
+Docdropdown.style.maxHeight = "500px";
+Docdropdown.style.overflowY = "auto";
+Docdropdown.style.position = "absolute";
+Docdropdown.style.width = "100%";
+Docdropdown.style.display = "none";
+Docdropdown.style.zIndex = "1000";
+container.appendChild(Docdropdown);
+
+/* ===== SHOW Docdropdown ON TYPE ===== */
+input.addEventListener("input", function() {
+  const keyword = this.value.toLowerCase().trim();
+  Docdropdown.innerHTML = "";
+
+  if (!keyword) {
+    Docdropdown.style.display = "none";
+    return;
+  }
+
+  const filtered = allFiles.filter(f =>
+    f.name.toLowerCase().includes(keyword)
+  );
+
+  if (filtered.length === 0) {
+    Docdropdown.style.display = "none";
+    return;
+  }
+
+  filtered.forEach(file => {
+    const li = document.createElement("li");
+    li.textContent = file.name;
+    li.style.padding = "6px";
+    li.style.cursor = "pointer";
+    li.addEventListener("mouseenter", () => li.style.backgroundColor = "#004080");
+    li.addEventListener("mouseleave", () => li.style.backgroundColor = "#002f4a");
+
+    // Click to download
+    li.addEventListener("click", () => {
+      window.open(file.downloadUrl, "_blank");
+      Docdropdown.style.display = "none";
+      input.value = file.name;
+    });
+
+    Docdropdown.appendChild(li);
+  });
+
+  Docdropdown.style.display = "block";
+});
+
+/* ===== HIDE Docdropdown ON CLICK OUTSIDE ===== */
+document.addEventListener("click", function(e) {
+  if (!container.contains(e.target)) {
+    Docdropdown.style.display = "none";
+  }
+});
+</script>
+
+<!-- ================  DOCUMENT DOWNLODE CODE AND SCRIPT STOP HARE  hare ===============================-->
