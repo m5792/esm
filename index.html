@@ -425,6 +425,9 @@ th {
     <button onclick="window.open('https://m5792.github.io/esm/DAYBOOK.html','_blank')" id="f4">Job/Reff Summry &nbsp;<span style="color: red; font-weight: bold;">(F4)</span></button>
 
 
+    <!-- TOOLS BUTTON (REPLACE ARROW DIV) -->
+<button style="display: none;" id="arrow"  data-value="mytools">🧰 Tools</button>
+
     <!-- 
           <button onclick="showSection(15)">Tools</button>
            <button onclick="showSection(6)">Job/Reff</button> 
@@ -2387,8 +2390,7 @@ document.addEventListener("DOMContentLoaded", function () {
     <span id="reportauth" style="color: #f7f8fa;"></span>
   <span id="username" style="color: #f7f8fa;font-size: 12px;"></span>
 
-  <!-- TOOLS BUTTON (REPLACE ARROW DIV) -->
-<button class="tools-btn" id="arrow"  data-value="mytools">🧰 Tools</button>
+  
 </div>
  
 <!-- ============ website open navgation buttan code start start  ========= -->  
@@ -8953,14 +8955,14 @@ document.addEventListener("submit", async function (e) {
     flex-direction:column;
     transition:0.4s ease;
     z-index:1000;
-    border-top:4px solid #8d0500;
+    border-top:4px solid #fae502;
     border-bottom:4px solid #8d0500;
 }
 
 /* ToolsDivpopup VISIBLE */
 .ToolsDiv-container.active{
     display:flex;              /* 🔴 IMPORTANT */
-    bottom:100px;
+    bottom:80px;
 }
 
 /* CONTENT AREA */
@@ -8989,13 +8991,13 @@ document.addEventListener("submit", async function (e) {
 .button-bar{
     position:sticky;
     bottom:0;
-    background:#c7c7c7;
+    background:#003054;
     padding:10px;
     display:flex;
     gap:8px;
     flex-wrap:wrap;
     justify-content:center;
-    border-top:4px solid #013782;
+    border-top:4px solid #fae502;
 }
 
 
@@ -9005,7 +9007,7 @@ document.addEventListener("submit", async function (e) {
     bottom:55px;
     right:5px;
     padding:5px 15px;
-    background:#fffdfd;
+    background:#fdfffe;
     font-weight: bold;
     color:#002e4d;
     border:none;
@@ -9201,12 +9203,12 @@ style="margin-top:10px;font-weight:bold;color:#444;background:#fff;">
 
     <!-- BUTTON PANEL -->
     <div class="button-bar">
-        <button onclick="openSection('docsearch')" style="background-color: #c7c7c7; color:rgb(2, 47, 83)e; font-size: 16px;  border-radius: 8px; border: none;cursor: pointer;">🔍 Document Download</button>
-        <button onclick="openSection('attendance')" data-value="atn" style="background-color: #c7c7c7; color: rgb(2, 47, 83)e; font-size: 16px;  border-radius: 8px; border: none;cursor: pointer;">📘 Attendance</button>
-        <button onclick="openSection('lw')" style="background-color: #c7c7c7; color: rgb(2, 47, 83)e; font-size: 16px;  border-radius: 8px; border: none;cursor: pointer;">📄 Loan Viewer</button>
-        <button onclick="openSection('lclc')" style="background-color: #c7c7c7; color: rgb(2, 47, 83)e; font-size: 16px;  border-radius: 8px; border: none;cursor: pointer;">💰 Loan Calculater</button>
-        <button onclick="openSection('empserch')"  style="background-color: #c7c7c7; color: rgb(2, 47, 83)e; font-size: 16px;  border-radius: 8px; border: none;cursor: pointer;" data-value="empserch">🧾 Employee/Event Serch</button>
-        <button onclick="openSection('address')" style="background-color: #c7c7c7;color: rgb(2, 47, 83)e; font-size: 16px;  border-radius: 8px; border: none;cursor: pointer;">🏢 Address</button>
+        <button onclick="openSection('docsearch')" style="background-color: #002e4d; color:white; font-size: 16px;  border-radius: 8px; border: none;cursor: pointer;">🔍 Document Download</button>
+        <button onclick="openSection('attendance')" data-value="atn" style="background-color: #002e4d; color: white; font-size: 16px;  border-radius: 8px; border: none;cursor: pointer;">📘 Attendance</button>
+        <button onclick="openSection('lw')" style="background-color: #002e4d; color: white; font-size: 16px;  border-radius: 8px; border: none;cursor: pointer;">📄 Loan Viewer</button>
+        <button onclick="openSection('lclc')" style="background-color: #002e4d; color: white; font-size: 16px;  border-radius: 8px; border: none;cursor: pointer;">💰 Loan Calculater</button>
+        <button onclick="openSection('empserch')"  style="background-color: #002e4d; color: white; font-size: 16px;  border-radius: 8px; border: none;cursor: pointer;" data-value="empserch">🧾 Employee/Event Serch</button>
+        <button onclick="openSection('address')" style="background-color: #002e4d; color: white; font-size: 16px;  border-radius: 8px; border: none;cursor: pointer;">🏢 Address</button>
        
     </div>
 
