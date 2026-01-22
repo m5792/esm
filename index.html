@@ -426,7 +426,7 @@ th {
 
 
     <!-- TOOLS BUTTON (REPLACE ARROW DIV) -->
-<button style="display: none;" id="arrow"  data-value="mytools">🧰 Tools</button>
+<button style="display: none;" id="arrow"  data-value="mytools">Tools</button>
 
     <!-- 
           <button onclick="showSection(15)">Tools</button>
@@ -9040,14 +9040,33 @@ document.addEventListener("submit", async function (e) {
     <div class="ToolsDiv-content">
 <!-- _________________________________________________________________________________________________________________________________________________________ -->
 
-        <div id="docsearch" class="ToolsDivcontent-section">
-            <h2>🔍 Search & Download Document</h2>
-             <input type="text" id="docSearch" placeholder="Type document name..." style=" margin-bottom: 8px; padding: 6px; width: 600px; font-size: 15px; border-radius: 6px; background-color: #faf0d5;">
-<br>
-<!-- Docdropdown container -->
-<div id="DocDPContainer" style=" position: relative; width: 600px;"></div>
-        </div>
-<!-- _________________________________________________________________________________________________________________________________________________________ -->
+       <div id="docsearch" class="ToolsDivcontent-section">
+
+  <!-- HEADER -->
+  <div class="doc-header">
+    <span style="font-size: 18px; font-weight: bold;color: #002630;">🔍 Search & Download Document</span>
+    <input type="text" id="docSearch" placeholder="Type document name...">
+    <div id="DocDPContainer"></div>
+  </div>
+
+  <!-- PREVIEW SECTION -->
+<div id="previewSection" class="doc-preview hidden">
+
+  <!-- ACTION BUTTONS (ABOVE PREVIEW) -->
+  <div class="doc-actions">
+    <a id="downloadBtn" target="_blank">⬇ Download</a>
+    <a id="emailBtn" target="_blank">📧 Email</a>
+    <a id="whatsappBtn" target="_blank">📤 WhatsApp</a>
+  </div>
+
+  <!-- DOCUMENT PREVIEW -->
+  <iframe id="docPreview"></iframe>
+
+</div>
+
+
+</div>
+<!--  _______________________________________________________________________________________________________________________________________________ -->
 
 
 <!-- _________________________________________________________________________________________________________________________________________________________ -->
@@ -9889,87 +9908,182 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 
 <!-- ================  document download script start hare ===============================-->
+
+<style>
+.doc-search-card{
+  width: 650px;
+  background:#ffffff;
+  border-radius:10px;
+  box-shadow:0 8px 25px rgba(246, 245, 245, 0.15);
+  overflow:hidden;
+  font-family:Segoe UI, sans-serif;
+}
+
+/* Header fixed feel */
+.doc-header{
+  background:#c8e7f9;
+  padding:15px;
+  color:#fff;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.doc-header h2{
+  margin:0 0 8px;
+}
+
+#docSearch{
+  width:100%;
+  padding:8px;
+  border-radius:6px;
+  border:none;
+  font-size:15px;
+}
+
+/* Dropdown */
+/* Dropdown */
+#DocDPContainer ul{
+  background:#fafbfb;
+  color:#024468;
+  border:1px solid #ccc;
+}
+
+/* Dropdown item */
+#DocDPContainer ul li{
+  padding:8px;
+  cursor:pointer;
+  transition:background 0.2s ease, color 0.2s ease;
+}
+
+/* Hover effect */
+#DocDPContainer ul li:hover{
+  background:#0b5ed7;   /* Blue */
+  color:#ffffff;
+}
+
+
+
+/* Preview */
+/* Preview container */
+.doc-preview{
+  padding:12px;
+  background:#f2f2f2;
+}
+
+/* Action Buttons (Top) */
+.doc-actions{
+  display:flex;
+  gap:10px;
+  margin-bottom:10px;
+  position:sticky;
+  top:0;
+  background:#f2f2f2;
+  padding:6px 0;
+  z-index:5;
+}
+
+.doc-actions a{
+  flex:1;
+  text-align:center;
+  padding:8px;
+  background:#004080;
+  color:#fff;
+  border-radius:6px;
+  text-decoration:none;
+  font-weight:500;
+}
+
+.doc-actions a:hover{
+  background:#0066aa;
+}
+
+/* A4 Size Preview */
+#docPreview{
+  width:100%;
+  height:1123px;        /* A4 height */
+  background:#fff;
+  border:1px solid #ccc;
+  border-radius:6px;
+}
+
+/* Hide helper */
+.hidden{
+  display:none;
+}
+
+
+</style>
+
 <script>
-const apiDocUrl =
-  "https://script.google.com/macros/s/AKfycbwOHYec5NXGIbTO1SOMjnz1TrZKBh7QacaXDb2E_AUT0StNVA61PafvML9IRA-j_ufH/exec?list=1";
+const apiDocUrl = "https://script.google.com/macros/s/AKfycbwOHYec5NXGIbTO1SOMjnz1TrZKBh7QacaXDb2E_AUT0StNVA61PafvML9IRA-j_ufH/exec?list=1";
 
 let allFiles = [];
 
-/* ===== FETCH FILES ===== */
 fetch(apiDocUrl)
-  .then(res => res.json())
-  .then(files => {
-    allFiles = files || [];
-  })
-  .catch(err => {
-    console.error(err);
-    alert("Files load nahi ho pa rahi hain.");
-  });
+.then(res => res.json())
+.then(files => allFiles = files || []);
 
 const input = document.getElementById("docSearch");
 const container = document.getElementById("DocDPContainer");
+const previewSection = document.getElementById("previewSection");
+const iframe = document.getElementById("docPreview");
 
-/* ===== CREATE Docdropdown ELEMENT ===== */
-const Docdropdown = document.createElement("ul");
-Docdropdown.style.listStyle = "none";
-Docdropdown.style.padding = "0";
-Docdropdown.style.margin = "0";
-Docdropdown.style.border = "1px solid #ccc";
-Docdropdown.style.borderRadius = "6px";
-Docdropdown.style.backgroundColor = "#002f4a";
-Docdropdown.style.color = "#f4dada";
-Docdropdown.style.maxHeight = "500px";
-Docdropdown.style.overflowY = "auto";
-Docdropdown.style.position = "absolute";
-Docdropdown.style.width = "100%";
-Docdropdown.style.display = "none";
-Docdropdown.style.zIndex = "1000";
-container.appendChild(Docdropdown);
+const downloadBtn = document.getElementById("downloadBtn");
+const emailBtn = document.getElementById("emailBtn");
+const whatsappBtn = document.getElementById("whatsappBtn");
 
-/* ===== SHOW Docdropdown ON TYPE ===== */
-input.addEventListener("input", function() {
-  const keyword = this.value.toLowerCase().trim();
-  Docdropdown.innerHTML = "";
+/* Dropdown */
+const dropdown = document.createElement("ul");
+dropdown.style.listStyle="none";
+dropdown.style.margin="0";
+dropdown.style.padding="0";
+dropdown.style.borderRadius="6px";
+dropdown.style.maxHeight="250px";
+dropdown.style.overflowY="auto";
+dropdown.style.display="none";
+container.appendChild(dropdown);
 
-  if (!keyword) {
-    Docdropdown.style.display = "none";
-    return;
-  }
+/* Search */
+input.addEventListener("input", function(){
+  const key = this.value.toLowerCase();
+  dropdown.innerHTML="";
 
-  const filtered = allFiles.filter(f =>
-    f.name.toLowerCase().includes(keyword)
-  );
+  if(!key){ dropdown.style.display="none"; return; }
 
-  if (filtered.length === 0) {
-    Docdropdown.style.display = "none";
-    return;
-  }
+  const filtered = allFiles.filter(f=>f.name.toLowerCase().includes(key));
+  if(filtered.length===0){ dropdown.style.display="none"; return; }
 
-  filtered.forEach(file => {
-    const li = document.createElement("li");
-    li.textContent = file.name;
-    li.style.padding = "6px";
-    li.style.cursor = "pointer";
-    li.addEventListener("mouseenter", () => li.style.backgroundColor = "#004080");
-    li.addEventListener("mouseleave", () => li.style.backgroundColor = "#002f4a");
+  filtered.forEach(file=>{
+    const li=document.createElement("li");
+    li.textContent=file.name;
+    li.style.padding="8px";
+    li.style.cursor="pointer";
 
-    // Click to download
-    li.addEventListener("click", () => {
-      window.open(file.downloadUrl, "_blank");
-      Docdropdown.style.display = "none";
-      input.value = file.name;
-    });
+    li.onclick=()=>{
+      input.value=file.name;
+      dropdown.style.display="none";
 
-    Docdropdown.appendChild(li);
+      /* Preview + Buttons */
+      iframe.src=file.previewUrl || file.downloadUrl;
+      downloadBtn.href=file.downloadUrl;
+
+      emailBtn.href=`mailto:?subject=${encodeURIComponent(file.name)}&body=${encodeURIComponent(file.downloadUrl)}`;
+      whatsappBtn.href=`https://wa.me/?text=${encodeURIComponent(file.name+" "+file.downloadUrl)}`;
+
+      previewSection.classList.remove("hidden");
+    };
+
+    dropdown.appendChild(li);
   });
 
-  Docdropdown.style.display = "block";
+  dropdown.style.display="block";
 });
 
-/* ===== HIDE Docdropdown ON CLICK OUTSIDE ===== */
-document.addEventListener("click", function(e) {
-  if (!container.contains(e.target)) {
-    Docdropdown.style.display = "none";
+/* Click outside */
+document.addEventListener("click",e=>{
+  if(!container.contains(e.target) && e.target!==input){
+    dropdown.style.display="none";
   }
 });
 </script>
