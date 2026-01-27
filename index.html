@@ -10656,7 +10656,7 @@ document.addEventListener("DOMContentLoaded", () => {
   container.style = `
     position:fixed;
     top:9px;
-    right:4in;
+    right:3.5in;
     width:320px;
     z-index:999999;
     font-family:Arial;
@@ -10668,13 +10668,14 @@ document.addEventListener("DOMContentLoaded", () => {
   input.disabled = true;
   input.placeholder = "⏳ Please Wait ! Loading...";
   input.style = `
-    width:4in;
+    width:3.5in;
     padding:6px;
     font-size:15px;
     border-radius:8px;
     border:1px solid #ccc;
     background:white;
     margin-bottom:6px;
+    color:red;
   `;
   container.appendChild(input);
 
@@ -10688,7 +10689,7 @@ document.addEventListener("DOMContentLoaded", () => {
     position:absolute;
     top:100%;
     left:0;
-    width:4in;
+    width:3.5in;
     max-height:320px;
     overflow-y:auto;
     display:none;
@@ -10722,7 +10723,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       input.disabled = false;
       input.placeholder =
-        "🔍 Search Inv., PL List, Other Documents Here";
+        "🔍 Search Inv., PL List, Other Doc. Here";
     })
     .catch(() => {
       input.placeholder = "❌ Data load failed";
@@ -10790,6 +10791,10 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("click", e => {
     if (!container.contains(e.target)) {
       dropdown.style.display = "none";
+
+      input.value = "";
+    // input.placeholder = "🔍 Search Inv., PL List, Other Documents Here";
+
     }
   });
 
