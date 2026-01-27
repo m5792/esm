@@ -2776,3 +2776,166 @@ document.addEventListener("click",e=>{
 <!-- ================  document download script stop hare ===============================-->
 
 
+
+
+
+
+<script>
+/* ================= BASE URL ================= */
+const BASE_URL =
+  "https://script.google.com/macros/s/AKfycbziC-CN9ohrendXMnJZgTtk35Kex1WQ0Mti3ZhyFg-P2DuWzv6TpmzairnyHCPMLSE1/exec";
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  let invoiceFiles = [];
+  let documentFiles = [];
+
+  /* ===== UI CONTAINER ===== */
+  const container = document.createElement("div");
+  container.style = `
+    position:fixed;
+    bottom:1in;
+    right:.2in;
+    width:4in;
+    z-index:999999;
+    font-family:Arial;
+  `;
+  document.body.appendChild(container);
+
+  /* ===== DROPDOWN (ABOVE INPUT) ===== */
+  const dropdown = document.createElement("ul");
+  dropdown.style = `
+    list-style:none;
+    margin:0 0 6px 0;
+    padding:0;
+    font-size:14px;
+    position:absolute;
+    bottom:100%;
+    left:0;
+    width:100%;
+    max-height:320px;
+    overflow-y:auto;
+    display:none;
+    background:#fff;
+    border-radius:8px;
+    border:3px solid blue;
+    box-shadow:0 6px 20px rgba(0,0,0,.35);
+  `;
+  container.appendChild(dropdown);
+
+  /* ===== INPUT ===== */
+  const input = document.createElement("input");
+  input.disabled = true;
+  input.placeholder = "⏳ Please Wait ! Loading...";
+  input.style = `
+    width:100%;
+    padding:6px;
+    font-size:15px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    background: #DCF8FA;
+  `;
+  container.appendChild(input);
+
+  /* ===== LOAD DATA ===== */
+  function loadAllData() {
+    input.disabled = true;
+    input.placeholder = "⏳ Please Wait ! Loading...";
+
+    Promise.all([
+      Promise.all([
+        fetch(`${BASE_URL}?searchType=invoice`).then(r => r.json()),
+        fetch(`${BASE_URL}?searchType=packing`).then(r => r.json())
+      ]),
+      fetch(`${BASE_URL}?list=1`).then(r => r.json())
+    ])
+    .then(([[inv, pack], docs]) => {
+
+      invoiceFiles = [
+        ...(inv || []).map(f => ({ ...f, __type: "invoice" })),
+        ...(pack || []).map(f => ({ ...f, __type: "invoice" }))
+      ];
+
+      documentFiles = (docs || []).map(d => ({ ...d, __type: "document" }));
+
+      input.disabled = false;
+      input.placeholder =
+        "🔍 Search Invoice, Packing & Documents";
+    })
+    .catch(() => {
+      input.placeholder = "❌ Data load failed";
+    });
+  }
+
+  /* ===== SEARCH LOGIC (ALL SOURCES) ===== */
+  input.addEventListener("input", () => {
+    const q = input.value.toLowerCase().trim();
+    dropdown.innerHTML = "";
+
+    if (!q) {
+      dropdown.style.display = "none";
+      return;
+    }
+
+    const allFiles = [...invoiceFiles, ...documentFiles];
+
+    const matched = allFiles.filter(f =>
+      f.name.toLowerCase().includes(q)
+    );
+
+    if (!matched.length) {
+      dropdown.style.display = "none";
+      return;
+    }
+
+    matched.forEach(f => {
+      const li = document.createElement("li");
+      li.textContent = f.name;
+      li.style = `
+        padding:8px;
+        cursor:pointer;
+        transition:0.2s;
+      `;
+
+      li.onmouseenter = () => {
+        li.style.background = "#0d6efd";
+        li.style.color = "#fff";
+      };
+      li.onmouseleave = () => {
+        li.style.background = "";
+        li.style.color = "#000";
+      };
+
+      li.onclick = () => {
+       window.open(
+  `https://drive.google.com/file/d/${f.id}/view`,
+  "_blank"
+);
+
+        input.value = f.name;
+        dropdown.style.display = "none";
+      };
+
+      dropdown.appendChild(li);
+    });
+
+    dropdown.style.display = "block";
+  });
+
+  /* ===== CLICK OUTSIDE ===== */
+  document.addEventListener("click", e => {
+    if (!container.contains(e.target)) {
+      dropdown.style.display = "none";
+
+      input.value = "";
+    }
+  });
+
+  /* ===== INIT ===== */
+  loadAllData();
+
+});
+</script>
+
+
+
