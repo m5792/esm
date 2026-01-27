@@ -436,8 +436,7 @@ th {
     <button onclick="showSection(7)" id="f6" style="color: rgb(2, 79, 245);" >Admin* &nbsp;<span style="color:  red;font-weight: bold;">(F6)</span></button>
  
       
-    
-  
+ 
   </div>
   <div class="user-info">
     <span id="username"></span>
@@ -713,6 +712,7 @@ th {
 
 
 
+
 <div class="voucher-button-panel">
 
 
@@ -726,6 +726,9 @@ th {
 
  
 </div>
+
+  
+
 
 <br/><br/>
 <div style="height:200px; overflow-y:auto; overflow-x:auto; border:1px solid #ccc; padding:8px; background-color: #f4faf3;" >
@@ -1067,9 +1070,10 @@ fetch("https://api.ipify.org?format=json")
   <span>Total Receipt:</span> <span id="totalReceipt">0</span> |
   <span>Total TDS:</span> <span id="totalTds">0</span> |
   <span>Total Bill:</span> <span id="totalBill">0</span> |
-  <span>Total Credit Note:</span> <span id="totalCn">0</span> |
-  <span>Total Weight:</span> <span id="totalPEBWeight">0</span> |
-  <span>Balance:</span> <span id="totalDifference">0</span>
+
+  <span>Total Net Weight:</span> <span id="totalPEBWeight">0</span> |
+  <span>Balance:</span> <span id="totalDifference">0</span> |
+    <span style="color: rgb(235, 235, 235);">Total Credit Note:</span> <span id="totalCn"></span>  
 </div>       
 
 
@@ -2409,6 +2413,8 @@ document.addEventListener("DOMContentLoaded", function () {
 <body>
   <nav class="row" aria-label="Quick image links" style=" border: 3px solid #ffffff; padding: 5px 10px;">
 
+    
+  
 
      <!-- Google (favicon used as image) -->
     <a class="item" href="https://www.google.com/" target="_blank" rel="noopener noreferrer">
@@ -6437,9 +6443,9 @@ table tr:hover {
 
 <style>
 #floatingBrand {
-  position: fixed;
-  top: 8px;
-  right: 400px;
+  position: absolute;
+  top: 900px;
+  right: 10px;
   z-index: 9999;
   background: transparent;
   padding: 5px 10px;
@@ -7341,16 +7347,11 @@ loadNoticeBoard();
 
 
 
-
-<!---------------------------- DATAMIPLTABLE SCRIPT START HERE ---------------------------------------- -->
-
+<!---------------------------- DATAMIPLTABLE SCRIPT START ---------------------------------------- -->
 <script>
 const apidbookKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheetdbookId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
-const rangedbook = 'FORM!A:K';
-const apipdfUrl = "https://script.google.com/macros/s/AKfycbwOHYec5NXGIbTO1SOMjnz1TrZKBh7QacaXDb2E_AUT0StNVA61PafvML9IRA-j_ufH/exec";
-
-// https://script.google.com/macros/s/AKfycbwRAHlS8JeIXSEbPVjUNVrXkpfVOmNc2z95OZsygdzebtk-sgLV-86eWyZ20jVHspYe/exec
+const rangedbook = "FORM!A:K";
 
 let allTableData = [];
 let monthlyData = {};
@@ -7358,18 +7359,18 @@ let monthlyData = {};
 function getMonthFromDate(dateStr) {
   const d = new Date(dateStr);
   if (isNaN(d)) return "";
-  return d.toLocaleString('default', { month: 'short' }) + "-" + d.getFullYear();
+  return d.toLocaleString("default", { month: "short" }) + "-" + d.getFullYear();
 }
 
-// ✅ Main data load
+/* ================= LOAD DATA ================= */
 async function loadDATAMIPLTABLE() {
   const table = document.getElementById("MIPLDATATABLE");
   table.innerHTML = "<tr><th>Loading...</th></tr>";
 
   try {
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetdbookId}/values/${rangedbook}?key=${apidbookKey}`;
-    const response = await fetch(url);
-    const data = await response.json();
+    const res = await fetch(url);
+    const data = await res.json();
 
     if (!data.values) {
       table.innerHTML = "<tr><td>No data</td></tr>";
@@ -7379,16 +7380,17 @@ async function loadDATAMIPLTABLE() {
     const header = data.values[0];
     const allRows = data.values.slice(1);
 
-    // ✅ Table rows — only show where column K (index 10) = "SALE"
+    /* ✅ Only SALE rows for table */
     const tableRows = allRows.filter(r => r[10]?.toUpperCase().trim() === "SALE");
     tableRows.sort((a, b) => Number(b[0]) - Number(a[0]));
     allTableData = [header, ...tableRows];
 
-    // ✅ Monthly totals from *all* rows (SALE + RECEIPT etc.)
+    /* ✅ Monthly totals (all rows) */
     monthlyData = {};
     allRows.forEach(r => {
       const month = getMonthFromDate(r[2]);
       if (!month) return;
+
       if (!monthlyData[month]) monthlyData[month] = { receipt: 0, sale: 0 };
 
       const type = r[1]?.toUpperCase().trim();
@@ -7402,16 +7404,18 @@ async function loadDATAMIPLTABLE() {
 
     populateMonthDropdown(Object.keys(monthlyData));
 
-    // ✅ Show only latest 10 entries at start
+    /* ✅ Show latest 9 entries */
     renderDATAMIPLTABLE(allTableData, true);
 
-    // ✅ Show current month totals
+    /* ✅ Auto select current month */
     const today = new Date();
-    const currentKey = today.toLocaleString('default', { month: 'short' }) + "-" + today.getFullYear();
-    const dropdown = document.getElementById("monthDropdown");
+    const currentKey =
+      today.toLocaleString("default", { month: "short" }) +
+      "-" +
+      today.getFullYear();
 
     if (monthlyData[currentKey]) {
-      dropdown.value = currentKey;
+      document.getElementById("monthDropdown").value = currentKey;
       updateMonthlyTotalsDisplay(monthlyData[currentKey]);
     }
 
@@ -7421,10 +7425,11 @@ async function loadDATAMIPLTABLE() {
   }
 }
 
-// ✅ Dropdown
+/* ================= MONTH DROPDOWN ================= */
 function populateMonthDropdown(months) {
   const dropdown = document.getElementById("monthDropdown");
   dropdown.innerHTML = `<option value="">Select Month</option>`;
+
   months.forEach(m => {
     const opt = document.createElement("option");
     opt.value = m;
@@ -7432,16 +7437,16 @@ function populateMonthDropdown(months) {
     dropdown.appendChild(opt);
   });
 
-  dropdown.addEventListener("change", () => {
+  dropdown.onchange = () => {
     const m = dropdown.value;
     if (m) {
       updateMonthlyTotalsDisplay(monthlyData[m]);
       filterMonthTable(m);
     }
-  });
+  };
 }
 
-// ✅ Filter table by month (still only "SALE" rows)
+/* ================= FILTER BY MONTH ================= */
 function filterMonthTable(month) {
   const filtered = [
     allTableData[0],
@@ -7450,41 +7455,37 @@ function filterMonthTable(month) {
   renderDATAMIPLTABLE(filtered, false);
 }
 
-// ✅ Totals display
+/* ================= TOTAL DISPLAY ================= */
 function updateMonthlyTotalsDisplay(t) {
-  if (!t) return;
   document.getElementById("monthlyTotals").innerHTML = `
-    <span style="color:#4067DD;font-weight:bold;">Receipt: ₹${t.receipt.toFixed()}</span> | 
+    <span style="color:#4067DD;font-weight:bold;">Receipt: ₹${t.receipt.toFixed()}</span> |
     <span style="color:#710000;font-weight:bold;">Sale: ₹${t.sale.toFixed()}</span>
   `;
 }
 
-// ✅ Render table
-function renderDATAMIPLTABLE(data, limit10 = false) {
+/* ================= RENDER TABLE ================= */
+function renderDATAMIPLTABLE(data, limit9 = false) {
   const table = document.getElementById("MIPLDATATABLE");
   table.innerHTML = "";
 
   const thead = document.createElement("thead");
   const tbody = document.createElement("tbody");
 
-  const headerRow = data[0];
   const trh = document.createElement("tr");
-  headerRow.forEach(h => {
+  data[0].forEach(h => {
     const th = document.createElement("th");
     th.textContent = h;
     trh.appendChild(th);
   });
-  trh.appendChild(document.createElement("th")).textContent = "Actions";
   thead.appendChild(trh);
 
   let rows = data.slice(1);
-  if (limit10) rows = rows.slice(0, 9); // startup limit
+  if (limit9) rows = rows.slice(0, 9);
 
   rows.forEach(r => {
     const tr = document.createElement("tr");
     const type = r[1]?.toUpperCase();
 
-    // ✅ Color logic
     if (type === "BANK") tr.style.color = "red";
     if (type === "CREDIT NOTE") tr.style.color = "grey";
     if (type === "CHALLAN") tr.style.color = "green";
@@ -7495,64 +7496,36 @@ function renderDATAMIPLTABLE(data, limit10 = false) {
       tr.appendChild(td);
     });
 
-    // ✅ BILL + PL LIST buttons
-    const action = document.createElement("td");
-    const invoice = r[4]?.trim();
-
-    if (invoice && type === "TAX INVOICE") {
-      const b1 = document.createElement("button");
-      b1.textContent = "BILL";
-      b1.onclick = () => openFile(invoice.replace("/", "_"));
-
-      const b2 = document.createElement("button");
-      b2.textContent = "PL LIST";
-      b2.onclick = () => openFile(invoice);
-
-      b1.style.cssText = b2.style.cssText = "padding:3px 7px;color:white;border:none;border-radius:4px;cursor:pointer;";
-      b1.style.background = "#1F39FF";
-      b2.style.background = "#28A745";
-
-      action.style.display = "flex";
-      action.style.gap = "8px";
-      action.append(b1, b2);
-    }
-
-    tr.appendChild(action);
     tbody.appendChild(tr);
   });
 
   table.append(thead, tbody);
 }
 
-// ✅ PDF Open
-function openFile(key) {
-  fetch(apipdfUrl + "?invoice=" + encodeURIComponent(key))
-    .then(res => res.text())
-    .then(url => url !== "NOT_FOUND" ? window.open(url, "_blank") : alert("File not found!"))
-    .catch(() => alert("Error loading file"));
-}
-
-// ✅ Search system
+/* ================= SEARCH ================= */
 function searchDataMIPL() {
   const q = document.getElementById("DATASEARCMIPL").value.toLowerCase();
   if (!q) return renderDATAMIPLTABLE(allTableData, true);
 
   const filtered = [
     allTableData[0],
-    ...allTableData.slice(1).filter(r => r.some(c => c?.toLowerCase().includes(q)))
+    ...allTableData.slice(1).filter(r =>
+      r.some(c => c?.toLowerCase().includes(q))
+    )
   ];
 
   renderDATAMIPLTABLE(filtered, false);
 }
 
-// ✅ Initialize
+/* ================= INIT ================= */
 document.addEventListener("DOMContentLoaded", () => {
   loadDATAMIPLTABLE();
-  document.getElementById("DATASEARCMIPL").addEventListener("keyup", searchDataMIPL);
+  document
+    .getElementById("DATASEARCMIPL")
+    .addEventListener("keyup", searchDataMIPL);
 });
 </script>
-
-<!---------------------------- DATAMIPLTABLE SCRIPT STOP ---------------------------------------- -->
+<!---------------------------- DATAMIPLTABLE SCRIPT END ---------------------------------------- -->
 
 
 
@@ -7853,7 +7826,7 @@ function render2011Table(rows){
       const weight = parseFloat(r[7]) || 0;
       if(type==="TDS") totalTds+=receipt;
       else if(type === "BANK" || type === "CASH") totalReceipt+=receipt;
-      else if(type==="TAX INVOICE"   || type === "CHALLAN"){ totalBill+=amount; totalPEBWeight+=weight;}
+      else if(type==="TAX INVOICE"   || type === "CHALLAN" || type === "CREDIT NOTE"){ totalBill+=amount; totalPEBWeight+=weight;}
       else if(type==="CREDIT NOTE") totalCn+=amount;
     }
   });
@@ -8139,7 +8112,8 @@ function applyButtonPermissions() {
     "export5793": "11",
     "url": "12",
     "mytools": "13",
-    "empserch": "14"
+    "empserch": "14",
+    "dwn": "15"
   };
 
   // ✅ Handle all buttons with a data-value attribute
@@ -10395,3 +10369,433 @@ loadPRLSheet();
 
 
 <!-- ================ ------------------------- tools div with poup and all div contetent and  script stop hare --------------- ===============================-->
+
+
+
+<!--
+<script>
+/* ===================================================================
+   🔐 AUTHORIZATION SECTION (REMOVE THIS BLOCK TO DISABLE PERMISSION)
+   =================================================================== */
+
+function applyDocumentButtonPermission(btnDoc) {
+  const authText = document.getElementById("reportauth")?.innerText.trim() || "";
+  const allowed = authText.split(",").map(a => a.trim());
+
+  // data-value="dwn" → permission 15
+  if (allowed.includes("15")) {
+    btnDoc.style.display = "inline-block";
+  } else {
+    btnDoc.style.display = "none";
+  }
+}
+
+function waitForReportAuth(btnDoc) {
+  const authSpan = document.getElementById("reportauth");
+  if (!authSpan) return;
+
+  const observer = new MutationObserver(() => {
+    if (authSpan.innerText.trim() !== "") {
+      applyDocumentButtonPermission(btnDoc);
+      observer.disconnect();
+    }
+  });
+
+  observer.observe(authSpan, { childList: true, subtree: true });
+}
+
+/* ===================================================================
+   🔐 AUTHORIZATION SECTION END
+   =================================================================== */
+
+
+/* ================= BASE URL ================= */
+const BASE_URL =
+  "https://script.google.com/macros/s/AKfycbziC-CN9ohrendXMnJZgTtk35Kex1WQ0Mti3ZhyFg-P2DuWzv6TpmzairnyHCPMLSE1/exec";
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  let currentMode = "invoice";
+  let invoiceFiles = [];
+  let documentFiles = [];
+
+  /* ===== UI CONTAINER ===== */
+  const container = document.createElement("div");
+container.style = `
+  position:fixed;
+  top:9px;
+  right:4in;
+  width:320px;
+  z-index:999999;
+  font-family:Arial;
+`;
+document.body.appendChild(container);
+
+
+  /* ===== SEARCH INPUT (FIRST) ===== */
+  const input = document.createElement("input");
+  input.disabled = true;
+  input.placeholder = "⏳ Please Wait ! Loading...";
+  input.style = `
+    width:100%;
+    padding:6px;
+    font-size:15px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    background:#FAE4DC;
+    margin-bottom:6px;
+  `;
+  container.appendChild(input);
+
+  /* ===== BUTTON BAR (BELOW INPUT) ===== */
+  const btnWrap = document.createElement("div");
+  btnWrap.style = "display:flex;gap:10px;margin-bottom:6px;";
+  container.appendChild(btnWrap);
+
+  const btnInvoice = document.createElement("button");
+  const btnDoc = document.createElement("button");
+
+  btnInvoice.textContent = "Invoice / Packing";
+  btnDoc.textContent = "Documents";
+
+  btnDoc.setAttribute("data-value", "dwn");
+
+  [btnInvoice, btnDoc].forEach(b => {
+    b.style = `
+      flex:1;
+      padding:6px;
+      cursor:pointer;
+      background:none;
+      border:none;
+      font-size:14px;
+      font-weight:600;
+      color:black;
+    `;
+    btnWrap.appendChild(b);
+  });
+
+  btnInvoice.style.color = "#013C61";        // default active
+  btnDoc.style.display = "none";         // 🔴 hidden until auth check
+
+  /* ===== DROPDOWN ===== */
+  const dropdown = document.createElement("ul");
+dropdown.style = `
+  list-style:none;
+  margin:4px 0 0 0;
+  padding:0;
+  font-size:14px;
+  position:absolute;
+  top:100%;
+  left:0;
+  width:100%;
+  max-height:320px;
+  overflow-y:auto;
+  display:none;
+  background:#fff;
+  border-radius:8px;
+  border: 3px solid blue;
+  box-shadow:0 6px 20px rgba(0,0,0,.35);
+  z-index:1000000;
+`;
+container.appendChild(dropdown);
+
+
+  /* ===== LOAD DATA ===== */
+  function loadAllData() {
+    input.disabled = true;
+    input.placeholder = "⏳ Please Wait !  Loading data...";
+
+    Promise.all([
+      Promise.all([
+        fetch(`${BASE_URL}?searchType=invoice`).then(r => r.json()),
+        fetch(`${BASE_URL}?searchType=packing`).then(r => r.json())
+      ]),
+      fetch(`${BASE_URL}?list=1`).then(r => r.json())
+    ])
+    .then(([[inv, pack], docs]) => {
+
+      invoiceFiles = [
+        ...(inv || []).map(f => ({ ...f, source: "Invoice" })),
+        ...(pack || []).map(f => ({ ...f, source: "Packing" }))
+      ];
+
+      documentFiles = docs || [];
+
+      activateMode(currentMode);
+
+      // 🔐 permission apply
+      applyDocumentButtonPermission(btnDoc);
+    })
+    .catch(() => {
+      input.placeholder = "❌ Data load failed";
+    });
+  }
+
+  /* ===== MODE SWITCH ===== */
+  function activateMode(mode) {
+    currentMode = mode;
+    dropdown.style.display = "none";
+    input.value = "";
+
+    const files = mode === "invoice" ? invoiceFiles : documentFiles;
+
+    input.disabled = false;
+    input.placeholder = `🔍 ${files.length} Files Loaded (Search here)`;
+
+    btnInvoice.style.color = mode === "invoice" ? "#008714" : "black";
+    btnDoc.style.color = mode === "document" ? "#008714" : "black";
+  }
+
+  btnInvoice.onclick = () => activateMode("invoice");
+  btnDoc.onclick = () => activateMode("document");
+
+  /* ===== SEARCH + DROPDOWN HOVER ===== */
+  input.addEventListener("input", () => {
+    const q = input.value.toLowerCase().trim();
+    dropdown.innerHTML = "";
+
+    if (!q) return dropdown.style.display = "none";
+
+    const files = currentMode === "invoice" ? invoiceFiles : documentFiles;
+    const matched = files.filter(f => f.name.toLowerCase().includes(q));
+
+    if (!matched.length) return dropdown.style.display = "none";
+
+    matched.forEach(f => {
+      const li = document.createElement("li");
+      li.textContent = f.name;
+      li.style = `
+        padding:8px;
+        cursor:pointer;
+        transition:0.2s;
+      `;
+
+      li.onmouseenter = () => {
+        li.style.background = "#0d6efd";
+        li.style.color = "#fff";
+      };
+      li.onmouseleave = () => {
+        li.style.background = "";
+        li.style.color = "#000";
+      };
+
+      li.onclick = () => {
+        window.open(
+          currentMode === "invoice"
+            ? `https://drive.google.com/file/d/${f.id}/view`
+            : f.previewUrl,
+          "_blank"
+        );
+        input.value = f.name;
+        dropdown.style.display = "none";
+      };
+
+      dropdown.appendChild(li);
+    });
+
+    dropdown.style.display = "block";
+  });
+
+  document.addEventListener("click", e => {
+    if (!container.contains(e.target)) dropdown.style.display = "none";
+  });
+
+  /* ===== AUTO REFRESH ===== */
+  setInterval(loadAllData, 10 * 60 * 1000);
+
+  /* ===== INIT ===== */
+  loadAllData();
+  waitForReportAuth(btnDoc);
+
+});
+</script>
+-->
+
+
+<script>
+/* ===================================================================
+   🔐 AUTHORIZATION SECTION (REMOVE THIS BLOCK TO DISABLE PERMISSION)
+   =================================================================== */
+
+let documentAllowed = false;
+
+function applyDocumentPermission() {
+  const authText = document.getElementById("reportauth")?.innerText.trim() || "";
+  const allowed = authText.split(",").map(a => a.trim());
+  documentAllowed = allowed.includes("15");
+}
+
+function waitForReportAuth() {
+  const authSpan = document.getElementById("reportauth");
+  if (!authSpan) return;
+
+  const observer = new MutationObserver(() => {
+    if (authSpan.innerText.trim() !== "") {
+      applyDocumentPermission();
+      observer.disconnect();
+    }
+  });
+
+  observer.observe(authSpan, { childList: true, subtree: true });
+}
+
+/* ===================================================================
+   🔐 AUTHORIZATION SECTION END
+   =================================================================== */
+
+const BASE_URL =
+  "https://script.google.com/macros/s/AKfycbziC-CN9ohrendXMnJZgTtk35Kex1WQ0Mti3ZhyFg-P2DuWzv6TpmzairnyHCPMLSE1/exec";
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  let invoiceFiles = [];
+  let documentFiles = [];
+
+  /* ===== UI CONTAINER ===== */
+  const container = document.createElement("div");
+  container.style = `
+    position:fixed;
+    top:9px;
+    right:4in;
+    width:320px;
+    z-index:999999;
+    font-family:Arial;
+  `;
+  document.body.appendChild(container);
+
+  /* ===== INPUT ===== */
+  const input = document.createElement("input");
+  input.disabled = true;
+  input.placeholder = "⏳ Please Wait ! Loading...";
+  input.style = `
+    width:4in;
+    padding:6px;
+    font-size:15px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    background:white;
+    margin-bottom:6px;
+  `;
+  container.appendChild(input);
+
+  /* ===== DROPDOWN ===== */
+  const dropdown = document.createElement("ul");
+  dropdown.style = `
+    list-style:none;
+    margin:4px 0 0 0;
+    padding:0;
+    font-size:14px;
+    position:absolute;
+    top:100%;
+    left:0;
+    width:4in;
+    max-height:320px;
+    overflow-y:auto;
+    display:none;
+    background:#fff;
+    border-radius:8px;
+    border:3px solid blue;
+    box-shadow:0 6px 20px rgba(0,0,0,.35);
+  `;
+  container.appendChild(dropdown);
+
+  /* ===== LOAD DATA ===== */
+  function loadAllData() {
+    input.disabled = true;
+    input.placeholder = "⏳ Please Wait ! Loading...";
+
+    Promise.all([
+      Promise.all([
+        fetch(`${BASE_URL}?searchType=invoice`).then(r => r.json()),
+        fetch(`${BASE_URL}?searchType=packing`).then(r => r.json())
+      ]),
+      fetch(`${BASE_URL}?list=1`).then(r => r.json())
+    ])
+    .then(([[inv, pack], docs]) => {
+
+      invoiceFiles = [
+        ...(inv || []),
+        ...(pack || [])
+      ];
+
+      documentFiles = docs || [];
+
+      input.disabled = false;
+      input.placeholder =
+        "🔍 Search Inv., PL List, Other Documents Here";
+    })
+    .catch(() => {
+      input.placeholder = "❌ Data load failed";
+    });
+  }
+
+  /* ===== SEARCH LOGIC ===== */
+  input.addEventListener("input", () => {
+    const q = input.value.toLowerCase().trim();
+    dropdown.innerHTML = "";
+
+    if (!q) {
+      dropdown.style.display = "none";
+      return;
+    }
+
+    let filesToSearch = [...invoiceFiles];
+
+    if (documentAllowed) {
+      filesToSearch = filesToSearch.concat(
+        documentFiles.map(d => ({ ...d, __doc: true }))
+      );
+    }
+
+    const matched = filesToSearch.filter(f =>
+      f.name.toLowerCase().includes(q)
+    );
+
+    if (!matched.length) {
+      dropdown.style.display = "none";
+      return;
+    }
+
+    matched.forEach(f => {
+      const li = document.createElement("li");
+      li.textContent = f.name;
+      li.style = "padding:8px;cursor:pointer";
+
+      li.onmouseenter = () => {
+        li.style.background = "#0d6efd";
+        li.style.color = "#fff";
+      };
+      li.onmouseleave = () => {
+        li.style.background = "";
+        li.style.color = "#000";
+      };
+
+      li.onclick = () => {
+        window.open(
+          f.__doc
+            ? f.previewUrl
+            : `https://drive.google.com/file/d/${f.id}/view`,
+          "_blank"
+        );
+        input.value = f.name;
+        dropdown.style.display = "none";
+      };
+
+      dropdown.appendChild(li);
+    });
+
+    dropdown.style.display = "block";
+  });
+
+  document.addEventListener("click", e => {
+    if (!container.contains(e.target)) {
+      dropdown.style.display = "none";
+    }
+  });
+
+  /* ===== INIT ===== */
+  loadAllData();
+  waitForReportAuth();
+
+});
+</script>
