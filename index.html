@@ -10612,6 +10612,13 @@ container.appendChild(dropdown);
 -->
 
 
+
+
+
+
+
+
+
 <script>
 /* ===================================================================
    🔐 AUTHORIZATION SECTION (REMOVE THIS BLOCK TO DISABLE PERMISSION)
@@ -10689,7 +10696,7 @@ document.addEventListener("DOMContentLoaded", () => {
     position:absolute;
     top:100%;
     left:0;
-    width:3.5in;
+    width:5in;
     max-height:320px;
     overflow-y:auto;
     display:none;
@@ -10772,15 +10779,20 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       li.onclick = () => {
-        window.open(
-          f.__doc
-            ? f.previewUrl
-            : `https://drive.google.com/file/d/${f.id}/view`,
-          "_blank"
-        );
-        input.value = f.name;
-        dropdown.style.display = "none";
-      };
+  if (!f.id) {
+    alert("File ID not found");
+    return;
+  }
+
+  window.open(
+    `https://drive.google.com/file/d/${f.id}/view`,
+    "_blank"
+  );
+
+  input.value = f.name;
+  dropdown.style.display = "none";
+};
+
 
       dropdown.appendChild(li);
     });
