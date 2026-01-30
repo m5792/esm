@@ -2780,29 +2780,51 @@ document.addEventListener("click",e=>{
 
 
 
+
+
+<!-- ================ GLOBAL SEARCH BAR SCRIPT START ================ -->
 <script>
-/* ================= BASE URL ================= */
+/* ===================================================================
+   🚀 GLOBAL SEARCH BAR (NO AUTH – ALL DATA VISIBLE)
+   =================================================================== */
+
 const BASE_URL =
-  "https://script.google.com/macros/s/AKfycbziC-CN9ohrendXMnJZgTtk35Kex1WQ0Mti3ZhyFg-P2DuWzv6TpmzairnyHCPMLSE1/exec";
+  "https://script.google.com/macros/s/AKfycbxFrdD0xEry5u8ltJ74muh9NzyIk9ZTPXswVqx03iiTRNhtAMq8pKXE6qXkYyH18-x9/exec";
 
 document.addEventListener("DOMContentLoaded", () => {
 
   let invoiceFiles = [];
   let documentFiles = [];
+  let purchaseFiles = [];
 
   /* ===== UI CONTAINER ===== */
   const container = document.createElement("div");
   container.style = `
     position:fixed;
     bottom:1in;
-    right:.2in;
+    right:2.5in;
     width:4in;
     z-index:999999;
     font-family:Arial;
   `;
   document.body.appendChild(container);
 
-  /* ===== DROPDOWN (ABOVE INPUT) ===== */
+  /* ===== INPUT ===== */
+  const input = document.createElement("input");
+  input.id = "globalSearchInput"; // ✅ for Alt+G
+  input.disabled = true;
+  input.placeholder = "⏳ Please Wait ! Loading...";
+  input.style = `
+    width:100%;
+    padding:6px;
+    font-size:15px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    background:#DCF8FA;
+  `;
+  container.appendChild(input);
+
+  /* ===== DROPDOWN ===== */
   const dropdown = document.createElement("ul");
   dropdown.style = `
     list-style:none;
@@ -2812,8 +2834,8 @@ document.addEventListener("DOMContentLoaded", () => {
     position:absolute;
     bottom:100%;
     left:0;
-    width:100%;
-    max-height:320px;
+    width:5in;
+    max-height:420px;
     overflow-y:auto;
     display:none;
     background:#fff;
@@ -2823,51 +2845,36 @@ document.addEventListener("DOMContentLoaded", () => {
   `;
   container.appendChild(dropdown);
 
-  /* ===== INPUT ===== */
-  const input = document.createElement("input");
-  input.disabled = true;
-  input.placeholder = "⏳ Please Wait ! Loading...";
-  input.style = `
-    width:100%;
-    padding:6px;
-    font-size:15px;
-    border-radius:8px;
-    border:1px solid #ccc;
-    background: #DCF8FA;
-  `;
-  container.appendChild(input);
-
   /* ===== LOAD DATA ===== */
   function loadAllData() {
     input.disabled = true;
     input.placeholder = "⏳ Please Wait ! Loading...";
 
     Promise.all([
-      Promise.all([
-        fetch(`${BASE_URL}?searchType=invoice`).then(r => r.json()),
-        fetch(`${BASE_URL}?searchType=packing`).then(r => r.json())
-      ]),
-      fetch(`${BASE_URL}?list=1`).then(r => r.json())
+      fetch(`${BASE_URL}?searchType=invoice`).then(r => r.json()),
+      fetch(`${BASE_URL}?searchType=packing`).then(r => r.json()),
+      fetch(`${BASE_URL}?list=1`).then(r => r.json()),
+      fetch(`${BASE_URL}?searchType=po`).then(r => r.json()).catch(() => [])
     ])
-    .then(([[inv, pack], docs]) => {
+    .then(([inv, pack, docs, po]) => {
 
       invoiceFiles = [
-        ...(inv || []).map(f => ({ ...f, __type: "invoice" })),
-        ...(pack || []).map(f => ({ ...f, __type: "invoice" }))
+        ...(inv || []).map(i => ({ ...i, __inv: true })),
+        ...(pack || []).map(p => ({ ...p, __pl: true }))
       ];
 
-      documentFiles = (docs || []).map(d => ({ ...d, __type: "document" }));
+      documentFiles = (docs || []).map(d => ({ ...d, __doc: true }));
+      purchaseFiles = (po || []).map(p => ({ ...p, __po: true }));
 
       input.disabled = false;
-      input.placeholder =
-        "🔍 Search Invoice, Packing & Documents";
+      input.placeholder = "🔍 Search Inv, PL, PO, Documents (Alt+G)";
     })
     .catch(() => {
       input.placeholder = "❌ Data load failed";
     });
   }
 
-  /* ===== SEARCH LOGIC (ALL SOURCES) ===== */
+  /* ===== SEARCH LOGIC ===== */
   input.addEventListener("input", () => {
     const q = input.value.toLowerCase().trim();
     dropdown.innerHTML = "";
@@ -2877,9 +2884,13 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const allFiles = [...invoiceFiles, ...documentFiles];
+    const filesToSearch = [
+      ...invoiceFiles,
+      ...documentFiles,
+      ...purchaseFiles
+    ];
 
-    const matched = allFiles.filter(f =>
+    const matched = filesToSearch.filter(f =>
       f.name.toLowerCase().includes(q)
     );
 
@@ -2888,29 +2899,45 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    matched.forEach(f => {
+    matched.forEach((f, idx) => {
       const li = document.createElement("li");
-      li.textContent = f.name;
+
+      li.textContent =
+        f.__po  ? "🟡 PO : " + f.name :
+        f.__doc ? "📄 DOC : " + f.name :
+        f.__pl  ? "📦 PList : " + f.name :
+                  "📘 INV : " + f.name;
+
       li.style = `
         padding:8px;
         cursor:pointer;
-        transition:0.2s;
+        border-bottom:1px solid #e0e0e0;
       `;
+
+      if (idx === matched.length - 1) {
+        li.style.borderBottom = "none";
+      }
 
       li.onmouseenter = () => {
         li.style.background = "#0d6efd";
         li.style.color = "#fff";
       };
+
       li.onmouseleave = () => {
         li.style.background = "";
         li.style.color = "#000";
       };
 
       li.onclick = () => {
-       window.open(
-  `https://drive.google.com/file/d/${f.id}/view`,
-  "_blank"
-);
+        if (!f.id) {
+          alert("File ID not found");
+          return;
+        }
+
+        window.open(
+          `https://drive.google.com/file/d/${f.id}/view`,
+          "_blank"
+        );
 
         input.value = f.name;
         dropdown.style.display = "none";
@@ -2922,20 +2949,26 @@ document.addEventListener("DOMContentLoaded", () => {
     dropdown.style.display = "block";
   });
 
-  /* ===== CLICK OUTSIDE ===== */
   document.addEventListener("click", e => {
     if (!container.contains(e.target)) {
       dropdown.style.display = "none";
-
       input.value = "";
     }
   });
 
-  /* ===== INIT ===== */
   loadAllData();
+});
 
+/* ===== ALT + G SHORTCUT (FIXED) ===== */
+document.addEventListener("keydown", function (e) {
+  if (e.altKey && e.key.toLowerCase() === "g") {
+    e.preventDefault();
+    const input = document.getElementById("globalSearchInput");
+    if (input && !input.disabled) {
+      input.focus();
+      input.select();
+    }
+  }
 });
 </script>
-
-
-
+<!-- ================ GLOBAL SEARCH BAR SCRIPT END ================ -->
