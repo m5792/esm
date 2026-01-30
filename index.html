@@ -10459,7 +10459,7 @@ document.addEventListener("DOMContentLoaded", () => {
     top:100%;
     left:0;
     width:5in;
-    max-height:320px;
+    max-height:420px;
     overflow-y:auto;
     display:none;
     background:#fff;
@@ -10482,7 +10482,13 @@ document.addEventListener("DOMContentLoaded", () => {
     ])
     .then(([inv, pack, docs, po]) => {
 
-      invoiceFiles = [...(inv || []), ...(pack || [])];
+      // invoiceFiles = [...(inv || []), ...(pack || [])];
+
+      invoiceFiles = [
+  ...(inv || []).map(i => ({ ...i, __inv: true })),
+  ...(pack || []).map(p => ({ ...p, __pl: true })) // 📦 Packing List
+];
+
       documentFiles = docs || [];
       purchaseFiles = po || [];
 
@@ -10528,15 +10534,28 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    matched.forEach(f => {
+    matched.forEach((f, idx) => {
       const li = document.createElement("li");
 
       li.textContent =
         f.__po ? "🟡 PO : " + f.name :
         f.__doc ? "📄 DOC : " + f.name :
+        f.__pl  ? "📦 PList : " + f.name :
         "📘 INV : " + f.name;
 
-      li.style = "padding:8px;cursor:pointer";
+     // li.style = "padding:8px;cursor:pointer";
+
+      li.style = `
+        padding:8px;
+        cursor:pointer;
+        border-bottom:1px solid #e0e0e0;
+      `;
+
+       if (idx === matched.length - 1) {
+        li.style.borderBottom = "none";
+      }
+
+      //
 
       li.onmouseenter = () => {
         li.style.background = "#0d6efd";
@@ -10614,211 +10633,3 @@ document.addEventListener("keydown", function (e) {
 
 
 
-
-
-
-
-
-
-
-
-
-<!--
-<script>
-/* ===================================================================
-   🔐 AUTHORIZATION SECTION (REMOVE THIS BLOCK TO DISABLE PERMISSION)
-   =================================================================== */
-
-let documentAllowed = false;
-
-function applyDocumentPermission() {
-  const authText = document.getElementById("reportauth")?.innerText.trim() || "";
-  const allowed = authText.split(",").map(a => a.trim());
-  documentAllowed = allowed.includes("15");
-}
-
-function waitForReportAuth() {
-  const authSpan = document.getElementById("reportauth");
-  if (!authSpan) return;
-
-  const observer = new MutationObserver(() => {
-    if (authSpan.innerText.trim() !== "") {
-      applyDocumentPermission();
-      observer.disconnect();
-    }
-  });
-
-  observer.observe(authSpan, { childList: true, subtree: true });
-}
-
-/* ===================================================================
-   🔐 AUTHORIZATION SECTION END
-   =================================================================== */
-
-const BASE_URL =
-  "https://script.google.com/macros/s/AKfycbziC-CN9ohrendXMnJZgTtk35Kex1WQ0Mti3ZhyFg-P2DuWzv6TpmzairnyHCPMLSE1/exec";
-
-document.addEventListener("DOMContentLoaded", () => {
-
-  let invoiceFiles = [];
-  let documentFiles = [];
-
-  /* ===== UI CONTAINER ===== */
-  const container = document.createElement("div");
-  container.style = `
-    position:fixed;
-    top:9px;
-    right:3.5in;
-    width:320px;
-    z-index:999999;
-    font-family:Arial;
-  `;
-  document.body.appendChild(container);
-
-  /* ===== INPUT ===== */
-  const input = document.createElement("input");
-  input.disabled = true;
-  input.placeholder = "⏳ Please Wait ! Loading...";
-  input.style = `
-    width:3.5in;
-    padding:6px;
-    font-size:15px;
-    border-radius:8px;
-    border:1px solid #ccc;
-    background:white;
-    margin-bottom:6px;
-    color:red;
-  `;
-  container.appendChild(input);
-
-  /* ===== DROPDOWN ===== */
-  const dropdown = document.createElement("ul");
-  dropdown.style = `
-    list-style:none;
-    margin:4px 0 0 0;
-    padding:0;
-    font-size:14px;
-    position:absolute;
-    top:100%;
-    left:0;
-    width:5in;
-    max-height:320px;
-    overflow-y:auto;
-    display:none;
-    background:#fff;
-    border-radius:8px;
-    border:3px solid blue;
-    box-shadow:0 6px 20px rgba(0,0,0,.35);
-  `;
-  container.appendChild(dropdown);
-
-  /* ===== LOAD DATA ===== */
-  function loadAllData() {
-    input.disabled = true;
-    input.placeholder = "⏳ Please Wait ! Loading...";
-
-    Promise.all([
-      Promise.all([
-        fetch(`${BASE_URL}?searchType=invoice`).then(r => r.json()),
-        fetch(`${BASE_URL}?searchType=packing`).then(r => r.json())
-      ]),
-      fetch(`${BASE_URL}?list=1`).then(r => r.json())
-    ])
-    .then(([[inv, pack], docs]) => {
-
-      invoiceFiles = [
-        ...(inv || []),
-        ...(pack || [])
-      ];
-
-      documentFiles = docs || [];
-
-      input.disabled = false;
-      input.placeholder =
-        "🔍 Search Inv., PL List, Other Doc. Here";
-    })
-    .catch(() => {
-      input.placeholder = "❌ Data load failed";
-    });
-  }
-
-  /* ===== SEARCH LOGIC ===== */
-  input.addEventListener("input", () => {
-    const q = input.value.toLowerCase().trim();
-    dropdown.innerHTML = "";
-
-    if (!q) {
-      dropdown.style.display = "none";
-      return;
-    }
-
-    let filesToSearch = [...invoiceFiles];
-
-    if (documentAllowed) {
-      filesToSearch = filesToSearch.concat(
-        documentFiles.map(d => ({ ...d, __doc: true }))
-      );
-    }
-
-    const matched = filesToSearch.filter(f =>
-      f.name.toLowerCase().includes(q)
-    );
-
-    if (!matched.length) {
-      dropdown.style.display = "none";
-      return;
-    }
-
-    matched.forEach(f => {
-      const li = document.createElement("li");
-      li.textContent = f.name;
-      li.style = "padding:8px;cursor:pointer";
-
-      li.onmouseenter = () => {
-        li.style.background = "#0d6efd";
-        li.style.color = "#fff";
-      };
-      li.onmouseleave = () => {
-        li.style.background = "";
-        li.style.color = "#000";
-      };
-
-      li.onclick = () => {
-  if (!f.id) {
-    alert("File ID not found");
-    return;
-  }
-
-  window.open(
-    `https://drive.google.com/file/d/${f.id}/view`,
-    "_blank"
-  );
-
-  input.value = f.name;
-  dropdown.style.display = "none";
-};
-
-
-      dropdown.appendChild(li);
-    });
-
-    dropdown.style.display = "block";
-  });
-
-  document.addEventListener("click", e => {
-    if (!container.contains(e.target)) {
-      dropdown.style.display = "none";
-
-      input.value = "";
-    // input.placeholder = "🔍 Search Inv., PL List, Other Documents Here";
-
-    }
-  });
-
-  /* ===== INIT ===== */
-  loadAllData();
-  waitForReportAuth();
-
-});
-</script>
--->
