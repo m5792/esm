@@ -10377,6 +10377,8 @@ loadPRLSheet();
 
 <!-- ================ -------------------------   GLOBAL SERCH BAR SCRIPT AND CODE START HERE --------------- ===============================-->
 
+<!-- ================ -------------------------   GLOBAL SERCH BAR SCRIPT AND CODE START HERE --------------- ===============================-->
+
 <script>
 /* ===================================================================
    🔐 AUTHORIZATION SECTION
@@ -10412,13 +10414,14 @@ function waitForReportAuth() {
 /* =================================================================== */
 
 const BASE_URL =
-  "https://script.google.com/macros/s/AKfycbxFrdD0xEry5u8ltJ74muh9NzyIk9ZTPXswVqx03iiTRNhtAMq8pKXE6qXkYyH18-x9/exec";
+  "https://script.google.com/macros/s/AKfycbwRqkoJAhLxzZ9YEXUuw8m5maCHpuAzjOM7cI4tz0qop-Epfbqb_4ZbGhuECVjmhvA6/exec";
 
 document.addEventListener("DOMContentLoaded", () => {
 
   let invoiceFiles = [];
   let documentFiles = [];
   let purchaseFiles = [];
+  let webFiles = []; // 🌐 NEW
 
   /* ===== UI CONTAINER ===== */
   const container = document.createElement("div");
@@ -10478,19 +10481,19 @@ document.addEventListener("DOMContentLoaded", () => {
       fetch(`${BASE_URL}?searchType=invoice`).then(r => r.json()),
       fetch(`${BASE_URL}?searchType=packing`).then(r => r.json()),
       fetch(`${BASE_URL}?list=1`).then(r => r.json()),
-      fetch(`${BASE_URL}?searchType=po`).then(r => r.json()).catch(() => [])
+      fetch(`${BASE_URL}?searchType=po`).then(r => r.json()).catch(() => []),
+      fetch(`${BASE_URL}?web=1`).then(r => r.json()).catch(() => []) // 🌐 NEW
     ])
-    .then(([inv, pack, docs, po]) => {
-
-      // invoiceFiles = [...(inv || []), ...(pack || [])];
+    .then(([inv, pack, docs, po, web]) => {
 
       invoiceFiles = [
-  ...(inv || []).map(i => ({ ...i, __inv: true })),
-  ...(pack || []).map(p => ({ ...p, __pl: true })) // 📦 Packing List
-];
+        ...(inv || []).map(i => ({ ...i, __inv: true })),
+        ...(pack || []).map(p => ({ ...p, __pl: true }))
+      ];
 
       documentFiles = docs || [];
       purchaseFiles = po || [];
+      webFiles = web || [];
 
       input.disabled = false;
       input.placeholder =
@@ -10513,17 +10516,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let filesToSearch = [...invoiceFiles];
 
-    if (documentAllowed) {
-      filesToSearch = filesToSearch.concat(
-        documentFiles.map(d => ({ ...d, __doc: true }))
-      );
-    }
+   if (documentAllowed) {
+  filesToSearch = filesToSearch.concat(
+    documentFiles
+      .filter(d => !d.name.toLowerCase().endsWith(".url")) // ❌ remove web shortcuts
+      .map(d => ({ ...d, __doc: true }))
+  );
+}
+
 
     if (purchaseAllowed) {
       filesToSearch = filesToSearch.concat(
         purchaseFiles.map(p => ({ ...p, __po: true }))
       );
     }
+
+    // 🌐 WEB FILES (always allowed)
+    filesToSearch = filesToSearch.concat(
+      webFiles.map(w => ({ ...w, __web: true }))
+    );
 
     const matched = filesToSearch.filter(f =>
       f.name.toLowerCase().includes(q)
@@ -10538,12 +10549,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const li = document.createElement("li");
 
       li.textContent =
-        f.__po ? "🟡 PO : " + f.name :
+        f.__web ? "🌐 WEB : " + f.name :
+        f.__po  ? "🟡 PO : " + f.name :
         f.__doc ? "📄 DOC : " + f.name :
         f.__pl  ? "📦 PList : " + f.name :
         "📘 INV : " + f.name;
-
-     // li.style = "padding:8px;cursor:pointer";
 
       li.style = `
         padding:8px;
@@ -10551,11 +10561,9 @@ document.addEventListener("DOMContentLoaded", () => {
         border-bottom:1px solid #e0e0e0;
       `;
 
-       if (idx === matched.length - 1) {
+      if (idx === matched.length - 1) {
         li.style.borderBottom = "none";
       }
-
-      //
 
       li.onmouseenter = () => {
         li.style.background = "#0d6efd";
@@ -10567,15 +10575,21 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       li.onclick = () => {
-        if (!f.id) {
-          alert("File ID not found");
-          return;
-        }
 
-        window.open(
-          `https://drive.google.com/file/d/${f.id}/view`,
-          "_blank"
-        );
+        // 🌐 WEB SHORTCUT
+        if (f.__web && f.webUrl) {
+          window.open(f.webUrl, "_blank");
+        } 
+        // 📄 DRIVE FILE
+        else if (f.id) {
+          window.open(
+            `https://drive.google.com/file/d/${f.id}/view`,
+            "_blank"
+          );
+        } 
+        else {
+          alert("File not accessible");
+        }
 
         input.value = f.name;
         dropdown.style.display = "none";
@@ -10597,18 +10611,13 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ===== INIT ===== */
   loadAllData();
   waitForReportAuth();
-
 });
 
-
-
-
-/* ===== ALT + G SHORTCUT (FIXED – TARGET ONLY THIS SCRIPT INPUT) ===== */
+/* ===== ALT + G SHORTCUT ===== */
 document.addEventListener("keydown", function (e) {
   if (e.altKey && e.key.toLowerCase() === "g") {
     e.preventDefault();
 
-    // This script ka input (fixed position + width match)
     const inputs = document.querySelectorAll("input");
     let targetInput = null;
 
@@ -10623,11 +10632,12 @@ document.addEventListener("keydown", function (e) {
 
     if (targetInput && !targetInput.disabled) {
       targetInput.focus();
-      targetInput.select(); // highlight
+      targetInput.select();
     }
   }
 });
 </script>
+
 <!-- ================ -------------------------   GLOBAL SERCH BAR SCRIPT AND CODE STOP HERE --------------- ===============================-->
 
 
