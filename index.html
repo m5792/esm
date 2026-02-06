@@ -716,7 +716,7 @@ th {
 <div class="voucher-button-panel">
 
 
-  <button onclick="showSection(8)" id="f2">Cash Voucher &nbsp;<span style="color:  red;font-weight: bold;">(F2)</span></button><br/>
+  <button onclick="showSection(8)" id="f2"> Cash Data Voucher &nbsp;<span style="color:  red;font-weight: bold;">(F2)</span></button><br/>
   <button onclick="showSection(9)">Store Register Voucher</button><br/>
   <button onclick="showSection(10)">Sales Voucher</button><br/>
   <button onclick="showSection(11)">Banking Voucher</button><br/>
@@ -940,8 +940,8 @@ fetch("https://api.ipify.org?format=json")
   <button class="filter-btn" id="openULUBtn" data-value="atn">🏢 Attendance</button>
   <button class="filter-btn" data-value="psw">🏢 ID/Password</button>
 
-<button onclick="print2011Report()" style="border: none; color: rgb(251, 197, 197); font-weight: bold;  cursor: pointer; background-color: rgb(0, 47, 74);;">🖨️ Print Report</button>
-<button id="refresh2011Btn" style="border: none; color: rgb(196, 248, 181); font-weight: bold;  cursor: pointer; background-color: rgb(0, 47, 74);;"> 🔄 Refresh</button>
+<button onclick="print2011Report()" style="border: none; color: rgb(251, 197, 197); font-weight: bold;  cursor: pointer; background-color: rgb(0, 47, 74);">🖨️ Print Report</button>
+<button id="refresh2011Btn" style="border: none; color: rgb(196, 248, 181); font-weight: bold;  cursor: pointer; background-color: rgb(0, 47, 74);"> 🔄 Refresh</button>
 
    <strong style="color: rgb(2, 98, 153); font-size: 25px; font-weight: bold;">|</strong>
 
@@ -970,7 +970,7 @@ fetch("https://api.ipify.org?format=json")
 
         <option value="https://drive.google.com/drive/folders/1Dc4In3NfpKdFdOLqcgyTFNC2tch7b6q2?usp=sharing"   style="color: rgb(248, 160, 148); font-weight: bold;">AFI Drive</option>
         <option value="https://taajazone.com/"   style="color: rgb(194, 250, 232); ">TAAZAZONE.COM</option>
-
+       <option value="https://docs.google.com/spreadsheets/d/1vjkI_bpHNR6Tna17FISridqXSvCUnELA5oMgnAqzbO0/edit?gid=0#gid=0">	Cash Ledger (CMIV) Sheet*</option>
 
         <option value="https://docs.google.com/spreadsheets/d/1FXdbotep3MTk34gUdSF0e0h_hN_Uz66AL0Gnvc-pt_s/edit?gid=475142657#gid=475142657">	Party Weight Sheet</option>
         <option value="https://docs.google.com/spreadsheets/d/1EMIe8Y50_vMXg7y9zT7lXV0vgLyOZuSKdthf8C5XUXc/edit?gid=1752231070#gid=1752231070">	Mukhtiyar</option>
@@ -1191,6 +1191,7 @@ fetch("https://api.ipify.org?format=json")
      <option value="IV10">IV10- Ajay Kumar</option>
      <option value="IV11">IV11- Ravinder Kumar</option>
      <option value="IV12">IV12- Mahender</option>
+      <option value="IV13">IV13- Suresh</option>
      <option value="DLT">Delete</option>
 
   </select>
@@ -1255,70 +1256,72 @@ fetch("https://api.ipify.org?format=json")
 
         
     <div class="form-container">
-<form id="mainIVMAForm">
-        <input type="hidden" name="SNo" id="sNo">
-      
+<h3 style="margin-top:0;color:#00282e;text-align:center;">MIPL Cash Data Entry</h3>
 
-<label style="color: red;font-weight: bold;" >User*</label>
-          <!-- User selection dropdown -->
-<select class="userDropdown" id="msaf51" name="Voucher" required>
- 
+<!-- MAIN FORM -->
+<form id="mainAFICMForm">
+
+<input type="hidden" name="SNo" id="sNo">
+<input type="hidden" name="Timestamp" id="TimestampAFICM">
+
+  <label">Voucher Name:</label>
+<select id="vtype" name="vtype" style="background-color: #f8efed;" required></select>
+
+  <label">User Name</label>
+<select id="afi01" name="Type" style="background-color: #f8efed;" required></select>
+
+  <label">Select Transection Type*:</label>
+<select id="afi02" name="esmC" required style="background-color: #f0f6ed;">
+  <option value="PAYMENT">Payment</option>
+  <option value="RECEIPT" >Receipt</option>
 </select>
 
+  <label">Enter Date*:</label>
+<input type="date" id="afi03" name="esmD" style="background-color: #f0f6ed;" required>
 
-
-          <label  >Select Voucher</label>
-          <select id="msaf52" name="Type" required>
-            <option value="PAYMENT" style="color: green;">Payment</option>
-            <option value="RECEIPT" style="color: red;">Receipt</option>
-            <option value="BILLDR">Bills Payable</option>
-            <option value="BILLCR">Bills Receivable</option>
-            <option value="SALARY">Salary</option>
-          </select>
-          
-          <label >Select Date</label>
-          <input type="date" id="msaf53" name="Date" required>
 
 <!-- Searchable Ledger Dropdown -->
   <div class="dropdownWrapper">
-    <label">Search & Select Ledger</label>
-    <input type="text" id="msaf54" name="Ledger" class="dropdownCLSearch" placeholder="🔍 Search Ledger..." />
+    <label">Search & Select Ledger*:</label>
+    <input type="text" id="afi04" name="esmE" class="dropdownCLSearch" required style="background-color: #f0f6ed;" placeholder="🔍 Search Ledger..." />
     <ul id="ledgerDropdown" class="dropdownList"></ul>
   </div>
 
 
-         
-        <label  >Enter Amount</label>
-          <input type="number" id="msaf55" name="Amount" required placeholder="Amount" > 
 
-          <label >Enter Narration</label>
-          <input type="text" id="msaf56" name="Narration" placeholder="Narration"style="text-transform: uppercase;">
-   
-          <input type="hidden" name="Timestamp" id="timestampIVMA">
+  <label">Enter Amount*:</label>
+<input type="number" id="afi05" name="esmF" style="background-color: #f0f6ed;" placeholder="Amount" required>
 
-        <input type="submit" id="submitIVMAButton" value="Submit">
+  <label">Enter Narration if any:</label>
+<input type="text" id="afi06" name="esmG"  style="background-color: #f0f6ed;" placeholder="Narration">
 
-        <H3 style="background-color: #004d80;color: WHITE;font-size: 100%; text-align: center;">Entry Modify</H3>
+<input type="submit" id="submitAFICMButton" value="Submit">
 
-         <!-- Form for Fetching and Modifying Entries -->
-    <form id="modifyIVMAForm">
-       <input type="hidden" id="formModeIVMA" name="formModeIVMA" value="new">
-        <input type="number" id="searchIVMASNo" placeholder="Enter S.No. to Modify Entry" >
-        <button type="button" class="fetchbtn" onclick="fetchIVMADetails()">Fetch Details</button>
-        <button type="button" class="fetchbtn" id="modifyIVMAButton" onclick="modifyIVMAEntry()" style="display:none;">Modify Entry</button>
-        <!-- Wait message div -->
-<div id="waitIVMAMessage" style="display:none; color:red; font-size:16px; font-weight:bold;"></div>
-    </form>
 
-    </form>
+<button type="button" id="openMODIFYBtn" style=" background:#dcfaf5;color:#022b5a; border: none; cursor: pointer; width: 2in; font-weight: bold;">🏢 Click to Modify</button>
 
+<br/><br/><br/>
+Fetched SR:
+<span id="fetchedSRNo"></span>
+<br/>
+
+
+<input type="button" id="deleteAFICMButton" value=" Delete" style="display:none; background:#dcfaf5;color:#5a0202; border: none; cursor: pointer; width: 2in; font-weight: bold;">
+<input type="button" id="newEntryAFICMButton"  value=" New Entry"  style="display:none; background:#dcfaf5; color:#004d12; border: none; cursor: pointer; width: 2in;font-weight: bold;">
+
+<!--  <strong id="waitAFIMessage" style="display:none;"></strong> -->
+
+
+<br/><br/>
+<span style="color:rgb(129, 1, 1);font-size:130%;font-family:Magneto;">eS |</span> 
+        <span style="color:#004d80;font-size:130%;font-family:Magneto;">MTally</span>
+
+</form>
      
-     <br/> <br/> <br/>
-      <label style="color: #014060; font-weight: bold;font-size: 18px;">Search MA,TA,JLN,Bank Entry.</label>
-    <input type="text" id="searchCLedger" placeholder="🔍 Search in Table..." />
+  
     </div>
 
-<button onclick="printCUSERTable()" style="border: none; color: rgb(0, 27, 37); font-weight: bold;  cursor: pointer;">🖨️ Print Table</button>
+
   
 
         </div> <!-- यह एक नोट है, vertical Two Part Div (30-70) left content stop -->
@@ -1327,79 +1330,193 @@ fetch("https://api.ipify.org?format=json")
 
 
 
-<!-- First dropdown populated based on username -->
- <label style="font-size: 20px; font-weight: bold;">Select User Name:</label>
-<select id="cu123" required style="width: 3in; font-size: 16px; text-align: center; background-color: #014060;color: white;"></select>
 
+
+
+    <div id="search5792Bar" style="padding: 5px 10px;">
+
+
+ <!-- MASTER CONTROLS two salection bar -->
+  <strong style="color: white;"> Select Voucher:</strong>
+   <select id="vcridcmid"  required style="border-radius: 4px; cursor: pointer;"></select>
+
+    <strong style="color: white;"> Select User:</strong>
+<select id="useridcmiv"  required style="border-radius: 4px; cursor: pointer;"></select>
+
+  <button id="refreshcmivTableBtn" style="border: none; color: rgb(252, 198, 196); font-weight: bold;  cursor: pointer; background: #424242;">🔄 Refresh</button>
+<button onclick="printCUSERTable()" style="border: none; color: rgb(228, 252, 196); font-weight: bold;  cursor: pointer; background: #424242;">🖨️ Print Table</button>
+ 
+ <input type="text" id="searchCLedger" style="width: 4in; border: #000 5px; cursor: pointer; border-radius: 4px;" placeholder="🔍 Search in Table..." />
+
+  </div>
+
+
+ <!-- =================        user authrised by creat voucher ledger scrip start hare ============== -->
 <script>
-// 1. All dropdown options
-const allOptions = [
-{ value: "", text: "Select a User" },
-  { value: "MA", text: "MUKHTAR" },
-  { value: "TA", text: "TUSHAR" },
-  { value: "JLN", text: "JOURNAL" },
-  { value: "BANK", text: "BANK" },
-  { value: "DB", text: "DAYBOOK" }
-];
+document.addEventListener("DOMContentLoaded", () => {
 
-// 2. Which user sees which options
-const userOptionsMap = {
-  "Anchal": [0,2, 3,4],              // TUSHAR, JOURNAL, BANK
-  "Gurpreet": [0,2, 3,4],              // TUSHAR, JOURNAL, BANK
-  "Mukhtar (Admin)": [0, 1, 2, 3,4,5]   // All options
-};
+  /* =====================================================
+     1️⃣ BASE LISTS
+     ===================================================== */
 
-// 3. Populate cu123 dropdown based on username
-function updateDropdown(username) {
-  const cu123 = document.getElementById("cu123");
-  cu123.innerHTML = ""; // Clear existing options
+  // Voucher list
+  const vcrVoucherUsers = [
+    { value: "", text: "Select Voucher" }, // 0
+    { value: "CMVCR", text: "Cash User Voucher" }, // 1
+    { value: "IVVCR", text: "Imprest Voucher (IV) Voucher" }    // 2
+  ];
 
-  const allowedIndexes = userOptionsMap[username] || [];
+  // Cash voucher users
+  const cashVoucherUsers = [
+    { value: "", text: "Select a User" }, // 0
+    { value: "MA", text: "MUKHTAR" },      // 1
+    { value: "TA", text: "TUSHAR" },       // 2
+    { value: "JLN", text: "JOURNAL" },     // 3
+    { value: "BANK", text: "BANK" },       // 4
+    { value: "DB", text: "DAYBOOK" }       // 5
+  ];
 
-  allowedIndexes.forEach(index => {
-    const option = document.createElement("option");
-    option.value = allOptions[index].value;
-    option.textContent = allOptions[index].text;
-    cu123.appendChild(option);
+  // IV voucher users
+  const ivVoucherUsers = [
+    { value: "", text: "Select a User" },       // 0
+    { value: "IV01", text: "Amarbhadur" },      // 1
+    { value: "IV02", text: "Vijender Sharma" }, // 2
+    { value: "IV03", text: "Rahul Kumar" },   // 3
+    { value: "IV04", text: "Raju - IV04" }, //4
+    { value: "IV05", text: "Mannu - IV05 " }, //5
+    { value: "IV06", text: "Aakash - IV06" }, //6
+    { value: "IV07", text: "Manjeet - IV07" }, //7
+    { value: "IV08", text: "Nitin Kumar - IV08" },  //8 
+    { value: "IV09", text: "Sunil Yadav - IV09" },   //9
+    { value: "IV10", text: "Ajay Kumar - IV10" },   //10
+    { value: "IV11", text: "Ravinder Kumar - IV11" },  //11
+    { value: "IV12", text: "Mahender - IV12" },  // 12
+    { value: "IV13", text: "Suresh - IV13" }  // 12
+  ];
+
+  /* =====================================================
+     2️⃣ USER BASED PERMISSION MAP
+     ===================================================== */
+
+  const userOptionsMap = {
+
+    "Rahul Kumar": {
+      VOUCHER: [0, 2],     // Select + IV Voucher
+      IVVCR: [0, 3]       // Select + Rahul
+    },
+
+    "Gurpreet": {
+      VOUCHER: [0, 1, 2],
+      CMVCR: [0, 2,3,4],
+      IVVCR: [0,4,5,6,7,9,10,12,13]
+    },
+
+    "Mukhtar (Admin)": {
+      VOUCHER: [0, 1, 2],
+      CMVCR: [0, 1, 2, 3, 4, 5],
+      IVVCR: [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13]
+    }
+
+  };
+
+  /* =====================================================
+     3️⃣ ELEMENT REFERENCES
+     ===================================================== */
+
+  const voucherSelect = document.getElementById("vcridcmid");
+  const userSelect    = document.getElementById("useridcmiv");
+  const usernameEl    = document.getElementById("username");
+
+  /* =====================================================
+     4️⃣ POPULATE VOUCHER DROPDOWN
+     ===================================================== */
+
+  function populateVouchers(username) {
+
+    const allowedIndexes =
+      userOptionsMap[username]?.VOUCHER || [];
+
+    voucherSelect.innerHTML = "";
+
+    allowedIndexes.forEach(i => {
+      if (vcrVoucherUsers[i]) {
+        const opt = document.createElement("option");
+        opt.value = vcrVoucherUsers[i].value;
+        opt.textContent = vcrVoucherUsers[i].text;
+        voucherSelect.appendChild(opt);
+      }
+    });
+
+    // clear users on voucher change
+    userSelect.innerHTML = "";
+  }
+
+  /* =====================================================
+     5️⃣ POPULATE USER DROPDOWN
+     ===================================================== */
+
+  function populateUsers(username, voucher) {
+
+    let baseList = [];
+    if (voucher === "CMVCR") baseList = cashVoucherUsers;
+    if (voucher === "IVVCR") baseList = ivVoucherUsers;
+
+    const allowedIndexes =
+      userOptionsMap[username]?.[voucher] || [];
+
+    userSelect.innerHTML = "";
+
+    allowedIndexes.forEach(i => {
+      if (baseList[i]) {
+        const opt = document.createElement("option");
+        opt.value = baseList[i].value;
+        opt.textContent = baseList[i].text;
+        userSelect.appendChild(opt);
+      }
+    });
+  }
+
+  /* =====================================================
+     6️⃣ EVENT HANDLERS
+     ===================================================== */
+
+  // When voucher changes → load users
+  voucherSelect.addEventListener("change", () => {
+    const username = usernameEl?.innerText.trim();
+    if (!username) return;
+
+    populateUsers(username, voucherSelect.value);
   });
 
-  // Trigger sync after populating cu123
-  syncledgerOption();
-}
+  /* =====================================================
+     7️⃣ INIT WHEN USERNAME IS AVAILABLE
+     ===================================================== */
 
-// 4. Sync selected cu123 option to msaf51
-function syncledgerOption() {
-  const cu123Select = document.getElementById("cu123");
-  const ledgerSelect = document.getElementById("msaf51");
+  function initWhenUsernameReady() {
+    const username = usernameEl?.innerText.trim();
+    if (!username) return false;
 
-  const selectedValue = cu123Select.value;
-  const selectedText = cu123Select.options[cu123Select.selectedIndex]?.text || "";
-
-  // Clear and set new option
-  ledgerSelect.innerHTML = "";
-  if (selectedValue && selectedText) {
-    const newOption = document.createElement("option");
-    newOption.value = selectedValue;
-    newOption.textContent = selectedText;
-    ledgerSelect.appendChild(newOption);
+    populateVouchers(username);
+    return true;
   }
-}
 
-// 5. Wait until username appears, then update dropdown
-const checkUsername = setInterval(() => {
-  const username = document.getElementById("username").textContent.trim();
-  if (username) {
-    updateDropdown(username);
-    clearInterval(checkUsername); // Stop checking
+  // Observer for late-loaded username
+  if (usernameEl) {
+    const observer = new MutationObserver(() => {
+      if (initWhenUsernameReady()) observer.disconnect();
+    });
+
+    observer.observe(usernameEl, { childList: true, subtree: true });
   }
-}, 300);
 
-// 6. Attach sync on change event after DOM is ready
-document.addEventListener("DOMContentLoaded", function () {
-  const cu123Select = document.getElementById("cu123");
-  cu123Select.addEventListener("change", syncledgerOption);
+  // Fallback
+  const interval = setInterval(() => {
+    if (initWhenUsernameReady()) clearInterval(interval);
+  }, 300);
+
 });
 </script>
+ <!-- =================        user authrised by creat voucher ledger scrip stop hare ============== -->
 
 
 
@@ -1805,164 +1922,6 @@ attachWordConverter("msaf5", "amountWords5");
 </div> </div>  <!-- यह एक नोट है, vertical Two Part Div (30-70) container content stop  Heare ((CODE501)) -->
 </div> <!--  sections11stop  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA  X -->
 
-<!--  sections12 start  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA -->
-      <div id="section12" class="section hidden">
-
-    <div class="container">  <div class="left" style="background-color: white;">   <!-- यह एक नोट है, vertical Two Part Div (30-70) left content start ((CODE501)) -->
-
-    <div class="form-container">
-
-  
-<form id="mainIVCRForm">
-  <input type="hidden" name="SNo" id="sNo" />
-
-   <label style="color: red;font-weight: bold;">User</label>
-  <select id="voucherType" name="Voucher" required style="font-size: 20px; text-align: center;">
-  <!-- Populated dynamically -->
-</select>
-
-
-
-          <label >Select Tr. Type</label>
-         <select id="ivcr0" name="Type" required>
-           <option value="PAYMENT" style="color: green;">Payment</option>
-           <option value="RECEIPT" style="color: red;">Receipt</option>
-          
-         </select>
-           <label >Date</label>
-         <input type="date" id="ivcr1" name="Date" required>
-
-
-          <!-- (VCN- 111) dropdown div start -->
-         <div class="dropdown-container" >
-            <label >Serch IV Ledger</label>
-            <input type="text" id="dropdownIVCRSearch" placeholder="🔍 Search..." oninput="filterIVCRDropdown()" name="Ledger" required>
-            <ul id="dropdownIVCRList" class="dropdownCSSlist">
-                <!-- The dropdown options will be populated here -->
-            </ul>
-        </div>
- <!-- (VCN- 111) dropdown div stop -->
-        
-
-         <label >Amount</label>
-         <input type="number" id="ivcr2" name="Amount" required placeholder="Amount">
-          <label >Narration</label>
-         <input type="text" id="ivcr3" name="Narration" placeholder="Narration"style="text-transform: uppercase;">
-
-         <input type="hidden" name="Timestamp" id="timestampIVCR">
-         <input type="submit" id="submitIVCRButton" value="Submit">
-       </form>
-   
-     <!-- Form for Fetching and Modifying Entries -->
-    <form id="modifyIVCRForm">
-      <input type="hidden" id="formModeIVCR" name="formModeIVCR" value="new">
-        <input type="number" id="searchIVCRSNo" placeholder="Enter S.No. to Modify Entry" >
-        <button type="button" class="fetchbtn" onclick="fetchIVCRDetails()">Fetch Details</button>
-        <button type="button" class="fetchbtn" id="modifyIVCRButton" onclick="modifyIVCREntry()" style="display:none;">Modify Entry</button>
-        <!-- Wait message div -->
-<div id="waitIVCRMessage" style="display:none; color:red; font-size:16px; font-weight:bold;"></div>
-       </form>
-
-    <br/>
-        <span style="color:rgb(129, 1, 1);font-size:130%;font-family:Magneto;">eS |</span> 
-        <span style="color:#004d80;font-size:130%;font-family:Magneto;">MTally</span>
-</div>   
-
-        </div> <!-- यह एक नोट है, vertical Two Part Div (30-70) left content stop -->
-<div class="right"> <!-- यह एक नोट है, vertical Two Part Div (30-70) right content start -->
-
-    <!-- IV User Selection -->
-     
- <!-- IV User Selection -->
-<label style="font-size: 20px; font-weight: bold;">Select IV User:</label>
-<select id="ivuser" style="width: 3in; font-size: 16px; text-align: center; background-color: #014060;color: white;">
-
-</select>
-
-
-<script>
-// 1. All dropdown options
-const allivuserOptions = [
-{ value: "", text: "Select a User" },
-  { value: "IV03", text: "RAHUL KUMAR-IV03" },
-  { value: "IV08", text: "NITIN KUMAR-IV08" },
-  { value: "IV09", text: "SUNIL KUMAR-IV09" },
-  { value: "IV04", text: "RAJU-IV04" },
-  { value: "IV05", text: "MANNU-IV05" },
-   { value: "IV06", text: "AAKASH-IV06" },
-  { value: "IV07", text: "MANJEET-IV07" },
-  { value: "IV10", text: "AJAY KUMAR-IV10" },
-  { value: "IV12", text: "MAHENDER-IV12" }
-];
-
-// 2. Which user sees which options
-const userOptionsivuserMap = {
-   "NITIN": [0,2],          // 
-  "Anchal": [0,2, 3,4,5,6,7,8,9],              // 
-   "Gurpreet": [0,2, 3,4,5,6,7,8,9],              // 
-  "Mukhtar (Admin)": [0, 1, 2, 3,4,5,6,7,8,9],   // All options
-   "Rahul Kumar": [0,1]   // All options
-};
-
-// 3. Populate ivuser dropdown based on username
-function updateivuserDropdown(username) {
-  const ivuser = document.getElementById("ivuser");
-  ivuser.innerHTML = ""; // Clear existing options
-
-  const allowedIndexes = userOptionsivuserMap[username] || [];
-
-  allowedIndexes.forEach(index => {
-    const option = document.createElement("option");
-    option.value = allivuserOptions[index].value;
-    option.textContent = allivuserOptions[index].text;
-    ivuser.appendChild(option);
-  });
-
-  // Trigger sync after populating ivuser
-  syncledgerivuserOption();
-}
-
-// 4. Sync selected ivuser option to voucherType
-function syncledgerivuserOption() {
-  const ivuserSelect = document.getElementById("ivuser");
-  const ledgerSelect = document.getElementById("voucherType");
-
-  const selectedValue = ivuserSelect.value;
-  const selectedText = ivuserSelect.options[ivuserSelect.selectedIndex]?.text || "";
-
-  // Clear and set new option
-  ledgerSelect.innerHTML = "";
-  if (selectedValue && selectedText) {
-    const newOption = document.createElement("option");
-    newOption.value = selectedValue;
-    newOption.textContent = selectedText;
-    ledgerSelect.appendChild(newOption);
-  }
-}
-
-// 5. Wait until username appears, then update dropdown
-const checkivuserUsername = setInterval(() => {
-  const username = document.getElementById("username").textContent.trim();
-  if (username) {
-    updateivuserDropdown(username);
-    clearInterval(checkivuserUsername); // Stop checking
-  }
-}, 300);
-
-// 6. Attach sync on change event after DOM is ready
-document.addEventListener("DOMContentLoaded", function () {
-  const ivuserSelect = document.getElementById("ivuser");
-  ivuserSelect.addEventListener("change", syncledgerivuserOption);
-});
-</script>
-
-
-
-
-  <table id="myIVCRTable" style="background-color: rgb(239, 249, 246);"></table>
-
-</div> </div>  <!-- यह एक नोट है, vertical Two Part Div (30-70) container content stop  Heare ((CODE501)) -->
-</div> <!--  sections12stop  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA  X -->
 
 
 
@@ -2900,7 +2859,7 @@ loadTodayEvent();
 window.onload = () => {
 
     jobbPOReffload();
-    loadIVCRSheet();
+   // loadIVCRSheet();
     filterSKHR();
     fetchUserData();
     filterDp();
@@ -2953,8 +2912,8 @@ window.onload = () => {
 
 <script>
 const api5792Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-const sheet5792Id = "1ECwXrxs8_FDWw1qAC6_qxEwP_HE3SGMM4qNKVZHlIS0";
-const range5792 = "FORM!A:G";
+const sheet5792Id = "1vjkI_bpHNR6Tna17FISridqXSvCUnELA5oMgnAqzbO0";
+const range5792 = "FORMA!A:G";
 
 let all5792Data = [];
 let filtered5792Data = [];
@@ -3263,6 +3222,37 @@ async function refresh5792Table() {
   setupLedger5792Dropdown();
 }
 
+
+// ======== heder difine =============
+function force5792Header() {
+  const table = document.getElementById("my5792Table");
+  if (!table) return;
+
+  const thead = table.querySelector("thead");
+  if (!thead) return;
+
+  thead.innerHTML = `
+    <tr style="background:#ffe9e3">
+      <th>T.No</th>
+      <th>User</th>
+      <th>Type</th>
+      <th>Date</th>
+      <th>Ledger</th>
+      <th>Narration</th>
+      <th>Amount</th>
+      <th>Balance</th>
+    </tr>
+  `;
+}
+
+/* 🔁 Render ke baad header force karo */
+const _oldRender5792Table = render5792Table;
+render5792Table = function (data) {
+  _oldRender5792Table(data);
+  force5792Header();
+};
+
+
 // ✅ Print Function
 // ✅ Print Function (with Ledger Name condition)
 function print5792Table() {
@@ -3322,212 +3312,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 
-<!-- IVMA form div script start here -->
-<script>
-  const scriptIVMAURL = 'https://script.google.com/macros/s/AKfycbz1qX7pBpLSoZRDEUqIs1B-DZCVBuUCYQvGKDPRPwLC4OJY_07Ooi0AI8SzRJbi9yyQWg/exec';
-
-  document.addEventListener("submit", async function (e) {
-    const form = e.target;
-    if (form.id !== "mainIVMAForm") return;
-
-    e.preventDefault();
-    const formMode = document.getElementById("formModeIVMA").value;
-    console.log("Current form mode:", formMode);
-
-    const submitIVMAButton = document.getElementById("submitIVMAButton");
-    submitIVMAButton.disabled = true;
-    submitIVMAButton.value = "Wait..";
-
-    const now = new Date();
-    document.getElementById('timestampIVMA').value =
-      `${now.getMonth()+1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
-
-    const formInputs = form.querySelectorAll('input, textarea');
-    formInputs.forEach(input => {
-      if (input.type === 'text' || input.type === 'textarea') {
-        input.value = input.value.toUpperCase();
-      }
-    });
-
-    if (formMode === "modify") {
-      await modifyIVMAEntry();
-    } else {
-      await submitIVMAEntry(form);
-    }
-
-    submitIVMAButton.disabled = false;
-    submitIVMAButton.value = "Submit";
-  });
-
-  async function submitIVMAEntry(form) {
-    const formData = new FormData(form);
-    try {
-      const response = await fetch(scriptIVMAURL, { method: 'POST', body: formData });
-      const result = await response.json();
-
-      if (result.result === 'success') {
-        alert('Entry saved successfully! ✔');
-        form.reset();
-
-        // ✅ Clear mode & sNo after reset
-        setTimeout(() => {
-          document.getElementById("formModeIVMA").value = "new";
-          document.getElementById("sNo").value = "";
-          document.getElementById("searchIVMASNo").value = "";
-        }, 50);
-
-              // cash user table refresh start--------------------
-         
-// Re-fetch the data and re-render the table
-const raw = await fetchSheetData();
-fullData = processRawData(raw);
-
-// Get current filters (if any)
-const currentAccountType = document.getElementById("cu123")?.value || "";
-const currentLedgerFilter = document.getElementById("msaf54")?.value.trim() || "";
-
-// Re-render the table with current filters
-filterAndRender(currentAccountType, currentLedgerFilter);
-//  // cash user table refresh stop -------------------------
-      
-       
-
-        // ✅ Remove DLT option if exists
-        const msaf51Dropdown = document.getElementById("msaf51");
-        const dltIVMAOption = [...msaf51Dropdown.options].find(opt => opt.value === "DLT");
-        if (dltIVMAOption) {
-          msaf51Dropdown.removeChild(dltIVMAOption);
-        }
-
-      } else {
-        alert(`Error: ${result.error || 'Unknown error occurred.'}`);
-      }
-    } catch (error) {
-      alert(`Error submitting the form: ${error.message}`);
-    }
-  }
-
-  async function modifyIVMAEntry() {
-    const waitMessage = document.getElementById("waitIVMAMessage");
-    waitMessage.innerText = "Please wait...";
-    waitMessage.style.display = "block";
-
-    const form = document.getElementById('mainIVMAForm');
-
-    // ✅ Set new timestamp
-    const now = new Date();
-    document.getElementById('timestampIVMA').value =
-      `${now.getMonth()+1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
-
-    const formData = new FormData(form);
-    formData.set('SNo', document.getElementById('sNo').value);
-
-    try {
-      const response = await fetch(scriptIVMAURL, { method: 'POST', body: formData });
-      const result = await response.json();
-
-      if (result.result === 'success') {
-        alert('Entry modified successfully!');
-        form.reset();
-
-        // ✅ Clear mode & sNo after reset
-        setTimeout(() => {
-          document.getElementById("formModeIVMA").value = "new";
-          document.getElementById("sNo").value = "";
-          document.getElementById("searchIVMASNo").value = "";
-        }, 50);
-
-              // cash user table refresh start-------------------------
-         
-// Re-fetch the data and re-render the table
-const raw = await fetchSheetData();
-fullData = processRawData(raw);
-
-// Get current filters (if any)
-const currentAccountType = document.getElementById("cu123")?.value || "";
-const currentLedgerFilter = document.getElementById("msaf54")?.value.trim() || "";
-
-// Re-render the table with current filters
-filterAndRender(currentAccountType, currentLedgerFilter);
-//  // cash user table refresh stop --------------------
-       
-        document.getElementById("submitIVMAButton").style.display = "inline-block";
-        document.getElementById("modifyIVMAButton").style.display = "none";
-
-        // ✅ Remove DLT option
-        const msaf51Dropdown = document.getElementById("msaf51");
-        const dltIVMAOption = [...msaf51Dropdown.options].find(opt => opt.value === "DLT");
-        if (dltIVMAOption) {
-          msaf51Dropdown.removeChild(dltIVMAOption);
-        }
-        //
-      } else {
-        alert(`Error modifying entry: ${result.error}`);
-      }
-    } catch (error) {
-      alert(`Error: ${error.message}`);
-    } finally {
-      setTimeout(() => waitMessage.style.display = 'none', 2000);
-    }
-  }
-
-  async function fetchIVMADetails() {
-    const sNo = document.getElementById("searchIVMASNo").value;
-    const waitMessage = document.getElementById("waitIVMAMessage");
-    waitMessage.innerText = "Fetching data... Please wait...";
-    waitMessage.style.display = 'block';
-
-    try {
-      const response = await fetch(`${scriptIVMAURL}?sNo=${sNo}`);
-      const data = await response.json();
-      
-
-      //**** option value ke base par data fetch krna
-const msaf51Dropdown = document.getElementById("msaf51");
-const selectedVoucher = msaf51Dropdown.value;
-
-if (data.result !== "error" && data.Voucher === selectedVoucher) {
-  document.getElementById("sNo").value = data.SNo;
-  msaf51Dropdown.value = data.Voucher;
-  document.getElementById("msaf52").value = data.Type;
-  document.getElementById("msaf53").value = data.Date;
-  document.getElementById("msaf54").value = data.Ledger;
-  document.getElementById("msaf55").value = data.Amount;
-  document.getElementById("msaf56").value = data.Narration;
-
-  // ✅ Add "DLT - delete" option if not present
-  if (![...msaf51Dropdown.options].some(opt => opt.value === "DLT")) {
-    const dlt51Option = document.createElement("option");
-    dlt51Option.value = "DLT";
-    dlt51Option.text = "Delete";
-    dlt51Option.style.color = "red";
-    dlt51Option.style.backgroundColor = "blue";
-    msaf51Dropdown.appendChild(dlt51Option);
-  }
- 
-        //
-
-        // ✅ Switch to modify mode
-        document.getElementById("formModeIVMA").value = "modify";
-
-         // ✅ Show alert after successful data fetch
-      alert("Select Delete Option in User Section For Delete Entry");
-
-      } else {
-        alert("No record found for the given S.No.");
-      }
-    } catch (error) {
-      console.error("Error fetching details:", error);
-      alert("Please reconcile details or contact admin.");
-    } finally {
-      setTimeout(() => waitMessage.style.display = 'none', 2000);
-    }
-  }
-</script>
-<!-- IVMA form div script stop here -->
 
 
-
+<!-- ============== 267274 HARE ================= -->
 
 
 
@@ -3578,14 +3365,14 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
     padding: 0;
     position: absolute;
     z-index: 999;
-    width: 100%;
-    max-height: 500px;
+    width: 3.7in;
+    max-height: 4in;
     overflow-y: auto;
     border: 1px solid #ccc;
-    background-color: white;
+    background-color: rgb(244, 242, 242);
     color: #000;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
-    font-size: 16px;
+    font-size: 14px;
     border-radius: 4px;
   }
 
@@ -3618,290 +3405,1085 @@ if (data.result !== "error" && data.Voucher === selectedVoucher) {
 </head>
 <body>
 
- <script>
-  const apiCLKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-  const sheetCLId = "1ECwXrxs8_FDWw1qAC6_qxEwP_HE3SGMM4qNKVZHlIS0";
-  const rangeCL = "FORM!A:G";
+ 
+<script>
 
-  let fullData = [];
-  let filteredByAccount = [];
 
-  // ===== Fetch Google Sheet Data =====
-  async function fetchSheetData() {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetCLId}/values/${rangeCL}?key=${apiCLKey}`;
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      return data.values || [];
-    } catch (err) {
-      console.error("Error fetching data:", err);
-      return [];
-    }
+
+function parseIVDate(d) {
+  if (!d) return new Date(0);
+
+  const [day, mon, year] = d.split("-");
+  const months = {
+    Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5,
+    Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11
+  };
+
+  return new Date(
+    Number(year),
+    months[mon],
+    Number(day)
+  );
+}
+
+
+/* =====================================================
+   🔑 GOOGLE SHEET CONFIG
+   ===================================================== */
+const apiCLKey  = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheetCLId = "1vjkI_bpHNR6Tna17FISridqXSvCUnELA5oMgnAqzbO0";
+
+/* =====================================================
+   🔄 GLOBAL STATE
+   ===================================================== */
+let fullData = [];
+// 745  let currentSheet = "";
+let dataLoaded = false;
+let lastRenderedData = [];
+
+/* =====================================================
+   🎯 ELEMENTS
+   ===================================================== */
+const voucherSel = document.getElementById("vcridcmid");
+const userSel    = document.getElementById("useridcmiv");
+const tableBox   = document.getElementById("tableContainer");
+
+/* =====================================================
+   📌 SELECTION CHANGE
+   ===================================================== */
+voucherSel.addEventListener("change", handleSelection);
+userSel.addEventListener("change", handleSelection);
+
+
+/* =====================================================
+   📌 SHEET CONFIG
+===================================================== */
+function getSheetConfig() {
+  if (voucherSel.value === "CMVCR") {
+    return { sheet: "FORMA", range: "A:G", mode: "FORMA" };
+  }
+  if (voucherSel.value === "IVVCR") {
+    return { sheet: "IVCALC", range: "N:T", mode: "IV" };
+  }
+  return null;
+}
+
+
+/* =====================================================
+   🔄 SELECTION
+===================================================== */
+async function handleSelection() {
+  tableBox.innerHTML = "";
+  lastRenderedData = [];
+  dataLoaded = false;
+
+  if (!voucherSel.value || !userSel.value) return;
+
+  await loadSheetData();
+}
+
+/* =====================================================
+
+/* =====================================================
+   📥 FETCH
+===================================================== */
+async function fetchSheetData(sheet, range) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetCLId}/values/${sheet}!${range}?key=${apiCLKey}`;
+  const res = await fetch(url);
+  const json = await res.json();
+  return json.values || [];
+}
+/* =====================================================
+   🔄 PROCESS
+===================================================== */
+function processRawData(rows, mode) {
+
+  if (mode === "IV") {
+    return rows
+      .slice(1)
+
+      // 🚫 IGNORE JNP & JNR (Column index 4)
+      .filter(r => {
+        const ledger = (r[4] || "").toString().trim().toUpperCase();
+        return ledger !== "JNP" && ledger !== "JNR";
+      })
+
+      .map(r => ({
+        tno: r[0] || "",
+        type: r[1] || "",
+        drcr: r[2] || "",
+        dateStr: r[3] || "-",            // display date
+        dateObj: parseIVDate(r[3]),      // real Date object
+        ledger: r[4] || "",
+        amount: Number(r[5]) || 0,
+        narration: r[6] || "-"
+      }));
   }
 
-  // ===== Process Raw Sheet Rows =====
-  function processRawData(rows) {
-    return rows.slice(1).map(row => ({
-      date: row[0],
-      cUser: row[1],
-      type: row[1],
-      dt: row[3] || "-",
-      drcr: row[2],
-      ldgr: row[4],
-      amount: parseFloat(row[5]) || 0,
-      narration: row[6] || "-"
-    }));
+  // ✅ FORMA — unchanged
+  return rows.slice(1).map(r => ({
+    tno: r[0] || "",
+    type: r[1] || "",
+    drcr: r[2] || "",
+    date: r[3] || "-",
+    ledger: r[4] || "",
+    amount: Number(r[5]) || 0,
+    narration: r[6] || "-"
+  }));
+}
+
+/* =====================================================
+   🚀 LOAD
+===================================================== */
+async function loadSheetData() {
+  tableBox.innerHTML = "<p style='padding:10px'>⏳ Please Wait ! Loading...</p>";
+
+  const cfg = getSheetConfig();
+  if (!cfg) return;
+
+  const raw = await fetchSheetData(cfg.sheet, cfg.range);
+  fullData = processRawData(raw, cfg.mode);
+
+  dataLoaded = true;
+  setupLedgerSearch();
+  applyFilter();
+}
+
+/* =====================================================
+   🔍 USER FILTER
+===================================================== */
+function applyFilter() {
+  if (!dataLoaded) return;
+
+  let data = [...fullData];
+  const user = userSel.value;
+
+  if (user === "MA") {
+    data = data.filter(r => r.type === "MA" || r.type === "JNP");
+  } else {
+    data = data.filter(r => r.type === user);
   }
 
-  // ===== Render Table =====
-  function renderTable(data) {
-    const tableContainer = document.getElementById("tableContainer");
-    if (!data || data.length === 0) {
-      tableContainer.innerHTML = "<p>No matching records found.</p>";
+  lastRenderedData = [...data];
+  renderTable(data);
+}
+
+/* =====================================================
+   🧾 RENDER
+===================================================== */
+function renderTable(data) {
+
+  if (!data.length) {
+    tableBox.innerHTML = "<p style='padding:10px'>No data found</p>";
+    return;
+  }
+
+  const isIV = voucherSel.value === "IVVCR";
+  let rows = [];
+
+  /* =========================================
+     IVCALC — DATE BASED LEDGER (FORMA STYLE)
+     ========================================= */
+  if (isIV) {
+
+    let bal = 0;
+
+    // 1️⃣ CALCULATION ORDER
+    // Date ASC (old → new), same date → T.No ASC
+    const asc = [...data].sort((a, b) => {
+      if (a.dateObj.getTime() !== b.dateObj.getTime()) {
+        return a.dateObj - b.dateObj;
+      }
+      return (+a.tno || 0) - (+b.tno || 0);
+    });
+
+    // 2️⃣ RUNNING BALANCE (FORMA LOGIC)
+    const withBal = asc.map(r => {
+      const dc = (r.drcr || "").toUpperCase();
+
+      if (dc === "RECEIPT") bal += r.amount;
+      else bal -= r.amount;
+
+      return { ...r, bal };
+    });
+
+    // 3️⃣ DISPLAY ORDER
+    // Date DESC (latest → top), same date → T.No DESC
+    rows = [...withBal].sort((a, b) => {
+      if (a.dateObj.getTime() !== b.dateObj.getTime()) {
+        return b.dateObj - a.dateObj;
+      }
+      return (+b.tno || 0) - (+a.tno || 0);
+    });
+  }
+
+  /* =========================================
+     FORMA — OLD & WORKING (NO CHANGE)
+     ========================================= */
+  else {
+
+    let bal = 0;
+
+    rows = [...data]
+      .sort((a, b) => (+a.tno || 0) - (+b.tno || 0))
+      .map(r => {
+        const sign =
+          r.drcr.toUpperCase() === "PAYMENT" ? -1 : 1;
+        bal += sign * r.amount;
+        return { ...r, bal };
+      })
+      .reverse();
+  }
+
+  /* =========================================
+     TABLE RENDER
+     ========================================= */
+  tableBox.innerHTML = `
+  <table border="1" width="100%" cellpadding="6">
+    <thead>
+      <tr style="background:#ffe9e3">
+        <th>T.No</th>
+        <th>User</th>
+        <th>Type</th>
+        <th>Date</th>
+        <th>Ledger</th>
+        <th>Narration</th>
+        <th>Amount</th>
+        <th>Balance</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${rows.map(r => {
+
+        // 🎨 COLOR RULES
+        let style = "";
+        const dc = (r.drcr || "").toUpperCase();
+
+        if (dc === "RECEIPT") {
+          style = "color:red;font-weight:600;";
+        }
+        else if (dc === "BILL") {
+          style = "color:blue;font-weight:600;";
+        }
+        else if (dc === "BILLDR") {
+          style = "background:#e0e0e0;color:green;font-weight:700;";
+        }
+
+        return `
+        <tr style="${style}">
+          <td>${r.tno}</td>
+          <td>${r.type}</td>
+          <td>${r.drcr}</td>
+          <td>${isIV ? r.dateStr : r.date}</td>
+          <td>${r.ledger}</td>
+          <td>${r.narration || "-"}</td>
+          <td>${r.amount}</td>
+          <td>${r.bal}</td>
+        </tr>`;
+      }).join("")}
+    </tbody>
+  </table>`;
+}
+
+
+/* =====================================================
+   🔎 GLOBAL SEARCH (FIXED)
+   ===================================================== */
+function setupGlobalSearch() {
+  const input = document.getElementById("searchCLedger");
+  if (!input) return;
+
+  input.addEventListener("input", () => {
+    const q = input.value.trim().toLowerCase();
+
+    if (!q) {
+      renderTable(lastRenderedData);
       return;
     }
 
-    // ✅ Normalize: Replace JNP → MA before processing
-    const normalizedData = data.map(row => ({
-      ...row,
-      cUser: row.cUser === "JNP" ? "MA" : row.cUser,
-      type: row.type === "JNP" ? "MA" : row.type
-    }));
+    const filtered = lastRenderedData.filter(row =>
+      Object.values(row).some(v =>
+        String(v).toLowerCase().includes(q)
+      )
+    );
 
-    // ✅ Sort by date/T.No descending
-    const sortedData = [...normalizedData].sort((a, b) => {
-      const numA = parseFloat(a.date) || 0;
-      const numB = parseFloat(b.date) || 0;
-      return numB - numA;
-    });
-
-    // ✅ Running balance calculation
-    let balance = 0;
-    const reversed = [...sortedData].reverse();
-    const rowsWithBalance = reversed.map(row => {
-      const type = row.drcr.toLowerCase();
-      const isNegative = type === "payment" || type === "billdr";
-      const signed = isNegative ? -row.amount : row.amount;
-      balance += signed;
-      return { ...row, signedAmount: signed, running: balance };
-    }).reverse();
-
-    // ✅ Build Table
-    const table = document.createElement("table");
-    table.id = "ledgerTable";
-    table.innerHTML = `
-      <thead>
-        <tr>
-          <th>T.No.</th>
-          <th>User</th>
-         <th>Type</th>
-          <th>Date</th>
-          <th>Ledger</th>
-          <th>Narration</th>
-          <th>Amount (₹)</th>
-          <th>Balance (₹)</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${rowsWithBalance.map(row => `
-          <tr style="${row.drcr.toLowerCase() === 'receipt' ? 'color: RED; background-color: rgb(248,229,229);' : ''}">
-            <td>${row.date}</td>
-            <td>${row.cUser}</td>
-           <td>${row.drcr}</td>
-            <td>${row.dt}</td>
-            <td>${row.ldgr}</td>
-            <td>${row.narration}</td>
-            <td class="${row.signedAmount < 0 ? 'negative' : 'positive'}">${row.signedAmount.toFixed()}</td>
-            <td>${row.running.toFixed()}</td>
-          </tr>
-        `).join("")}
-      </tbody>
-    `;
-
-    // ✅ Show Table
-    tableContainer.innerHTML = "";
-    tableContainer.appendChild(table);
-  
+    renderTable(filtered);
+  });
+}
 
 
-  // ✅ Replace "JNR" with "MA" in User column (index 1)    serbar ke lye condition
-    const rows = table.querySelectorAll("tbody tr");
-    rows.forEach(row => {
-      const userCell = row.cells[1];
-      if (userCell && userCell.textContent.trim() === "JNR") {
-        userCell.textContent = "MA";
-      }
-    });
-  }
-    // ===== Filter by Account + Ledger =====
-  function filterAndRender(accountType, ledgerFilter = "") {
-    let filteredByAccount = [];
+/* =====================================================
+   🔍 LEDGER SEARCH DROPDOWN
+   ===================================================== */
+let selectedcmivLedger = "";   // ✅ only valid ledger stored
 
-    // ✅ Include MA + JNP if MA selected
-    if (accountType === "MA") {
-      filteredByAccount = fullData.filter(
-        row => row.type === "MA" || row.type === "JNP"
-      );
-    } else {
-      filteredByAccount = fullData.filter(row => row.type === accountType);
+function setupLedgerSearch() {
+  const input = document.getElementById("afi04");
+  const drop  = document.getElementById("ledgerDropdown");
+  if (!input || !drop) return;
+
+  const ledgers = [...new Set(fullData.map(r => r.ledger).filter(Boolean))];
+  const lower   = ledgers.map(l => l.toLowerCase());
+
+  input.addEventListener("input", () => {
+    drop.innerHTML = "";
+
+    const v = input.value.trim().toLowerCase();
+
+    // ❌ typing breaks validity
+    selectedcmivLedger = "";
+
+    if (!v) {
+      drop.style.display = "none";
+      return;
     }
 
-    // ✅ Ledger filter
-    let visible = filteredByAccount;
-    if (ledgerFilter.trim() !== "") {
-      visible = filteredByAccount.filter(row =>
-        row.ldgr.toLowerCase().includes(ledgerFilter.toLowerCase())
-      );
-    }
-
-    // ✅ Render with normalization (OPTP → MA)
-    renderTable(visible);
-  }
-
-  // ===== Ledger Search (Auto Dropdown) =====
-  async function setupLedgerSearch() {
-    const input = document.getElementById("msaf54");
-    const dropdown = document.getElementById("ledgerDropdown");
-
-    const ledgers = [...new Set(fullData.map(row => row.ldgr).filter(Boolean))];
-
-    input.addEventListener("input", () => {
-      const value = input.value.trim().toLowerCase();
-      dropdown.innerHTML = "";
-
-      if (value === "") {
-        dropdown.style.display = "none";
-        filterAndRender(document.getElementById("cu123").value);
-        return;
-      }
-
-      const matches = ledgers.filter(l => l.toLowerCase().includes(value));
-      matches.forEach(item => {
+    // 🔍 Filter ledgers
+    ledgers
+      .filter(l => l.toLowerCase().includes(v))
+      .forEach(l => {
         const li = document.createElement("li");
-        li.textContent = item;
+        li.textContent = l;
         li.onclick = () => {
-          input.value = item;
-          dropdown.style.display = "none";
-          filterAndRender(document.getElementById("cu123").value, item);
+          selectedcmivLedger = l;   // ✅ valid value
+          input.value = l;
+          drop.style.display = "none";
         };
-        dropdown.appendChild(li);
+        drop.appendChild(li);
       });
 
-      dropdown.style.display = matches.length ? "block" : "none";
-      filterAndRender(document.getElementById("cu123").value, value);
-    });
+    // ➕ Create new ledger
+    const create = document.createElement("li");
+    create.textContent = "➕ Create New";
+    create.style.fontWeight = "bold";
+    create.onclick = () => {
+      const val = prompt("Enter new ledger");
+      if (!val) return;
 
-    document.addEventListener("click", e => {
-      if (!input.contains(e.target) && !dropdown.contains(e.target)) {
-        dropdown.innerHTML = "";
-        dropdown.style.display = "none";
-      }
-    });
-  }
-
-  // ===== Account Type Dropdown =====
-  async function setupAccountSelect() {
-    const select = document.getElementById("cu123");
-    select.addEventListener("change", () => {
-      const selected = select.value;
-      document.getElementById("msaf54").value = "";
-      document.getElementById("searchCLedger").value = "";
-      filterAndRender(selected);
-    });
-  }
-
-  // ===== Global Search =====
-  function setupGlobalSearch() {
-    const input = document.getElementById("searchCLedger");
-
-    input.addEventListener("input", () => {
-      const query = input.value.trim().toLowerCase();
-
-      if (query === "") {
-        const selected = document.getElementById("cu123").value;
-        filterAndRender(selected);
+      if (lower.includes(val.toLowerCase())) {
+        alert("❌ Ledger already exists");
         return;
       }
 
-      const results = fullData.filter(row =>
-        Object.values(row).some(val => String(val).toLowerCase().includes(query))
-      );
+      selectedcmivLedger = val;   // ✅ valid value
+      input.value = val;
+      drop.style.display = "none";
+    };
 
-      renderTable(results);
-    });
-  }
+    drop.appendChild(create);
+    drop.style.display = "block";
+  });
 
-  // ===== Print Table =====
-  function printCUSERTable() {
-    const tableHTML = document.getElementById("tableContainer").innerHTML;
-    const style = `
-      <style>
-        body { font-family: Arial; padding: 20px; }
-        table {
-          width: 100%;
-          margin-top: 20px;
-          border-collapse: collapse;
-          border-radius: 8px;
-          overflow: hidden;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-          font-size: 14px;
-        }
-        th, td {
-          border: 1px solid #e0e0e0;
-          padding: 10px 14px;
-          text-align: left;
-        }
-        th {
-          background-color: #004d80;
-          color: white;
-          font-weight: bold;
-          text-transform: uppercase;
-        }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        .negative { color: black; }
-        .positive { color: red; }
-      </style>
-    `;
-    const win = window.open("", "_blank");
-    win.document.write(`
-      <html>
-        <head><title>Print Table</title>${style}</head>
-        <body>
-          <h2>MIPL Cash Ledger</h2>
-          ${tableHTML}
-          <script>
-            window.onload = function() {
-              window.print();
-              window.onafterprint = function() { window.close(); };
-            };
-          <\/script>
-        </body>
-      </html>
-    `);
-    win.document.close();
-  }
+  // 🖱️ Outside click — FINAL RULE
+  document.addEventListener("click", e => {
+    if (!input.contains(e.target) && !drop.contains(e.target)) {
+      drop.style.display = "none";
 
-  // ===== Initialization =====
-  document.addEventListener("DOMContentLoaded", async () => {
-    const raw = await fetchSheetData();
-    fullData = processRawData(raw);
-
-    await setupLedgerSearch();
-    await setupAccountSelect();
-    setupGlobalSearch();
-
-    const defaultValue = document.getElementById("cu123").value;
-    if (defaultValue) {
-      filterAndRender(defaultValue);
+      if (selectedcmivLedger) {
+        // ✅ keep only approved value
+        input.value = selectedcmivLedger;
+      } else {
+        // ❌ random typed text rejected
+        input.value = "";
+      }
     }
   });
+}
+/* =====================================================
+   🔄 REFRESH
+   ===================================================== */
+async function refreshcmivTableBtn() {
+  if (!voucherSel.value || !userSel.value) return;
+  await loadSheetData();
+}
+
+document.getElementById("refreshcmivTableBtn")
+  ?.addEventListener("click", refreshcmivTableBtn);
+
+
+
+
+  /* ===========================================
+  PRINT FUNCTION
+  ===============================*/
+
+  function printCUSERTable() {
+  const table = document.querySelector("#tableContainer table");
+  if (!table) {
+    alert("❌ No table to print");
+    return;
+  }
+
+  const voucherOption = voucherSel.options[voucherSel.selectedIndex];
+  const voucherText = voucherOption ? voucherOption.text.trim() : "";
+
+  const userOption = userSel.options[userSel.selectedIndex];
+  const userText = userOption ? userOption.text.trim() : "";
+
+  const sheetName =
+    voucherSel.value === "CMVCR"
+      ? "FORMA"
+      : voucherSel.value === "IVVCR"
+      ? "IVCALC"
+      : "";
+
+  const now = new Date().toLocaleString();
+
+  const printWindow = window.open("", "", "width=1000,height=700");
+
+  printWindow.document.write(`
+    <html>
+    <head>
+      <title>Account Ledger</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h2 { text-align: center; margin-bottom: 5px; }
+        .meta { text-align: center; font-size: 14px; margin-bottom: 20px; }
+        .meta span { display: inline-block; margin: 0 10px; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { border: 1px solid #000; padding: 6px; text-align: left; }
+        th { background: #f0f0f0; }
+        @media print { button { display: none; } }
+      </style>
+    </head>
+    <body>
+
+      <h2>Account Ledger</h2>
+
+      <div class="meta">
+        <span>Voucher: ${voucherText}</span>
+        <span>User: ${userText}</span>
+        <span>Sheet: ${sheetName}</span>
+      </div>
+
+      <div class="meta">
+        Printed On: ${now}
+      </div>
+
+      ${table.outerHTML}
+
+    </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+  printWindow.close();
+}
+
+
+/* =====================================================
+   🚀 INIT
+   ===================================================== */
+document.addEventListener("DOMContentLoaded", () => {
+  setupGlobalSearch();
+});
 </script>
 
-</body>
-</html>
 
 
-<!-- ledger dropdown with USER SELECTION ENTRY (cash user) code stop hare -->
+
+
+
+
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  /* =====================================================
+     🔔 POPUP UI (REMOVE THIS BLOCK TO DISABLE POPUP)
+  ===================================================== */
+  const popupHTML = `
+    <div id="waitOverlay" style="
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.35);
+      z-index:9999;
+      align-items:center;
+      justify-content:center;
+    ">
+      <div style="
+        background:#fff;
+        padding:18px 26px;
+        border-radius:10px;
+        min-width:240px;
+        text-align:center;
+        box-shadow:0 10px 30px rgba(0,0,0,.25);
+        font-size:16px;
+        font-weight:600;
+      ">
+        ⏳ <span id="waitAFIMessage">Please wait...</span>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML("beforeend", popupHTML);
+
+  const waitOverlay = document.getElementById("waitOverlay");
+  const waitMsg = document.getElementById("waitAFIMessage");
+
+  const showWait = msg => {
+    waitMsg.textContent = msg || "Please wait...";
+    waitOverlay.style.display = "flex";
+  };
+  const hideWait = () => waitOverlay.style.display = "none";
+
+  /* =====================================================
+     🔗 GOOGLE APPS SCRIPT URL
+  ===================================================== */
+  const scriptAFICMURL =
+    "https://script.google.com/macros/s/AKfycbxQorut7S_GXoycQPFSbfU_-ZjCB7inC7I-VHhN5QmMiHcqIDhS9pvhCTUQJjueaw1L/exec";
+
+  /* =====================================================
+     🎯 MASTER DROPDOWNS
+  ===================================================== */
+  const masterUser = document.getElementById("useridcmiv");
+  const masterVcr  = document.getElementById("vcridcmid");
+
+  /* =====================================================
+     📝 FORM ELEMENTS
+  ===================================================== */
+  const mainForm = document.getElementById("mainAFICMForm");
+
+  const formUser  = document.getElementById("afi01");   // USER
+  const formVtype = document.getElementById("vtype");   // VOUCHER
+
+  const submitBtn = document.getElementById("submitAFICMButton");
+  const deleteBtn = document.getElementById("deleteAFICMButton");
+  const newEntryBtn = document.getElementById("newEntryAFICMButton");
+
+  const sNo = document.getElementById("sNo");
+  const fetchedSRNo = document.getElementById("fetchedSRNo");
+  const TimestampAFICM = document.getElementById("TimestampAFICM");
+
+  /* =====================================================
+     🔧 UTILITY
+  ===================================================== */
+  function setSingleOption(sel, val, text) {
+    sel.innerHTML = "";
+    if (!val) return;
+    const o = document.createElement("option");
+    o.value = val;
+    o.textContent = text;
+    o.selected = true;
+    sel.appendChild(o);
+  }
+
+  function syncUser() {
+    const o = masterUser?.selectedOptions?.[0];
+    if (o) setSingleOption(formUser, o.value, o.text);
+  }
+
+  function syncVcr() {
+    const o = masterVcr?.selectedOptions?.[0];
+    if (o) setSingleOption(formVtype, o.value, o.text);
+  }
+
+  masterUser.onchange = () => {
+    syncUser();
+    if (typeof refreshcmivTableBtn === "function") refreshcmivTableBtn();
+  };
+
+  masterVcr.onchange = () => {
+    syncVcr();
+    if (typeof refreshcmivTableBtn === "function") refreshcmivTableBtn();
+  };
+
+  /* =====================================================
+     ✏️ MODIFY / FETCH (SR + USER MATCH)
+  ===================================================== */
+  document.getElementById("openMODIFYBtn").onclick = async () => {
+
+    if (!formUser.value || !formVtype.value) {
+      alert("❌ Please select USER and VOUCHER first");
+      return;
+    }
+
+    const sr = prompt("Enter SR No");
+    if (!sr) return;
+
+    showWait("Fetching data...");
+
+    try {
+      const res = await fetch(
+        `${scriptAFICMURL}?sNo=${sr}&vtype=${formVtype.value}`
+      );
+      const d = await res.json();
+
+      if (d.result === "error") {
+        alert("❌ SR No not found");
+        return;
+      }
+
+      const selectedUser = formUser.value.trim().toUpperCase();
+      const fetchedUser  = (d.Type || "").trim().toUpperCase();
+
+      if (selectedUser !== fetchedUser) {
+        alert(`❌ SR No USER mismatch\nSelected: ${selectedUser}\nFound: ${fetchedUser}`);
+        return;
+      }
+
+      fillForm(d);
+
+      sNo.value = d.SNo;
+      fetchedSRNo.textContent = d.SNo;
+
+      deleteBtn.style.display = "inline-block";
+      newEntryBtn.style.display = "inline-block";
+
+      if (typeof refreshcmivTableBtn === "function") refreshcmivTableBtn();
+
+    } catch (e) {
+      alert("❌ Fetch error");
+    } finally {
+      hideWait();
+    }
+  };
+
+
+     /* ============================================
+   🔠 FORCE ALL TEXT INPUTS TO CAPITAL LETTER
+   ============================================ */
+function forceUppercase(form) {
+  form.querySelectorAll("input[type='text'], textarea").forEach(el => {
+    if (el.value) {
+      el.value = el.value.toUpperCase().trim();
+    }
+  });
+}
+
+
+  /* =====================================================
+     🧾 FILL FORM
+  ===================================================== */
+  function fillForm(d) {
+    afi02.value = d.esmC || "";
+    afi03.value = d.esmD || "";
+    afi04.value = d.esmE || "";
+    afi05.value = d.esmF || "";
+    afi06.value = d.esmG || "";
+  }
+
+  /* =====================================================
+     🗑 DELETE
+  ===================================================== */
+  deleteBtn.onclick = async () => {
+
+    if (!sNo.value) {
+      alert("❌ No record selected");
+      return;
+    }
+
+    if (!confirm("You want to delete it?")) return;
+
+    showWait("Deleting...");
+
+    try {
+      const res = await fetch(
+        `${scriptAFICMURL}?action=delete&sNo=${sNo.value}&vtype=${formVtype.value}`
+      );
+      const r = await res.json();
+
+      if (r.result === "success") {
+        alert("✅ Deleted successfully");
+        resetForm();
+      } else {
+        alert("❌ Delete failed");
+      }
+
+    } catch {
+      alert("❌ Delete error");
+    } finally {
+      hideWait();
+    }
+  };
+
+
+
+  /* =====================================================
+     🚀 SUBMIT (NEW / MODIFY) – FIXED
+  ===================================================== */
+  mainForm.onsubmit = async e => {
+    e.preventDefault();
+
+    forceUppercase(mainForm);   // ✅ ADD THIS LINE text in uppercase
+    submitBtn.disabled = true;
+    submitBtn.value = "Please wait...";
+
+    TimestampAFICM.value = new Date().toLocaleString();
+
+    const fd = new FormData(mainForm);
+
+    if (sNo.value) {
+      fd.append("action", "modify");
+      fd.append("sNo", sNo.value);
+    } else {
+      fd.append("action", "submit");
+    }
+
+    showWait(sNo.value ? "Updating..." : "Saving...");
+
+    try {
+      const res = await fetch(scriptAFICMURL, {
+        method: "POST",
+        body: fd
+      });
+
+      const r = await res.json();
+
+      if (r.result === "success") {
+        alert("✅ Saved successfully");
+        resetForm();
+      } else {
+        alert("❌ Save failed");
+      }
+
+    } catch {
+      alert("❌ Submit error");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.value = "Submit";
+      hideWait();
+    }
+  };
+
+  /* =====================================================
+     🆕 NEW ENTRY
+  ===================================================== */
+  newEntryBtn.onclick = () => resetForm();
+
+  function resetForm() {
+    mainForm.reset();
+    sNo.value = "";
+    fetchedSRNo.textContent = "";
+    deleteBtn.style.display = "none";
+    newEntryBtn.style.display = "none";
+
+    syncUser();
+    syncVcr();
+
+    if (typeof refreshcmivTableBtn === "function") refreshcmivTableBtn();
+  }
+
+  /* =====================================================
+     🚀 INIT
+  ===================================================== */
+  deleteBtn.style.display = "none";
+  newEntryBtn.style.display = "none";
+
+  syncUser();
+  syncVcr();
+
+  if (typeof refreshcmivTableBtn === "function") refreshcmivTableBtn();
+
+});
+</script>
+
+
+
+<!-- ======== NORMAL SUBMIT SCRIPT WITH MODIFY DELETE, NEW BUTTAN (PROCESSING MASSAGING NOTIFICATION IN FORM CONTAINER =================)
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  /* =====================================================
+     🔗 GOOGLE APPS SCRIPT WEB APP URL
+     ===================================================== */
+  const scriptAFICMURL =
+  "https://script.google.com/macros/s/AKfycbxQorut7S_GXoycQPFSbfU_-ZjCB7inC7I-VHhN5QmMiHcqIDhS9pvhCTUQJjueaw1L/exec";
+
+  /* =====================================================
+     🎯 MASTER DROPDOWNS
+     ===================================================== */
+  const masterUser = document.getElementById("useridcmiv");
+  const masterVcr  = document.getElementById("vcridcmid");
+
+  /* =====================================================
+     📝 FORM ELEMENTS
+     ===================================================== */
+  const formUser   = document.getElementById("afi01");
+  const formVtype  = document.getElementById("vtype");
+  const mainForm   = document.getElementById("mainAFICMForm");
+
+  const submitBtn  = document.getElementById("submitAFICMButton");
+  const deleteBtn  = document.getElementById("deleteAFICMButton");
+  const waitMsg    = document.getElementById("waitAFIMessage");
+
+  /* hidden / helper fields */
+  const sNo = document.getElementById("sNo");
+  const fetchedSRNo = document.getElementById("fetchedSRNo");
+  const TimestampAFICM = document.getElementById("TimestampAFICM");
+
+  /* =====================================================
+     🔧 UTILITY
+     ===================================================== */
+  function setSingleOption(sel, val, text) {
+    sel.innerHTML = "";
+    if (!val) return;
+
+    const o = document.createElement("option");
+    o.value = val;
+    o.textContent = text;
+    o.selected = true;
+    sel.appendChild(o);
+  }
+
+  /* =====================================================
+     🔄 MASTER → FORM SYNC
+     ===================================================== */
+  function syncUser() {
+    const o = masterUser.selectedOptions[0];
+    if (o) setSingleOption(formUser, o.value, o.text);
+  }
+
+  function syncVcr() {
+    const o = masterVcr.selectedOptions[0];
+    if (o) setSingleOption(formVtype, o.value, o.text);
+  }
+
+  masterUser.addEventListener("change", () => {
+    syncUser();
+    if (typeof refreshcmivTableBtn === "function") refreshcmivTableBtn();
+  });
+
+  masterVcr.addEventListener("change", () => {
+    syncVcr();
+    if (typeof refreshcmivTableBtn === "function") refreshcmivTableBtn();
+  });
+
+  /* =====================================================
+     ✏️ MODIFY / FETCH
+     ===================================================== */
+  document.getElementById("openMODIFYBtn").onclick = async () => {
+
+    if (!masterUser.value || !masterVcr.value) {
+      alert("❌ Please select USER and VOUCHER first");
+      return;
+    }
+
+    const sr = prompt("Enter SR No");
+    if (!sr) return;
+
+    waitMsg.innerText = "Please wait, fetching data...";
+    waitMsg.style.display = "block";
+
+    try {
+      const res = await fetch(
+        `${scriptAFICMURL}?sNo=${sr}&vtype=${formVtype.value}`
+      );
+
+      const d = await res.json();
+
+      if (d.result === "error") {
+        alert("❌ SR No not found");
+        return;
+      }
+
+      if (formUser.value && formUser.value !== d.Type) {
+        alert("❌ SR No not match selected user");
+        return;
+      }
+
+      fillForm(d);
+
+/* ✅ SR SET */
+sNo.value = d.SNo;
+fetchedSRNo.textContent = d.SNo;
+
+/* 🗑 SHOW DELETE BUTTON */
+deleteBtn.style.display = "inline-block";
+
+/* 🆕 SHOW NEW ENTRY BUTTON */
+newEntryBtn.style.display = "inline-block";
+
+
+      if (typeof refreshcmivTableBtn === "function") {
+        refreshcmivTableBtn();
+      }
+
+    } catch (err) {
+      alert("❌ Fetch error");
+    } finally {
+      waitMsg.style.display = "none";
+    }
+  };
+
+  /* =====================================================
+     🧾 FILL FORM
+     ===================================================== */
+  function fillForm(d) {
+    afi02.value = d.esmC || "";
+    afi03.value = d.esmD || "";
+    afi04.value = d.esmE || "";
+    afi05.value = d.esmF || "";
+    afi06.value = d.esmG || "";
+  }
+
+  /* =====================================================
+     🗑 DELETE ENTRY
+     ===================================================== */
+  deleteBtn.onclick = async () => {
+
+    if (!sNo.value) {
+      alert("❌ No record selected");
+      return;
+    }
+
+    const ok = confirm("You want to delete it?");
+    if (!ok) return;
+
+    waitMsg.innerText = "Deleting...";
+    waitMsg.style.display = "block";
+
+    try {
+      const res = await fetch(
+        `${scriptAFICMURL}?action=delete&sNo=${sNo.value}&vtype=${formVtype.value}`
+      );
+
+      const r = await res.json();
+
+      if (r.result === "success") {
+        alert("✅ Deleted successfully");
+
+        mainForm.reset();
+        fetchedSRNo.textContent = "";
+        sNo.value = "";
+        deleteBtn.style.display = "none";
+
+        syncUser();
+        syncVcr();
+
+        if (typeof refreshcmivTableBtn === "function") {
+          refreshcmivTableBtn();
+        }
+
+      } else {
+        alert("❌ Delete failed");
+      }
+
+    } catch (err) {
+      alert("❌ Delete error");
+    } finally {
+      waitMsg.style.display = "none";
+    }
+  };
+
+  /* =====================================================
+     🚀 SUBMIT (NEW / MODIFY)
+     ===================================================== */
+  mainForm.onsubmit = async e => {
+    e.preventDefault();
+
+    submitBtn.disabled = true;
+    submitBtn.value = "Please wait...";
+    waitMsg.innerText = "Submitting...";
+    waitMsg.style.display = "block";
+
+    TimestampAFICM.value = new Date().toLocaleString();
+
+    try {
+      const res = await fetch(scriptAFICMURL, {
+        method: "POST",
+        body: new FormData(mainForm)
+      });
+
+      const r = await res.json();
+
+      if (r.result === "success") {
+        alert("✅ Saved successfully");
+
+        mainForm.reset();
+        fetchedSRNo.textContent = "";
+        sNo.value = "";
+        deleteBtn.style.display = "none";
+        newEntryBtn.style.display = "none"; // ✅
+
+        syncUser();
+        syncVcr();
+
+        if (typeof refreshcmivTableBtn === "function") {
+          refreshcmivTableBtn();
+        }
+
+      } else {
+        alert("❌ Error while saving");
+      }
+
+    } catch (err) {
+      alert("❌ Submit error");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.value = "Submit";
+      setTimeout(() => waitMsg.style.display = "none", 1200);
+    }
+  };
+
+
+  /* =====================================================
+     🆕 NEW ENTRY (RESET WITHOUT PAGE REFRESH)
+     ===================================================== */
+  const newEntryBtn = document.getElementById("newEntryAFICMButton");
+
+  if (newEntryBtn) {
+    newEntryBtn.onclick = () => {
+      
+
+      // form clear
+      mainForm.reset();
+
+      // SR related reset
+      sNo.value = "";
+      fetchedSRNo.textContent = "";
+
+      // delete hide
+      deleteBtn.style.display = "none";
+
+      newEntryBtn.style.display = "none"; // ✅ ADD THIS
+
+      // re-sync dropdowns
+      syncUser();
+      syncVcr();
+
+      // helper refresh
+      if (typeof refreshcmivTableBtn === "function") {
+        refreshcmivTableBtn();
+      }
+
+      // UI msg
+      waitMsg.style.display = "none";
+
+      console.log("🆕 New Entry mode activated");
+    };
+  }
+  /* =====================================================
+     🚀 INITIAL LOAD
+     ===================================================== */
+  deleteBtn.style.display = "none";
+  syncUser();
+  syncVcr();
+
+  if (typeof refreshcmivTableBtn === "function") {
+    refreshcmivTableBtn();
+  }
+
+});
+</script>
+
+
+
+
+
+
+-->
+
+
+
+
+
 
 
 
@@ -4601,8 +5183,8 @@ document.addEventListener("DOMContentLoaded", fetchldgrreffDP);
 
 <script>
 const api5793Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-const sheet5793Id = "1h3uC_0Ji4-NUhqrN0aIR-XwLZL5VdgilCBlIzC--SDA";
-const range5793 = "IVCR!W:AD";
+const sheet5793Id = "1vjkI_bpHNR6Tna17FISridqXSvCUnELA5oMgnAqzbO0";
+const range5793 = "IVCALC!N:T";
 
 let all5793Data = [];
 let filtered5793Data = [];
@@ -4642,26 +5224,37 @@ function processRows(rows) {
   if (!rows || rows.length < 2) return [];
   const headers = rows[0];
 
-  let data = rows.slice(1).map(r => {
-    let obj = {};
-    headers.forEach((h, i) => obj[h] = r[i] || "");
-    obj._serial = parseFloat(r[0]) || 0;
-    obj._user = (r[1] || "").trim().toUpperCase();
-    obj._type = (r[2] || "").trim().toLowerCase();
-    obj._dateStr = r[3] || "";
-    obj._date = parseCustom5793Date(r[3]);
-    obj._ledger = r[4] || "";
-    obj._amount = parseFloat(r[5]) || 0;
+  let data = rows
+    .slice(1)
 
-    // ✅ Only JNP → MA (JNR unaffected)
-    if (obj._user === "JNP") obj._user = "MA";
+    // 🚫 IGNORE rows where column index 4 = JNP or JNR
+    .filter(r => {
+      const col4 = (r[4] || "").toString().trim().toUpperCase();
+      return col4 !== "JNP" && col4 !== "JNR";
+    })
 
-    return obj;
-  });
+    .map(r => {
+      let obj = {};
+      headers.forEach((h, i) => obj[h] = r[i] || "");
+
+      obj._serial  = parseFloat(r[0]) || 0;
+      obj._user    = (r[1] || "").trim().toUpperCase();
+      obj._type    = (r[2] || "").trim().toLowerCase();
+      obj._dateStr = r[3] || "";
+      obj._date    = parseCustom5793Date(r[3]);
+      obj._ledger  = r[4] || "";
+      obj._amount  = parseFloat(r[5]) || 0;
+
+      // ✅ User column: only JNP → MA
+      if (obj._user === "JNP") obj._user = "MA";
+
+      return obj;
+    });
 
   data.sort((a, b) => b._serial - a._serial);
   return data;
 }
+
 
 // ✅ Render Table + Color Formatting
 function render5793Table(data) {
@@ -4891,6 +5484,37 @@ async function refresh5793Table() {
   setupLedger5793Dropdown();
 }
 
+
+
+//  ============ PREDIFINE HEADER  ===============
+function force5793Header() {
+  const table = document.getElementById("my5793Table");
+  if (!table) return;
+
+  const thead = table.querySelector("thead");
+  if (!thead) return;
+
+  thead.innerHTML = `
+    <tr style="background:#ffe9e3">
+      <th>T.No</th>
+      <th>User</th>
+      <th>Type</th>
+      <th>Date</th>
+      <th>Ledger</th>
+      <th>Narration</th>
+      <th>Amount</th>
+      <th>Balance</th>
+    </tr>
+  `;
+}
+
+/* 🔁 Render ke baad header force karo */
+const _oldRender5793Table = render5793Table;
+render5793Table = function (data) {
+  _oldRender5793Table(data);
+  force5793Header();
+};
+
 // ✅ Print Function
 // ✅ Print Function (with Ledger Name condition)
 function print5793Table() {
@@ -4953,7 +5577,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 
- <!-- IVCR form div script start hare -->
+ <!-- IVCR form div script start hare 
 <script>
   const scriptIVCRURL = 'https://script.google.com/macros/s/AKfycbz-lyd06EKKSO4xVaTSRWoIgMWS0C9nZvzipEP59K25TZSOSdL5CMpYJNPgmF1nyyGrXg/exec';
 
@@ -5130,13 +5754,13 @@ if (![...voucherDropdown.options].some(opt => opt.value === "DLT")) {
 
     //*****
 </script>
-<!-- IVCR form div script stop hare -->
 
 
 
 
 
- <!-- IMPREST VOUCHER FORM LEDGER DROPDOWN & TABLE CODE START -->
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -5351,9 +5975,9 @@ function populateDropdownList(data) {
 
 </body>
 </html>
-
+-->
   
- <!-- IMPREST VOUCHER FORM LEDGER DROPDOWN & TABLE CODE STOP -->
+
 
   
 
@@ -10377,8 +11001,6 @@ loadPRLSheet();
 
 <!-- ================ -------------------------   GLOBAL SERCH BAR SCRIPT AND CODE START HERE --------------- ===============================-->
 
-<!-- ================ -------------------------   GLOBAL SERCH BAR SCRIPT AND CODE START HERE --------------- ===============================-->
-
 <script>
 /* ===================================================================
    🔐 AUTHORIZATION SECTION
@@ -10639,6 +11261,11 @@ document.addEventListener("keydown", function (e) {
 </script>
 
 <!-- ================ -------------------------   GLOBAL SERCH BAR SCRIPT AND CODE STOP HERE --------------- ===============================-->
+
+
+
+
+
 
 
 
