@@ -1680,8 +1680,8 @@ document.addEventListener("submit", async function (e) {
 
 <script>
 const api5792Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-const sheet5792Id = "1ECwXrxs8_FDWw1qAC6_qxEwP_HE3SGMM4qNKVZHlIS0";
-const range5792 = "FORM!A:G";
+const sheet5792Id = "1vjkI_bpHNR6Tna17FISridqXSvCUnELA5oMgnAqzbO0";
+const range5792 = "FORMA!A:G";
 
 let all5792Data = [];
 let filtered5792Data = [];
@@ -1990,6 +1990,37 @@ async function refresh5792Table() {
   setupLedger5792Dropdown();
 }
 
+
+// ======== heder difine =============
+function force5792Header() {
+  const table = document.getElementById("my5792Table");
+  if (!table) return;
+
+  const thead = table.querySelector("thead");
+  if (!thead) return;
+
+  thead.innerHTML = `
+    <tr style="background:#ffe9e3">
+      <th>T.No</th>
+      <th>User</th>
+      <th>Type</th>
+      <th>Date</th>
+      <th>Ledger</th>
+      <th>Narration</th>
+      <th>Amount</th>
+      <th>Balance</th>
+    </tr>
+  `;
+}
+
+/* 🔁 Render ke baad header force karo */
+const _oldRender5792Table = render5792Table;
+render5792Table = function (data) {
+  _oldRender5792Table(data);
+  force5792Header();
+};
+
+
 // ✅ Print Function
 // ✅ Print Function (with Ledger Name condition)
 function print5792Table() {
@@ -2046,7 +2077,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 <!-- ============== CASH LEDGER REPORT (5792) SCRIPT STOP HARE ================= -->
-
 
 
 
