@@ -1,840 +1,1087 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>MIPL Imprest Voucher</title>
-   <style>
-   #mainContent {
-  padding: 20px;
-  border: 1px solid #ccc;
-  max-width: 1200px;
-  margin: 40px auto;
-  font-family: Arial;
-  background: #f9f9f9;
-  border-radius: 10px;
-    }
 
-
-  
-
-    label {
-      font-weight: bold;
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    tr.receipt { background-color: #ffe6e6; color: #a10404; }
-    tr.bill { background-color: #e6f3ff; color: #1d03c6; }
-    .runningBalance { font-weight: bold; }
-
-    
- 
-/* Base table style */
- table {
-  width: 100%;
-  margin-top: 20px;
-  border-collapse: collapse;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 14px;
-
+<style>
+/* ===== PAGE WRAPPER ===== */
+.page-wrapper {
+    background-color: rgb(247, 249, 249);
+    color: #004d80;
+    font-weight: bold;
+    border: 10px solid rgb(2, 45, 77);
+    width: 10in;
+    height: 18in;
+    box-sizing: border-box;
+    margin: 30px auto;        /* top-bottom + center horizontally * 10-18/
+    padding: 30px;            /* inner spacing from border */
 }
 
-th, td {
-  border: 1px solid #e0e0e0;
-  padding: 10px 14px;
-  text-align: left;
-}
-
-th {
-  background-color: #004d80;
-  color: white;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-table tr:hover {
-  background-color: #f8c304;
-  color: rgb(1, 20, 37);
-  transition: background-color 0.3s ease, color 0.3s ease;
- 
-}
-  </style>
-</head>
-<body>
-<div id="mainContent" style="height: 100%; overflow: hidden; background-color: #d4edfd;">
-  <div class="userDropdown" style="padding: 20px; text-align: center;">
-    <label style="font-size: 18px; color: #013aac;">User Name:</label>
-    <select id="ivuser"></select>
-
-    <label style="font-size: 18px; color: #013aac; margin-left: 20px;">Searchbar:</label>
-    <input type="text" id="ivcrGlobalSearch" placeholder=" Type to filter table..." oninput="filterIVCRTableGlobally()">
-  </div>
-
-  <!-- ✅ ONLY THIS PART SCROLLS -->
-  <div style="
-    height: calc(100% - 100px);  /* adjust based on your top content */
-    overflow-y: auto;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    font-size: 15px;
-    height: 1300px;
-    background-color: white;
-  ">
-    <button onclick="refreshIVCRTable()" style="margin-bottom: 10px;"> Refresh Table</button>
-    <button onclick="printIVCRTable()">🖨️ Print Statement</button>
-
-    <table id="myIVCRTable" style="width: 100%; border-collapse: collapse;"></table>
-  </div>
-</div>
-
-    <p>Multitech Infracon Pvt. Ltd.</p>
-
-
-
-
-
-
-
-
-
-
-  <!-- floating DROPDOWN OPTION-btn WITH FORM FORM form div script START hare -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>es|Mtally</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-    }
-
-    .floating-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: #013aac;
-      color: white;
-      padding: 12px 18px;
-      border: 5px solid #f5b82a;
-      border-radius: 50%;
-      font-size: 20px;
-      cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-      z-index: 1000;
-    }
-
-    .floatingdropdown {
-      position: fixed;
-      bottom: 70px;
-      right: 20px;
-      background-color: #bde2fa;
-      border: 5px solid #004d80;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      display: none;
-      z-index: 1000;
-      color: black;
-    }
-
-    .floatingdropdown button {
-      background: none;
-      border: none;
-      padding: 2px 8px;
-      width: 100%;
-      text-align: justify;
-      cursor: pointer;
-    }
-
-    .floatingdropdown button:hover {
-      background-color: #81c3ee;
-      color: rgb(247, 244, 244);
-    }
-
-    .form-container {
-      position: fixed;
-      top: 200px;
-      right: 300px;
-      width: 4in;
-      height: 7.8in;
-      background-color: #dddedf;
-      border: 5px solid #004d80;
-      padding: 10px;
-      display: none;
-      z-index: 99;
-      overflow-y: auto;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      border-radius: 8px;
-    }
-
-    .form-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .form-header h3 {
-      margin: 0;
-      font-size: 18px;
-    }
-
-    .close-btn {
-      background: none;
-      border: none;
-      font-size: 18px;
-      cursor: pointer;
-      color: #555;
-    }
-
-    .close-btn:hover {
-      color: red;
-    }
-
-
-
-
-
-
-    
-           /* Form Inputs */
-input, select {
+/* ===== FORM CONTAINER ===== */
+.form-container {
     width: 100%;
-    padding: 6px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
+    max-width: 100%;
+    box-sizing: border-box;
+    background-color: #f5fafc;
+    padding: 20px 30px;       /* left-right + top spacing */
+}
+
+/* ===== HEADING CENTER ===== */
+.form-container h2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+/* ===== LABELS ===== */
+.form-container label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+/* ===== INPUTS & SELECTS ===== */
+.form-container input,
+.form-container select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 16px;
+    border: 2px solid #d6d7d8;
     border-radius: 6px;
     font-size: 16px;
     box-sizing: border-box;
-}
-
-/* Light Gray Background for Inputs */
-input[type="text"], input[type="number"], input[type="date"], select {
     background-color: #f9f9f9;
 }
 
-/* Submit and Button Styling */
-input[type="submit"] {
+/* ===== BUTTONS ===== */
+.form-container input[type="submit"],
+.form-container input[type="button"],
+.form-container button {
     background-color: #080808;
-    color: rgb(246, 246, 248);
+    color: #f6f6f8;
+
     font-weight: bold;
     border: none;
     cursor: pointer;
+
+    padding: 10px;
+    border-radius: 6px;
+
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-input[type="submit"]:hover, button:hover {
+.form-container input[type="submit"]:hover,
+.form-container input[type="button"]:hover,
+.form-container button:hover {
     background-color: #575555;
     transform: translateY(-2px);
 }
-      
 
-.dropdown-container {
-    position: relative;
-    margin-top: 20px;
+#search5792Bar {
+    background-color: #424242;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+    box-sizing: border-box;
   }
 
-  #dropdownIVCRSearch {
-    width: 3in;
+  #search5792Input {
+    flex: 1;
+    background-color: #fdfdf6;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
   }
 
-  ul.dropdownCSSlist {
-    display: none;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    border: 1px solid #ccc;
-    max-height: 8in; /* ✅ 8-inch height */
-    overflow-y: auto;
-    background: rgb(148, 2, 2);
-    color: white;
-    position: absolute;
-    z-index: 10;
-    width: 3in;
+  #search5792Bar label { font-weight: bold; color: rgb(247, 244, 244); margin-left: 10px;}
+  #search5792Bar input[type="date"] { padding: 4px 60px; border-radius: 4px;border: 1px solid #ccc; font-size: 14px;}
+
+/* Table Styling */
+/* Container to control table width and responsiveness */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+ 
+ /* Table container ************/
+table{
+    width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  background: #ffffff;
+  border: 1px solid #d0d0d0;
+
   }
 
-  ul.dropdownCSSlist li {
-    padding: 5px;
-    cursor: pointer;
+/* Optional heder alwayas fix on top and table scrolling  */
+  table{
+  overflow-x: auto;
+  display: block;
+  max-height: 750px; /* Optional scrolling */
   }
 
-  ul.dropdownCSSlist li:hover {
-    background-color: #f58787;
+  /* Table border & cell style */
+th {
+   background: #01305c;
+  color: #ffffff;
+  padding: 10px;
+  border: 1px solid #b5b5b5;
+  text-align: left;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  white-space: nowrap;
+  border-bottom:5px solid #dfc206;
   }
+ td {
+   padding: 8px 10px;
+  border: 1px solid #e0e0e0;
+  vertical-align: top;
+  word-wrap: break-word; /* Wrap long text */
+  white-space: normal;
+  }
+  /* Header design */
+  tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+  /* Row hover effect */
+  tr:hover td {
+   background: #fccc49;
+ color: rgb(0, 15, 15);
+  transition: background-color 1s ease, color 1s ease;
+  }
+</style>
 
-  </style>
-</head>
-<body>
-
-  <!-- Floating Button -->
-  <button class="floating-btn" onclick="formContainer()">+</button>
 
 
+  <body style=" margin: 0; display: flex;justify-content: center; align-items: center; background-color: rgb(9, 9, 9);">
 
-  <!-- Right Form Section -->
-  <div class="form-container" id="formContainer">
-    <div class="form-header">
-    
-      <button class="close-btn" onclick="closeForm()" style="color: red;font-weight: bold;">Close</button>
+  <div style="background-color: rgb(247, 249, 249); color: #004d80; font-weight: bold; border: 10px solid rgb(2, 85, 100); width: 10in; height: 18in; box-sizing: border-box; ">
+
+
+  <div style="text-align:center; background-color: #920601; color: white; font-weight: bold;"> <strong>Imprest Voucher Data Entry</strong>  </div> 
+
+  <br/>
+  <div class="form-container">
+  <h2 style="display:flex; justify-content:center;">Welcome, <span id="username"></span></h2>
+
+  <!-- MAIN FORM -->
+  <form id="mainAFICMForm">
+
+  <input type="hidden" name="SNo" id="sNo">
+  <input type="hidden" name="Timestamp" id="TimestampAFICM">
+
+  <label for="vtype">Voucher Name:</label>
+  <select id="vtype" name="vtype" style="background-color:#f8efed;" required></select>
+
+  <label for="afi01">User Name:</label>
+  <select id="afi01" name="Type" style="background-color:#f8efed;" required></select>
+
+  <label">Select Transection Type*:</label>
+  <select id="afi02" name="esmC"  style="background-color: #f0f6ed;"   required>
+  <option value="PAYMENT">Payment</option>
+  <option value="RECEIPT" style="color: rgb(243, 138, 138);">Receipt</option>
+  </select>
+
+  <label">Enter Date*:</label>
+  <input type="date" id="afi03"  style="background-color: #f0f6ed;" name="esmD" required>
+
+
+  <!-- Searchable Ledger Dropdown -->
+    <div class="dropdownWrapper">
+    <label">Search & Select Ledger*:</label>
+    <input type="text" id="afi04" name="esmE" class="dropdownCLSearch" style="background-color: #f0f6ed;" required placeholder=" Search Ledger..." />
+    <ul id="ledgerDropdown" class="dropdownList"></ul>
     </div>
 
 
-  
-<form id="mainIVCRForm">
-  <input type="hidden" name="SNo" id="sNo" />
 
-   <label style="color: rgb(1, 23, 64);font-weight: bold;">User</label>
-  <select id="voucherType" class="userDropdown" name="Voucher" required style="font-size: 16px; text-align: center;">
+  <label">Enter Amount*:</label>
+  <input type="number" id="afi05" name="esmF" style="background-color: #f0f6ed;"  placeholder="Amount" required>
 
-</select>
+  <label">Enter Narration if any:</label>
+  <input type="text" id="afi06" name="esmG" style="background-color: #f0f6ed;" placeholder="Narration">
 
+  <input type="submit" id="submitAFICMButton" value="Submit">
+  <button type="button" id="openMODIFYBtn" style="border: none; color: #012458; font-weight: bold;  cursor: pointer; background-color: #fafafa; font-weight: bold;"> Click to Modify</button>
 
+  <br/><br/><br/>
+  Fetched SR:
+  <span id="fetchedSRNo"></span>
+  <br/>
 
-
-          <label >Select Tr. Type</label>
-         <select id="ivcr0" name="Type" required>
-           <option value="PAYMENT" style="color: green;">Payment</option>
-           <option value="RECEIPT" style="color: red;">Receipt</option>
-          
-         </select>
-           <label >Date</label>
-         <input type="date" id="ivcr1" name="Date" required>
-
-
-          <!-- (VCN- 111) dropdown div start -->
-         <div class="dropdown-container" >
-            <label >Serch IV Ledger</label>
-            <input type="text" id="dropdownIVCRSearch" placeholder=" Search..." oninput="filterIVCRDropdown()" name="Ledger" required>
-            <ul id="dropdownIVCRList" class="dropdownCSSlist" >
-                <!-- The dropdown options will be populated here -->
-            </ul>
-        </div>
- <!-- (VCN- 111) dropdown div stop -->
-        
-
-         <label >Amount</label>
-         <input type="number" id="ivcr2" name="Amount" required placeholder="Amount">
-          <label >Narration</label>
-         <input type="text" id="ivcr3" name="Narration" placeholder="Narration"style="text-transform: uppercase;">
-
-         <input type="hidden" name="Timestamp" id="timestampIVCR">
-         <input type="submit" id="submitIVCRButton" value="Submit">
-       </form>
-   
-     <!-- Form for Fetching and Modifying Entries -->
-    <form id="modifyIVCRForm">
-      <input type="hidden" id="formModeIVCR" name="formModeIVCR" value="new">
-        <input type="number" id="searchIVCRSNo" placeholder="Enter S.No. to Modify Entry" >
-        <button type="button" class="fetchbtn" onclick="fetchIVCRDetails()"  style="background-color: black; color: white; font-size: 12px; ">Fetch Details</button>
-        <button type="button" class="fetchbtn" id="modifyIVCRButton" onclick="modifyIVCREntry()" style="display:none;">Modify Entry</button>
-
-
-
-        <!-- Wait message div -->
-<div id="waitIVCRMessage" style="display:none; color:red; font-size:16px; font-weight:bold;"></div>
-       </form>
-
-    <br/>
-        <span style="color:rgb(129, 1, 1);font-size:130%;font-family:Magneto;">eS |</span> 
-        <span style="color:#004d80;font-size:130%;font-family:Magneto;">MTally</span>
-</div> 
-
-
-
-<script>
-  function formContainer() {
-    document.getElementById("formContainer").style.display = "block";
-  }
-
-  function closeForm() {
-    document.getElementById("formContainer").style.display = "none";
-  }
-</script>
-
-
-</body>
-</html>
-
-
-<!-- floating DROPDOWN OPTION-btn WITH FORM FORM form div script STOP hare -->
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <input type="button" id="deleteAFICMButton" value=" Delete" style="display:none; background:#dcfaf5;color:#5a0202; border: none; cursor: pointer; width: 2in;">
+  <input type="button" id="newEntryAFICMButton"  value=" New Entry"  style="display:none; background:#dcfaf5; color:#004d12; border: none; cursor: pointer; width: 2in;">
+  <strong id="waitAFIMessage" style="display:none;"></strong>
+  </form>
 
   </div>
-<script>
-  const userApiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-  const userSheetId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
-  const userRange = 'USER!K:N';
 
-  const ivcrSheetId = "1h3uC_0Ji4-NUhqrN0aIR-XwLZL5VdgilCBlIzC--SDA";
-  const ivcrRange = 'IVCR!W:AD';
+  <div id="search5792Bar" style="padding: 5px 10px;">
 
-  let users = [];
-  let fulivcrData = [];
+  <button id="refreshcmivTableBtn" style="border: none; color: rgb(252, 198, 196); font-weight: bold;  cursor: pointer; background: #424242;"> Refresh</button>
+  <button onclick="printCUSERTable()" style="border: none; color: rgb(228, 252, 196); font-weight: bold;  cursor: pointer; background: #424242;"> Print Table</button>
+  <input type="text" id="searchCLedger" style="width: 4in; border: #000 5px; cursor: pointer; border-radius: 4px;" placeholder=" Search in Table..." />
 
-  async function fetchUsers() {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${userSheetId}/values/${userRange}?key=${userApiKey}`;
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      const rows = data.values;
+  </div>
 
-      if (!rows || rows.length < 2) {
-        alert("No data found.");
-        return;
+
+  <!-- Table Output -->
+  <div id="tableContainer" style="background-color: #fef8f6;"></div>
+
+  <br/><br/>
+  <span style="color:rgb(129, 1, 1);font-size:130%;font-family:Magneto;">eS |</span> 
+  <span style="color:#004d80;font-size:130%;font-family:Magneto;">MTally</span>
+ 
+
+  </div> 
+  </body>
+
+<!-- ==================  ledger dropdown with table and user voucher salection and user authrised section script start hare ============================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Imprest Voucher - MIPL</title>
+</head>
+</head>
+
+
+  <style>
+    .dropdownWrapper {
+      position: relative;
+      width: 300px;
       }
 
-      users = rows.slice(1).map(row => ({
-        code: row[0]?.trim() || "",
-        pin: row[1]?.trim() || "",
-        status: row[2]?.trim() || "",
-        name: row[3]?.trim() || ""
+    .dropdownSearch {
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #a3a1a1;
+      border-radius: 4px;
+    }
+    .dropdownList {
+      list-style: none;
+      border: 1px solid #ccc;
+      max-height: 5000px;
+      width: 3in;
+      overflow-y: auto;
+      margin: 0;
+      padding: 0;
+      display: none;
+      background: white;
+      position: absolute;
+      width: 100%;
+      z-index: 1000;
+      border-radius: 0 0 4px 4px;
+    }
+    /* Style for the entire dropdown container */
+    #ledgerDropdown.dropdownList {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    z-index: 999;
+    width: 100%;
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    background-color: white;
+    color: #000;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+    font-size: 16px;
+    border-radius: 4px;
+    }
+
+  /* Style for each dropdown item */
+  #ledgerDropdown.dropdownList li {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  /* Highlight on hover */
+  #ledgerDropdown.dropdownList li:hover {
+    background-color: #007BFF;
+    color: white;
+   }
+
+    /* Optional: remove border from last item */
+    #ledgerDropdown.dropdownList li:last-child {
+    border-bottom: none;
+    }
+    .positive {
+      color: RED;
+      font-weight: bold;
+      }
+  </style>
+</head>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+
+/* =====================================================
+   🔑 GOOGLE SHEET CONFIG
+===================================================== */
+const apiCLKey  = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheetCLId = "1vjkI_bpHNR6Tna17FISridqXSvCUnELA5oMgnAqzbO0";
+
+/* =====================================================
+   MASTER DATA
+===================================================== */
+const voucherList = {
+  CMVCR:{value:"CMVCR",text:"Cash User Voucher"},
+  IVVCR:{value:"IVVCR",text:"Imprest Voucher (IV) Voucher"}
+};
+
+const cashVoucherUsers = {
+  MA:{value:"MA",text:"MUKHTAR"},
+  TA:{value:"TA",text:"TUSHAR"},
+  JLN:{value:"JLN",text:"JOURNAL"},
+  BANK:{value:"BANK",text:"BANK"},
+  DB:{value:"DB",text:"DAYBOOK"}
+};
+
+const ivVoucherUsers = {
+  IV01:{value:"IV01",text:"Amarbhadur"},
+  IV02:{value:"IV02",text:"Vijender Sharma"},
+  IV03:{value:"IV03",text:"Rahul Kumar"},
+  IV04:{value:"IV04",text:"Raju"},
+  IV05:{value:"IV05",text:"Mannu"},
+  IV06:{value:"IV06",text:"Aakash"},
+  IV07:{value:"IV07",text:"Manjeet"},
+  IV08:{value:"IV08",text:"Nitin Kumar"},
+  IV09:{value:"IV09",text:"Sunil Yadav"},
+  IV10:{value:"IV10",text:"Ajay Kumar"},
+  IV11:{value:"IV11",text:"Ravinder Kumar"},
+  IV12:{value:"IV12",text:"Mahender"},
+  IV13:{value:"IV13",text:"Suresh"}
+};
+
+const defaultSelections = {
+  "Amarbhadur":{voucher:"IVVCR",user:"IV01"},
+  "Vijender Sharma":{voucher:"IVVCR",user:"IV02"},
+  "Mukhtar (Admin)":{voucher:"CMVCR",user:"MA"},
+  "Nitin Kumar":{voucher:"IVVCR",user:"IV08"},
+  "Rahul Kumar":{voucher:"IVVCR",user:"IV03"}
+};
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+const voucherSel=document.getElementById("vtype");
+const userSel=document.getElementById("afi01");
+const usernameEl=document.getElementById("username");
+const tableBox=document.getElementById("tableContainer");
+
+/* =====================================================
+   STATE
+===================================================== */
+let fullData=[];
+let lastRenderedData=[];
+let dataLoaded=false;
+
+/* =====================================================
+   UTIL
+===================================================== */
+function setSingleOption(sel,data){
+  sel.innerHTML="";
+  const o=document.createElement("option");
+  o.value=data.value;
+  o.textContent=data.text;
+  sel.appendChild(o);
+  sel.value=data.value;
+}
+
+/* =====================================================
+   DEFAULT APPLY
+===================================================== */
+function applyDefaults(){
+  const u=usernameEl.innerText.trim();
+  if(!defaultSelections[u]) return false;
+
+  const d=defaultSelections[u];
+  setSingleOption(voucherSel,voucherList[d.voucher]);
+  const src=d.voucher==="CMVCR"?cashVoucherUsers:ivVoucherUsers;
+  setSingleOption(userSel,src[d.user]);
+  handleSelection();
+  return true;
+}
+
+const obs=new MutationObserver(()=>{
+  if(applyDefaults()) obs.disconnect();
+});
+obs.observe(usernameEl,{childList:true,subtree:true});
+
+/* =====================================================
+   EVENTS
+===================================================== */
+voucherSel.onchange=handleSelection;
+userSel.onchange=handleSelection;
+
+/* =====================================================
+   SHEET CONFIG
+===================================================== */
+function getSheetConfig(){
+  if(voucherSel.value==="CMVCR")
+    return {sheet:"FORMA",range:"A:G",mode:"FORMA"};
+  if(voucherSel.value==="IVVCR")
+    return {sheet:"IVCALC",range:"N:T",mode:"IV"};
+  return null;
+}
+
+/* =====================================================
+   SELECTION
+===================================================== */
+async function handleSelection(){
+  tableBox.innerHTML="";
+  dataLoaded=false;
+  if(!voucherSel.value||!userSel.value) return;
+  await loadSheetData();
+}
+
+/* =====================================================
+   FETCH
+===================================================== */
+async function fetchSheetData(sheet,range){
+  const url=`https://sheets.googleapis.com/v4/spreadsheets/${sheetCLId}/values/${sheet}!${range}?key=${apiCLKey}`;
+  const r=await fetch(url);
+  const j=await r.json();
+  return j.values||[];
+}
+
+/* =====================================================
+   PROCESS
+===================================================== */
+function processRawData(rows,mode){
+  if(mode==="IV"){
+    return rows.slice(1)
+      .filter(r=>!["JNP","JNR"].includes((r[4]||"").toUpperCase()))
+      .map(r=>({
+        tno:r[0]||"",
+        type:r[1]||"",
+        drcr:r[2]||"",
+        dateStr:r[3]||"-",
+        dateObj:parseIVDate(r[3]),
+        ledger:r[4]||"",
+        amount:Number(r[5])||0,
+        narration:r[6]||"-"
       }));
+  }
+  return rows.slice(1).map(r=>({
+    tno:r[0]||"",
+    type:r[1]||"",
+    drcr:r[2]||"",
+    date:r[3]||"-",
+    ledger:r[4]||"",
+    amount:Number(r[5])||0,
+    narration:r[6]||"-"
+  }));
+}
 
-      askForPIN();
-    } catch (err) {
-      console.error("Fetch error:", err);
-      alert("Failed to fetch user data.");
-    }
+/* =====================================================
+   LOAD
+===================================================== */
+async function loadSheetData(){
+  tableBox.innerHTML="⏳ Loading...";
+  const cfg=getSheetConfig();
+  const raw=await fetchSheetData(cfg.sheet,cfg.range);
+  fullData=processRawData(raw,cfg.mode);
+  dataLoaded=true;
+  setupLedgerSearch();
+  setupGlobalSearch();
+  applyFilter();
+}
+
+/* =====================================================
+   FILTER
+===================================================== */
+function applyFilter(){
+  if(!dataLoaded) return;
+  const u=userSel.value;
+  lastRenderedData = u==="MA"
+    ? fullData.filter(r=>r.type==="MA"||r.type==="JNP")
+    : fullData.filter(r=>r.type===u);
+  renderTable(lastRenderedData);
+}
+
+/* =====================================================
+   RENDER
+===================================================== */
+function renderTable(data){
+  if(!data.length){tableBox.innerHTML="No data";return;}
+  const isIV=voucherSel.value==="IVVCR";
+  let rows=[],bal=0;
+
+  if(isIV){
+    const asc=[...data].sort((a,b)=>a.dateObj-b.dateObj||(+a.tno||0)-(+b.tno||0));
+    rows=asc.map(r=>{
+      bal+=(r.drcr==="RECEIPT"?r.amount:-r.amount);
+      return {...r,bal};
+    }).reverse();
+  }else{
+    rows=[...data].sort((a,b)=>(+a.tno||0)-(+b.tno||0))
+      .map(r=>{
+        bal+=(r.drcr==="PAYMENT"?-1:1)*r.amount;
+        return {...r,bal};
+      }).reverse();
   }
 
-  function askForPIN() {
-    let matchedUser = null;
-    while (!matchedUser) {
-      const pinInput = prompt("Enter your PIN:");
-      if (!pinInput) continue;
-      matchedUser = users.find(user => user.pin === pinInput.trim());
-      if (!matchedUser) alert("Invalid PIN. Please try again.");
-    }
-    processUser(matchedUser);
-  }
+  tableBox.innerHTML=`
+  <table border="1" width="100%" cellpadding="6">
+    <tr>
+      <th>T.No</th><th>User</th><th>Type</th><th>Date</th>
+      <th>Ledger</th><th>Narration</th><th>Amount</th><th>Balance</th>
+    </tr>
+    ${rows.map(r=>{
+      let style="";
+      if(r.drcr==="RECEIPT") style="color:red;font-weight:600";
+      if(r.drcr==="BILL") style="color:blue;font-weight:600";
+      if(r.drcr==="BILLDR") style="background:#eaeaea;color:green;font-weight:700";
+      return`
+      <tr style="${style}">
+        <td>${r.tno}</td><td>${r.type}</td><td>${r.drcr}</td>
+        <td>${isIV?r.dateStr:r.date}</td>
+        <td>${r.ledger}</td><td>${r.narration}</td>
+        <td>${r.amount}</td><td>${r.bal}</td>
+      </tr>`;
+    }).join("")}
+  </table>`;
+}
 
-  function processUser(user) {
-    const status = user.status.trim().toLowerCase();
-    const today = new Date();
+/* =====================================================
+   DATE PARSER
+===================================================== */
+function parseIVDate(d){
+  if(!d) return new Date(0);
+  const [dd,mon,yy]=d.split("-");
+  const m={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+  return new Date(+yy,m[mon],+dd);
+}
 
-    if (status === "locked") {
-      alert("YOUR ID IS LOCKED. PLEASE CONTACT YOUR ADMIN.");
-      return;
-    }
+/* =====================================================
+   GLOBAL SEARCH
+===================================================== */
+function setupGlobalSearch(){
+  const i=document.getElementById("searchCLedger");
+  if(!i) return;
+  i.oninput=()=>{
+    const q=i.value.toLowerCase();
+    renderTable(!q?lastRenderedData:
+      lastRenderedData.filter(r=>Object.values(r).some(v=>String(v).toLowerCase().includes(q)))
+    );
+  };
+}
 
-    if (status === "unlocked") {
-      fillDropdown(user);
-      return;
-    }
+/* =====================================================
+   LEDGER DROPDOWN
+===================================================== */
+/* =====================================================
+   📒 LEDGER DROPDOWN (FIXED – CREATE NEW ENABLED)
+===================================================== */
+let selectedLedger="";
+function setupLedgerSearch(){
+  const input=document.getElementById("afi04");
+  const drop=document.getElementById("ledgerDropdown");
+  if(!input||!drop) return;
 
-    const expiry = new Date(user.status);
-    if (isNaN(expiry)) {
-      alert("Invalid status format. Not a valid date or unlock/locked.");
-      return;
-    }
+  const ledgers=[...new Set(fullData.map(r=>r.ledger).filter(Boolean))];
+  const lower=ledgers.map(l=>l.toLowerCase());
 
-    const diffTime = expiry - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  input.oninput=()=>{
+    drop.innerHTML="";
+    selectedLedger="";
+    const v=input.value.toLowerCase();
+    if(!v) return drop.style.display="none";
 
-    if (diffDays < 0) {
-      alert("YOUR LICENSE EXPIRED. PLEASE CONTACT ADMIN.");
-    } else {
-      if (diffDays <= 5) {
-        alert(`YOUR LICENSE IS EXPIRING IN ${diffDays} DAY(S) ON ${user.status}`);
-      }
-      fillDropdown(user);
-    }
-  }
-
-  function fillDropdown(user) {
-    const select1 = document.getElementById("ivuser");
-    const select2 = document.getElementById("voucherType");
-    const optionHTML = `<option value="${user.code}">${user.name}</option>`;
-    select1.innerHTML = optionHTML;
-    select2.innerHTML = optionHTML;
-
-    select1.style.display = "block";
-    select2.style.display = "block";
-    select1.addEventListener("change", updateIVCRTableAndDropdown);
-    updateIVCRTableAndDropdown();
-  }
-
-  async function loadIVCRSheet() {
-    try {
-      const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${ivcrSheetId}/values/${ivcrRange}?key=${userApiKey}`);
-      const data = await response.json();
-      if (data.values) fulivcrData = data.values;
-    } catch (err) {
-      console.error("Error fetching IVCR data:", err);
-    }
-  }
-
-  function updateIVCRTableAndDropdown() {
-    const selectedVoucher = document.getElementById('ivuser').value;
-    const filteredData = fulivcrData.filter((row, i) => i === 0 || row[1] === selectedVoucher);
-    populateIVCRTable(filteredData);
-    populateDropdownList(filteredData);
-  }
-
-  function populateIVCRTable(data) {
-    const table = document.getElementById("myIVCRTable");
-    table.innerHTML = '';
-    data.forEach((row, index) => {
-      const tr = document.createElement("tr");
-
-      if (index === 0) {
-        row.forEach(cell => {
-          const th = document.createElement("th");
-          th.textContent = cell;
-          tr.appendChild(th);
-        });
-        const th = document.createElement("th");
-        th.textContent = "Balance";
-        tr.appendChild(th);
-      } else {
-        row.forEach((cell, idx) => {
-          const td = document.createElement("td");
-          td.textContent = cell;
-          tr.appendChild(td);
-          if (idx === 2) {
-            const type = cell.trim().toLowerCase();
-            if (type === 'receipt') tr.classList.add('receipt');
-            if (type === 'bill') tr.classList.add('bill');
-          }
-        });
-        const td = document.createElement("td");
-        td.className = "runningBalance";
-        tr.appendChild(td);
-      }
-
-      table.appendChild(tr);
+    ledgers.filter(l=>l.toLowerCase().includes(v)).forEach(l=>{
+      const li=document.createElement("li");
+      li.textContent=l;
+      li.onclick=()=>{selectedLedger=l;input.value=l;drop.style.display="none";};
+      drop.appendChild(li);
     });
-    calculateIVCRRunningBalance();
-  }
 
-  function calculateIVCRRunningBalance() {
-    const rows = Array.from(document.querySelectorAll("#myIVCRTable tr")).slice(1);
-    if (rows.length === 0) return;
-    let balance = 0;
-    for (let i = rows.length - 1; i >= 0; i--) {
-      const row = rows[i];
-      const tds = row.querySelectorAll('td');
-      const amt = parseFloat(tds[5]?.textContent || "0");
-      const typ = tds[2]?.textContent.trim().toLowerCase();
-      if (!isNaN(amt)) {
-        if (typ === 'receipt' || typ === 'salary') balance += amt;
-        else if (typ === 'payment' || typ === 'bill') balance -= amt;
-      }
-      tds[tds.length - 1].textContent = balance.toFixed();
+    const create=document.createElement("li");
+    create.textContent="+ Create New";
+    create.onclick=()=>{
+      const val=prompt("Enter new ledger");
+      if(!val||lower.includes(val.toLowerCase())) return;
+      selectedLedger=val; input.value=val; drop.style.display="none";
+    };
+    drop.appendChild(create);
+    drop.style.display="block";
+  };
+
+  document.addEventListener("click",e=>{
+    if(!input.contains(e.target)&&!drop.contains(e.target)){
+      drop.style.display="none";
+      input.value=selectedLedger||"";
     }
-  }
+  });
+}
+/* =====================================================
+   🔄 REFRESH
+===================================================== */
+async function refreshcmivTableBtn(){
+  if(!voucherSel.value || !userSel.value) return;
+  await handleSelection();
+}
 
-  async function refreshIVCRTable() {
-    await loadIVCRSheet();
-    updateIVCRTableAndDropdown();
-  }
+document.getElementById("refreshcmivTableBtn")
+  ?.addEventListener("click", refreshcmivTableBtn);
 
-  function filterIVCRTableGlobally() {
-    const input = document.getElementById("ivcrGlobalSearch").value.toLowerCase();
-    const table = document.getElementById("myIVCRTable");
-    const rows = table.querySelectorAll("tr");
-    rows.forEach((row, index) => {
-      if (index === 0) return;
-      const cells = row.querySelectorAll("td");
-      const match = Array.from(cells).some(td => td.textContent.toLowerCase().includes(input));
-      row.style.display = match ? "" : "none";
-    });
-  }
-
-  function populateDropdownList(data) {
-    const ul = document.getElementById("dropdownIVCRList");
-    ul.innerHTML = '';
-    const uniqueValues = [...new Set(data.slice(1).map(row => row[4]))].filter(v => v);
-    uniqueValues.forEach(value => {
-      const li = document.createElement("li");
-      li.textContent = value;
-      li.style.padding = "6px 10px";
-      li.style.cursor = "pointer";
-      li.onclick = () => {
-        document.getElementById('dropdownIVCRSearch').value = value;
-        ul.style.display = "none";
-        filterTableByLedger(value);
-      };
-      ul.appendChild(li);
-    });
-  }
-
-  function filterIVCRDropdown() {
-    const searchInput = document.getElementById("dropdownIVCRSearch");
-    const list = document.getElementById("dropdownIVCRList");
-    const searchVal = searchInput.value.toLowerCase();
-    const items = list.querySelectorAll("li");
-    let found = false;
-    items.forEach(item => {
-      const match = item.textContent.toLowerCase().includes(searchVal);
-      item.style.display = match ? "block" : "none";
-      if (match) found = true;
-    });
-    list.style.display = found && searchVal !== "" ? "block" : "none";
-  }
-
-  // 🖨️ --- PROFESSIONAL PRINT FUNCTION ---
-  function printIVCRTable() {
-    const table = document.getElementById("myIVCRTable").outerHTML;
-    const today = new Date().toLocaleString();
-
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Account Statement</title>
-          <style>
-            body { font-family: 'Segoe UI', sans-serif; margin: 20px; color: #000; }
-            h2 { text-align: center; text-transform: uppercase; }
-            .subtitle { text-align: center; font-size: 14px; color: #555; margin-bottom: 20px; }
-            table { width: 100%; border-collapse: collapse; font-size: 13px; }
-            th, td { border: 1px solid #333; padding: 6px 8px; text-align: left; }
-            th { background: #f0f0f0; font-weight: bold; }
-            tr:nth-child(even) { background-color: #fafafa; }
-            .footer { margin-top: 30px; font-size: 12px; text-align: center; color: #555; }
-            @media print {
-              button { display: none; }
-            }
-          </style>
-        </head>
-        <body>
-          <h2>Account Statement</h2>
-          <div class="subtitle">Printed on: ${today}</div>
-          ${table}
-          <div class="footer">This is a system-generated statement. No signature required.</div>
-          <script>window.print();<\/script>
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
-  }
-
-  window.onload = async function () {
-    await loadIVCRSheet();
-    fetchUsers();
-  }
+});
 </script>
 
-</body>
-</html>
+<!-- ==================  ledger dropdown with table and user voucher salection and user authrised section script stop hare ============================ -->
 
 
+<!-- ==================  form submit with modify, new entry and delete option script start hare ============================ -->
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- <!-- IVCR form div script start hare -->
-<!-- ✅ IVCR Form Script (Full Fixed Version) -->
 <script>
-  const scriptIVCRURL = 'https://script.google.com/macros/s/AKfycbz-lyd06EKKSO4xVaTSRWoIgMWS0C9nZvzipEP59K25TZSOSdL5CMpYJNPgmF1nyyGrXg/exec';
+document.addEventListener("DOMContentLoaded", () => {
 
-  // 🔹 Handle form submission
-  document.addEventListener("submit", async function (e) {
-    const form = e.target;
-    if (form.id !== "mainIVCRForm") return;
+  const scriptAFICMURL =
+  "https://script.google.com/macros/s/AKfycbxQorut7S_GXoycQPFSbfU_-ZjCB7inC7I-VHhN5QmMiHcqIDhS9pvhCTUQJjueaw1L/exec";
+  
+  const formUser  = document.getElementById("afi01");   // USER
+  const formVtype = document.getElementById("vtype");   // VOUCHER
+  const tableContainer = document.getElementById("tableContainer"); // Table box
 
+      /* ============================================
+   🔠 FORCE ALL TEXT INPUTS TO CAPITAL LETTER
+   ============================================ */
+function forceUppercase(form) {
+  form.querySelectorAll("input[type='text'], textarea").forEach(el => {
+    if (el.value) {
+      el.value = el.value.toUpperCase().trim();
+    }
+  });
+}
+  /* =====================================================
+     📝 FORM ELEMENTS
+  ===================================================== */
+  const mainForm  = document.getElementById("mainAFICMForm");
+  const submitBtn = document.getElementById("submitAFICMButton");
+  const deleteBtn = document.getElementById("deleteAFICMButton");
+  const waitMsg   = document.getElementById("waitAFIMessage");
+  const sNo = document.getElementById("sNo");
+  const fetchedSRNo = document.getElementById("fetchedSRNo");
+  const TimestampAFICM = document.getElementById("TimestampAFICM");
+  const newEntryBtn = document.getElementById("newEntryAFICMButton");
+
+  /* =====================================================
+     ✏️ MODIFY / FETCH
+  ===================================================== */
+  document.getElementById("openMODIFYBtn").onclick = async () => {
+    if (!formUser.value || !formVtype.value) {
+      alert("❌ Please select USER and VOUCHER first");
+      return;
+    }
+
+    const sr = prompt("Enter SR No");
+    if (!sr) return;
+
+    waitMsg.innerText = "Please wait, fetching data...";
+    waitMsg.style.display = "block";
+
+    try {
+      const res = await fetch(`${scriptAFICMURL}?sNo=${sr}&vtype=${formVtype.value}`);
+      const d = await res.json();
+
+      if (d.result === "error") { alert("❌ SR No not found"); return; }
+      if (formUser.value !== d.Type) { alert("❌ SR No does not match selected user"); return; }
+
+      afi02.value = d.esmC || "";
+      afi03.value = d.esmD || "";
+      afi04.value = d.esmE || "";
+      afi05.value = d.esmF || "";
+      afi06.value = d.esmG || "";
+
+      sNo.value = d.SNo;
+      fetchedSRNo.textContent = d.SNo;
+
+      deleteBtn.style.display = "inline-block";
+      newEntryBtn.style.display = "inline-block";
+
+      // ✅ ONLY TRIGGER
+     document.getElementById("refreshcmivTableBtn")?.click();
+
+
+    } catch (err) {
+      alert("❌ Fetch error");
+    } finally {
+      waitMsg.style.display = "none";
+    }
+  };
+
+  /* =====================================================
+     🗑 DELETE ENTRY
+  ===================================================== */
+  deleteBtn.onclick = async () => {
+    if (!sNo.value) { alert("❌ No record selected"); return; }
+    if (!confirm("You want to delete it?")) return;
+
+    waitMsg.innerText = "Deleting...";
+    waitMsg.style.display = "block";
+
+    try {
+      const res = await fetch(`${scriptAFICMURL}?action=delete&sNo=${sNo.value}&vtype=${formVtype.value}`);
+      const r = await res.json();
+
+      if (r.result === "success") {
+        alert("✅ Deleted successfully");
+        mainForm.reset();
+        fetchedSRNo.textContent = "";
+        sNo.value = "";
+        deleteBtn.style.display = "none";
+        newEntryBtn.style.display = "none";
+
+        // ✅ ONLY TRIGGER
+       document.getElementById("refreshcmivTableBtn")?.click();
+
+
+      } else {
+        alert("❌ Delete failed");
+      }
+
+    } catch (err) {
+      alert("❌ Delete error");
+    } finally {
+      waitMsg.style.display = "none";
+    }
+  };
+
+  /* =====================================================
+     🚀 SUBMIT FORM
+  ===================================================== */
+  mainForm.onsubmit = async e => {
     e.preventDefault();
 
-    const formMode = document.getElementById("formModeIVCR").value;
-    const submitIVCRButton = document.getElementById("submitIVCRButton");
-    submitIVCRButton.disabled = true;
-    submitIVCRButton.value = "Wait...";
+    forceUppercase(mainForm);   // ✅ ADD THIS LINE text in uppercase
+    submitBtn.disabled = true;
+    submitBtn.value = "Please wait...";
+    waitMsg.innerText = "Submitting...";
+    waitMsg.style.display = "block";
 
-    // 🔹 Add timestamp
-    const now = new Date();
-    document.getElementById('timestampIVCR').value =
-      `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
-
-    // 🔹 Convert text to uppercase
-    const formInputs = form.querySelectorAll('input, textarea');
-    formInputs.forEach(input => {
-      if (input.type === 'text' || input.type === 'textarea') {
-        input.value = input.value.toUpperCase();
-      }
-    });
-
-    // 🔹 Choose submit or modify
-    if (formMode === "modify") {
-      await modifyIVCREntry();
-    } else {
-      await submitIVCREntry(form);
-    }
-
-    submitIVCRButton.disabled = false;
-    submitIVCRButton.value = "Submit";
-  });
-
-  // 🔹 Submit new entry
-  async function submitIVCREntry(form) {
-    const formData = new FormData(form);
-    try {
-      const response = await fetch(scriptIVCRURL, { method: 'POST', body: formData });
-      const result = await response.json();
-
-      if (result.result === 'success') {
-        alert('Entry saved successfully!');
-        form.reset();
-
-        // ✅ Reset form state
-        document.getElementById("formModeIVCR").value = "new";
-        document.getElementById("sNo").value = "";
-
-        // ✅ Refresh sheet & table
-        await loadIVCRSheet();
-        updateIVCRTableAndDropdown();
-
-        // ✅ Remove DLT option
-        const voucherDropdown = document.getElementById("voucherType");
-        const dltOption = [...voucherDropdown.options].find(opt => opt.value === "DLT");
-        if (dltOption) voucherDropdown.removeChild(dltOption);
-
-      } else {
-        alert(`Error: ${result.error || 'Unknown error occurred.'}`);
-      }
-    } catch (error) {
-      alert(`Error submitting the form: ${error.message}`);
-    }
-  }
-
-  // 🔹 Fetch details by S.No for modify/delete
-  async function fetchIVCRDetails() {
-    const sNo = document.getElementById("searchIVCRSNo").value;
-    const waitMessage = document.getElementById("waitIVCRMessage");
-    waitMessage.innerText = "Fetching data... Please wait...";
-    waitMessage.style.display = 'block';
+    TimestampAFICM.value = new Date().toLocaleString();
 
     try {
-      const response = await fetch(`${scriptIVCRURL}?sNo=${sNo}`);
-      const data = await response.json();
+      const res = await fetch(scriptAFICMURL, {
+        method: "POST",
+        body: new FormData(mainForm)
+      });
 
-      const voucherTypeDropdown = document.getElementById("voucherType");
-      const selectedIVVoucher = voucherTypeDropdown.value;
+      const r = await res.json();
 
-      if (data.result !== "error" && data.Voucher === selectedIVVoucher) {
+      if (r.result === "success") {
+        alert("✅ Saved successfully");
+        mainForm.reset();
+        fetchedSRNo.textContent = "";
+        sNo.value = "";
+        deleteBtn.style.display = "none";
+        newEntryBtn.style.display = "none";
 
-        // ✅ Fill fetched data
-        document.getElementById("sNo").value = data.SNo;
-        document.getElementById("voucherType").value = data.Voucher;
-        document.getElementById("ivcr0").value = data.Type;
-        document.getElementById("ivcr1").value = data.Date;
-        document.getElementById("dropdownIVCRSearch").value = data.Ledger;
-        document.getElementById("ivcr2").value = data.Amount;
-        document.getElementById("ivcr3").value = data.Narration;
+        // ✅ ONLY TRIGGER
+        document.getElementById("refreshcmivTableBtn")?.click();
 
-        // ✅ Add DLT option if missing
-        if (![...voucherTypeDropdown.options].some(opt => opt.value === "DLT")) {
-          const deleteOption = document.createElement("option");
-          deleteOption.value = "DLT";
-          deleteOption.text = "Delete";
-          deleteOption.style.color = "red";
-          deleteOption.style.backgroundColor = "blue";
-          voucherTypeDropdown.appendChild(deleteOption);
-        }
 
-        // ✅ Set modify mode
-        document.getElementById("formModeIVCR").value = "modify";
-        alert("Select 'Delete' Option in User Section to Delete Entry or Modify Details.");
       } else {
-        alert("No record found for the given S.No.");
+        alert("❌ Error while saving");
       }
 
-    } catch (error) {
-      console.error("Error fetching details:", error);
-      alert("Please reconcile details or contact admin.");
+    } catch (err) {
+      alert("❌ Submit error");
     } finally {
-      setTimeout(() => waitMessage.style.display = 'none', 2000);
+      submitBtn.disabled = false;
+      submitBtn.value = "Submit";
+      setTimeout(() => waitMsg.style.display = "none", 1200);
     }
+  };
+
+  /* =====================================================
+     🆕 NEW ENTRY
+  ===================================================== */
+  if (newEntryBtn) {
+    newEntryBtn.onclick = () => {
+      mainForm.reset();
+      sNo.value = "";
+      fetchedSRNo.textContent = "";
+      deleteBtn.style.display = "none";
+      newEntryBtn.style.display = "none";
+      waitMsg.style.display = "none";
+
+      // ✅ ONLY TRIGGER
+      document.getElementById("refreshcmivTableBtn")?.click();
+
+
+      console.log("🆕 New Entry mode");
+    };
   }
 
-  // 🔹 Modify existing entry
-  async function modifyIVCREntry() {
-    const waitMessage = document.getElementById("waitIVCRMessage");
-    waitMessage.innerText = "Please wait...";
-    waitMessage.style.display = "block";
+  /* =====================================================
+     🚀 INITIAL STATE
+  ===================================================== */
+  deleteBtn.style.display = "none";
 
-    const form = document.getElementById('mainIVCRForm');
-
-    // ✅ New timestamp
-    const now = new Date();
-    document.getElementById('timestampIVCR').value =
-      `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
-
-    const formData = new FormData(form);
-    formData.set('SNo', document.getElementById('sNo').value);
-
-    try {
-      const response = await fetch(scriptIVCRURL, { method: 'POST', body: formData });
-      const result = await response.json();
-
-      if (result.result === 'success') {
-        alert('Entry modified successfully!');
-        form.reset();
-
-        // ✅ Reset state for new entry
-        document.getElementById("sNo").value = "";
-        document.getElementById("formModeIVCR").value = "new";
-        document.getElementById("submitIVCRButton").value = "Submit";
-        document.getElementById("submitIVCRButton").disabled = false;
-
-        // ✅ Reload & refresh
-        await loadIVCRSheet();
-        updateIVCRTableAndDropdown();
-
-        // ✅ Remove DLT option
-        const voucherDropdown = document.getElementById("voucherType");
-        const dltOption = [...voucherDropdown.options].find(opt => opt.value === "DLT");
-        if (dltOption) voucherDropdown.removeChild(dltOption);
-
-      } else {
-        alert(`Error modifying entry: ${result.error}`);
-      }
-    } catch (error) {
-      alert(`Error: ${error.message}`);
-    } finally {
-      setTimeout(() => waitMessage.style.display = 'none', 2000);
-    }
-  }
-
-  // 🔹 Optional reset function (can be reused)
-  function resetIVCRState() {
-    document.getElementById("formModeIVCR").value = "new";
-    document.getElementById("sNo").value = "";
-  }
+});
 </script>
-<!-- ✅ End of IVCR Form Script -->
-<!-- IVCR form div script stop hare -->
+<!-- ==================  form submit with modify, new entry and delete option script stop hare ============================ -->
 
 
+
+<!-- ===================================  user login script start hare ============================ -->
+<style>
+/* ================= LOGIN POPUP ================= */
+.login-modal {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* LOGIN CARD */
+.login-box {
+  background: #ffffff;
+  padding: 30px 25px;
+  width: 340px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  animation: slideUp 0.6s ease;
+}
+
+/* TITLE */
+.login-box h3 {
+  margin-bottom: 20px;
+  font-size: 22px;
+  color: #333;
+}
+
+/* INPUTS */
+.login-box input {
+  width: 100%;
+  padding: 12px 14px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.login-box input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102,126,234,0.2);
+}
+
+/* BUTTON */
+.login-box button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-box button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* MESSAGE */
+.login-msg {
+  color: #e53935;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+/* ANIMATION */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================= DASHBOARD ================= */
+#dashboard {
+  display: none;
+  padding: 20px;
+}
+
+.hidden {
+  display: none;
+}
+
+.button-div {
+  display: none;
+  margin-top: 10px;
+}
+
+</style>
+</head>
+
+
+<!-- ================= LOGIN POPUP ================= -->
+<!-- ================= LOGIN POPUP ================= -->
+<div id="loginModal" class="login-modal">
+  <div class="login-box">
+
+    <h3 style="color: rgb(2, 118, 196);">Welcome to Multitech Infracon Pvt. Ltd.</h3>
+    <h3>User Login..</h3>
+
+    <input type="text" id="user-id" placeholder="Enter User ID">
+    <input type="password" id="password" placeholder="Enter Password">
+
+    <button onclick="login()">Login</button>
+
+    <p id="login-msg" class="login-msg"></p>
+  </div>
+</div>
+
+
+<!-- ================= DASHBOARD ================= -->
+<div id="dashboard">
+
+
+
+ <div id="loginModal">
+  <!-- login form -->
+</div>
+
+<div id="dashboard" style="display:none;">
+  <!-- your app content -->
+  <button onclick="logout()">Logout</button>
+</div>
+
+<p id="login-msg"></p>
+</div>
+
+<!-- ================= SCRIPT ================= -->
+<script>
+const apiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheetId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
+const range = 'USER!A:G';
+
+let users = {};
+let currentUser = "";
+
+/* ===== Username helper ===== */
+function setUsernameDisplays(name) {
+  document.querySelectorAll('#username').forEach(el => {
+    el.innerText = name || "";
+  });
+}
+
+function clearUsernameDisplays() {
+  document.querySelectorAll('#username').forEach(el => {
+    el.innerText = "";
+  });
+}
+
+/* ===== Fetch User Data ===== */
+async function fetchUserData() {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+  const response = await fetch(url);
+  const data = await response.json();
+  const rows = data.values || [];
+
+  users = {};
+  for (let i = 1; i < rows.length; i++) {
+    const [enabled, userId, password, status, displayName] = rows[i];
+    if (enabled === "1") {
+      users[userId] = {
+        password,
+        displayName,
+        status: status?.toLowerCase() || "unlocked"
+      };
+    }
+  }
+}
+
+/* ===== Login ===== */
+function login() {
+  const userId = document.getElementById('user-id').value.trim();
+  const password = document.getElementById('password').value;
+  const msg = document.getElementById('login-msg');
+
+  if (!users[userId]) {
+    msg.innerText = "Invalid User ID or Password!";
+    return;
+  }
+
+  const user = users[userId];
+
+  if (user.status === "locked") {
+    msg.innerText = "Your account is locked!";
+    return;
+  }
+
+  const expiryDate = Date.parse(user.status);
+  if (!isNaN(expiryDate)) {
+    const diffDays = Math.ceil((expiryDate - new Date()) / 86400000);
+    if (diffDays < 0) {
+      msg.innerText = "Your Licence Expired, Please Contact Admin";
+      return;
+    } else if (diffDays <= 5) {
+      alert(`Your licence will expire in ${diffDays} day(s)`);
+    }
+  }
+
+  if (user.password !== password) {
+    msg.innerText = "Invalid User ID or Password!";
+    return;
+  }
+
+  /* ===== SUCCESS LOGIN ===== */
+  currentUser = userId;
+
+  document.getElementById('loginModal').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+
+  setUsernameDisplays(user.displayName);
+
+  msg.innerText = "";
+  document.getElementById('user-id').value = "";
+  document.getElementById('password').value = "";
+}
+
+/* ===== Logout ===== */
+function logout() {
+  currentUser = "";
+  clearUsernameDisplays();
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('loginModal').style.display = 'flex';
+}
+
+/* ===== On Load ===== */
+window.onload = async () => {
+  await fetchUserData();
+  document.getElementById('loginModal').style.display = 'flex';
+};
+</script>
+
+<!-- ===================================  user login script stop hare ============================ -->
