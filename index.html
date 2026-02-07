@@ -1772,6 +1772,7 @@ function syncLedgerMsaf99Option() {
 <BR/><BR/>
   <BR/><a href="https://docs.google.com/spreadsheets/d/1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4/edit?gid=2081509697#gid=2081509697" target="_blank" style="color:rgb(1, 41, 1); text-align: center; font-size: 100%;">Click to Open Packing List</a>
       <a href="https://docs.google.com/spreadsheets/d/1bT0GHM6VHMyw9zZq8M2FDaVMS-dOcPGaChWF2Ywyn14/edit?gid=0#gid=0" target="_blank" style="color:rgb(142, 2, 2); text-align: center; font-size: 100%;">Click to Open Running Project Balance Sheet</a>
+     <a href="https://docs.google.com/spreadsheets/d/17F_ZqsWbmKywv61ke3ZvCsr879fd2nfuLURObC6PuMs/edit?gid=765264997#gid=765264997" target="_blank" style="color:rgb(2, 39, 142); text-align: center; font-size: 100%;">Click to Open Running Project Balance By Anchal</a>
 
  
 
@@ -3248,8 +3249,8 @@ function force5792Header() {
       <th>Type</th>
       <th>Date</th>
       <th>Ledger</th>
-      <th>Narration</th>
       <th>Amount</th>
+      <th>Narration</th>
       <th>Balance</th>
     </tr>
   `;
@@ -5511,8 +5512,8 @@ function force5793Header() {
       <th>Type</th>
       <th>Date</th>
       <th>Ledger</th>
-      <th>Narration</th>
       <th>Amount</th>
+      <th>Narration</th>
       <th>Balance</th>
     </tr>
   `;
@@ -10389,8 +10390,7 @@ document.addEventListener("click", (e) => {
 
 
 
-
-<!-- ================  Payroll Attandse script start hare ===============================-->
+<!-- ================  Payroll Attendance script start here ===============================-->
 <script>
 /* --------------------- CONFIG --------------------- */
 const apiPRLKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";   
@@ -10398,6 +10398,7 @@ const sheetPRLId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
 const rangePRL = "ATN!A:M";
 
 let sheetPRLData = [];
+let empLifeMap = {}; // I:J:K → name -> {doj, doe}
 
 /* --------------------- LOAD SHEET DATA --------------------- */
 async function loadPRLSheet() {
@@ -10405,143 +10406,164 @@ async function loadPRLSheet() {
     const res = await fetch(url);
     const data = await res.json();
 
-    const ignoreValues = [
-        "152.59","152.58","49.36","106.205","103.93","117.99"
-    ];
+    const ignoreValues = ["152.59","152.58","49.36","106.205","103.93","117.99"];
 
-    // data.values → filter rows where column H (index 7) does NOT contain any ignore value
     sheetPRLData = (data.values || []).filter(row => {
-        const colH = row[7];   // H column
-        if (!colH) return true; // if empty, keep row
-
+        const colH = row[7]; // H
+        if (!colH) return true;
         return !ignoreValues.some(v => colH.includes(v));
     });
+
+    /* -------- EMPLOYEE LIFE MAP (I J K ONLY) -------- */
+    empLifeMap = {};
+    for (let i = 1; i < sheetPRLData.length; i++) {
+        const r = sheetPRLData[i];
+        const name = r[8]; // I
+        if (!name) continue;
+
+        empLifeMap[name] = {
+            doj: r[9] ? new Date(r[9]) : null, // J
+            doe: r[10] ? new Date(r[10]) : null // K
+        };
+    }
 
     loadPRLMonths();
 }
 
-
-/* --------------------- LOAD MONTHS INTO DROPDOWN --------------------- */
+/* --------------------- LOAD MONTHS --------------------- */
 function loadPRLMonths() {
-    const monthPRLSelect = document.getElementById("monthPRLSelect");
+    const sel = document.getElementById("monthPRLSelect");
     let months = new Set();
 
     for (let i = 1; i < sheetPRLData.length; i++) {
-        let r = sheetPRLData[i];
-        let dt = r[2]; // Column C
+        let dt = sheetPRLData[i][2]; // C
         if (!dt) continue;
         let d = new Date(dt);
-        if (!isNaN(d)) months.add(`${d.getFullYear()}-${d.getMonth() + 1}`);
+        if (!isNaN(d)) months.add(`${d.getFullYear()}-${d.getMonth()+1}`);
     }
 
-    let sorted = [...months].sort((a,b)=>{
-        let [ya, ma] = a.split("-").map(Number);
-        let [yb, mb] = b.split("-").map(Number);
-        return yb - ya || mb - ma;
+    const sorted = [...months].sort((a,b)=>{
+        let [ya,ma]=a.split("-").map(Number);
+        let [yb,mb]=b.split("-").map(Number);
+        return yb-ya || mb-ma;
     });
 
-    const currentMonthKey = `${new Date().getFullYear()}-${new Date().getMonth()+1}`;
+    const cur = `${new Date().getFullYear()}-${new Date().getMonth()+1}`;
+    sel.innerHTML = "";
 
-    monthPRLSelect.innerHTML = "";
     sorted.forEach(m=>{
-        let [y, mo] = m.split("-");
-        let dateObj = new Date(y, mo-1, 1);
-        let opt = document.createElement("option");
-        opt.value = m;
-        opt.textContent = dateObj.toLocaleString("en-GB",{month:"long", year:"numeric"});
-        if(m===currentMonthKey) opt.selected=true;
-        monthPRLSelect.appendChild(opt);
+        let [y,mo]=m.split("-");
+        let opt=document.createElement("option");
+        opt.value=m;
+        opt.textContent=new Date(y,mo-1,1)
+            .toLocaleString("en-GB",{month:"long",year:"numeric"});
+        if(m===cur) opt.selected=true;
+        sel.appendChild(opt);
     });
 
     showPayroll();
 }
 
-/* --------------------- SHOW ATTENDANCE TABLE --------------------- */
+/* --------------------- SHOW PAYROLL --------------------- */
 function showPayroll() {
     const m = document.getElementById("monthPRLSelect").value;
     const viewMode = document.getElementById("viewType").value;
     if(!m) return;
 
-    let [year, month] = m.split("-").map(Number); month-=1;
-    let first = new Date(year, month, 1);
-    let last = new Date(year, month+1, 0);
+    let [year,month]=m.split("-").map(Number);
+    month--;
+
+    const first=new Date(year,month,1);
+    const last=new Date(year,month+1,0);
 
     let dates=[];
-    for(let d=new Date(first); d<=last; d.setDate(d.getDate()+1)) dates.push(new Date(d));
+    for(let d=new Date(first); d<=last; d.setDate(d.getDate()+1))
+        dates.push(new Date(d));
 
     let today=new Date(); today.setHours(0,0,0,0);
 
-    // Employees list from row 2
+    /* -------- EMPLOYEE LIST (A:H BASED) -------- */
     let employees=new Set();
-    for(let i=1;i<sheetPRLData.length;i++) if(sheetPRLData[i][3]) employees.add(sheetPRLData[i][3]);
+    for(let i=1;i<sheetPRLData.length;i++){
+        let name=sheetPRLData[i][3]; // D
+        if(!name) continue;
+
+        const life = empLifeMap[name];
+        if (life?.doj && life.doj > last) continue;
+        if (life?.doe && life.doe < first) continue;
+
+        employees.add(name);
+    }
     employees=[...employees];
 
-    // Map employee -> date -> {status, time}
+    /* -------- ATTENDANCE MAP -------- */
     let map={}; employees.forEach(e=>map[e]={});
+
     for(let i=1;i<sheetPRLData.length;i++){
         let r=sheetPRLData[i];
-        let name=r[3], dt=r[2]; if(!name || !dt) continue;
+        let name=r[3], dt=r[2];
+        if(!name||!dt||!map[name]) continue;
+
         let d=new Date(dt);
         if(d.getMonth()===month && d.getFullYear()===year){
             let dateStr=d.toISOString().split("T")[0];
-            let rawTime=r[5]||"", onlyTime="";
-            if(rawTime.includes(" ")){
-                let parts=rawTime.split(" ");
-                let timePart=parts.length>1?parts[1]:parts[0];
-                let timeMatch=timePart.match(/^(\d{1,2}:\d{2})/);
-                onlyTime = timeMatch ? timeMatch[1] : timePart;
+
+            let raw=r[5]||"", t="";
+            if(raw.includes(" ")){
+                let p=raw.split(" ");
+                let m=p.length>1?p[1]:p[0];
+                let mm=m.match(/^(\d{1,2}:\d{2})/);
+                t=mm?mm[1]:m;
             }
-            map[name][dateStr]={status:r[4]||"P", time:onlyTime||""};
+
+            map[name][dateStr]={status:r[4]||"P", time:t};
         }
     }
 
-    // BUILD TABLE
+    /* -------- TABLE -------- */
     let html=`<table><tr><th>Employee</th>`;
     dates.forEach(d=>html+=`<th>${d.getDate()}</th>`);
     html+=`<th>Total P</th><th>Total A</th></tr>`;
 
-    // Day names
     html+=`<tr><th></th>`;
     dates.forEach(d=>html+=`<th>${d.toLocaleDateString("en-US",{weekday:"short"})}</th>`);
     html+=`<th></th><th></th></tr>`;
 
     employees.forEach(name=>{
-        let totalP=0, totalA=0;
+        let totalP=0,totalA=0;
+        const life=empLifeMap[name]||{};
+
         html+=`<tr><td>${name}</td>`;
+
         dates.forEach(d=>{
+            let show="-";
             let dateStr=d.toISOString().split("T")[0];
             let entry=map[name][dateStr];
-            let showValue="-";
 
-            if(d>today) showValue="-";
+            if(life.doj && d<life.doj) show="-";
+            else if(life.doe && d>life.doe) show="-";
+            else if(d>today) show="-";
             else{
                 if(viewMode==="pa"){
-                    let st = entry?entry.status:"A";
-                    if(d.getDay()===0) st="P";
-                    showValue=st;
-                } else if(viewMode==="time"){
-                    if(d.getDay()===0) showValue="PWL";
-                    else if(entry) showValue=entry.time?entry.time:"A";
-                    else showValue="A";
+                    show=entry?entry.status:"A";
+                    if(d.getDay()===0) show="P";
+                }else{
+                    if(d.getDay()===0) show="PWL";
+                    else if(entry) show=entry.time||"A";
+                    else show="A";
                 }
             }
 
-            // TOTAL P/A
             if(viewMode==="time"){
-                if(showValue==="PWL") totalP++;
-                else if(/^\d{1,2}:\d{2}$/.test(showValue)) totalP++;
-                else if(showValue==="A") totalA++;
-            } else {
-                if(showValue==="P") totalP++;
-                else if(showValue==="A") totalA++;
+                if(show==="PWL"||/^\d{1,2}:\d{2}$/.test(show)) totalP++;
+                else if(show==="A") totalA++;
+            }else{
+                if(show==="P") totalP++;
+                else if(show==="A") totalA++;
             }
 
-            // CLASS
-            let cls="";
-            if(showValue==="A") cls="absent";
-            else if(showValue==="PWL") cls="pwl";
-
-            html+=`<td class="${cls}">${showValue}</td>`;
+            let cls=show==="A"?"absent":show==="PWL"?"pwl":"";
+            html+=`<td class="${cls}">${show}</td>`;
         });
 
         html+=`<td>${totalP}</td><td>${totalA}</td></tr>`;
@@ -10551,48 +10573,33 @@ function showPayroll() {
     document.getElementById("attendancePRLTable").innerHTML=html;
 }
 
-/* --------------------- PRINT FUNCTION --------------------- */
-function printPayroll() {
-    // Get the current selected month text from dropdown
-    const monthSelect = document.getElementById("monthPRLSelect");
-    const monthText = monthSelect.options[monthSelect.selectedIndex].text;
+/* --------------------- PRINT --------------------- */
+function printPayroll(){
+    const sel=document.getElementById("monthPRLSelect");
+    const txt=sel.options[sel.selectedIndex].text;
+    const content=document.getElementById("attendancePRLTable").innerHTML;
 
-    // Get the attendance table content
-    const content = document.getElementById("attendancePRLTable").innerHTML;
-
-    const printWindow = window.open("", "", "width=1200,height=800");
-    printWindow.document.write(`
-        <html>
-        <head>
-            <title>Attendance Print</title>
-            <style>
-                body { font-family: Arial; padding: 20px; }
-                table { border-collapse: collapse; width: 100%; }
-                th, td { border: 1px solid #666; padding: 6px; text-align: center; }
-                th { background: #eee; }
-                .absent { color: red; font-weight: bold; }
-                .pwl { color: rgb(67, 104, 0); font-weight: bold; }
-            </style>
-        </head>
-        <body>
-            <h2 style="text-align:center;">Attendance Sheet - ${monthText}</h2>
-            ${content}
-        </body>
-        </html>
+    const w=window.open("","","width=1200,height=800");
+    w.document.write(`
+        <html><head><style>
+        body{font-family:Arial;padding:20px}
+        table{border-collapse:collapse;width:100%}
+        th,td{border:1px solid #666;padding:6px;text-align:center}
+        th{background:#eee}
+        .absent{color:red;font-weight:bold}
+        .pwl{color:rgb(67,104,0);font-weight:bold}
+        </style></head>
+        <body><h2 style="text-align:center">Attendance Sheet - ${txt}</h2>
+        ${content}</body></html>
     `);
-
-    printWindow.document.close();
-    printWindow.focus();
-    setTimeout(() => { printWindow.print(); }, 500);
+    w.document.close();
+    setTimeout(()=>w.print(),500);
 }
-
 
 /* --------------------- INIT --------------------- */
 loadPRLSheet();
-
 </script>
-
-<!-- ================  Payroll Attandse script stop hare ===============================-->
+<!-- ================  Payroll Attendance script stop here ===============================-->
 
 
 
