@@ -1192,8 +1192,8 @@ fetch("https://api.ipify.org?format=json")
      <option value="IV11">IV11- Ravinder Kumar</option>
      <option value="IV12">IV12- Mahender</option>
       <option value="IV13">IV13- Suresh</option>
+      <option value="IV14">IV14- Leshant</option>
      <option value="DLT">Delete</option>
-
   </select>
 
   <label>From:</label>
@@ -1424,7 +1424,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "Mukhtar (Admin)": {
       VOUCHER: [0, 1, 2],
       CMVCR: [0, 1, 2, 3, 4, 5],
-      IVVCR: [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13]
+      IVVCR: [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14]
     }
 
   };
@@ -1525,6 +1525,52 @@ document.addEventListener("DOMContentLoaded", () => {
   }, 300);
 
 });
+
+
+/* =====================================================
+   🔹 JOURNAL MODE EXTRA OPTIONS HANDLER (REMOVABLE)
+===================================================== */
+
+function enableJournalExtraOptions() {
+  const userSelect   = document.getElementById("useridcmiv"); // user dropdown
+  const afiSelect    = document.getElementById("afi02");      // payment/receipt dropdown
+
+  if (!userSelect || !afiSelect) return;
+
+  function updateAFIOptions() {
+    const selectedUser = userSelect.value;
+
+    // Agar JOURNAL (JLN) select ho
+    if (selectedUser === "JLN") {
+
+      // Already added hai ya nahi (duplicate avoid)
+      if (!afiSelect.querySelector('option[value="BILLDR"]')) {
+
+        afiSelect.insertAdjacentHTML("beforeend", `
+          <option value="BILLDR">Bills Payable</option>
+          <option value="BILLCR">Bills Receivable</option>
+          <option value="SALARY">Salary</option>
+        `);
+      }
+
+    } else {
+      // Agar JOURNAL nahi hai → extra options hata do
+      ["BILLDR", "BILLCR", "SALARY"].forEach(val => {
+        const opt = afiSelect.querySelector(`option[value="${val}"]`);
+        if (opt) opt.remove();
+      });
+    }
+  }
+
+  // User change par check
+  userSelect.addEventListener("change", updateAFIOptions);
+
+  // Initial load check
+  updateAFIOptions();
+}
+
+/* Auto init (safe) */
+document.addEventListener("DOMContentLoaded", enableJournalExtraOptions);
 </script>
  <!-- =================        user authrised by creat voucher ledger scrip stop hare ============== -->
 
@@ -1769,12 +1815,14 @@ function syncLedgerMsaf99Option() {
         </div> <!-- यह एक नोट है, vertical Two Part Div (30-70) left content stop -->
 <div class="right"> <!-- यह एक नोट है, vertical Two Part Div (30-70) right content start -->
   <div id="saleContainer" class="entry-box"></div>
-<BR/><BR/>
-  <BR/><a href="https://docs.google.com/spreadsheets/d/1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4/edit?gid=2081509697#gid=2081509697" target="_blank" style="color:rgb(1, 41, 1); text-align: center; font-size: 100%;">Click to Open Packing List</a>
-      <a href="https://docs.google.com/spreadsheets/d/1bT0GHM6VHMyw9zZq8M2FDaVMS-dOcPGaChWF2Ywyn14/edit?gid=0#gid=0" target="_blank" style="color:rgb(142, 2, 2); text-align: center; font-size: 100%;">Click to Open Running Project Balance Sheet</a>
-     <a href="https://docs.google.com/spreadsheets/d/17F_ZqsWbmKywv61ke3ZvCsr879fd2nfuLURObC6PuMs/edit?gid=765264997#gid=765264997" target="_blank" style="color:rgb(2, 39, 142); text-align: center; font-size: 100%;">Click to Open Running Project Balance By Anchal</a>
 
- 
+ <select onchange="if(this.value) window.open(this.value, '_blank'); this.selectedIndex = 0;" style="padding:8px; font-size:100%; border: none; text-align:center;" data-value="dwn">
+<option value="">📂 Select Google Sheet to Open</option>
+<option value="https://docs.google.com/spreadsheets/d/1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4/edit?gid=2081509697#gid=2081509697">Packing List</option>
+<option value="https://docs.google.com/spreadsheets/d/1bT0GHM6VHMyw9zZq8M2FDaVMS-dOcPGaChWF2Ywyn14/edit?gid=0#gid=0">Running Project Balance Sheet </option>
+<option value="https://docs.google.com/spreadsheets/d/17F_ZqsWbmKywv61ke3ZvCsr879fd2nfuLURObC6PuMs/edit?gid=765264997#gid=765264997">Running Project Balance By Anchal</option>
+</select>
+
 
 
 </div> </div>  <!-- यह एक नोट है, vertical Two Part Div (30-70) container content stop  Heare ((CODE501)) -->
@@ -3050,6 +3098,7 @@ function render5792Table(data) {
           if (type === "receipt") color = "red";
           else if (type === "salary") color = "blue";
           else if (type === "billdr") color = "green";
+          
 
           return `
             <tr style="color:${color};">
@@ -3677,9 +3726,15 @@ function renderTable(data) {
           style = "color:blue;font-weight:600;";
         }
         else if (dc === "BILLDR") {
-          style = "background:#e0e0e0;color:green;font-weight:700;";
+          style = "color:green;font-weight:700;";
         }
 
+         else if (dc === "BILLCR") {
+          style = "color:red;font-weight:700;";
+        }
+         else if (dc === "SALARY") {
+          style = "color:blue;font-weight:700;";
+        }
         return `
         <tr style="${style}">
           <td>${r.tno}</td>
@@ -4905,10 +4960,12 @@ function attachManualOption(select, type) {
 
   const manualOption = document.createElement("option");
   manualOption.value = "__manual__";
-  manualOption.textContent = "➕ Create";
-  manualOption.style.color = "red";
+  manualOption.textContent = "Create ➕";
+  manualOption.style.color = "white";
+  manualOption.style.background = "black";
 
-  select.insertBefore(manualOption, select.children[1]);
+  // ✅ FIX → last me add hoga
+  select.appendChild(manualOption);
 
   select.addEventListener("change", function () {
 
@@ -4930,7 +4987,9 @@ function attachManualOption(select, type) {
         const opt = document.createElement("option");
         opt.value = val;
         opt.textContent = val;
-        this.appendChild(opt);
+
+        // new value ko Create se pehle daal do
+        this.insertBefore(opt, this.querySelector('option[value="__manual__"]'));
       }
 
       this.value = val;
@@ -4944,6 +5003,7 @@ function attachManualOption(select, type) {
     }
   });
 }
+
 
 /* ============================================================
    FETCH DATA (REFRESH SAFE)
