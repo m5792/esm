@@ -987,7 +987,7 @@ fetch("https://api.ipify.org?format=json")
       <option value="https://github.com/">	github (mukhtarahamadksp@gmail.com)</option>
       <option value="eTally.html">	eTally Dashboard</option>
 		  <option value="https://m5792.github.io/esmTally/AFI.html"> A.F.I Medical Dashboard </option>
-		  <option value="DAYBOOK.html">Daybook</option>
+		  <option value="https://m5792.github.io/esm/mdashboard.html">Daybook Dashboard</option>
 
       <option value="https://docs.google.com/spreadsheets/d/1FXdbotep3MTk34gUdSF0e0h_hN_Uz66AL0Gnvc-pt_s/edit?gid=475142657#gid=475142657">	Party Weight Sheet</option>
       <option value="https://docs.google.com/spreadsheets/d/1EMIe8Y50_vMXg7y9zT7lXV0vgLyOZuSKdthf8C5XUXc/edit?gid=1752231070#gid=1752231070">	Mukhtiyar</option>
@@ -1379,7 +1379,8 @@ document.addEventListener("DOMContentLoaded", () => {
     { value: "TA", text: "TUSHAR" },       // 2
     { value: "JLN", text: "JOURNAL" },     // 3
     { value: "BANK", text: "BANK" },       // 4
-    { value: "DB", text: "DAYBOOK" }       // 5
+    { value: "DB", text: "DAYBOOK" },       // 5
+    { value: "GK", text: "GURPREET (SCU)" }      // 6
   ];
 
   // IV voucher users
@@ -1429,7 +1430,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     "Mukhtar (Admin)": {
       VOUCHER: [0, 1, 2],
-      CMVCR: [0, 1, 2, 3, 4, 5],
+      CMVCR: [0, 1, 2, 3, 4, 5,6],
       IVVCR: [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14]
     }
 
@@ -1811,15 +1812,11 @@ function syncLedgerMsaf99Option() {
         </form>
     </form>
     
-
-   
 </div>   
 
 
-
-
-        </div> <!-- यह एक नोट है, vertical Two Part Div (30-70) left content stop -->
-<div class="right"> <!-- यह एक नोट है, vertical Two Part Div (30-70) right content start -->
+  </div> <!-- यह एक नोट है, vertical Two Part Div (30-70) left content stop -->
+  <div class="right"> <!-- यह एक नोट है, vertical Two Part Div (30-70) right content start -->
   <div id="saleContainer" class="entry-box"></div>
 
  <select onchange="if(this.value) window.open(this.value, '_blank'); this.selectedIndex = 0;" style="padding:8px; font-size:100%; border: none; text-align:center;" data-value="dwn">
@@ -3640,23 +3637,36 @@ function applyFilter() {
 ===================================================== */
 function renderTable(data) {
 
+  /* =========================
+     🔥 GK SPECIAL DATA FIX
+     ========================= */
+  const selectedUser = userSel.value;
+  const isIV = voucherSel.value === "IVVCR";
+
+  if (!isIV && selectedUser === "GK") {
+    data = fullData.filter(r =>
+      (r.type || "").trim() === "GK" ||
+      (r.ledger || "").trim() === "GURPREET - IM"
+    );
+  }
+
+  /* =========================
+     NO DATA
+     ========================= */
   if (!data.length) {
     tableBox.innerHTML = "<p style='padding:10px'>No data found</p>";
     return;
   }
 
-  const isIV = voucherSel.value === "IVVCR";
   let rows = [];
 
   /* =========================================
-     IVCALC — DATE BASED LEDGER (FORMA STYLE)
+     IVCALC — NO CHANGE
      ========================================= */
   if (isIV) {
 
     let bal = 0;
 
-    // 1️⃣ CALCULATION ORDER
-    // Date ASC (old → new), same date → T.No ASC
     const asc = [...data].sort((a, b) => {
       if (a.dateObj.getTime() !== b.dateObj.getTime()) {
         return a.dateObj - b.dateObj;
@@ -3664,28 +3674,15 @@ function renderTable(data) {
       return (+a.tno || 0) - (+b.tno || 0);
     });
 
-    // 2️⃣ RUNNING BALANCE (FORMA LOGIC)
-    const withBal = asc.map(r => {
+    rows = asc.map(r => {
       const dc = (r.drcr || "").toUpperCase();
-
-      if (dc === "RECEIPT") bal += r.amount;
-      else bal -= r.amount;
-
-      return { ...r, bal };
-    });
-
-    // 3️⃣ DISPLAY ORDER
-    // Date DESC (latest → top), same date → T.No DESC
-    rows = [...withBal].sort((a, b) => {
-      if (a.dateObj.getTime() !== b.dateObj.getTime()) {
-        return b.dateObj - a.dateObj;
-      }
-      return (+b.tno || 0) - (+a.tno || 0);
-    });
+      bal += (dc === "RECEIPT" ? r.amount : -r.amount);
+      return { ...r, finalDrcr: dc, bal };
+    }).reverse();
   }
 
   /* =========================================
-     FORMA — OLD & WORKING (NO CHANGE)
+     FORMA — GK FLIP + BALANCE
      ========================================= */
   else {
 
@@ -3694,10 +3691,19 @@ function renderTable(data) {
     rows = [...data]
       .sort((a, b) => (+a.tno || 0) - (+b.tno || 0))
       .map(r => {
-        const sign =
-          r.drcr.toUpperCase() === "PAYMENT" ? -1 : 1;
-        bal += sign * r.amount;
-        return { ...r, bal };
+
+        let finalDrcr = r.drcr.toUpperCase();
+
+        // 🔁 GK SPECIAL FLIP (GK row untouched)
+        if (selectedUser === "GK" && r.type !== "GK") {
+          if (finalDrcr === "PAYMENT") finalDrcr = "RECEIPT";
+          else if (finalDrcr === "RECEIPT") finalDrcr = "PAYMENT";
+        }
+
+        // 💰 RUNNING BALANCE (FINAL VALUE BASED)
+        bal += (finalDrcr === "RECEIPT" ? r.amount : -r.amount);
+
+        return { ...r, finalDrcr, bal };
       })
       .reverse();
   }
@@ -3722,31 +3728,21 @@ function renderTable(data) {
     <tbody>
       ${rows.map(r => {
 
-        // 🎨 COLOR RULES
         let style = "";
-        const dc = (r.drcr || "").toUpperCase();
+        const dc = r.finalDrcr;
 
-        if (dc === "RECEIPT") {
-          style = "color:red;font-weight:600;";
-        }
-        else if (dc === "BILL") {
-          style = "color:blue;font-weight:600;";
-        }
-        else if (dc === "BILLDR") {
-          style = "color:green;font-weight:700;";
-        }
+        // 🎨 COLOUR BASED ON FINAL VALUE
+        if (dc === "RECEIPT") style = "color:red;font-weight:600;";
+     //   else if (dc === "PAYMENT") style = "color:blue;font-weight:600;";
+        else if (dc === "BILLDR") style = "color:green;font-weight:700;";
+        else if (dc === "BILLCR") style = "color:red;font-weight:700;";
+        else if (dc === "SALARY") style = "color:blue;font-weight:700;";
 
-         else if (dc === "BILLCR") {
-          style = "color:red;font-weight:700;";
-        }
-         else if (dc === "SALARY") {
-          style = "color:blue;font-weight:700;";
-        }
         return `
         <tr style="${style}">
           <td>${r.tno}</td>
           <td>${r.type}</td>
-          <td>${r.drcr}</td>
+          <td>${dc}</td>
           <td>${isIV ? r.dateStr : r.date}</td>
           <td>${r.ledger}</td>
           <td>${r.narration || "-"}</td>
@@ -3757,6 +3753,7 @@ function renderTable(data) {
     </tbody>
   </table>`;
 }
+
 
 
 /* =====================================================
