@@ -1817,7 +1817,9 @@ function syncLedgerMsaf99Option() {
 
   </div> <!-- यह एक नोट है, vertical Two Part Div (30-70) left content stop -->
   <div class="right"> <!-- यह एक नोट है, vertical Two Part Div (30-70) right content start -->
-  <div id="saleContainer" class="entry-box"></div>
+     <table id="potable"  style="display: block; overflow-x: auto;max-height: 250px;"></table>
+    <div id="saleContainer" class="entry-box"></div>
+ 
 
  <select onchange="if(this.value) window.open(this.value, '_blank'); this.selectedIndex = 0;" style="padding:8px; font-size:100%; border: none; text-align:center;" data-value="dwn">
 <option value="">📂 Select Google Sheet to Open</option>
@@ -4707,6 +4709,7 @@ if (![...BANKDropdown.options].some(opt => opt.value === "DLT")) {
         form.reset();
         document.getElementById("formModeBANK").value = "new"; // ✅ Reset to new
        fetchldgrreffDP();  // ✅ Refresh dropdowns or UI
+       filterPOByReff();
         refreshAll();
         document.getElementById("submitBANKButton").style.display = "inline-block";
         document.getElementById("modifyBANKButton").style.display = "none";
@@ -4782,6 +4785,7 @@ if (![...BANKDropdown.options].some(opt => opt.value === "DLT")) {
         form.reset(); // FORM RESET
         document.getElementById("formModeVCR").value = "new";
        fetchldgrreffDP();  // ✅ Refresh dropdowns or UI
+       filterPOByReff();
         refreshAll();
 
            // ✅ Remove DLT option after submit
@@ -4880,6 +4884,7 @@ if (![...SALEDropdown.options].some(opt => opt.value === "DLT")) {
         form.reset();
         document.getElementById("formModeVCR").value = "new"; // ✅ Reset to new
        fetchldgrreffDP();  // ✅ Refresh dropdowns or UI
+       filterPOByReff();
         refreshAll();
         document.getElementById("submitVCRButton").style.display = "inline-block";
         document.getElementById("modifyVCRButton").style.display = "none";
@@ -5119,7 +5124,9 @@ function showLastFiveEntriesByType(type, containerId) {
   const lastFive = filtered.slice(-10).reverse();
 
   const container = document.getElementById(containerId);
-  container.innerHTML = `<h4>Last 5 ${type} Entries</h4>`;
+  container.innerHTML = `<div style="text-align:center; background-color: #060606; color: #ff5c5c; font-weight: bold;"> <strong>Last 10 ${type} Entries</strong></div>`;
+
+  
 
   if (lastFive.length === 0) {
     container.innerHTML += "<p>No entries found.</p>";
@@ -5154,10 +5161,75 @@ function showLastFiveEntriesByType(type, containerId) {
   container.appendChild(table);
 }
 
+
+/* ============================================================
+   FILTER TABLE BY REFF (msaf15) → COLUMN INDEX 5
+============================================================ */
+function filterPOByReff() {
+
+  const selectedValue = document.getElementById("msaf15").value;
+  const table = document.getElementById("potable");
+
+  if (!table) return;
+
+  // Table reset
+  table.innerHTML = "";
+
+  if (!selectedValue) return;
+
+  // Column index 5 match
+  const filteredRows = rawData.filter(row => row[5] === selectedValue);
+
+  if (filteredRows.length === 0) {
+    table.innerHTML = "<tr><td colspan='100%'>No data found</td></tr>";
+    return;
+  }
+
+  // ===== Create Header =====
+  const thead = document.createElement("thead");
+  const headerRow = document.createElement("tr");
+
+  dataHeader.forEach(header => {
+    const th = document.createElement("th");
+    th.textContent = header;
+    headerRow.appendChild(th);
+  });
+
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
+  // ===== Create Body =====
+  const tbody = document.createElement("tbody");
+
+  filteredRows.forEach(row => {
+    const tr = document.createElement("tr");
+
+    dataHeader.forEach((_, index) => {
+      const td = document.createElement("td");
+      td.textContent = row[index] || "";
+      tr.appendChild(td);
+    });
+
+    tbody.appendChild(tr);
+  });
+
+  table.appendChild(tbody);
+}
+
 /* ============================================================
    INIT
 ============================================================ */
-document.addEventListener("DOMContentLoaded", fetchldgrreffDP);
+document.addEventListener("DOMContentLoaded", function () {
+
+  fetchldgrreffDP();
+
+  const msaf15 = document.getElementById("msaf15");
+  if (msaf15) {
+    msaf15.addEventListener("change", filterPOByReff);
+  }
+
+});
+
 </script>
 
 </body>
@@ -10936,7 +11008,6 @@ document.addEventListener("keydown", function (e) {
 </script>
 
 <!-- ================ -------------------------   GLOBAL SERCH BAR SCRIPT AND CODE STOP HERE --------------- ===============================-->
-
 
 
 
