@@ -761,52 +761,79 @@ function forceUppercase(form) {
     }
   };
 
+
+  /* =====================================================
+     🚀 SUBMIT FORM  -13-FEB-2026
+  ===================================================== */
+  function formatDateToDDMMMYYYY(dateStr) {
+  const months = ["Jan","Feb","Mar","Apr","May","Jun",
+                  "Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  const d = new Date(dateStr);
+
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = months[d.getMonth()];
+  const year = d.getFullYear();
+
+  return `${day}-${month}-${year}`;
+}
+
   /* =====================================================
      🚀 SUBMIT FORM
   ===================================================== */
   mainForm.onsubmit = async e => {
-    e.preventDefault();
+  e.preventDefault();
 
-    forceUppercase(mainForm);   // ✅ ADD THIS LINE text in uppercase
-    submitBtn.disabled = true;
-    submitBtn.value = "Please wait...";
-    waitMsg.innerText = "Submitting...";
-    waitMsg.style.display = "block";
+  forceUppercase(mainForm);
+  submitBtn.disabled = true;
+  submitBtn.value = "Please wait...";
+  waitMsg.innerText = "Submitting...";
+  waitMsg.style.display = "block";
 
-    TimestampAFICM.value = new Date().toLocaleString();
+  TimestampAFICM.value = new Date().toLocaleString();
 
-    try {
-      const res = await fetch(scriptAFICMURL, {
-        method: "POST",
-        body: new FormData(mainForm)
-      });
+  // ✅ CREATE FORMDATA FIRST
+  const fd = new FormData(mainForm);
 
-      const r = await res.json();
-
-      if (r.result === "success") {
-        alert("✅ Saved successfully");
-        mainForm.reset();
-        fetchedSRNo.textContent = "";
-        sNo.value = "";
-        deleteBtn.style.display = "none";
-        newEntryBtn.style.display = "none";
-
-        // ✅ ONLY TRIGGER
-        document.getElementById("refreshcmivTableBtn")?.click();
-
-
-      } else {
-        alert("❌ Error while saving");
-      }
-
-    } catch (err) {
-      alert("❌ Submit error");
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.value = "Submit";
-      setTimeout(() => waitMsg.style.display = "none", 1200);
+  // ✅ DATE FORMAT FIX
+  mainForm.querySelectorAll("input[type='date']").forEach(dateInput => {
+    if (dateInput.value) {
+      fd.set(dateInput.name, formatDateToDDMMMYYYY(dateInput.value));
     }
-  };
+  });
+
+  try {
+    const res = await fetch(scriptAFICMURL, {
+      method: "POST",
+      body: fd   // ✅ UPDATED
+    });
+
+    const r = await res.json();
+
+    if (r.result === "success") {
+      alert("✅ Saved successfully");
+
+      mainForm.reset();
+      fetchedSRNo.textContent = "";
+      sNo.value = "";
+      deleteBtn.style.display = "none";
+      newEntryBtn.style.display = "none";
+
+      document.getElementById("refreshcmivTableBtn")?.click();
+
+    } else {
+      alert("❌ Error while saving");
+    }
+
+  } catch (err) {
+    alert("❌ Submit error");
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.value = "Submit";
+    setTimeout(() => waitMsg.style.display = "none", 1200);
+  }
+};
+
 
   /* =====================================================
      🆕 NEW ENTRY
