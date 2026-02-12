@@ -4176,52 +4176,76 @@ function forceUppercase(form) {
 
 
 
+    /* =====================================================
+     🚀 DATE FORMAT - 13-Feb-2026
+  ===================================================== */
+function formatDateToDDMMMYYYY(dateStr) {
+  const months = ["Jan","Feb","Mar","Apr","May","Jun",
+                  "Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  const d = new Date(dateStr);
+
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = months[d.getMonth()];
+  const year = d.getFullYear();
+
+  return `${day}-${month}-${year}`;
+}
+
   /* =====================================================
      🚀 SUBMIT (NEW / MODIFY) – FIXED
   ===================================================== */
   mainForm.onsubmit = async e => {
-    e.preventDefault();
+  e.preventDefault();
 
-    forceUppercase(mainForm);   // ✅ ADD THIS LINE text in uppercase
-    submitBtn.disabled = true;
-    submitBtn.value = "Please wait...";
+  forceUppercase(mainForm);
+  submitBtn.disabled = true;
+  submitBtn.value = "Please wait...";
 
-    TimestampAFICM.value = new Date().toLocaleString();
+  TimestampAFICM.value = new Date().toLocaleString();
 
-    const fd = new FormData(mainForm);
+  const fd = new FormData(mainForm);
 
-    if (sNo.value) {
-      fd.append("action", "modify");
-      fd.append("sNo", sNo.value);
+  // 🔥 DATE FORMAT FIX – ADD HERE
+  mainForm.querySelectorAll("input[type='date']").forEach(dateInput => {
+    if (dateInput.value) {
+      fd.set(dateInput.name, formatDateToDDMMMYYYY(dateInput.value));
+    }
+  });
+
+  if (sNo.value) {
+    fd.append("action", "modify");
+    fd.append("sNo", sNo.value);
+  } else {
+    fd.append("action", "submit");
+  }
+
+  showWait(sNo.value ? "Updating..." : "Saving...");
+
+  try {
+    const res = await fetch(scriptAFICMURL, {
+      method: "POST",
+      body: fd
+    });
+
+    const r = await res.json();
+
+    if (r.result === "success") {
+      alert("✅ Saved successfully");
+      resetForm();
     } else {
-      fd.append("action", "submit");
+      alert("❌ Save failed");
     }
 
-    showWait(sNo.value ? "Updating..." : "Saving...");
+  } catch {
+    alert("❌ Submit error");
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.value = "Submit";
+    hideWait();
+  }
+};
 
-    try {
-      const res = await fetch(scriptAFICMURL, {
-        method: "POST",
-        body: fd
-      });
-
-      const r = await res.json();
-
-      if (r.result === "success") {
-        alert("✅ Saved successfully");
-        resetForm();
-      } else {
-        alert("❌ Save failed");
-      }
-
-    } catch {
-      alert("❌ Submit error");
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.value = "Submit";
-      hideWait();
-    }
-  };
 
   /* =====================================================
      🆕 NEW ENTRY
