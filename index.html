@@ -594,7 +594,7 @@ th {
       alert("You are not authorized for this Tab.\n\nMore Details Contact Admin:\nMukhtar Ahamad\n+91-9756735792");
 
       document.getElementById(`section1`).classList.remove('hidden');
-      document.getElementById(`section1b`).classList.remove('hidden');
+    //  document.getElementById(`section1b`).classList.remove('hidden');
     }
   }
 
@@ -659,10 +659,10 @@ th {
   <div id="sections">  <!-- sections Div open-->
 
 <!-- -----------------======================  SECTION1 START HERE ==================== ------------------------- -->
- <div id="section1" class="section hidden"> 
+ <div id="section1" class="section hidden" style="border-radius: 10px;"> 
    
 
-   <div id="mipl2011Buttons" style="display: flex; gap: 8px;  border-bottom:5px solid #822501;  flex-wrap: wrap; justify-content: center; margin-bottom: 10px; background-color: rgb(173, 172, 172); padding: 2px 2px; ">
+   <div id="mipl2011Buttons" style="display: flex; gap: 8px;  border-bottom:5px solid #822501;  flex-wrap: wrap; justify-content: center; margin-bottom: 10px; background-color: rgb(182, 184, 183); padding: 2px 2px; ">
   
    <button class="filter-btn" onclick="showSection(8)" id="f2"> Cash Data Voucher &nbsp;<span style="color:  red;font-weight: bold;">(F2)</span></button><br/>
   <button class="filter-btn" onclick="showSection(9)">Store Register Voucher</button><br/>
@@ -682,6 +682,7 @@ th {
   display:flex;
   height:8in;
   border-radius:12px;
+  border-bottom:5px solid #015868;
   overflow:hidden;
   box-shadow:0 6px 20px rgba(0,0,0,0.15);
   background:#fff;
@@ -691,7 +692,7 @@ th {
 .home-left{
   width:70%;
   background:linear-gradient(135deg,#f7f0f0,#e6f2f8);
-
+  border-radius: 10px;
   padding:20px;
   display:flex;
   flex-direction:column;
@@ -742,11 +743,11 @@ th {
  <!-- ============  Right Side Section start ====================== -->
   <div class="home-left">
     <div class="home-title">Dashboard</div>
-   <div style="height:480px; overflow-y:auto; overflow-x:auto; border:5px solid #002b46;border-radius: 10px; padding:8px; background-color: #dff8fc;" >
+   <div style="height:480px; overflow-y:auto; overflow-x:auto; border:5px solid #545454;border-radius: 10px; padding:8px; background-color: #fffff7;" >
 
    <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">    
     <label style="color: rgb(1, 26, 71); font-weight: bold;"> Daybook Search :</label>                            <!-- Search Box -->
-<input type="text" id="DATASEARCMIPL" placeholder="🔍 Search Ledger, Invoice, Reff, Vehicle No...." style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width:200px; width: 4in; background-color: rgb(241, 212, 212);" />
+<input type="text" id="DATASEARCMIPL" placeholder="🔍 Search Ledger, Invoice, Reff, Vehicle No...." style="padding: 4px 8px; border-radius: 4px; border: 2px solid #d6d6d5; margin-bottom:10px; width:200px; width: 4in; background-color: rgb(241, 239, 212);" />
 
 
     <select id="monthDropdown" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width:200px; width: 1.5in; background-color: rgb(1, 42, 61); color: white;"></select>
@@ -762,6 +763,16 @@ th {
 
 
 <br><br>
+<div id="section1b" class="section hidden" style="background-color: rgb(211, 212, 212);border: none;"></div> 
+<span id="globalMessage" style="color: rgb(16, 15, 15); font-size: 16px;"></span>
+
+
+ <!--
+ <div id="greetingMessage" 
+     style="display:none; font-size:18px; 
+     font-weight:bold; color:green; padding:10px;">
+</div>
+-->
 
 <span id="statusText" style="font-weight:bold;"></span><br>
 <span style="color: blue;">Your Network ID:- </span>
@@ -804,12 +815,14 @@ fetch("https://api.ipify.org?format=json")
   <div class="home-right">
 
     <div class="card">
-      <h4 style="color:#8b0202;">Packing List Status</h4>
+
+      <span style="color: rgb(1, 97, 81); font-size: 14px; font-weight: bold; font-style: italic;">Packing List Status..</span>
 <ul id="plantList" style="padding:0;"></ul>
     </div>
 
     <div class="card">
-      <h4 style="color:#8b0202;">Store Status</h4>
+
+      <span style="color: rgb(1, 78, 97); font-size: 14px; font-weight: bold; font-style: italic;">Store Status..</span>
 <ul id="storeList" style="padding:0;"></ul>
 
     </div>
@@ -1323,7 +1336,7 @@ Fetched SR:
 
 
 
-    <div id="search5792Bar" style="padding: 5px 10px;">
+    <div id="search5792Bar" style="padding: 5px 10px; border:5px solid #1c1b1b;border-radius: 10px;">
 
 
  <!-- MASTER CONTROLS two salection bar -->
@@ -1571,7 +1584,7 @@ document.addEventListener("DOMContentLoaded", enableJournalExtraOptions);
 
 
 <!-- Table Output -->
-  <div id="tableContainer" style="background-color: #fef8f6;"></div>
+  <div id="tableContainer" style="background-color: #fef8f6; "></div>
 
 </div> </div>  <!-- यह एक नोट है, vertical Two Part Div (30-70) container content stop  Heare ((CODE501)) -->
 </div> <!--  sections8 stop  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA  X -->
