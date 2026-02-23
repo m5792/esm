@@ -433,7 +433,7 @@ userSel.onchange=handleSelection;
 ===================================================== */
 function getSheetConfig(){
   if(voucherSel.value==="CMVCR")
-    return {sheet:"FORMA",range:"A:G",mode:"FORMA"};
+    return {sheet:"CMDATA",range:"A:G",mode:"CMDATA"};
   if(voucherSel.value==="IVVCR")
     return {sheet:"IVCALC",range:"N:T",mode:"IV"};
   return null;
@@ -1112,4 +1112,5 @@ window.onload = async () => {
 </script>
 
 <!-- ===================================  user login script stop hare ============================ -->
+
 
