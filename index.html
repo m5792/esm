@@ -2975,7 +2975,7 @@ window.onload = () => {
 <script>
 const api5792Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheet5792Id = "1vjkI_bpHNR6Tna17FISridqXSvCUnELA5oMgnAqzbO0";
-const range5792 = "FORMA!A:G";
+const range5792 = "CMDATA!A:G";
 
 let all5792Data = [];
 let filtered5792Data = [];
@@ -3523,7 +3523,7 @@ userSel.addEventListener("change", handleSelection);
 ===================================================== */
 function getSheetConfig() {
   if (voucherSel.value === "CMVCR") {
-    return { sheet: "FORMA", range: "A:G", mode: "FORMA" };
+    return { sheet: "CMDATA", range: "A:G", mode: "CMDATA" };
   }
   if (voucherSel.value === "IVVCR") {
     return { sheet: "IVCALC", range: "N:T", mode: "IV" };
