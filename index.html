@@ -4421,7 +4421,318 @@ if(typeof loadActiveTable === "function"){
 
 
 
-<!-- ======= -- script 2 --- ========== Multiform Voucher Table code with ledger by table filter LOGIC Start =================== -->
+<!--  new voucher table script start hare 1003226  
+<script>
+
+/* ================= GOOGLE SHEET CONFIG      10032026 ================= */
+const multiformKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const multiformId  = "1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU";
+
+/* ================= PREDEFINED HEADERS ================= */
+const sheetHeaders = {
+DATAA:["SNo","User","Status","Date","Party","Type","Vcr. Type","Doc No.","Weight","Item Details | Narration","Vehicle No"],
+DATAB:["SNo","User","Voucher","Date","Ledger","Weight","Rate","Amount","Doc. No.","Narration"],
+DATAC:["SNo","User","Tr. Type","Date","Ledger","Amount","Narration","Balance"],
+DATAD:["SNo","Voucher","V. Type","Date","Ledger","Vcr No/Amt.","Reff/PO","Amount","Weight","Rate","Vehicle/Narration","User"],
+DATAE:["SNo","User","Status","Creat By","Party","Amount","Reff/UTR No.","Narration"],
+DATAF:["SNo","User","Status","Clint Name","Project Name","Address","JOB/Reff","PO Amount","PO Weight","Order By"],
+ADMIN:["SNo","User","Y/N","UserID","Password","Status","User Name","User Code","Vcr Permission"]
+};
+
+/* ================= GLOBAL CACHE ================= */
+let ledgerList=[];
+let selectedMFTLedger="";
+let reffPOList=[];
+let sheetCache=[];
+
+/* ================= GET ACTIVE FORM ================= */
+function getActiveForm(){
+return document.querySelector("#formsWrapper .active-form .mainSRRForm");
+}
+
+/* ================= LOAD TABLE ================= */
+async function loadActiveTable(){
+
+const activeForm=getActiveForm();
+if(!activeForm)return;
+
+const sheetName=activeForm.querySelector("[name='datasheetname']")?.value;
+if(!sheetName)return;
+
+const range=sheetName+"!A:Z";
+const url=`https://sheets.googleapis.com/v4/spreadsheets/${multiformId}/values/${range}?key=${multiformKey}`;
+
+try{
+
+const res=await fetch(url);
+const data=await res.json();
+let rows=data.values||[];
+
+sheetCache=rows;
+
+applySheetFilters(sheetName,rows);
+
+createTable(sheetName,rows);
+loadLedgerList(rows);
+
+}catch(e){
+console.log(e);
+}
+
+}
+
+/* ================= SHEET FILTER ================= */
+function applySheetFilters(sheetName,rows){
+
+if(rows.length<=1)return;
+
+const header=rows[0];
+let body=rows.slice(1);
+
+const searchValue=document.getElementById("searchMFTInput")?.value.toLowerCase()||"";
+const startDate=document.getElementById("startMFTDate")?.value;
+const endDate=document.getElementById("endMFTDate")?.value;
+
+const filterActive=searchValue||startDate||endDate;
+
+/* ===== SEARCH ===== */
+if(searchValue){
+body=body.filter(row=>row.some(cell=>(cell||"").toLowerCase().includes(searchValue)));
+}
+
+/* ===== DATE FILTER ===== */
+if(startDate||endDate){
+
+body=body.filter(row=>{
+
+const rowDate=new Date(row[3]||"");
+if(!rowDate)return false;
+
+if(startDate){
+const from=new Date(startDate);
+from.setHours(0,0,0,0);
+if(rowDate<from)return false;
+}
+
+if(endDate){
+const to=new Date(endDate);
+to.setHours(23,59,59,999);
+if(rowDate>to)return false;
+}
+
+return true;
+
+});
+
+}
+
+/* ===== DEFAULT MODE ===== */
+if(!filterActive){
+body.sort((a,b)=>Number(b[0]||0)-Number(a[0]||0));
+body=body.slice(0,80);
+}
+
+rows.splice(0,rows.length,...[header,...body]);
+
+}
+
+/* ================= CREATE TABLE ================= */
+function createTable(sheetName,rows){
+
+const tableDiv=document.getElementById("multiformTable");
+if(!tableDiv)return;
+
+tableDiv.innerHTML="";
+
+const table=document.createElement("table");
+table.className="table";
+
+const headers=sheetHeaders[sheetName]||[];
+
+const thead=document.createElement("thead");
+const trHead=document.createElement("tr");
+
+headers.forEach(h=>{
+const th=document.createElement("th");
+th.textContent=h;
+trHead.appendChild(th);
+});
+
+thead.appendChild(trHead);
+table.appendChild(thead);
+
+const tbody=document.createElement("tbody");
+
+rows.forEach((row,i)=>{
+
+if(i===0)return;
+
+const tr=document.createElement("tr");
+
+headers.forEach((_,col)=>{
+const td=document.createElement("td");
+td.textContent=row[col]||"";
+tr.appendChild(td);
+});
+
+/* ===== ROW COLOR ===== */
+const type=(row[2]||"").toUpperCase();
+
+if(type==="RECEIPT"||type==="X"||type==="REJECT"||type==="CANCELED"){
+tr.style.color="#ff0000";
+tr.style.backgroundColor="#ffe6e6";
+}
+else if(type==="PANDING"){tr.style.color="blue";}
+else if(type==="LOAD"){tr.style.backgroundColor="#cce5ff";}
+else if(type==="UNLOAD"){tr.style.backgroundColor="#ccffcc";}
+else if(type==="BANK"){tr.style.color="#ff0000";}
+else if(type==="COMPLETED"){tr.style.color="green";}
+
+tbody.appendChild(tr);
+
+});
+
+table.appendChild(tbody);
+tableDiv.appendChild(table);
+
+}
+
+/* ================= LEDGER LIST ================= */
+function loadLedgerList(rows){
+
+const activeForm=getActiveForm();
+if(!activeForm)return;
+
+const input=activeForm.querySelector("#DpSRRSearch");
+if(!input)return;
+
+const set=new Set();
+
+rows.forEach((row,i)=>{
+if(i===0)return;
+if(row[4])set.add(row[4]);
+});
+
+ledgerList=[...set].sort();
+
+}
+
+/* ================= LEDGER FILTER ================= */
+function filterLedgerDropdown(){
+
+const activeForm=getActiveForm();
+if(!activeForm)return;
+
+const input=activeForm.querySelector("#DpSRRSearch");
+const dropdown=activeForm.querySelector(".ledgerDropdown");
+
+if(!input||!dropdown)return;
+
+const value=input.value.toLowerCase();
+
+dropdown.innerHTML="";
+
+const filtered=ledgerList.filter(v=>v.toLowerCase().includes(value));
+
+filtered.forEach(item=>{
+
+const div=document.createElement("div");
+div.className="ledger-item";
+div.textContent=item;
+
+div.onclick=()=>{
+input.value=item;
+selectedMFTLedger=item;
+dropdown.style.display="none";
+};
+
+dropdown.appendChild(div);
+
+});
+
+/* ===== CREATE NEW ===== */
+
+const newBtn=document.createElement("div");
+newBtn.className="ledger-item ledger-new";
+newBtn.textContent="Create New ➕";
+
+newBtn.onclick=()=>{
+const newLedger=prompt("Enter New Ledger Name");
+if(newLedger){
+input.value=newLedger;
+selectedMFTLedger=newLedger;
+dropdown.style.display="none";
+}
+};
+
+dropdown.appendChild(newBtn);
+
+dropdown.style.display="block";
+
+}
+
+/* ================= GLOBAL FILTER ================= */
+function applyMFTFilters(){
+loadActiveTable();
+}
+
+/* ================= PRINT ================= */
+document.getElementById("MFTPrint")?.addEventListener("click",function(){
+
+const table=document.querySelector("#multiformTable table");
+if(!table)return;
+
+const startDate=document.getElementById("startMFTDate")?.value||"";
+const endDate=document.getElementById("endMFTDate")?.value||"";
+
+const totalsHTML=document.getElementById("formdTotalsBox")?.innerHTML||"";
+
+const win=window.open("","","width=900,height=700");
+
+win.document.write(`
+<html>
+<head>
+<title>Print</title>
+<style>
+body{font-family:Arial;padding:20px}
+table{border-collapse:collapse;width:100%}
+th,td{border:1px solid #000;padding:6px}
+th{background:#f2f2f2}
+</style>
+</head>
+<body>
+
+<h2>Display Report</h2>
+<div>Start: ${startDate} | End: ${endDate}</div>
+
+${totalsHTML}
+
+${table.outerHTML}
+
+</body>
+</html>
+`);
+
+win.document.close();
+win.print();
+
+});
+
+/* ================= EVENTS ================= */
+
+document.addEventListener("multiformChanged",loadActiveTable);
+document.addEventListener("DOMContentLoaded",loadActiveTable);
+
+document.getElementById("searchMFTInput")?.addEventListener("input",applyMFTFilters);
+document.getElementById("startMFTDate")?.addEventListener("change",applyMFTFilters);
+document.getElementById("endMFTDate")?.addEventListener("change",applyMFTFilters);
+
+</script>
+
+
+***************************  -->
+
+
 <script>
 
 /* ================= GOOGLE SHEET CONFIG ================= */
@@ -4430,20 +4741,21 @@ const multiformId  = "1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU";
 
 /* ================= PREDEFINED HEADERS ================= */
 const sheetHeaders = {
-  DATAA: ["SNo","User","Status","Date","Party","Type","Vcr. Type","Doc No.","Weight","Item Details | Narration","Vehicle No"],
-  DATAB: ["SNo","User","Voucher","Date","Ledger","Weight","Rate","Amount","Doc. No.","Narration"],
-  DATAC: ["SNo","User","Tr. Type","Date","Ledger","Amount","Narration","Balance"],
-  DATAD: ["SNo","Voucher","V. Type","Date","Ledger","Vcr No/Amt.","Reff/PO","Amount","Weight","Rate","Vehicle/Narration","User"],
-  DATAE: ["SNo","User","Status","Creat By","Party","Amount","Reff/UTR No.","Narration"],
-  DATAF: ["SNo","User","Status","Clint Name","Project Name","Address","JOB/Reff","PO Amount","PO Weight","Order By"],
-  ADMIN: ["SNo","User","Y/N","UserID","Password","Status","User Name","User Code","Vcr Permission"]
-
+  DATAA:["SNo","User","Status","Date","Party","Type","Vcr. Type","Doc No.","Weight","Item Details | Narration","Vehicle No"],
+  DATAB:["SNo","User","Voucher","Date","Ledger","Weight","Rate","Amount","Doc. No.","Narration"],
+  DATAC:["SNo","User","Tr. Type","Date","Ledger","Amount","Narration","Balance"],
+  DATAD:["SNo","Voucher","V. Type","Date","Ledger","Vcr No/Amt.","Reff/PO","Amount","Weight","Rate","Vehicle/Narration","User"],
+  DATAE:["SNo","User","Status","Creat By","Party","Amount","Reff/UTR No.","Narration"],
+  DATAF:["SNo","User","Status","Clint Name","Project Name","Address","JOB/Reff","PO Amount","PO Weight","Order By"],
+  ADMIN:["SNo","User","Y/N","UserID","Password","Status","User Name","User Code","Vcr Permission"]
 };
 
-/* ================= GLOBAL LEDGER CACHE ================= */
+/* ================= GLOBAL CACHE ================= */
 let ledgerList = [];
 let selectedMFTLedger = "";
 let reffPOList = [];
+let sheetCache = [];
+let ledgerIndex = -1;
 
 /* ================= GET ACTIVE FORM ================= */
 function getActiveForm(){
@@ -4463,75 +4775,74 @@ async function loadActiveTable(){
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${multiformId}/values/${range}?key=${multiformKey}`;
 
   try{
-
     const res = await fetch(url);
     const data = await res.json();
     let rows = data.values || [];
 
+    sheetCache = rows;
 
-    /* ===== DATAC RUNNING BALANCE ===== */
-if(sheetName === "DATAC" && rows.length > 1){
+    applySheetFilters(sheetName, rows);
+
+    createTable(sheetName, rows);
+    loadLedgerList(rows);
+
+  }catch(e){
+    console.error("Error loading table:", e);
+  }
+
+}
+
+/* ================= SHEET FILTER ================= */
+function applySheetFilters(sheetName, rows){
+
+  if(rows.length <= 1) return;
 
   const header = rows[0];
   let body = rows.slice(1);
 
-  const usercode = activeForm.querySelector("#msaf90")?.value || "";
+  const searchValue = document.getElementById("searchMFTInput")?.value.toLowerCase() || "";
+  const startDate = document.getElementById("startMFTDate")?.value;
+  const endDate   = document.getElementById("endMFTDate")?.value;
 
-  if(usercode){
-    body = body.filter(row => (row[1] || "") === usercode);
+  const filterActive = searchValue || startDate || endDate;
+
+  /* ===== SEARCH ===== */
+  if(searchValue){
+    body = body.filter(row => row.some(cell => (cell||"").toLowerCase().includes(searchValue)));
   }
 
-  let balance = 0;
+  /* ===== DATE FILTER ===== */
+  if(startDate || endDate){
+    body = body.filter(row => {
 
-  body.forEach(row => {
+      const rowDate = new Date(row[3] || "");
+      if(!rowDate) return false;
 
-    const type = (row[2] || "").toUpperCase();
-    const amt  = Number(row[5] || 0);
+      if(startDate){
+        const from = new Date(startDate);
+        from.setHours(0,0,0,0);
+        if(rowDate < from) return false;
+      }
 
-    if(type === "PAYMENT" || type === "BILLCR"){
-      balance -= amt;
-    }
-    else if(type === "RECEIPT" || type === "BILLDR"){
-      balance += amt;
-    }
+      if(endDate){
+        const to = new Date(endDate);
+        to.setHours(23,59,59,999);
+        if(rowDate > to) return false;
+      }
 
-    row[7] = balance.toFixed(2);
-  });
+      return true;
 
-  rows = [header, ...body];
-}
-
-
-/* ===== SHOW ONLY LATEST 100 FOR ALL SHEETS ===== */
-if(rows.length > 1){
-
-const header = rows[0];
-let body = rows.slice(1);
-
-/* sort by SNo descending */
-body.sort((a,b)=> Number(b[0] || 0) - Number(a[0] || 0));
-
-/* latest 100 rows only */
-body = body.slice(0,100);
-
-rows = [header, ...body];
-}
-
-
-
-    if(rows.length > 1){
-      const header = rows[0];
-      const body = rows.slice(1);
-      body.sort((a,b)=> Number(b[0] || 0) - Number(a[0] || 0));
-      rows = [header, ...body];
-    }
-
-    createTable(sheetName, rows);
-    loadLedgerList(sheetName);
-
-  }catch(error){
-    console.error("Table Load Error:", error);
+    });
   }
+
+  /* ===== DEFAULT MODE ===== */
+  if(!filterActive){
+    body.sort((a,b)=> Number(b[0]||0)-Number(a[0]||0));
+    body = body.slice(0,80);
+  }
+
+  rows.splice(0, rows.length, ...[header,...body]);
+
 }
 
 /* ================= CREATE TABLE ================= */
@@ -4550,9 +4861,9 @@ function createTable(sheetName, rows){
   const thead = document.createElement("thead");
   const trHead = document.createElement("tr");
 
-  headers.forEach(header=>{
+  headers.forEach(h=>{
     const th = document.createElement("th");
-    th.textContent = header;
+    th.textContent = h;
     trHead.appendChild(th);
   });
 
@@ -4561,49 +4872,40 @@ function createTable(sheetName, rows){
 
   const tbody = document.createElement("tbody");
 
-  rows.forEach((row, index)=>{
-    if(index === 0) return;
+  rows.forEach((row,i)=>{
+    if(i===0) return;
 
     const tr = document.createElement("tr");
 
-    headers.forEach((_, colIndex)=>{
+    headers.forEach((_,col)=>{
       const td = document.createElement("td");
-      td.textContent = row[colIndex] || "";
+      td.textContent = row[col] || "";
       tr.appendChild(td);
     });
 
+    /* ===== ROW COLOR ===== */
     const type = (row[2] || "").toUpperCase();
 
-    if(type === "RECEIPT" || type === "X"|| type === "REJECT"|| type === "CANCELED"){
-      tr.style.color = "#ff0000";
-      tr.style.backgroundColor = "#ffe6e6";
+    if(type==="RECEIPT"||type==="X"||type==="REJECT"||type==="CANCELED"){
+      tr.style.color="#ff0000";
+      tr.style.backgroundColor="#ffe6e6";
     }
-     else if(type === "PANDING"){
-      tr.style.color = "blue";
-    }
-    else if(type === "LOAD"){
-      tr.style.backgroundColor = "#cce5ff";
-    }
-    else if(type === "UNLOAD"){
-      tr.style.backgroundColor = "#ccffcc";
-    }
-    else if(type === "BANK"){
-      tr.style.color = "#ff0000";
-    }
-   else if(type === "COMPLETED"){
-      tr.style.color = "green";
-    }
+    else if(type==="PANDING"){ tr.style.color="blue"; }
+    else if(type==="LOAD"){ tr.style.backgroundColor="#cce5ff"; }
+    else if(type==="UNLOAD"){ tr.style.backgroundColor="#ccffcc"; }
+    else if(type==="BANK"){ tr.style.color="#ff0000"; }
+    else if(type==="COMPLETED"){ tr.style.color="green"; }
 
     tbody.appendChild(tr);
   });
 
   table.appendChild(tbody);
   tableDiv.appendChild(table);
-  
+
 }
 
-/* ================= LOAD LEDGER LIST ================= */
-function loadLedgerList(sheetName){
+/* ================= LEDGER LIST ================= */
+function loadLedgerList(rows){
 
   const activeForm = getActiveForm();
   if(!activeForm) return;
@@ -4611,67 +4913,18 @@ function loadLedgerList(sheetName){
   const input = activeForm.querySelector("#DpSRRSearch");
   if(!input) return;
 
-  const previousValue = input.value;   // 🔥 save current
+  const set = new Set();
 
-  const range = sheetName + "!A:Z";
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${multiformId}/values/${range}?key=${multiformKey}`;
-
-  fetch(url)
-  .then(res => res.json())
-  .then(data => {
-
-    const rows = data.values || [];
-    const set = new Set();
-
-    rows.forEach((row,i)=>{
-      if(i===0) return;
-      if(row[4]) set.add(row[4]);
-    });
-
-    ledgerList = [...set].sort();
-
-    /* 🔥 restore previous selection */
-    if(previousValue){
-      input.value = previousValue;
-      selectedMFTLedger = previousValue;
-    }
+  rows.forEach((row,i)=>{
+    if(i===0) return;
+    if(row[4]) set.add(row[4]);
   });
+
+  ledgerList = [...set].sort();
+
 }
 
-/* ================= LOAD REFF/PO ================= */
-function loadReffPO(sheetName){
-
-  if(sheetName !== "DATAD") return;
-
-  const activeForm = getActiveForm();
-  if(!activeForm) return;
-
-  const selected = activeForm.querySelector("#DpSRRSearch")?.value || "";
-  if(!selected) return;
-
-  const range = sheetName + "!A:Z";
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${multiformId}/values/${range}?key=${multiformKey}`;
-
-  fetch(url)
-  .then(res => res.json())
-  .then(data => {
-
-    const rows = data.values || [];
-    const set = new Set();
-
-    rows.forEach((row,i)=>{
-      if(i===0) return;
-
-      if((row[4] || "") === selected && row[6]){
-        set.add(row[6]);
-      }
-    });
-
-    reffPOList = [...set].sort();
-  });
-}
-
-/* ================= FILTER LEDGER ================= */
+/* ================= LEDGER FILTER DROPDOWN ================= */
 function filterLedgerDropdown(){
 
   const activeForm = getActiveForm();
@@ -4679,38 +4932,33 @@ function filterLedgerDropdown(){
 
   const input = activeForm.querySelector("#DpSRRSearch");
   const dropdown = activeForm.querySelector(".ledgerDropdown");
-  if(!input || !dropdown) return;
 
-  selectedMFTLedger = "";
+  if(!input || !dropdown) return;
 
   const value = input.value.toLowerCase();
   dropdown.innerHTML = "";
+  ledgerIndex = -1;
 
-  const filtered = ledgerList.filter(v =>
-    v.toLowerCase().includes(value)
-  );
+  const filtered = ledgerList.filter(v => v.toLowerCase().includes(value));
 
-  filtered.forEach(item=>{
+  filtered.forEach((item,i)=>{
     const div = document.createElement("div");
-    div.className = "ledger-item";
+    div.className="ledger-item";
     div.textContent = item;
 
     div.onclick = ()=>{
       input.value = item;
       selectedMFTLedger = item;
       dropdown.style.display = "none";
-
-      const sheetName = activeForm.querySelector("[name='datasheetname']")?.value;
-      loadReffPO(sheetName);
     };
 
     dropdown.appendChild(div);
   });
 
+  /* ===== CREATE NEW ===== */
   const newBtn = document.createElement("div");
-  newBtn.className = "ledger-item ledger-new";
-  newBtn.textContent = "Create New ➕";
-
+  newBtn.className="ledger-item ledger-new";
+  newBtn.textContent="Create New ➕";
   newBtn.onclick = ()=>{
     const newLedger = prompt("Enter New Ledger Name");
     if(newLedger){
@@ -4719,61 +4967,123 @@ function filterLedgerDropdown(){
       dropdown.style.display = "none";
     }
   };
-
   dropdown.appendChild(newBtn);
-  dropdown.style.display = "block";
+
+  dropdown.style.display="block";
+}
+
+/* ================= GLOBAL FILTER ================= */
+function applyMFTFilters(){
+  loadActiveTable();
+}
+
+/* ===== DATE FORMAT FUNCTION ===== */
+function formatDate(dateStr){
+  if(!dateStr) return "";
+
+  const d = new Date(dateStr);
+
+  const months = ["Jan","Feb","Mar","Apr","May","Jun",
+                  "Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  return d.getDate() + "-" + months[d.getMonth()] + "-" + d.getFullYear();
+}
+
+/* ===== TIMESTAMP FUNCTION ===== */
+function getTimestamp(){
+
+  const d = new Date();
+
+  const months = ["Jan","Feb","Mar","Apr","May","Jun",
+                  "Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  let hours = d.getHours();
+  const minutes = d.getMinutes().toString().padStart(2,"0");
+  const ampm = hours >= 12 ? "PM" : "AM";
+
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+
+  return `${d.getDate()}-${months[d.getMonth()]}-${d.getFullYear()} ${hours}:${minutes} ${ampm}`;
 }
 
 
-/* ================= FILTER REFF ================= */
-function filterReffDropdown(){
+/* ================= PRINT FUNCTION ================= */
 
-  const activeForm = getActiveForm();
-  if(!activeForm) return;
+document.getElementById("MFTPrint")?.addEventListener("click", function(){
 
-  const input = activeForm.querySelector("#msaf94");
-  const dropdown = activeForm.querySelector(".reffPODropdown");
-  if(!input || !dropdown) return;
+  const table = document.querySelector("#multiformTable table:last-child");
+  if(!table) return;
 
-  const value = input.value.toLowerCase();
-  dropdown.innerHTML = "";
+  const startDate = formatDate(document.getElementById("startMFTDate")?.value);
+  const endDate   = formatDate(document.getElementById("endMFTDate")?.value);
 
-  const filtered = reffPOList.filter(v =>
-    v.toLowerCase().includes(value)
-  );
+  const totalsHTML = document.getElementById("formdTotalsBox")?.innerHTML || "";
 
-  filtered.forEach(item=>{
-    const div = document.createElement("div");
-    div.className = "ledger-item";
-    div.textContent = item;
+  const timeStamp = getTimestamp();
 
-    div.onclick = ()=>{
-      input.value = item;
-      dropdown.style.display = "none";
-    };
+  const win = window.open("","_blank","width=900,height=700");
 
-    dropdown.appendChild(div);
-  });
+  win.document.write(`
+  <html>
+  <head>
+  <title>Print</title>
+  <style>
+  body{font-family:Arial;padding:20px}
 
-  const newBtn = document.createElement("div");
-  newBtn.className = "ledger-item ledger-new";
-  newBtn.textContent = "Create New ➕";
+  table{border-collapse:collapse;width:100%}
+  th,td{border:1px solid #000;padding:6px}
+  th{background:#f2f2f2}
 
-  newBtn.onclick = ()=>{
-    const newVal = prompt("Enter Reff / PO No.");
-    if(newVal){
-      input.value = newVal;
-      dropdown.style.display = "none";
-    }
-  };
+  .header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+  }
 
-  dropdown.appendChild(newBtn);
+  .timestamp{
+    font-size:13px;
+    color:#444;
+  }
 
-  dropdown.style.display = "block";
-}
+  </style>
+  </head>
 
+  <body>
 
-/* ================= GLOBAL OUTSIDE CLICK HIDE ================= */
+  <div class="header">
+    <h2>Display Report</h2>
+    <div class="timestamp">${timeStamp}</div>
+  </div>
+
+  <div><b>From:</b> ${startDate} &nbsp;&nbsp; <b>To:</b> ${endDate}</div>
+
+  <br>
+
+  ${totalsHTML}
+
+  <br>
+
+  ${table.outerHTML}
+
+  </body>
+  </html>
+  `);
+
+  win.document.close();
+  win.print();
+});
+
+/* ================= EVENTS ================= */
+document.addEventListener("multiformChanged", loadActiveTable);
+document.addEventListener("DOMContentLoaded", loadActiveTable);
+
+document.getElementById("searchMFTInput")?.addEventListener("input", applyMFTFilters);
+document.getElementById("startMFTDate")?.addEventListener("change", applyMFTFilters);
+document.getElementById("endMFTDate")?.addEventListener("change", applyMFTFilters);
+
+/* ================= GLOBAL OUTSIDE CLICK ================= */
 document.addEventListener("click", function(e){
 
   const activeForm = getActiveForm();
@@ -4785,207 +5095,97 @@ document.addEventListener("click", function(e){
   const reffInput = activeForm.querySelector("#msaf94");
   const reffDrop = activeForm.querySelector(".reffPODropdown");
 
-  /* ===== LEDGER ===== */
-  if(ledgerDrop && ledgerDrop.style.display === "block"){
-    if(!ledgerInput.contains(e.target) && !ledgerDrop.contains(e.target)){
+   if(ledgerDrop && ledgerDrop.style.display === "block"){
+    if(!ledgerInput?.contains(e.target) && !ledgerDrop.contains(e.target)){
       ledgerDrop.style.display = "none";
+
+      // 🔹 Ledger input validation
+      if(ledgerInput.value !== selectedMFTLedger){
+        if(ledgerList.includes(ledgerInput.value)){
+          selectedMFTLedger = ledgerInput.value; // valid existing option
+        } else {
+          ledgerInput.value = "";               // invalid, clear input
+        }
+      }
     }
   }
 
-  /* ===== REFF ===== */
   if(reffDrop && reffDrop.style.display === "block"){
-    if(!reffInput.contains(e.target) && !reffDrop.contains(e.target)){
+    if(!reffInput?.contains(e.target) && !reffDrop.contains(e.target)){
       reffDrop.style.display = "none";
     }
   }
-
 });
-/* ================= VALIDATION ================= */
-document.addEventListener("click", e=>{
+
+/* ================= LEDGER KEYBOARD NAVIGATION ================= */
+document.addEventListener("keydown", function(e){
 
   const activeForm = getActiveForm();
   if(!activeForm) return;
 
   const input = activeForm.querySelector("#DpSRRSearch");
   const dropdown = activeForm.querySelector(".ledgerDropdown");
-  if(!input || !dropdown) return;
+  if(!dropdown || dropdown.style.display !== "block") return;
 
-  if(!e.target.closest(".ledger-box")){
+  const items = dropdown.querySelectorAll(".ledger-item");
 
-    dropdown.style.display = "none";
-
-   if(input.value !== selectedMFTLedger){
-  if(ledgerList.includes(input.value)){
-    selectedMFTLedger = input.value;
-  }else{
-    input.value = "";
+  if(e.key === "ArrowDown"){
+    ledgerIndex++;
+    if(ledgerIndex >= items.length) ledgerIndex = 0;
+    highlightLedger(items);
+    e.preventDefault();
+  } else if(e.key === "ArrowUp"){
+    ledgerIndex--;
+    if(ledgerIndex < 0) ledgerIndex = items.length - 1;
+    highlightLedger(items);
+    e.preventDefault();
+  } else if(e.key === "Enter"){
+    if(ledgerIndex >= 0){
+      items[ledgerIndex].click();
+      e.preventDefault();
+    }
   }
+});
+
+/* ================= HIGHLIGHT FUNCTION ================= */
+function highlightLedger(items){
+  items.forEach(i => i.classList.remove("active"));
+  if(items[ledgerIndex]) items[ledgerIndex].classList.add("active");
 }
+
+/* ================= ESC KEY CLOSE ALL DROPDOWN ================= */
+document.addEventListener("keydown", function(e){
+  if(e.key === "Escape"){
+    document.querySelectorAll(".ledgerDropdown,.reffPODropdown").forEach(d => d.style.display="none");
   }
 });
-
-/* ================= EVENTS ================= */
-document.addEventListener("multiformChanged", loadActiveTable);
-
-document.addEventListener("change", e=>{
-  if(e.target.name === "datasheetname"){
-    loadActiveTable();
-  }
-});
-
-document.addEventListener("DOMContentLoaded", loadActiveTable);
 
 </script>
 
-
-
-<!-- ======= -- script 3 --- ========== Multiform Voucher GLOBAL SEARCH + DATE FILTER + PRIN Start  ================================ -->
-<script>
-function getMFTTable() {
-    return document.querySelector("#multiformTable table");
+<style>
+/* ================= CSS ================= */
+.ledgerDropdown, .reffPODropdown{
+  position:absolute;
+  background:#fff;
+  border:1px solid #ccc;
+  max-height:250px;
+  overflow-y:auto;
+  width:100%;
+  z-index:9999;
 }
-
-/* ===== GLOBAL FILTER FUNCTION ===== */
-function applyMFTFilters() {
-
-    const table = getMFTTable();
-    if (!table) return;
-
-    const searchValue = document.getElementById("searchMFTInput")?.value.toLowerCase() || "";
-    const startDate = document.getElementById("startMFTDate")?.value;
-    const endDate   = document.getElementById("endMFTDate")?.value;
-
-    const rows = table.querySelectorAll("tbody tr");
-
-    rows.forEach(row => {
-
-        let showRow = true;
-        const cells = row.querySelectorAll("td");
-
-        /* ===== GLOBAL TEXT SEARCH ===== */
-        if (searchValue) {
-            const rowText = row.innerText.toLowerCase();
-            if (!rowText.includes(searchValue)) {
-                showRow = false;
-            }
-        }
-
-        /* ===== DATE FILTER ===== */
-       /* ===== DATE FILTER (FIXED INCLUSIVE) ===== */
-if ((startDate || endDate) && cells.length > 3) {
-
-    const rowDateText = cells[3].innerText.trim();
-    if (!rowDateText) {
-        row.style.display = "none";
-        return;
-    }
-
-    const rowDate = new Date(rowDateText);
-    rowDate.setHours(0,0,0,0);   // normalize row date
-
-    if (startDate) {
-        const fromDate = new Date(startDate);
-        fromDate.setHours(0,0,0,0);  // ensure exact start day
-
-        if (rowDate < fromDate) {
-            showRow = false;
-        }
-    }
-
-    if (endDate) {
-        const toDate = new Date(endDate);
-        toDate.setHours(23,59,59,999);  // full end day include
-
-        if (rowDate > toDate) {
-            showRow = false;
-        }
-    }
+.ledger-item{
+  padding:8px;
+  cursor:pointer;
 }
-
-        row.style.display = showRow ? "" : "none";
-
-    });
+.ledger-item:hover,
+.ledger-item.active{
+  background:#007bff;
+  color:#fff;
 }
-
-/* ===== AUTO APPLY ON INPUT ===== */
-document.getElementById("searchMFTInput")?.addEventListener("input", applyMFTFilters);
-document.getElementById("startMFTDate")?.addEventListener("change", applyMFTFilters);
-document.getElementById("endMFTDate")?.addEventListener("change", applyMFTFilters);
-
-
-/* ===== PRINT FUNCTION ===== */
-document.getElementById("MFTPrint")?.addEventListener("click", function () {
-
-    const table = getMFTTable();
-    if (!table) return;
-
-    // Get selected start/end date values
-    const startDateVal = document.getElementById("startMFTDate")?.value || '';
-    const endDateVal = document.getElementById("endMFTDate")?.value || '';
-
-    // Function to format YYYY-MM-DD → DD-MMM-YYYY
-    function formatDate(d) {
-        if(!d) return '';
-        const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-        const dateObj = new Date(d);
-        if(isNaN(dateObj)) return d;
-        const day = ("0"+dateObj.getDate()).slice(-2);
-        const month = months[dateObj.getMonth()];
-        const year = dateObj.getFullYear();
-        return `${day}-${month}-${year}`;
-    }
-
-    const startDate = formatDate(startDateVal);
-    const endDate = formatDate(endDateVal);
-
-    // Get formdTotalsBox content
-    const totalsHTML = document.getElementById("formdTotalsBox")?.innerHTML || '';
-
-    const printWindow = window.open('', '', 'width=900,height=700');
-
-    printWindow.document.write(`
-        <html>
-        <head>
-            <title>Print Report</title>
-            <style>
-                body{ font-family: Arial; padding:20px; }
-                table{ border-collapse: collapse; width:100%; margin-top:10px; }
-                th, td{ border:1px solid #000; padding:6px; text-align:left; }
-                th{ background:#f2f2f2; }
-                .date-display{ margin-bottom:10px; font-weight:bold; }
-                #totalsBox{ margin-bottom:15px; }
-            </style>
-        </head>
-        <body>
-            <h2>Display Report</h2>
-
-            <!-- Date Summary -->
-            <div class="date-display">
-                ${startDate ? "Start Date: " + startDate : ""} 
-                ${endDate ? " | End Date: " + endDate : ""}
-            </div>
-
-            <!-- Totals Box -->
-            <div id="totalsBox">
-                ${totalsHTML}
-            </div>
-
-            <!-- Table -->
-            ${table.outerHTML}
-
-        </body>
-        </html>
-    `);
-
-    printWindow.document.close();
-    printWindow.focus();
-    printWindow.print();
-    printWindow.close();
-
-});
-</script>
-
-
+.ledger-new{
+  font-weight:bold;
+}
+</style>
 
 <!-- ======= -- script 4 --- ========== Multiform Voucher LEDGER BASED TABLE FILTER + DATAD DOUBLE FILTER LOGIC Start ==================== -->
 
@@ -5267,13 +5467,9 @@ document.addEventListener("DOMContentLoaded", loadPendingDATAE);
 
 
 
-
-
-
-
-
 <!-- ================= FORMD TOTAL CALCULATION ================= -->
 <script>
+
 
 /* ================= GLOBAL HELPERS ================= */
 
@@ -5287,15 +5483,20 @@ function cleanNum(val){
   ) || 0;
 }
 
+/* 🔹 Latest Visible Table */
 function getLatestTable(){
-  return document.querySelector("#multiformTable table:last-child");
+  const tables = document.querySelectorAll("#multiformTable table");
+  if(!tables.length) return null;
+  return tables[tables.length - 1];   // always last rendered table
 }
 
+/* 🔹 Active Sheet */
 function getActiveSheet(){
   const activeForm = document.querySelector("#formsWrapper .active-form .mainSRRForm");
   return activeForm?.querySelector("[name='datasheetname']")?.value || "";
 }
 
+/* 🔹 Show Result */
 function showAllBox(html){
   const box = document.getElementById("formdTotalsBox");
   if(!box) return;
@@ -5313,21 +5514,19 @@ function calculateAll(){
     return;
   }
 
-  const rows = table.querySelectorAll("tbody tr");
+  /* 🔹 ONLY VISIBLE ROWS (FILTER KE BAAD) */
+  const rows = [...table.querySelectorAll("tbody tr")]
+               .filter(tr => tr.offsetParent !== null);
+
   const activeSheet = getActiveSheet();
 
-  /* ================= ALL VARIABLES ================= */
-
   let loading = 0, unloading = 0, unverified = 0;
-  let totalBill = 0, totalWeight = 0, totalCredit = 0, totalReceipt = 0;
   let dataBWeight = 0, dataBAmount = 0;
-  const userStats = {};
 
-  /* ================= SINGLE LOOP ================= */
+  const userStats = {};
 
   rows.forEach(tr=>{
 
-    if(tr.offsetParent === null) return;
     const td = tr.querySelectorAll("td");
 
     /* ===== DATAA ===== */
@@ -5338,8 +5537,6 @@ function calculateAll(){
       if(status === "X") unverified++;
     }
 
-
-
     /* ===== DATAB ===== */
     if(activeSheet === "DATAB" && td.length >= 8){
       dataBWeight += cleanNum(td[5].innerText);
@@ -5348,6 +5545,7 @@ function calculateAll(){
 
     /* ===== DATAF ===== */
     if(activeSheet === "DATAF" && td.length >= 3){
+
       const userCode = (td[1].innerText || "").trim();
       const status   = (td[2].innerText || "").toUpperCase().trim();
       if(!userCode) return;
@@ -5366,8 +5564,6 @@ function calculateAll(){
 
   let html = "";
 
-  /* ================= PROPER ELSE-IF FLOW ================= */
-
   if(activeSheet === "DATAA"){
     html = `
     <div>
@@ -5385,8 +5581,6 @@ function calculateAll(){
     </div>`;
   }
 
- 
-
   else if(activeSheet === "DATAB"){
 
     const tds = dataBAmount * 0.01;
@@ -5395,7 +5589,8 @@ function calculateAll(){
 
     html = `
     <div>
-      <h3>Chander Shekher Bill Summry</h3>
+      <h3>Chander Shekher Bill Summary</h3>
+
       <table style="width:100%;border-collapse:collapse;text-align:center;margin-bottom:15px;">
         <tr style="background:#f4f6f9;">
           <th>Total Weight</th><th>Total Amount</th>
@@ -5413,15 +5608,19 @@ function calculateAll(){
           Final Bill: ₹ ${finalBill.toFixed()}
         </div>
       </div>
+
     </div>`;
   }
 
   else if(activeSheet === "DATAF"){
+
     html = `<div><h3>PO / Ref Voucher Summary</h3>`;
+
     html += `<table style="width:100%;border-collapse:collapse;text-align:center;">
     <tr style="background:#f4f6f9;">
     <th>User</th><th>Running</th><th>Canceled</th><th>Pending</th><th>Completed</th>
     </tr>`;
+
     for(const user in userStats){
       html += `
       <tr>
@@ -5432,6 +5631,7 @@ function calculateAll(){
         <td>${userStats[user].COMPLETED}</td>
       </tr>`;
     }
+
     html += `</table></div>`;
   }
 
@@ -5444,10 +5644,21 @@ function calculateAll(){
 
 /* ================= AUTO REFRESH ================= */
 
-document.addEventListener("multiformChanged", ()=> setTimeout(calculateAll,300));
-document.addEventListener("change", ()=> setTimeout(calculateAll,300));
-document.addEventListener("click", ()=> setTimeout(calculateAll,300));
-document.addEventListener("input", ()=> setTimeout(calculateAll,300));
+/* 🔹 Table render hone par detect kare */
+const observer = new MutationObserver(()=>{
+  setTimeout(calculateAll,200);
+});
+
+observer.observe(document.getElementById("multiformTable"),{
+  childList:true,
+  subtree:true
+});
+
+/* 🔹 Filter / input / click change */
+document.addEventListener("change", ()=> setTimeout(calculateAll,200));
+document.addEventListener("input", ()=> setTimeout(calculateAll,200));
+document.addEventListener("click", ()=> setTimeout(calculateAll,200));
+
 document.addEventListener("DOMContentLoaded", ()=> setTimeout(calculateAll,500));
 
 </script>
@@ -9840,8 +10051,8 @@ document.addEventListener("click", (e) => {
  <p > 4- Attendance  | 5- ID/Password </p>
  <p> 11- Packing List | 12- Url & Link Dropdown </p>
   <p style="color: red;">--- Global Serch --- </p>
- <p> 15- PO/Reff View in Globar Search </p>
- <p> 16- Document View in Globar Search </p>
+ <p> 15- Document View in Global Search </p>
+ <p> 16- PO/Reff View in Global Search </p>
   <p onclick="showSection(3); showVoucher(1);" style="cursor: pointer; color: #0026ff;"> 21- Store Voucher </p>
  <p onclick="showSection(3);showVoucher(2);"style="cursor: pointer; color: #0026ff;"> 22- Contactor Voucher </p>
  <p onclick="showSection(3);showVoucher(3);"style="cursor: pointer; color: #0026ff;"> 23- Cash Voucher </p>
