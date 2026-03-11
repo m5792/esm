@@ -1013,17 +1013,14 @@ window.onload = fetchUserData;
  <!-- ============  Right Side Section start ====================== -->
   <div class="home-left">
     <div class="home-title">Dashboard</div>
-   <div style="height:480px; overflow-y:auto; overflow-x:auto; border:5px solid #545454;border-radius: 10px; padding:8px; background-color: #fffff7;" >
+   <div style="height:600px; overflow-y:auto; overflow-x:auto; border:5px solid #545454;border-radius: 10px; padding:8px; background-color: #fffff7;" >
 
    <td style="text-align: center; color:WHITE;border: none; background-color: #011d30;">    
-    <label style="color: rgb(1, 26, 71); font-weight: bold;"> Daybook Search :</label>                            <!-- Search Box -->
-<input type="text" id="DATASEARCMIPL" placeholder="🔍 Search Ledger, Invoice, Reff, Vehicle No...." style="padding: 4px 8px; border-radius: 4px; border: 2px solid #d6d6d5; margin-bottom:10px; width:200px; width: 4in; background-color: rgb(241, 239, 212);" />
-
-
+  
     <select id="monthDropdown" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width:200px; width: 1.5in; background-color: rgb(1, 42, 61); color: white;"></select>
 <sapn id="monthlyTotals"></sapn>
 
-  <style> #MIPLDATATABLE {overflow-x: auto; display: block; max-height: 430px; /*heder alwayas fix on top and table scrolling  */} </style>
+  <style> #MIPLDATATABLE {overflow-x: auto; display: block; max-height: 500px; /*heder alwayas fix on top and table scrolling  */} </style>
 <table id="MIPLDATATABLE"></table>
 
 </td>
@@ -2273,30 +2270,9 @@ window.addEventListener("load", function () {
          <!-- ROW 1 -->
 <div class="row" style="background-color: #e7e7e4; padding: 5px 10px; ">
     <label  style="color:#fd0505;font-size:90%;font-family:Arial; font-weight: bold;">Approver By:</label>
-    <input type="text" id="msaf90" name="Usercode" verified="verfy" class="inputhide" fontcapital="capitalletter" value="" >
+    <input type="text" id="msaf90" name="Usercode" verified="verfy" class="inputhide" fontcapital="capitalletter" value="MA" >
     
-<script>
-document.addEventListener("DOMContentLoaded", function () {
 
-    let amountInput = document.querySelector('input[verfy="verified"]');
-    let userInput = document.querySelector('input[verified="verfy"]');
-
-    if(amountInput && userInput){
-        amountInput.addEventListener("input", function () {
-
-            let amount = parseInt(this.value);
-
-            if (amount >= 500 && amount <= 5000000) {
-                userInput.value = "MA";
-            } else {
-                userInput.value = "";
-            }
-
-        });
-    }
-
-});
-</script>
 
 <label  style="color:#0c0c0c;font-size:90%;font-family:Arial;" >Serch & Select Ledger:</label><br/>
 <div class="ledger-box" style="position:relative;">
@@ -2615,6 +2591,14 @@ document.addEventListener("DOMContentLoaded", () => {
 <button id="MFTPrint"   style="border: none; font-weight: bold; cursor: pointer; background-color: #027175; color: rgb(245, 242, 163);">🏢 Print</button>
 </div> 
 
+<style>
+  #multiformTable{
+  overflow-x: auto;
+  display: block;
+  max-height: 500px; /* vertical scrolling */
+  overflow-y: auto;
+}
+</style>
 <div id="multiformTable"></div>
 
 
@@ -3361,6 +3345,7 @@ function refreshAll(btn) {
   // aapke refresh functions
   Promise.all([
     loadNoticeBoard(),
+     loadMIPLDATATABLE(),
     loadActiveTable(),
     loadPendingDATAE()
   ]).then(() => {
@@ -3998,181 +3983,255 @@ document.addEventListener("keydown", function (e) {
 
 <!---------------------------- DATAMIPLTABLE SCRIPT START (SECTION MIPL501)---------------------------------------- -->
 <script>
-const apidbookKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-const sheetdbookId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
-const rangedbook = "FORM!A:K";
 
-let allTableData = [];
-let monthlyData = {};
+const apidbookKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";  
+const sheetdbookId = "1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU";
+const rangedbook = "DATAD!A:K";
 
-function getMonthFromDate(dateStr) {
-  const d = new Date(dateStr);
-  if (isNaN(d)) return "";
-  return d.toLocaleString("default", { month: "short" }) + "-" + d.getFullYear();
+let allDBookData  = [];
+let monthlyTotals = {};
+
+/* ===== FIXED HEADER ===== */
+
+const fixedHeader = [
+"SNo",
+"Voucher",
+"V. Type",
+"Date",
+"Ledger",
+"Vcr No/Amt.",
+"Reff/PO",
+"Amount",
+"Weight",
+"Rate",
+"Vehicle/Narration",
+"User"
+];
+
+/* ========= GET MONTH ========= */
+
+function getMonthKey(dateStr){
+const d=new Date(dateStr);
+if(isNaN(d)) return "";
+return d.toLocaleString("default",{month:"short"})+"-"+d.getFullYear();
 }
 
-/* ================= LOAD DATA ================= */
-async function loadDATAMIPLTABLE() {
-  const table = document.getElementById("MIPLDATATABLE");
-  table.innerHTML = "<tr><th>Loading...</th></tr>";
+/* ========= CURRENT MONTH ========= */
 
-  try {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetdbookId}/values/${rangedbook}?key=${apidbookKey}`;
-    const res = await fetch(url);
-    const data = await res.json();
-
-    if (!data.values) {
-      table.innerHTML = "<tr><td>No data</td></tr>";
-      return;
-    }
-
-    const header = data.values[0];
-    const allRows = data.values.slice(1);
-
-    /* ✅ Only SALE rows for table */
-    const tableRows = allRows.filter(r => r[10]?.toUpperCase().trim() === "SALE");
-    tableRows.sort((a, b) => Number(b[0]) - Number(a[0]));
-    allTableData = [header, ...tableRows];
-
-    /* ✅ Monthly totals (all rows) */
-    monthlyData = {};
-    allRows.forEach(r => {
-      const month = getMonthFromDate(r[2]);
-      if (!month) return;
-
-      if (!monthlyData[month]) monthlyData[month] = { receipt: 0, sale: 0 };
-
-      const type = r[1]?.toUpperCase().trim();
-      if (["BANK", "RECEIPT"].includes(type)) {
-        monthlyData[month].receipt += Number(r[4]) || 0;
-      }
-      if (type === "TAX INVOICE") {
-        monthlyData[month].sale += Number(r[6]) || 0;
-      }
-    });
-
-    populateMonthDropdown(Object.keys(monthlyData));
-
-    /* ✅ Show latest 9 entries */
-    renderDATAMIPLTABLE(allTableData, true);
-
-    /* ✅ Auto select current month */
-    const today = new Date();
-    const currentKey =
-      today.toLocaleString("default", { month: "short" }) +
-      "-" +
-      today.getFullYear();
-
-    if (monthlyData[currentKey]) {
-      document.getElementById("monthDropdown").value = currentKey;
-      updateMonthlyTotalsDisplay(monthlyData[currentKey]);
-    }
-
-  } catch (err) {
-    console.error(err);
-    table.innerHTML = "<tr><td>Load Error</td></tr>";
-  }
+function getCurrentMonthKey(){
+const d=new Date();
+return d.toLocaleString("default",{month:"short"})+"-"+d.getFullYear();
 }
 
-/* ================= MONTH DROPDOWN ================= */
-function populateMonthDropdown(months) {
-  const dropdown = document.getElementById("monthDropdown");
-  dropdown.innerHTML = `<option value="">Select Month</option>`;
+/* ========= LOAD DATA ========= */
 
-  months.forEach(m => {
-    const opt = document.createElement("option");
-    opt.value = m;
-    opt.textContent = m;
-    dropdown.appendChild(opt);
-  });
+async function loadMIPLDATATABLE(){
 
-  dropdown.onchange = () => {
-    const m = dropdown.value;
-    if (m) {
-      updateMonthlyTotalsDisplay(monthlyData[m]);
-      filterMonthTable(m);
-    }
-  };
+const table=document.getElementById("MIPLDATATABLE");
+table.innerHTML="<tr><td>Loading...</td></tr>";
+
+try{
+
+const url=`https://sheets.googleapis.com/v4/spreadsheets/${sheetdbookId}/values/${rangedbook}?key=${apidbookKey}`;
+
+const res=await fetch(url);
+const data=await res.json();
+
+if(!data.values){
+table.innerHTML="<tr><td>No Data</td></tr>";
+return;
 }
 
-/* ================= FILTER BY MONTH ================= */
-function filterMonthTable(month) {
-  const filtered = [
-    allTableData[0],
-    ...allTableData.slice(1).filter(r => getMonthFromDate(r[2]) === month)
-  ];
-  renderDATAMIPLTABLE(filtered, false);
+const rows=data.values.slice(1);
+
+/* ===== SORT BY SNo ===== */
+
+rows.sort((a,b)=>Number(b[0])-Number(a[0]));
+
+/* ===== ONLY SALE ROWS ===== */
+
+const saleRows=rows.filter(r=>r[1]?.toUpperCase().trim()==="SALE");
+
+allDBookData=[fixedHeader,...saleRows];
+
+/* ===== MONTH TOTAL ===== */
+
+monthlyTotals={};
+
+rows.forEach(r=>{
+
+const month=getMonthKey(r[3]);
+if(!month) return;
+
+if(!monthlyTotals[month]){
+monthlyTotals[month]={tax:0,bank:0};
 }
 
-/* ================= TOTAL DISPLAY ================= */
-function updateMonthlyTotalsDisplay(t) {
-  document.getElementById("monthlyTotals").innerHTML = `
-    <span style="color:#4067DD;font-weight:bold;">Receipt: ₹${t.receipt.toFixed()}</span> |
-    <span style="color:#710000;font-weight:bold;">Sale: ₹${t.sale.toFixed()}</span>
-  `;
+const type=r[2]?.toUpperCase().trim();
+
+if(type==="TAX INVOICE"){
+monthlyTotals[month].tax+=Number(r[7])||0;
 }
 
-/* ================= RENDER TABLE ================= */
-function renderDATAMIPLTABLE(data, limit9 = false) {
-  const table = document.getElementById("MIPLDATATABLE");
-  table.innerHTML = "";
-
-  const thead = document.createElement("thead");
-  const tbody = document.createElement("tbody");
-
-  const trh = document.createElement("tr");
-  data[0].forEach(h => {
-    const th = document.createElement("th");
-    th.textContent = h;
-    trh.appendChild(th);
-  });
-  thead.appendChild(trh);
-
-  let rows = data.slice(1);
-  if (limit9) rows = rows.slice(0, 9);
-
-  rows.forEach(r => {
-    const tr = document.createElement("tr");
-    const type = r[1]?.toUpperCase();
-
-    if (type === "BANK") tr.style.color = "red";
-    if (type === "CREDIT NOTE") tr.style.color = "grey";
-    if (type === "CHALLAN") tr.style.color = "green";
-
-    r.forEach(c => {
-      const td = document.createElement("td");
-      td.textContent = c || "";
-      tr.appendChild(td);
-    });
-
-    tbody.appendChild(tr);
-  });
-
-  table.append(thead, tbody);
+if(type==="BANK"){
+monthlyTotals[month].bank+=Number(r[5])||0;
 }
 
-/* ================= SEARCH ================= */
-function searchDataMIPL() {
-  const q = document.getElementById("DATASEARCMIPL").value.toLowerCase();
-  if (!q) return renderDATAMIPLTABLE(allTableData, true);
-
-  const filtered = [
-    allTableData[0],
-    ...allTableData.slice(1).filter(r =>
-      r.some(c => c?.toLowerCase().includes(q))
-    )
-  ];
-
-  renderDATAMIPLTABLE(filtered, false);
-}
-
-/* ================= INIT ================= */
-document.addEventListener("DOMContentLoaded", () => {
-  loadDATAMIPLTABLE();
-  document
-    .getElementById("DATASEARCMIPL")
-    .addEventListener("keyup", searchDataMIPL);
 });
+
+/* ===== MONTH SORT ===== */
+
+const months=Object.keys(monthlyTotals).sort((a,b)=>new Date(b)-new Date(a));
+
+populateMonthDropdown(months);
+
+/* ===== SHOW LATEST 10 ===== */
+
+renderDBookTable(allDBookData,true);
+
+}catch(err){
+
+console.error(err);
+table.innerHTML="<tr><td>Error Loading</td></tr>";
+
+}
+
+}
+
+/* ========= DROPDOWN ========= */
+
+function populateMonthDropdown(months){
+
+const dropdown=document.getElementById("monthDropdown");
+
+dropdown.innerHTML=`<option value="">Select Month</option>`;
+
+months.forEach(m=>{
+
+const opt=document.createElement("option");
+opt.value=m;
+opt.textContent=m;
+
+dropdown.appendChild(opt);
+
+});
+
+/* ===== AUTO SELECT CURRENT ===== */
+
+const currentMonth=getCurrentMonthKey();
+
+if(months.includes(currentMonth)){
+
+dropdown.value=currentMonth;
+
+updateDBookTotals(currentMonth);
+filterMonth(currentMonth);
+
+}
+
+dropdown.onchange=()=>{
+
+const m=dropdown.value;
+if(!m) return;
+
+updateDBookTotals(m);
+filterMonth(m);
+
+};
+
+}
+
+/* ========= TOTAL DISPLAY ========= */
+
+function updateDBookTotals(month){
+
+const t=monthlyTotals[month];
+
+document.getElementById("monthlyTotals").innerHTML=
+
+`<span style="color:#0a4b9c;font-weight:bold;">
+TAX INVOICE : ₹${t.tax.toFixed()}
+</span>
+ |
+<span style="color:#8b0000;font-weight:bold;">
+BANK : ₹${t.bank.toFixed()}
+</span>`;
+
+}
+
+/* ========= MONTH FILTER ========= */
+
+function filterMonth(month){
+
+const filtered=[
+
+fixedHeader,
+
+...allDBookData.slice(1).filter(r=>getMonthKey(r[3])===month)
+
+];
+
+renderDBookTable(filtered,false);
+
+}
+
+/* ========= RENDER TABLE ========= */
+
+function renderDBookTable(data,limit10=false){
+
+const table=document.getElementById("MIPLDATATABLE");
+
+table.innerHTML="";
+
+const thead=document.createElement("thead");
+const tbody=document.createElement("tbody");
+
+/* HEADER */
+
+const trh=document.createElement("tr");
+
+data[0].forEach(h=>{
+
+const th=document.createElement("th");
+th.textContent=h;
+
+trh.appendChild(th);
+
+});
+
+thead.appendChild(trh);
+
+/* BODY */
+
+let rows=data.slice(1);
+
+if(limit10) rows=rows.slice(0,10);
+
+rows.forEach(r=>{
+
+const tr=document.createElement("tr");
+
+for(let i=0;i<fixedHeader.length;i++){
+
+const td=document.createElement("td");
+td.textContent=r[i]||"";
+
+tr.appendChild(td);
+
+}
+
+tbody.appendChild(tr);
+
+});
+
+table.append(thead,tbody);
+
+}
+
+/* ========= INIT ========= */
+
+document.addEventListener("DOMContentLoaded",loadMIPLDATATABLE);
+
 </script>
 <!---------------------------- DATAMIPLTABLE SCRIPT END ---------------------------------------- -->
 
@@ -4752,10 +4811,69 @@ const sheetHeaders = {
 
 /* ================= GLOBAL CACHE ================= */
 let ledgerList = [];
-let selectedMFTLedger = "";
 let reffPOList = [];
+let selectedMFTLedger = "";
+let selectedReffPO = "";
 let sheetCache = [];
 let ledgerIndex = -1;
+let reffIndex = -1;
+
+
+/* ================= GLOBAL OUTSIDE CLICK ================= */
+document.addEventListener("click", function(e){
+
+  const activeForm = getActiveForm();
+  if(!activeForm) return;
+
+  const ledgerInput = activeForm.querySelector("#DpSRRSearch");
+  const ledgerDrop = activeForm.querySelector(".ledgerDropdown");
+
+  const reffInput = activeForm.querySelector("#msaf94");
+  const reffDrop = activeForm.querySelector(".reffPODropdown");
+
+  /* ===== LEDGER ===== */
+
+  if(ledgerDrop && ledgerDrop.style.display === "block"){
+    if(!ledgerInput?.contains(e.target) && !ledgerDrop.contains(e.target)){
+
+      ledgerDrop.style.display = "none";
+
+      if(ledgerInput.value !== selectedMFTLedger){
+
+        if(ledgerList.includes(ledgerInput.value)){
+          selectedMFTLedger = ledgerInput.value;
+        }
+        else{
+          ledgerInput.value = "";
+        }
+
+      }
+
+    }
+  }
+
+  /* ===== REFF ===== */
+
+  if(reffDrop && reffDrop.style.display === "block"){
+    if(!reffInput?.contains(e.target) && !reffDrop.contains(e.target)){
+
+      reffDrop.style.display = "none";
+
+      if(reffInput.value !== selectedReffPO){
+
+        if(reffPOList.includes(reffInput.value)){
+          selectedReffPO = reffInput.value;
+        }
+        else{
+          reffInput.value = "";
+        }
+
+      }
+
+    }
+  }
+
+});
 
 /* ================= GET ACTIVE FORM ================= */
 function getActiveForm(){
@@ -4785,6 +4903,7 @@ async function loadActiveTable(){
 
     createTable(sheetName, rows);
     loadLedgerList(rows);
+    loadReffPOList(rows);
 
   }catch(e){
     console.error("Error loading table:", e);
@@ -4806,12 +4925,10 @@ function applySheetFilters(sheetName, rows){
 
   const filterActive = searchValue || startDate || endDate;
 
-  /* ===== SEARCH ===== */
   if(searchValue){
     body = body.filter(row => row.some(cell => (cell||"").toLowerCase().includes(searchValue)));
   }
 
-  /* ===== DATE FILTER ===== */
   if(startDate || endDate){
     body = body.filter(row => {
 
@@ -4835,11 +4952,13 @@ function applySheetFilters(sheetName, rows){
     });
   }
 
-  /* ===== DEFAULT MODE ===== */
-  if(!filterActive){
-    body.sort((a,b)=> Number(b[0]||0)-Number(a[0]||0));
-    body = body.slice(0,80);
-  }
+ /* ===== SORT ALWAYS DESCENDING ===== */
+body.sort((a,b)=> Number(b[0]||0)-Number(a[0]||0));
+
+/* ===== DEFAULT MODE LIMIT ===== */
+if(!filterActive){
+  body = body.slice(0,250);
+}
 
   rows.splice(0, rows.length, ...[header,...body]);
 
@@ -4883,7 +5002,6 @@ function createTable(sheetName, rows){
       tr.appendChild(td);
     });
 
-    /* ===== ROW COLOR ===== */
     const type = (row[2] || "").toUpperCase();
 
     if(type==="RECEIPT"||type==="X"||type==="REJECT"||type==="CANCELED"){
@@ -4907,12 +5025,6 @@ function createTable(sheetName, rows){
 /* ================= LEDGER LIST ================= */
 function loadLedgerList(rows){
 
-  const activeForm = getActiveForm();
-  if(!activeForm) return;
-
-  const input = activeForm.querySelector("#DpSRRSearch");
-  if(!input) return;
-
   const set = new Set();
 
   rows.forEach((row,i)=>{
@@ -4924,7 +5036,44 @@ function loadLedgerList(rows){
 
 }
 
-/* ================= LEDGER FILTER DROPDOWN ================= */
+/* ================= REFF LIST ================= */
+function loadReffPOList(rows){
+
+  const activeForm = getActiveForm();
+  if(!activeForm) return;
+
+  const ledgerInput = activeForm.querySelector("#DpSRRSearch");
+  const selectedLedger = ledgerInput?.value || "";
+
+  const set = new Set();
+
+  rows.forEach((row,i)=>{
+
+    if(i===0) return;
+
+    const ledger = row[4] || "";
+    const reff   = row[6] || "";
+
+    if(reff){
+
+      if(selectedLedger){
+        if(ledger === selectedLedger){
+          set.add(reff);
+        }
+      }
+      else{
+        set.add(reff);
+      }
+
+    }
+
+  });
+
+  reffPOList = [...set].sort();
+
+}
+
+/* ================= LEDGER DROPDOWN ================= */
 function filterLedgerDropdown(){
 
   const activeForm = getActiveForm();
@@ -4933,43 +5082,110 @@ function filterLedgerDropdown(){
   const input = activeForm.querySelector("#DpSRRSearch");
   const dropdown = activeForm.querySelector(".ledgerDropdown");
 
-  if(!input || !dropdown) return;
-
   const value = input.value.toLowerCase();
-  dropdown.innerHTML = "";
-  ledgerIndex = -1;
+  dropdown.innerHTML="";
+  ledgerIndex=-1;
 
   const filtered = ledgerList.filter(v => v.toLowerCase().includes(value));
 
-  filtered.forEach((item,i)=>{
-    const div = document.createElement("div");
-    div.className="ledger-item";
-    div.textContent = item;
+  filtered.forEach(item=>{
 
-    div.onclick = ()=>{
-      input.value = item;
-      selectedMFTLedger = item;
-      dropdown.style.display = "none";
+    const div=document.createElement("div");
+    div.className="ledger-item";
+    div.textContent=item;
+
+    div.onclick=()=>{
+      input.value=item;
+      selectedMFTLedger=item;
+      dropdown.style.display="none";
+       loadReffPOList(sheetCache);   // 🔹 refresh reff dropdown
     };
 
     dropdown.appendChild(div);
+
   });
 
-  /* ===== CREATE NEW ===== */
-  const newBtn = document.createElement("div");
+  const newBtn=document.createElement("div");
   newBtn.className="ledger-item ledger-new";
   newBtn.textContent="Create New ➕";
-  newBtn.onclick = ()=>{
-    const newLedger = prompt("Enter New Ledger Name");
-    if(newLedger){
-      input.value = newLedger;
-      selectedMFTLedger = newLedger;
-      dropdown.style.display = "none";
-    }
-  };
-  dropdown.appendChild(newBtn);
 
+newBtn.onclick=()=>{
+  const newLedger=prompt("Enter New Ledger Name");
+
+  if(newLedger){
+
+    input.value=newLedger;
+    selectedMFTLedger=newLedger;
+
+    ledgerList.push(newLedger);
+    ledgerList.sort();
+
+    dropdown.style.display="none";
+
+  }
+
+};
+
+  dropdown.appendChild(newBtn);
   dropdown.style.display="block";
+
+}
+
+/* ================= REFF DROPDOWN ================= */
+function filterReffDropdown(){
+
+  const activeForm = getActiveForm();
+  if(!activeForm) return;
+
+  const input = activeForm.querySelector("#msaf94");
+  const dropdown = activeForm.querySelector(".reffPODropdown");
+
+  const value = input.value.toLowerCase();
+  dropdown.innerHTML="";
+  reffIndex=-1;
+
+  const filtered = reffPOList.filter(v => v.toLowerCase().includes(value));
+
+  filtered.forEach(item=>{
+
+    const div=document.createElement("div");
+    div.className="ledger-item";
+    div.textContent=item;
+
+    div.onclick=()=>{
+      input.value=item;
+      selectedReffPO=item;
+      dropdown.style.display="none";
+    };
+
+    dropdown.appendChild(div);
+
+  });
+
+  const newBtn=document.createElement("div");
+  newBtn.className="ledger-item ledger-new";
+  newBtn.textContent="Create New ➕";
+
+ newBtn.onclick=()=>{
+  const newVal=prompt("Enter New Reff / PO");
+
+  if(newVal){
+
+    input.value=newVal;
+    selectedReffPO=newVal;
+
+    reffPOList.push(newVal);
+    reffPOList.sort();
+
+    dropdown.style.display="none";
+
+  }
+
+};
+
+  dropdown.appendChild(newBtn);
+  dropdown.style.display="block";
+
 }
 
 /* ================= GLOBAL FILTER ================= */
@@ -4977,84 +5193,70 @@ function applyMFTFilters(){
   loadActiveTable();
 }
 
-/* ===== DATE FORMAT FUNCTION ===== */
+/* ================= DATE FORMAT ================= */
 function formatDate(dateStr){
+
   if(!dateStr) return "";
 
   const d = new Date(dateStr);
 
-  const months = ["Jan","Feb","Mar","Apr","May","Jun",
-                  "Jul","Aug","Sep","Oct","Nov","Dec"];
+  const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
-  return d.getDate() + "-" + months[d.getMonth()] + "-" + d.getFullYear();
+  return d.getDate()+"-"+months[d.getMonth()]+"-"+d.getFullYear();
+
 }
 
-/* ===== TIMESTAMP FUNCTION ===== */
+/* ================= TIMESTAMP ================= */
 function getTimestamp(){
 
-  const d = new Date();
+  const d=new Date();
 
-  const months = ["Jan","Feb","Mar","Apr","May","Jun",
-                  "Jul","Aug","Sep","Oct","Nov","Dec"];
+  const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
-  let hours = d.getHours();
-  const minutes = d.getMinutes().toString().padStart(2,"0");
-  const ampm = hours >= 12 ? "PM" : "AM";
+  let hours=d.getHours();
+  const minutes=d.getMinutes().toString().padStart(2,"0");
+  const ampm=hours>=12?"PM":"AM";
 
-  hours = hours % 12;
-  hours = hours ? hours : 12;
+  hours=hours%12;
+  hours=hours?hours:12;
 
   return `${d.getDate()}-${months[d.getMonth()]}-${d.getFullYear()} ${hours}:${minutes} ${ampm}`;
+
 }
 
-
-/* ================= PRINT FUNCTION ================= */
-
+/* ================= PRINT ================= */
 document.getElementById("MFTPrint")?.addEventListener("click", function(){
 
-  const table = document.querySelector("#multiformTable table:last-child");
+  const table=document.querySelector("#multiformTable table:last-child");
   if(!table) return;
 
-  const startDate = formatDate(document.getElementById("startMFTDate")?.value);
-  const endDate   = formatDate(document.getElementById("endMFTDate")?.value);
+  const startDate=formatDate(document.getElementById("startMFTDate")?.value);
+  const endDate=formatDate(document.getElementById("endMFTDate")?.value);
 
-  const totalsHTML = document.getElementById("formdTotalsBox")?.innerHTML || "";
+  const totalsHTML=document.getElementById("formdTotalsBox")?.innerHTML || "";
+  const timeStamp=getTimestamp();
 
-  const timeStamp = getTimestamp();
-
-  const win = window.open("","_blank","width=900,height=700");
+  const win=window.open("","_blank","width=900,height=700");
 
   win.document.write(`
+
   <html>
   <head>
   <title>Print</title>
   <style>
   body{font-family:Arial;padding:20px}
-
   table{border-collapse:collapse;width:100%}
   th,td{border:1px solid #000;padding:6px}
   th{background:#f2f2f2}
-
-  .header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:10px;
-  }
-
-  .timestamp{
-    font-size:13px;
-    color:#444;
-  }
-
+  .header{display:flex;justify-content:space-between}
   </style>
   </head>
 
   <body>
 
   <div class="header">
-    <h2>Display Report</h2>
-    <div class="timestamp">${timeStamp}</div>
+  <h2>Display Report</h2>
+  <div>${timeStamp}</div>
   </div>
 
   <div><b>From:</b> ${startDate} &nbsp;&nbsp; <b>To:</b> ${endDate}</div>
@@ -5069,10 +5271,12 @@ document.getElementById("MFTPrint")?.addEventListener("click", function(){
 
   </body>
   </html>
+
   `);
 
   win.document.close();
   win.print();
+
 });
 
 /* ================= EVENTS ================= */
@@ -5083,110 +5287,43 @@ document.getElementById("searchMFTInput")?.addEventListener("input", applyMFTFil
 document.getElementById("startMFTDate")?.addEventListener("change", applyMFTFilters);
 document.getElementById("endMFTDate")?.addEventListener("change", applyMFTFilters);
 
-/* ================= GLOBAL OUTSIDE CLICK ================= */
-document.addEventListener("click", function(e){
-
-  const activeForm = getActiveForm();
-  if(!activeForm) return;
-
-  const ledgerInput = activeForm.querySelector("#DpSRRSearch");
-  const ledgerDrop = activeForm.querySelector(".ledgerDropdown");
-
-  const reffInput = activeForm.querySelector("#msaf94");
-  const reffDrop = activeForm.querySelector(".reffPODropdown");
-
-   if(ledgerDrop && ledgerDrop.style.display === "block"){
-    if(!ledgerInput?.contains(e.target) && !ledgerDrop.contains(e.target)){
-      ledgerDrop.style.display = "none";
-
-      // 🔹 Ledger input validation
-      if(ledgerInput.value !== selectedMFTLedger){
-        if(ledgerList.includes(ledgerInput.value)){
-          selectedMFTLedger = ledgerInput.value; // valid existing option
-        } else {
-          ledgerInput.value = "";               // invalid, clear input
-        }
-      }
-    }
-  }
-
-  if(reffDrop && reffDrop.style.display === "block"){
-    if(!reffInput?.contains(e.target) && !reffDrop.contains(e.target)){
-      reffDrop.style.display = "none";
-    }
-  }
-});
-
-/* ================= LEDGER KEYBOARD NAVIGATION ================= */
-document.addEventListener("keydown", function(e){
-
-  const activeForm = getActiveForm();
-  if(!activeForm) return;
-
-  const input = activeForm.querySelector("#DpSRRSearch");
-  const dropdown = activeForm.querySelector(".ledgerDropdown");
-  if(!dropdown || dropdown.style.display !== "block") return;
-
-  const items = dropdown.querySelectorAll(".ledger-item");
-
-  if(e.key === "ArrowDown"){
-    ledgerIndex++;
-    if(ledgerIndex >= items.length) ledgerIndex = 0;
-    highlightLedger(items);
-    e.preventDefault();
-  } else if(e.key === "ArrowUp"){
-    ledgerIndex--;
-    if(ledgerIndex < 0) ledgerIndex = items.length - 1;
-    highlightLedger(items);
-    e.preventDefault();
-  } else if(e.key === "Enter"){
-    if(ledgerIndex >= 0){
-      items[ledgerIndex].click();
-      e.preventDefault();
-    }
-  }
-});
-
-/* ================= HIGHLIGHT FUNCTION ================= */
-function highlightLedger(items){
-  items.forEach(i => i.classList.remove("active"));
-  if(items[ledgerIndex]) items[ledgerIndex].classList.add("active");
-}
-
-/* ================= ESC KEY CLOSE ALL DROPDOWN ================= */
-document.addEventListener("keydown", function(e){
-  if(e.key === "Escape"){
-    document.querySelectorAll(".ledgerDropdown,.reffPODropdown").forEach(d => d.style.display="none");
+/* ================= ESC CLOSE ================= */
+document.addEventListener("keydown",function(e){
+  if(e.key==="Escape"){
+    document.querySelectorAll(".ledgerDropdown,.reffPODropdown").forEach(d=>d.style.display="none");
   }
 });
 
 </script>
 
 <style>
-/* ================= CSS ================= */
-.ledgerDropdown, .reffPODropdown{
-  position:absolute;
-  background:#fff;
-  border:1px solid #ccc;
-  max-height:250px;
-  overflow-y:auto;
-  width:100%;
-  z-index:9999;
+
+.ledgerDropdown,.reffPODropdown{
+position:absolute;
+background:#fff;
+border:1px solid #ccc;
+max-height:250px;
+overflow-y:auto;
+width:100%;
+z-index:9999;
 }
+
 .ledger-item{
-  padding:8px;
-  cursor:pointer;
+padding:8px;
+cursor:pointer;
 }
+
 .ledger-item:hover,
 .ledger-item.active{
-  background:#007bff;
-  color:#fff;
+background:#007bff;
+color:#fff;
 }
-.ledger-new{
-  font-weight:bold;
-}
-</style>
 
+.ledger-new{
+font-weight:bold;
+}
+
+</style>
 <!-- ======= -- script 4 --- ========== Multiform Voucher LEDGER BASED TABLE FILTER + DATAD DOUBLE FILTER LOGIC Start ==================== -->
 
 <script>
@@ -5899,7 +6036,28 @@ function renderTable(sheet){
   const config = reportConfig[sheet];
   table786Body.innerHTML = "";
 
-  filteredData.sort((a,b) => Number(b[0]) - Number(a[0])); // SORT DESCENDING
+  // filteredData.sort((a,b) => Number(b[0]) - Number(a[0])); // SORT DESCENDING by srno no
+filteredData.sort((a, b) => {
+
+  const parseDate = (str) => {
+    if(!str) return new Date(0);
+
+    const parts = str.trim().split("-");
+    const day = parseInt(parts[0],10);
+    const mon = parts[1].substring(0,3);
+    const year = parseInt(parts[2],10);
+
+    const months = {
+      Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,
+      Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11
+    };
+
+    return new Date(year, months[mon], day);
+  };
+
+  return parseDate(b[3]) - parseDate(a[3]); // column index 3 = Date
+});
+//
 
   let totalTds = 0, totalReceipt = 0, totalBill = 0, totalCn = 0, totalPEBWeight = 0;
 
@@ -10034,78 +10192,107 @@ document.addEventListener("click", (e) => {
 
 
 
+
+
+
 <!-- ========= Buttan Configure Details List Start Hare  ---------- ============ -->
+<!-- ========= Button Configure Details List Start Here ---------- ============ -->
+
+<!-- Sidebar Open Button -->
+<button onclick="togglesidebarNotes()" style="padding:6px 12px;">📑 Notes</button>
+
 <div class="sidebarnotes">
 
+<div id="notesBox" class="notes" style="font-size:14px;">
 
-  <div id="notesBox" class="notes" style="font-size: 14px;">
-
-    <!-- Close Button -->
+<!-- Close Button -->
 <button class="closesidebarBtn" onclick="togglesidebarNotes()">✖</button>
+<br/><br/>
 
- <p style="color: red;"> (mfvbtn="1") -  Buttan Mapping </p>
- <p onclick="showSection(4)" style="cursor: pointer; color: #0026ff;"> 1- Dishplay Ledger Report  </p>
- <p onclick="showSection(5)" style="cursor: pointer; color: #0026ff; "> 2- Cash Ledger Report  </p>
- <p onclick="showSection(6)" style="cursor: pointer; color: #0026ff;"> 3- Imprest Voucher Report  </p>
-  <p onclick="showSection(7)" style="cursor: pointer; color: #0026ff;"> 4- Tools  </p>
- <p > 4- Attendance  | 5- ID/Password </p>
- <p> 11- Packing List | 12- Url & Link Dropdown </p>
-  <p style="color: red;">--- Global Serch --- </p>
- <p> 15- Document View in Global Search </p>
- <p> 16- PO/Reff View in Global Search </p>
-  <p onclick="showSection(3); showVoucher(1);" style="cursor: pointer; color: #0026ff;"> 21- Store Voucher </p>
- <p onclick="showSection(3);showVoucher(2);"style="cursor: pointer; color: #0026ff;"> 22- Contactor Voucher </p>
- <p onclick="showSection(3);showVoucher(3);"style="cursor: pointer; color: #0026ff;"> 23- Cash Voucher </p>
- <p onclick="showSection(3);showVoucher(4);"style="cursor: pointer; color: #0026ff;"> 24- Sales Voucher </p>
- <p onclick="showSection(3);showVoucher(5);"style="cursor: pointer; color: #0026ff;"> 25- Banking Voucher </p>
- <p onclick="showSection(3);showVoucher(6);"style="cursor: pointer; color: #0026ff;"> 26- Payment Demand Voucher </p>
- <p onclick="showSection(3);showVoucher(7);"style="cursor: pointer; color: #0026ff;"> 27- PO/Reff Voucher </p>
- <p onclick="showSection(3);showVoucher(8);"style="cursor: pointer; color: #0026ff;"> 28- Admin* </p>
+<!-- ===== BUTTON 1 ===== -->
+<button class="noteBtn" onclick="toggleNote(1)">📑 Button Mapping</button>
 
- <p> 30- Vcr 21 BTN Submit |  </p>
- <p> 31- Vcr 24 BTN Submit </p>
- <p> 32- Vcr 26 BTN Submit | 33- BTN Modify</p>
- <p> 34- Vcr 27 BTN Submit </p>
+<div id="noteContent1" class="noteContent">
 
-  <button onclick="openPOMaster()" style="cursor: pointer; color: #0026ff;">📊Job/Reff Summry</button>
+<p style="color:red;">(mfvbtn="1") - Button Mapping</p>
 
-  <p style="color: red;"> ---- Input Configure Code --- </p>
-  <p>class="username" - For User Name </p>
- <p>class="usercode" - For User Code </p>
- <p>nputfont="font" - For First Letter Uppercase </p>
- <p>fontcapital="capitalletter" - For All Letter Uppercase </p>
- <p>class="usercodedp" - For User Code Dropdwon </p>
- <p>class="inputhide" - For Unhide input When User "MA" </p>
+<p onclick="showSection(4)" style="cursor:pointer;color:#0026ff;">1- Display Ledger Report</p>
+<p onclick="showSection(5)" style="cursor:pointer;color:#0026ff;">2- Cash Ledger Report</p>
+<p onclick="showSection(6)" style="cursor:pointer;color:#0026ff;">3- Imprest Voucher Report</p>
+<p onclick="showSection(7)" style="cursor:pointer;color:#0026ff;">4- Tools</p>
 
-
-  </div>
+<p>4- Attendance | 5- ID/Password</p>
+<p>11- Packing List | 12- Url & Link Dropdown</p>
+  <p style="color: red;">--- 🔎 Global Serch --- </p>
+ <p> 15- Document View  | 16- PO/Reff View </p>
+<p onclick="openPOMaster()" style="cursor:pointer;color:#0026ff;">📊 Job/Reff Summary</p>
 </div>
 
+
+<!-- ===== BUTTON 2 ===== -->
+<button class="noteBtn" onclick="toggleNote(2)">Voucher Buttan</button>
+
+<div id="noteContent2" class="noteContent">
+
+<p onclick="showSection(3); showVoucher(1);" style="cursor:pointer;color:#0026ff;">21- Store Voucher</p>
+<p onclick="showSection(3);showVoucher(2);" style="cursor:pointer;color:#0026ff;">22- Contractor Voucher</p>
+<p onclick="showSection(3);showVoucher(3);" style="cursor:pointer;color:#0026ff;">23- Cash Voucher</p>
+<p onclick="showSection(3);showVoucher(4);" style="cursor:pointer;color:#0026ff;">24- Sales Voucher</p>
+<p onclick="showSection(3);showVoucher(5);" style="cursor:pointer;color:#0026ff;">25- Banking Voucher</p>
+<p onclick="showSection(3);showVoucher(6);" style="cursor:pointer;color:#0026ff;">26- Payment Demand Voucher | 32 (S) / 33 (M)</p>
+<p onclick="showSection(3);showVoucher(7);" style="cursor:pointer;color:#0026ff;">27- PO/Reff Voucher</p>
+<p onclick="showSection(3);showVoucher(7);" style="cursor:pointer;color:#0026ff;">28- Admin* Voucher</p>
+
+</div>
+
+
+<!-- ===== BUTTON 3 ===== -->
+<button class="noteBtn" onclick="toggleNote(3)">⚙ Input Configure</button>
+
+<div id="noteContent3" class="noteContent">
+
+<p style="color:red;">---- Input Configure Code ----</p>
+
+<p>class="username" - For User Name</p>
+<p>class="usercode" - For User Code</p>
+<p>nputfont="font" - For First Letter Uppercase</p>
+<p>fontcapital="capitalletter" - For All Letter Uppercase</p>
+<p>class="usercodedp" - For User Code Dropdown</p>
+<p>class="inputhide" - For Unhide input When User "MA"</p>
+
+</div>
+
+</div>
+</div>
+
+<!-- ========= Button Configure Details List Stop Here ---------- ============ -->
+
+
 <style>
+
 .sidebarnotes{
-  position: relative;
-  display: inline-block;
+  position:relative;
+  display:inline-block;
 }
 
 .notes{
-  position: fixed;
-  top: 55px;
-  right: -440px; /* hidden outside screen */
-  height: 88vh;
-  width: 420px;
-  background: white;
-  border-left: 5px solid red;
-  padding: 20px;
-  box-shadow: -5px 0 10px rgba(0,0,0,0.3);
-  transition: right 0.4s ease;
+  position:fixed;
+  top:55px;
+  right:-440px;
+  height:88vh;
+  width:420px;
+  background:white;
+  border-left:5px solid red;
+  padding:20px;
+  box-shadow:-5px 0 10px rgba(0,0,0,0.3);
+  transition:right 0.4s ease;
+  overflow-y:auto;
 }
 
-/* show popup */
 .notes.show{
-  right: 0;
+  right:0;
 }
 
-/* close button style */
 .closesidebarBtn{
   position:absolute;
   top:10px;
@@ -10118,13 +10305,62 @@ document.addEventListener("click", (e) => {
   padding:4px 8px;
   border-radius:4px;
 }
+
+/* accordion buttons */
+
+.noteBtn{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border:none;
+  background:#0093A1;
+  color:white;
+  font-weight:bold;
+  text-align:left;
+  cursor:pointer;
+  border-radius:4px;
+}
+
+.noteBtn:hover{
+  background:#001bb3;
+}
+
+/* accordion content */
+
+.noteContent{
+  display:none;
+  padding:10px;
+  border:1px solid #ddd;
+  border-top:none;
+  background:#f9f9f9;
+}
+
 </style>
 
+
 <script>
+
+/* sidebar open close */
+
 function togglesidebarNotes(){
-  var box = document.getElementById("notesBox");
+  var box=document.getElementById("notesBox");
   box.classList.toggle("show");
 }
-</script>
 
+
+/* accordion toggle */
+
+function toggleNote(num){
+
+  const content=document.getElementById("noteContent"+num);
+
+  if(content.style.display==="block"){
+    content.style.display="none";
+  }else{
+    content.style.display="block";
+  }
+
+}
+
+</script>
 <!-- ========= Buttan Configure Details List stop Hare  ---------- ============ -->
