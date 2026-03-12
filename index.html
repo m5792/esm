@@ -866,7 +866,7 @@ window.onload = fetchUserData;
  <div id="section1" class="section hidden" style="border-radius: 10px;"> 
   
   
-   <div id="mipl2011Buttons" style="display: flex; gap: 8px;  border:5px solid #b5b4b4;  flex-wrap: wrap; justify-content: center; margin-bottom: 10px; background-color: rgb(226, 228, 229); padding: 2px 2px; ">
+   <div style="display: flex; gap: 8px;  border:5px solid #b5b4b4;  flex-wrap: wrap; justify-content: center; margin-bottom: 10px; background-color: rgb(226, 228, 229); padding: 2px 2px; ">
    <button onclick="showSection(2)" style="background-color: rgb(255, 255, 255);color: rgb(2, 57, 82);font-size: 18px; border: 3px solid rgb(164, 165, 165); cursor: pointer; border-radius: 6px;" id="f2">Cash Data Voucher &nbsp;<span style="color: rgb(247, 149, 149); font-weight: bold;">(F2)</button>
     <button onclick="showSection(3)" style="background-color: rgb(255, 255, 255);color: rgb(2, 57, 82);font-size: 18px; border: 3px solid rgb(164, 165, 165); cursor: pointer; border-radius: 6px;" id="f3">Accounting Voucher &nbsp;<span style="color: rgb(247, 149, 149); font-weight: bold;">(F3)</button>
 
@@ -1020,7 +1020,7 @@ window.onload = fetchUserData;
     <select id="monthDropdown" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width:200px; width: 1.5in; background-color: rgb(1, 42, 61); color: white;"></select>
 <sapn id="monthlyTotals"></sapn>
 
-  <style> #MIPLDATATABLE {overflow-x: auto; display: block; max-height: 500px; /*heder alwayas fix on top and table scrolling  */} </style>
+  <style> #MIPLDATATABLE {overflow-x: auto; display: block; max-height: 530px; /*heder alwayas fix on top and table scrolling  */} </style>
 <table id="MIPLDATATABLE"></table>
 
 </td>
@@ -1296,7 +1296,8 @@ document.addEventListener("DOMContentLoaded", () => {
     { value: "IV10", text: "Ajay Kumar - IV10" },   //10
     { value: "IV11", text: "Ravinder Kumar - IV11" },  //11
     { value: "IV12", text: "Mahender - IV12" },  // 12
-    { value: "IV13", text: "Suresh - IV13" }  // 12
+    { value: "IV13", text: "Suresh - IV13" }, //13
+     { value: "IV14", text: "LESHANT IM - IV14" }  // 14
   ];
 
   /* =====================================================
@@ -1585,17 +1586,34 @@ document.addEventListener("DOMContentLoaded", enableJournalExtraOptions);
 }
 
 .mybtn1{
-    background-color: rgb(237, 238, 238);
-    color: rgb(0, 16, 24);
+    background-color: rgb(2, 99, 123);
+    color: rgb(252, 252, 253);
     font-size: 18px;
     border: 3px solid rgb(164, 165, 165);
     cursor: pointer;
     border-radius: 6px;
+
+    
 }
+
+/* Cursor le jane par white */
+
+/* Cursor le jane par white */
+#mybtnDiv .mybtn1:hover{
+    background-color: white;
+    color: black;
+}
+
+/* Click karke select hone par green */
+#mybtnDiv .mybtn1:focus{
+    background-color: rgb(175, 1, 1);
+    color: white;
+}
+
 
 </style>
 
-  <div id="mipl2011Buttons" style="display: flex; gap: 8px;  border:5px solid #adacac;  flex-wrap: wrap; justify-content: center; margin-bottom: 10px; background-color: rgb(236, 237, 238); padding: 2px 2px; ">
+  <div id="mybtnDiv" style="display: flex; gap: 15px;  border:5px solid #adacac;  flex-wrap: wrap; justify-content: center; margin-bottom: 10px; background-color: rgb(0, 75, 121); padding: 2px 2px; ">
     <button class="mybtn1"   onclick="showVoucher(0)">Home</button>
     <button class="mybtn1"  mfvbtn="21" onclick="showVoucher(1)">Store Voucher</button>
     <button class="mybtn1"  mfvbtn="22" onclick="showVoucher(2)">Contactor Voucher</button>
@@ -2880,7 +2898,7 @@ th {
 
 </div>
 
-<table id="dlrtable"><thead id="table786Head"></thead><tbody id="table786Body"></tbody></table>
+<table id="dlrtable"><thead id="table786Head"></thead><tbody id="table786Body"></tbody> Please Wait!....</table>
 
 </div>
  <!--   =============   divclas="A" containt =============== stop  -->
@@ -3986,7 +4004,7 @@ document.addEventListener("keydown", function (e) {
 
 const apidbookKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";  
 const sheetdbookId = "1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU";
-const rangedbook = "DATAD!A:K";
+const rangedbook = "DATAD!A:L";
 
 let allDBookData  = [];
 let monthlyTotals = {};
@@ -10234,14 +10252,14 @@ document.addEventListener("click", (e) => {
 
 <div id="noteContent2" class="noteContent">
 
-<p onclick="showSection(3); showVoucher(1);" style="cursor:pointer;color:#0026ff;">21- Store Voucher</p>
+<p onclick="showSection(3); showVoucher(1);" style="cursor:pointer;color:#0026ff;">21- Store Voucher | 30 (S) </p> 
 <p onclick="showSection(3);showVoucher(2);" style="cursor:pointer;color:#0026ff;">22- Contractor Voucher</p>
 <p onclick="showSection(3);showVoucher(3);" style="cursor:pointer;color:#0026ff;">23- Cash Voucher</p>
-<p onclick="showSection(3);showVoucher(4);" style="cursor:pointer;color:#0026ff;">24- Sales Voucher</p>
+<p onclick="showSection(3);showVoucher(4);" style="cursor:pointer;color:#0026ff;">24- Sales Voucher | 31 (S)</p>
 <p onclick="showSection(3);showVoucher(5);" style="cursor:pointer;color:#0026ff;">25- Banking Voucher</p>
 <p onclick="showSection(3);showVoucher(6);" style="cursor:pointer;color:#0026ff;">26- Payment Demand Voucher | 32 (S) / 33 (M)</p>
 <p onclick="showSection(3);showVoucher(7);" style="cursor:pointer;color:#0026ff;">27- PO/Reff Voucher</p>
-<p onclick="showSection(3);showVoucher(7);" style="cursor:pointer;color:#0026ff;">28- Admin* Voucher</p>
+<p onclick="showSection(3);showVoucher(8);" style="cursor:pointer;color:#0026ff;">28- Admin* Voucher</p>
 
 </div>
 
@@ -10261,6 +10279,10 @@ document.addEventListener("click", (e) => {
 <p>class="inputhide" - For Unhide input When User "MA"</p>
 
 </div>
+
+<br/>
+<p onclick="window.open('https://docs.google.com/spreadsheets/d/1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU/edit?gid=1462163867#gid=1462163867','_blank')" style="cursor:pointer;color:#0026ff;">Master Data Google Sheet</p>
+<p onclick="window.open('https://docs.google.com/spreadsheets/d/1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4/edit?gid=2007779252#gid=2007779252','_blank')" style="cursor:pointer;color:#0026ff;">Address, Event Other Google Sheet</p>
 
 </div>
 </div>
