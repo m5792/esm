@@ -52,7 +52,8 @@ padding:10px 15px;
 }
 
 .menu button,
-.menu input{
+.menu input,
+.menu select{
 background:#156da8;
 border:none;
 color:white;
@@ -262,7 +263,60 @@ DATACARE SOFTECH
  <button onclick="showReport('homeDashboard')" style="cursor: pointer; color: rgb(241, 201, 201);">Home</button>
 <button onclick="togglesidebarNotes()" style="cursor: pointer;">Shortcuts Menu</button>
 <button onclick="openPOMaster()"  style="cursor: pointer;">Job/Reff Summrry</button>
-<button onclick="openPage('reminder')"  style="cursor: pointer;">Reminder</button>
+<select id="voucherSelect" onchange="showVoucher(this.value)" >
+<option value="0">Store Voucher</option>
+<option value="1">Contactor Voucher</option>
+<option value="2">Cash Voucher</option>
+<option value="3">Sales Voucher</option>
+<option value="4">Banking Voucher</option>
+<option value="5">Payment Demand Voucher</option>
+<option value="6">PO/Reff Voucher</option>
+<option value="7">Admin*</option>
+
+</select>
+
+
+
+
+<script>
+
+function showVoucher(index){
+
+  index = parseInt(index); // dropdown value ko number banao
+
+  const forms = document.querySelectorAll("#formsWrapper .multiform-container");
+
+  forms.forEach((form,i)=>{
+    if(i === index){
+      form.classList.add("active-form");
+    }else{
+      form.classList.remove("active-form");
+    }
+  });
+
+  document.dispatchEvent(
+    new CustomEvent("multiformChanged",{
+      detail:{index:index}
+    })
+  );
+}
+
+/* default first form */
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+  const forms = document.querySelectorAll("#formsWrapper .multiform-container");
+
+  if(forms.length){
+    forms[0].classList.add("active-form");
+  }
+
+});
+
+</script>
+
+
+
 </div>
 
 <div class="cash">
@@ -1336,7 +1390,7 @@ function render785Table(rows, searchText="") {
   const config = table785Config[currentFilterType];
   if (!config) return;
 
-  // Header
+  // ===== HEADER =====
   const headerRow = document.createElement("tr");
   config.headers.forEach(h => {
     const th = document.createElement("th");
@@ -1345,8 +1399,48 @@ function render785Table(rows, searchText="") {
   });
   table785Head.appendChild(headerRow);
 
-  // Body
-  rows.slice(1).forEach(r => {
+
+  // ===== DATA COPY =====
+  let filteredData = rows.slice(1);
+
+
+  // ===== SORTING =====
+  filteredData.sort((a, b) => {
+
+    const parseDate = (str) => {
+      if (!str) return null;
+
+      const parts = str.trim().split("-");
+      if (parts.length !== 3) return null;
+
+      const day = parseInt(parts[0], 10);
+      const mon = parts[1].substring(0, 3);
+      const year = parseInt(parts[2], 10);
+
+      const months = {
+        Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,
+        Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11
+      };
+
+      if (months[mon] === undefined) return null;
+
+      return new Date(year, months[mon], day);
+    };
+
+    const dateA = parseDate(a[2]); 
+    const dateB = parseDate(b[2]);
+
+    if (dateA && dateB) {
+      return dateB - dateA;
+    }
+
+    return Number(b[0]) - Number(a[0]);
+
+  });
+
+
+  // ===== RENDER ROWS =====
+  filteredData.forEach(r => {
 
     const rowText = r.join(" ").toLowerCase();
     if (searchText && !rowText.includes(searchText.toLowerCase())) return;
@@ -1354,6 +1448,7 @@ function render785Table(rows, searchText="") {
     const tr = document.createElement("tr");
 
     config.cols.forEach(colIndex => {
+
       const td = document.createElement("td");
       let cellText = r[colIndex] || "";
 
@@ -1369,9 +1464,10 @@ function render785Table(rows, searchText="") {
     });
 
     table785Body.appendChild(tr);
-  });
-}
 
+  });
+
+}
 // ================= APPLY FILTER =================
 function apply785Filter() {
 
@@ -3437,6 +3533,14 @@ alert("PO File Not Found");
   <input type="text" id="searchInput" placeholder="Search By Ration Card No. Name, Last 4 Digit Adhar & Mobail...." onkeyup="rationcardsearch()" style="font-size:18px; padding:5px; width:750px; background-color: #fefaf6;">
 </div>
 
+<style>
+  #results{
+  overflow-x: auto;
+  display: block;
+  max-height: 400px; /* vertical scrolling */
+  overflow-y: auto;
+}
+</style>
 <div id="results"></div>
 
 </div>
@@ -3505,15 +3609,21 @@ function rationcardsearch() {
 
     filtered.forEach(item => {
         // Show header if sheet changes
-        if (lastSheet !== item.sheet) {
-            const headerDiv = document.createElement("div");
-            headerDiv.style.backgroundColor = "#f0f0f0";
-            headerDiv.style.fontWeight = "bold";
-            headerDiv.style.padding = "5px";
-            headerDiv.innerHTML = `<b>${item.sheet}</b> → ${item.header.join(" | ")}`;
-            resultsDiv.appendChild(headerDiv);
-            lastSheet = item.sheet;
-        }
+      if (lastSheet !== item.sheet) {
+
+    const headerDiv = document.createElement("div");
+    headerDiv.style.backgroundColor = "#f0f0f0";
+    headerDiv.style.fontWeight = "bold";
+    headerDiv.style.padding = "5px";
+
+    const redSeparator = '<span style="color:red;"> | </span>';
+
+    headerDiv.innerHTML = `<b>${item.sheet}</b> → ${item.header.join(redSeparator)}`;
+
+    resultsDiv.appendChild(headerDiv);
+
+    lastSheet = item.sheet;
+}
 
         // Highlight match
         const highlightedRow = item.row.map(cell => {
@@ -3525,11 +3635,15 @@ function rationcardsearch() {
         });
 
         // Add result row
-        const div = document.createElement("div");
-        div.style.padding = "5px";
-        div.style.borderBottom = "1px solid #ccc";
-        div.innerHTML = highlightedRow.join(" | ");
-        resultsDiv.appendChild(div);
+       const div = document.createElement("div");
+div.style.padding = "5px";
+div.style.borderBottom = "1px solid #ccc";
+
+const redSeparator = '<span style="color:red;"> | </span>';
+
+div.innerHTML = highlightedRow.join(redSeparator);
+
+resultsDiv.appendChild(div);
     });
 }
 
