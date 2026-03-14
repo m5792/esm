@@ -1,314 +1,476 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>PIN Based Login</title>
-   <style>
-   #mainContent {
-  padding: 20px;
-  border: 1px solid #ccc;
-  max-width: 1200px;
-  margin: 40px auto;
-  font-family: Arial;
-  background: #f9f9f9;
-  border-radius: 10px;
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0" charset="UTF-8">
+<title>MIPL Store</title>
+<style>
+/*.top-buttons{display:flex; gap:10px; margin-bottom:20px;}
+.top-buttons button{padding:8px 15px; background:#022b5a; color:white; border:none; cursor:pointer; font-weight:bold;}*/
+.multiform-container{display:none; border:5px solid #5c0f01; padding:15px;}
+.active-form{ display:block;}
+.rowdiv{
+ display:flex;
+  flex-wrap:nowrap;
+  gap:16px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  min-width:150px;
+}
+
+.field label{
+  font-size:90%;
+  margin-bottom:3px;
+}
+
+.field input,
+.field select{
+  padding:6px 8px;
+  border-radius:6px;
+  border:1px solid #ccc;
+  font-size:14px;
+}
+/* ----------------  */
+
+#formsWrapper{
+    display:flex;
+    width:100%;
+    min-height:20vh;
+    gap:15px;
+}
+
+
+
+/* Optional: Responsive */
+@media(max-width:900px){
+    #formsWrapper{
+        flex-direction:column;
     }
-
-
-  
-
-    label {
-      font-weight: bold;
-      margin-bottom: 8px;
-      display: block;
+    .fw-left, .fw-right{
+        flex:100%;
     }
+}
+</style>
 
-    tr.receipt { background-color: #ffe6e6; color: #a10404; }
-    tr.bill { background-color: #e6f3ff; color: #1d03c6; }
-    .runningBalance { font-weight: bold; }
+
+<style>
+
+.ledgerDropdown{
+  position:absolute;
+  background:#fff;
+  border:1px solid #ccc;
+  max-height:250px;
+  overflow-y:auto;
+  width:100%;
+  z-index:999;
+  display:none;
+  border-radius:6px;
+  box-shadow:0 8px 25px rgba(0,0,0,.15);
+}
+
+.ledger-item{
+  padding:10px 12px;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.ledger-item:hover{
+  background:#6dc2b4;
+}
+
+.ledger-new{
+  position:sticky;
+  bottom:0;
+  background:#014d3a;
+  color:#fff;
+  text-align:center;
+  font-weight:600;
+}
+
+
+.reffPODropdown{
+  position:absolute;
+  background:#fff;
+  border:1px solid #ccc;
+  width:100%;
+  max-height:200px;
+  overflow-y:auto;
+  z-index:9999;
+  display:none;
+}
+
+.mybtn1{
+    background-color: rgb(2, 99, 123);
+    color: rgb(252, 252, 253);
+    font-size: 18px;
+    border: 3px solid rgb(164, 165, 165);
+    cursor: pointer;
+    border-radius: 6px;
 
     
- 
-/* Base table style */
- table {
+}
+
+/* Cursor le jane par white */
+
+/* Cursor le jane par white */
+#mybtnDiv .mybtn1:hover{
+    background-color: white;
+    color: black;
+}
+
+/* Click karke select hone par green */
+#mybtnDiv .mybtn1:focus{
+    background-color: rgb(175, 1, 1);
+    color: white;
+}
+
+
+
+/* Container to control table width and responsiveness */
+.table-container {
   width: 100%;
-  margin-top: 20px;
+  overflow-x: auto;
+}
+
+ 
+ /* Table container ************/
+table{
+    width: 100%;
   border-collapse: collapse;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  table-layout: auto;
+  font-family: Arial, sans-serif;
   font-size: 14px;
+  background: #ffffff;
+  border: 1px solid #d0d0d0;
 
-}
+  }
 
-th, td {
-  border: 1px solid #e0e0e0;
-  padding: 10px 14px;
-  text-align: left;
-}
+/* Optional heder alwayas fix on top and table scrolling  */
+  table{
+  overflow-x: auto;
+  display: block;
+  max-height: 670px; /* Optional scrolling */
+  }
 
+  /* Table border & cell style */
 th {
-  background-color: #004d80;
-  color: white;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
+   background: #01305c;
+  color: #ffffff;
+  padding: 10px;
+  border: 1px solid #b5b5b5;
+  text-align: left;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  white-space: nowrap;
+  border-bottom:5px solid #dfc206;
+  }
 
-tr:nth-child(even) {
+
+ td {
+   padding: 8px 10px;
+  border: 1px solid #e0e0e0;
+  vertical-align: top;
+  word-wrap: break-word; /* Wrap long text */
+  white-space: normal;
+  }
+
+  /* Header design */
+
+
+  tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
-table tr:hover {
-  background-color: #f8c304;
-  color: rgb(1, 20, 37);
-  transition: background-color 0.3s ease, color 0.3s ease;
- 
+  /* Row hover effect */
+  tr:hover td {
+   background: #fccc49;
+ color: rgb(0, 15, 15);
+  transition: background-color 1s ease, color 1s ease;
+  }
+    
+</style>
+
+
+
+<script>
+/* ================= USER CODE MAP and Rol Difine Buttan Hide/Unhide================= */
+const userCodeMap = {
+   "Tushar Agarwal": "TA",
+  "Gurpreet": "GK",
+  "Mukhtar (Admin)": "MA",
+  "Suryabhan": "SUR10",
+  "Divesh": "DIV11",
+  "Harshit": "HAR12",
+  "Prakhar": "PRA13",
+  "Rahul Kumar": "RAH14",
+  "RAHUL MALIK": "RAH15",
+  "V.K Giri": "VIR16",
+   "NITIN": "NIT17"
+};
+
+
+/* ================= DROPDOWN CONTROL ================= */
+function updateUserDropdown(username) {
+
+  document.querySelectorAll("select.usercodedp").forEach(select => {
+
+    if (select.dataset.loaded === "yes") return;
+
+    select.innerHTML = "";
+    let options = [];
+
+    if (username === "Mukhtar (Admin)") {
+      options = ["MA","GK","SUR10","DIV11","HAR12","PRA13","RAH14","RAH15","VIR16","NIT17"];
+    } 
+    else if (username === "Gurpreet") {
+      options = ["SUR10","DIV11"];
+    } 
+    else if (userCodeMap[username]) {
+      options = [userCodeMap[username]];
+    }
+
+    options.forEach(val => {
+      let opt = document.createElement("option");
+      opt.value = val;
+      opt.textContent = val;
+      select.appendChild(opt);
+    });
+
+    select.dataset.loaded = "yes";
+  });
 }
-  </style>
-</head>
-<body>
-<div id="mainContent" style="height: 100%; overflow: hidden; background-color: #d4edfd;">
- 
-  <div id="searchSRContainer">
-    <!-- Filter controls (optional) -->
-     <label>Ledger:
-        <select id="filterSRColumn4"></select>
-    </label>
-   
-    <label>Vcr Type:
-        <select id="filterSRColumn2"></select>
-    </label>
-   <label>Status:
-        <select id="filterSRColumn1"></select>
-    </label>
-    <label>Start Date:
-        <input type="date" id="startDate">
-    </label>
-    <label>End Date:
-        <input type="date" id="endDate">
-    </label>
 
-    </div>
 
-  <!-- ✅ ONLY THIS PART SCROLLS -->
-  <div style="
-    height: calc(100% - 100px);  /* adjust based on your top content */
-    overflow-y: auto;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    font-size: 15px;
-    height: 1300px;
-    background-color: white;
-  ">
-  
-    <!-- Button 1 Divs -->  <!-- Button 1 Divs 1st start -->
-<div id="btn1-div1" class="content">
-   
-<!-- Table -->
-    <div id="tableSRContainer">
-        <table id="myTable">
-            <thead>
-                <tr>
-                    <th>SNo</th>
-                    <th>User</th>
-                    <th>Date</th>
-                    <th>Party</th>
-                    <th>Type</th>
-                    <th>Type</th>
-                    <th>Doc No.</th>
-                    <th>Weight</th>
-                    <th>Item Details</th>
-                    <th>Vehicle No.</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+/* ================= INPUT AUTOFILL ================= */
+function updateUserBasedInputs(username) {
 
-        <br/><br/><br/><br/><br/><br/><br/>
-    </div>
-  </div>   <!-- Button 1 Divs 1st stop -->
+  const userCode = userCodeMap[username];
 
-  </div>
+  // usercode input
+  if (userCode) {
+    document.querySelectorAll("input.usercode").forEach(input => {
+      if (!input.value) input.value = userCode;
+    });
+  }
+
+  // username input
+  document.querySelectorAll("input.username").forEach(input => {
+    if (!input.value) input.value = username;
+  });
+
+  // dropdown
+  updateUserDropdown(username);
+
+  // readonly control
+  updateReadonlyInputs(username);
+}
+
+
+/* ================= BUTTON PERMISSION ================= */
+function updateButtonPermissions() {
+
+  const authEl = document.getElementById("reportauth");
+  if (!authEl) return;
+
+  const authValues = authEl.textContent
+    .split(",")
+    .map(v => v.trim());
+
+  document.querySelectorAll("[mfvbtn]").forEach(btn => {
+
+    const btnCode = btn.getAttribute("mfvbtn");
+
+    if (authValues.includes(btnCode)) {
+      btn.style.display = "";
+    } else {
+      btn.style.display = "none";
+    }
+  });
+}
+
+
+/* ================= STATE ================= */
+let currentUsername = "";
+
+
+/* ================= USERNAME + AUTH MONITOR ================= */
+setInterval(() => {
+
+  const usernameEl = document.getElementById("username");
+  const authEl = document.getElementById("reportauth");
+
+  /* Username change detect */
+  if (usernameEl) {
+    const newUsername = usernameEl.textContent.trim();
+
+    if (newUsername && newUsername !== currentUsername) {
+      currentUsername = newUsername;
+      updateUserBasedInputs(currentUsername);
+
+      setTimeout(updateButtonPermissions, 300);
+    }
+  }
+
+  /* Agar reportauth dynamic load ho */
+  if (authEl && authEl.textContent.trim()) {
+    updateButtonPermissions();
+  }
+
+}, 500);
+
+
+/* ================= FORM RESET SUPPORT ================= */
+document.addEventListener("reset", function() {
+  setTimeout(() => {
+
+    document.querySelectorAll("select.usercodedp")
+      .forEach(s => s.dataset.loaded = "");
+
+    if (currentUsername) {
+      updateUserBasedInputs(currentUsername);
+    }
+
+  }, 200);
+}, true);
+
+
+/* ================= INPUT READONLY CONTROL ================= */
+/* ================= INPUT READONLY CONTROL ================= */
+function updateReadonlyInputs(username) {
+
+  const inputs = document.querySelectorAll("input.inputhide");
+
+  inputs.forEach(input => {
+
+    if (username === "Mukhtar (Admin)") {
+
+      input.removeAttribute("readonly");
+      input.style.background = "";
+
+    } else {
+
+      input.setAttribute("readonly", true);
+
+      if (!input.value.trim()) {
+        input.value = "-";
+        input.style.background = "#ffd6d6"; // light red
+      }
+
+    }
+
+  });
+}
+/* ================= INITIAL SAFETY ================= */
+/* Page load par sab restricted button hide */
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll("[mfvbtn]").forEach(btn => {
+    btn.style.display = "none";
+  });
+});
+</script>
+<span id="reportauth">1,5,11,15,21,23,30</span>
+<span id="username">Suryabhan</span>
+
+
+<script>
+
+function showVoucher(index){
+
+  index = parseInt(index); // dropdown value ko number banao
+
+  const forms = document.querySelectorAll("#formsWrapper .multiform-container");
+
+  forms.forEach((form,i)=>{
+    if(i === index){
+      form.classList.add("active-form");
+    }else{
+      form.classList.remove("active-form");
+    }
+  });
+
+  document.dispatchEvent(
+    new CustomEvent("multiformChanged",{
+      detail:{index:index}
+    })
+  );
+}
+
+/* default first form */
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+  const forms = document.querySelectorAll("#formsWrapper .multiform-container");
+
+  if(forms.length){
+    forms[0].classList.add("active-form");
+  }
+
+});
+
+</script>
+
+<div id="mybtnDiv" style="text-align:center;margin-bottom:10px;">
+
+<select id="voucherSelect" onchange="showVoucher(this.value)"style="font-size:16px;padding:6px 10px;width:3in;cursor:pointer;">
+<option value="0">Store Voucher</option>
+<option value="1">Contactor Voucher</option>
+<option value="2">Cash Voucher</option>
+<option value="3">Sales Voucher</option>
+<option value="4">Banking Voucher</option>
+<option value="5">Payment Demand Voucher</option>
+<option value="6">PO/Reff Voucher</option>
+<option value="7">Admin*</option>
+
+</select>
+
 </div>
 
-    <p>Multitech Infracon Pvt. Ltd.</p>
 
 
+  <div id="formsWrapper">
 
+  <div class="multiform-container ">
+<!-- 🔽 ============================================== "showVoucher(0)"> button Form Start Here 786786============================================ -->
+<div style="text-align:center; background-color: #dee0e0; color: #7e0000; font-weight: bold; border: 4px solid rgb(196, 193, 193);"> <strong>Store Voucher</strong>  </div> <br/>
 
+ <form class="mainSRRForm">
+             <input type="hidden" name="SNo" id="sNo" /> 
+<input type="hidden" name="datasheetname" id="datasheetname" value="DATAA">
 
-
-
-
-
-<!-- voucher floating-button with Sscript and DP Ledger Serch Code start Heare -->
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floating Form</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .floating-button {
-     position: fixed;
- bottom: 40px;
- right: 40px;
- background-color: #013aac;
- color: white;
- padding: 12px 18px;
- border: 5px solid #f5632a;
- border-radius: 50%;
- font-size: 20px;
- cursor: pointer;
- z-index: 1000;
- box-shadow: 0 0 12px #f5b82a;
- animation: glowPulse 2s infinite alternate;
-}
-
-@keyframes glowPulse {
- 0% {
-   box-shadow: 0 0 12px #2ab5f5, 0 0 24px #2af5a7;
- }
- 100% {
-   box-shadow: 0 0 12px #990101, 0 0 24px #e4e017;
- }
-
-}
-
-
-.form-container {
-    top: 250px;
-    display: none;
-    position: fixed;
-    bottom: 80px;
-    right: 150px;
-    width: 5in;
-    height: 8.5in;
-    background: #d8e7fa;
-    padding: 10px;
-    border-radius: 8px;
-    border: 5px solid rgb(9, 3, 176); /* 🔴 Red border added */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-        .form-container form {
-            display: flex;
-            flex-direction: column;
-        }
-        .form-container input, .form-container select {
-            margin-bottom: 8px;
-            padding: 5px;
-        }
-        .close-button {
-            background-color: RED;
-            color: rgb(252, 252, 250);
-            border: none;
-            padding: 5px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        .dropdown-container {
-            position: relative;
-            width: 250px;
-        }
-        #dropdownSearch {
-            width: 3.5in;
-            margin-bottom: 8px;
-            padding: 5px;
-            bottom: 80px;
-            right: 20px;
-            border: 1px solid #ccc;
-            border-radius: 2px;
-        }
-        .dropdown-list {
-            position: absolute;
-            width: 3.5in;
-            margin-bottom: 8px;
-            padding: 5px;
-            background: white;
-            border: 1px solid #ccc;
-            max-height: 200px;
-            overflow-y: auto;
-            display: none;
-            z-index: 1000;
-            list-style: none;
-            margin: 0;
-        }
-        .dropdown-list.show {
-            display: block;
-        }
-        .dropdown-list li {
-            padding: 8px;
-            cursor: pointer;
-            border-bottom: 1px solid #ddd;
-        }
-        .dropdown-list li:hover {
-            background: #f0f0f0;
-        }
-        .dropdown-list li:last-child {
-            border-bottom: none;
-        }
-
-
-
-        /* Submit and Button Styling */
-input[type="submit"], button {
-    background-color: #080808;
-    color: white;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-input[type="submit"]:hover, button:hover {
-    background-color: #575555;
-    transform: translateY(-2px);
-}
-    </style>
-</head>
-<body>
-    <button class="floating-button" onclick="toggleForm()">+</button>
-    <div class="form-container" id="formContainer">
-       
-          <!-- Hidden Form -->
-          <div class="formdiv">
- 
+  <label  style="color:#0c0c0c;font-size:90%;font-family:Arial;">Seleted User Code:</label>
+    <select id="msaf90" name="Usercode" class="usercodedp" required  style="background-color: rgb(252, 223, 223);color: black; border: none; text-align: center;" ></select>
+    
+   
+ <div class="rowdiv" style="background-color: #e4e2e2; padding: 5px 10px; ">   
   
-             <form id="mainIVMAForm">
-              <input type="hidden" name="SNo" id="sNo" />
+      <input type="hidden" id="msaf99"  name="cl7"  value="" readonly>
 
-             
-             <input type="text" id="msaf1" name="User" value="STORE" readonly>
+  <label  style="color:#0a0a0a;font-size:90%;font-family:Arial;">Select Date*</label>
+  <input type="date" id="msaf92" name="Date" required>
 
-
-              <label  style="color:#0a0a0a;font-size:90%;font-family:Arial;">Select Date*</label>
-  <input type="date" id="msaf2" name="Date" required>
-
-  <!-- (VCN- 111) dropdown div start -->
-<div class="dropdown-container">
-<label for="dropdownSearch" style="color:#0c0c0c;font-size:90%;font-family:Arial;" >Search Ledger*</label><br/>
-<input type="text" id="dropdownSearch" placeholder="Search..." oninput="filterLDGRDropdown()" name="Ledger" required autocomplete="off">
-<ul id="dropdownList" class="dropdown-list">
-<!-- The dropdown options will be populated here -->
-</ul>
+<div class="ledger-box" style="position:relative;">
+  <label  style="color:#0a0a0a;font-size:90%;font-family:Arial;">Select Ledger*</label>
+  <input type="text" id="DpSRRSearch" name="Ledger" style="width: 3in;" placeholder="🔍 Search Ledger..." autocomplete="off" oninput="filterLedgerDropdown()" required>
+  <div class="ledgerDropdown"></div>
 </div>
-<!-- (VCN- 111) dropdown div stop -->
 
-  <select id="msaf3" name="cl1" required>
+<label  style="color:#0c0c0c;font-size:90%;font-family:Arial;" >Select Entry Type</label>
+  <select id="msaf93" name="cl1" required>
               <option value="">--Select Type--</option>
                 <option value="IN">IN</option>
                 <option value="OUT">OUT</option>
                 <option value="OTHER">OTHER</option>
               </select>
+</div> <br/>
 
-              <select id="msaf4" name="cl2" required>
+ <div class="rowdiv" style="background-color: #e4e2e2; padding: 5px 10px; ">   
+    
+
+<label  style="color:#0c0c0c;font-size:90%;font-family:Arial;" >Select Tr. Type</label>
+              <select id="msaf94" name="cl2" required>
                 <option value="">--Select Type--</option>
                 <option value="P">PURCHASE</option>
                 <option value="S">SALE</option>
@@ -318,530 +480,909 @@ input[type="submit"]:hover, button:hover {
                    <option value="O">OTHER</option>
               </select>
 
-               <label  style="color:#0c0c0c;font-size:90%;font-family:Arial;" >Enter Document No.</label><br/>
-          <input type="text" id="msaf5" name="cl3" placeholder="Enter Document No." >
+        <label  style="color:#0c0c0c;font-size:90%;font-family:Arial;" >Enter Document No.</label>
+        <input type="text" id="msaf95" name="cl3" placeholder="Enter Document No." >
+        <label  style="color:#0c0c0c;font-size:90%;font-family:Arial;" >Enter Weight*</label>
+        <input type="number" id="msaf96" name="cl4" placeholder="Enter Weight" required>
+ </div>   <br/> 
+      
 
-                <label  style="color:#0c0c0c;font-size:90%;font-family:Arial;" >Enter Weight*</label><br/>
-                <input type="number" id="msaf6" name="cl4" placeholder="Enter Weight" required>
-                <label  style="color:#0c0c0c;font-size:90%;font-family:Arial;" >Item Discription</label><br/>
-                <input type="text" id="msaf7" name="cl5" placeholder="Enter Item Discription" required>
-                 <label  style="color:#0c0c0c;font-size:90%;font-family:Arial;" >Vehicle No.</label><br/>
-                <input type="text" id="msaf8" name="cl6" placeholder="Enter Vehicle No." >
-                 
-               <select id="msaf9" name="cl7" required>
-                <option value="">--Select Status--</option>
-               <option value="LOAD">LOADING</option>
-                <option value="UNLOAD">UNLOADING</option>
-                <option value="---">COMPLETE</option>
-                <option value="O">OTHER</option>
-              </select>
-           
-            
+  <div class="rowdiv" style="background-color: #deffe3; padding: 5px 10px; ">  
+                <label  style="color:#0c0c0c;font-size:90%;font-family:Arial;" >Item Discription</label>
+                <input type="text" id="msaf97" name="cl5" style="width: 3in;" inputfont="font" placeholder="Enter Item Discription" required>
+                 <label  style="color:#0c0c0c;font-size:90%;font-family:Arial;" >Vehicle No.</label>
+                <input type="text" id="msaf98" name="cl6" placeholder="Enter Vehicle No." >
+
+<label  style="color:#0c0c0c; font-size:90%;font-family:Arial;" >Select Status*</label>
+<select id="msaf91" name="Voucher" required>
+<option value="">--Select Status--</option></select>
+ </div>  
+
+ <script>
+// 1. All dropdown options
+const allmsaf91Options = [
+  { value: "", text: "Select a Status" },
+  { value: "LOAD", text: "LOADING" },
+  { value: "UNLOAD", text: "UNLOADING" },
+  { value: "---", text: "COMPLETE" },
+  { value: "O", text: "OTHER" },
+  { value: "✔", text: "VERIFIED" },
+  { value: "X", text: "UNVERIFIED" }
+];
+
+// 2. User-specific options by index
+const userOptionsmsaf91Map = {
+ 
+  "Gurpreet": [0,5,6],
+  "Mukhtar (Admin)": [0, 1, 2, 3, 4,5,6],
+  "Suryabhan": [0, 1,2,3,4],
+  "Divesh": [0, 1,2,3,4]
+};
+
+// 3. Populate dropdown based on username
+function updatemsaf91Dropdown(username) {
+  const msaf91 = document.getElementById("msaf91");
+  msaf91.innerHTML = ""; // Clear existing options
+
+  const allowedIndexes = userOptionsmsaf91Map[username] || [];
+
+  allowedIndexes.forEach(index => {
+    const optionData = allmsaf91Options[index];
+    const option = document.createElement("option");
+    option.value = optionData.value;
+    option.textContent = optionData.text;
+    msaf91.appendChild(option);
+  });
+
+  // Optional: handle syncing after change
+  syncLedgermsaf91Option();
+}
+
+// 4. Wait until username appears, then update dropdown
+const checkmsaf91Username = setInterval(() => {
+  const usernameEl = document.getElementById("username");
+  if (usernameEl && usernameEl.textContent.trim()) {
+    updatemsaf91Dropdown(usernameEl.textContent.trim());
+    clearInterval(checkmsaf91Username);
+  }
+}, 300);
+
+// 5. Attach event listener after DOM is ready
+document.addEventListener("DOMContentLoaded", () => {
+  const msaf91Select = document.getElementById("msaf91");
+  msaf91Select.addEventListener("change", syncLedgermsaf91Option);
+});
+
+// 6. Dummy function for sync (implement as needed)
+function syncLedgermsaf91Option() {
+  console.log("Dropdown changed. Implement sync logic here.");
+}
+</script>
+<!-- STATUS WITH INIQU DROPDOWN STOP here -----------------------------------> 
 
 
-              <input type="hidden" name="Timestamp" id="timestamp">
-              <input type="submit" id="submitButton" value="Submit">
-            </form>
+
+            <!-- form hendling div --> <br/>
+<div class="row" style="background-color: #1b1b1b; padding: 5px 10px; ">  
+  
+  <!-- STATUS WITH INIQU DROPDOWN START here -----------------------------------> 
+
+    <input type="hidden" name="Timestamp" id="timestampSRR">
+    <input type="submit" id="submitSRRButton" mfvbtn="30" style="background-color: blue; border: 2px rgb(150, 207, 250); color: white;width: 3in;cursor: pointer;" value="Submit">
         
-    <!-- Wait message div -->
-    <div id="waitIVMAMessage" style="display:none; color:red; font-size:16px; font-weight:bold;"></div>
+<div id="waitSRRMessage" style="display:none; color:red; font-size:16px; font-weight:bold;"></div>
+<button type="button" id="openMODIFYButton" style=" background:#1b1b1b;color:white; border: none; cursor: pointer; width: 2in; font-weight: bold;">🏢 Modify / Delete</button>
+<span style="background-color: #1b1b1b; color: white;">Fetched Sr No:</span>  <span id="srNoSpan" style="background-color: #1b1b1b; color: #c9dafa;">NA</span>
+<input type="button" id="deleteMButton" value=" Delete" style="display:none; background:#dc0101;color:#fdfdfd; border: none; cursor: pointer; width: 2in; font-weight: bold;">
+<input type="button" id="newEntryMButton"  value=" New Entry"  style="display:none; background:#00bc8d; color:#f9fbfa; border: none; cursor: pointer; width: 2in;font-weight: bold;">
+ <input type="hidden" id="formModeSRR" name="formModeSRR" value="new">
+</div>
 
-            <form id="modifyIVMAForm">
-              <input type="number" id="searchSNo" placeholder="Enter S.No. to Modify Entry" required />
-              <button type="button" onclick="fetchIVMADetails()">Fetch Details</button>
-              <button type="button" id="modifyButton" onclick="modifyIVMAEntry()" style="display:none;">Modify Entry</button>
-    </form>
-  <br/>
-
-    <button class="close-button" onclick="toggleForm()">Close</button>
+   </form>
 </div>
 
 
-<div id="closingBalanceDiv" style="font-size: 18px; color:rgb(222, 236, 248);font-weight: bold; margin-top: 20px;"></div>
+  
+<div class="multiform-container ">
+<!-- 🔽 ============================================== "showVoucher(0)"> button Form Start Here 786786============================================ -->
+<div style="text-align:center; background-color: #dee0e0; color: #7e0000; font-weight: bold; border: 4px solid rgb(196, 193, 193);"> <strong>Store Voucher</strong>  </div> <br/>
 
-<span style="color:#0d8bd4;font-size:130%;font-family:Magneto;text-align: center;">eS |</span> 
-<span style="color:#9e1503;font-size:130%;font-family:Magneto;text-align: center;">MTally</span>
-
-    <script>
-        function toggleForm() {
-            var formContainer = document.getElementById("formContainer");
-            if (formContainer.style.display === "none" || formContainer.style.display === "") {
-                formContainer.style.display = "block";
-            } else {
-                formContainer.style.display = "none";
-            }
-        }
-    </script>
+</div>
 
 
+</div>
 
 
+<div style="width: 100%; background-color: #007bff;">
+
+<style>
+  #multiformTable{
+  overflow-x: auto;
+  display: block;
+  max-height: 1000px; /* vertical scrolling */
+  overflow-y: auto;
+}
 </style>
+<div id="multiformTable"></div>
+
+</div>
+<!-- 🔽 ============================================== "showVoucher(0)"> button Form stop Here ============================================ -->
 
 
-</style>
-             <!-- IVMA form div script start hare -->
-             <script>
-                const scriptIVMAURL = 'https://script.google.com/macros/s/AKfycbxNCtOS7UZu2mw_Zuwkx-KHdORL1DATDoSp0Gv2Q5EQw6CKJOSPowawczVE_7uYHQw_/exec';
-              
-                document.addEventListener("submit", async function (e) {
-                  const form = e.target;
-                  if (form.id !== "mainIVMAForm") return;
-              
-                  e.preventDefault();
-                  const submitButton = document.getElementById("submitButton");
-                  submitButton.disabled = true;
-                  submitButton.value = "Wait..";
-              
-                  const now = new Date();
-                  document.getElementById('timestamp').value = `${now.getMonth()+1}/${now.getDate()}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
-              
-                  const formInputs = form.querySelectorAll('input, textarea');
-                  formInputs.forEach(input => {
-                    if (input.type === 'text' || input.type === 'textarea') {
-                      input.value = input.value.toUpperCase();
-                    }
-                  });
-              
-                  const formData = new FormData(form);
-                  try {
-                    const response = await fetch(scriptIVMAURL, { method: 'POST', body: formData });
-                    const result = await response.json();
-              
-                    if (result.result === 'success') {
-                      alert('Entry saved successfully!');
-                      window.location.reload();
-                    } else {
-                      alert(`Error: ${result.error || 'Unknown error occurred.'}`);
-                    }
-                  } catch (error) {
-                    alert(`Error submitting the form: ${error.message}`);
-                  } finally {
-                    submitButton.disabled = false;
-                    submitButton.value = "Submit";
-                  }
-                });
-              
-                async function fetchIVMADetails() {
-                  const sNo = document.getElementById("searchSNo").value;
-                  const waitMessage = document.getElementById("waitIVMAMessage");
-                  waitMessage.innerText = "Fetching data... Please wait...";
-                  waitMessage.style.display = 'block';
-              
-                  try {
-                    const response = await fetch(`${scriptIVMAURL}?sNo=${sNo}`);
-                    const data = await response.json();
-              
-                   if (data.result !== "error" &&
-        ["LOAD", "UNLOAD", "O","---"].includes((data.cl7 || "").toUpperCase()))
-                    {
-                      document.getElementById("sNo").value = data.SNo;
-                      document.getElementById("msaf1").value = data.User;
-                      document.getElementById("dropdownSearch").value = data.Ledger;
-                      document.getElementById("msaf2").value = data.Date;
-                      document.getElementById("msaf3").value = data.cl1;
-                      document.getElementById("msaf4").value = data.cl2;
-                      document.getElementById("msaf5").value = data.cl3;
-                      document.getElementById("msaf6").value = data.cl4;
-                      document.getElementById("msaf7").value = data.cl5;
-                      document.getElementById("msaf8").value = data.cl6;
-                      document.getElementById("msaf9").value = data.cl7;
-                     
-                      document.getElementById("modifyIVMAButton").style.display = "inline-block";
-                    } else {
-                      alert("You are not authorized to change this Entry. Please contact admin.");
-                    }
-                  } catch (error) {
-                    console.error("Error fetching details:", error);
-                    alert("Please reconcile details or contact admin.");
-                  } finally {
-                    setTimeout(() => waitMessage.style.display = 'none', 2000);
-                  }
-                }
-              
-                async function modifyIVMAEntry() {
-                  const formData = new FormData(document.getElementById('mainIVMAForm'));
-                  formData.set('SNo', document.getElementById('sNo').value);
-              
-                  const response = await fetch(scriptIVMAURL, { method: 'POST', body: formData });
-                  const result = await response.json();
-              
-                  if (result.result === 'success') {
-                    alert('Entry modified successfully!');
-                    window.location.reload();
-                  } else {
-                    alert(`Error modifying entry: ${result.error}`);
-                  }
-                }
-              </script>
- <!-- mainIVMAForm body code stop hare -->
 
+
+
+
+
+<!-- ======= -- Form Submit/modify/delete script start --- ======== Multiform Voucher Form  script 1 =============== -->
 
 <script>
-  const apiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-  const sheetId = "1wvsPdAQA57HxhTxA3cCcQvUEz93IWkBre_Ix-qvzwss";
-  const range = "FORM!A:L";
+document.addEventListener("DOMContentLoaded", () => {
 
-  let column4Data = [];
+  /* ================= GOOGLE APPS SCRIPT URL ================= */
+  const scriptURL = "https://script.google.com/macros/s/AKfycbxDE9qiutBDF5nPy-mpmNKioOT9LjGEvzFJ6hSL_HUSTaggNHCvarTgM5OZ3iPrf6WQOQ/exec";
 
-  // Fetch Google Sheet Data
-  async function fetchSheetData() {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
+  /* ================= WAIT POPUP ================= */
+  const popupHTML = `
+  <div id="waitMFFOverlay" style="
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.4);
+    z-index:9999;
+    align-items:center;
+    justify-content:center;">
+    <div style="
+      background:#fff;
+      padding:20px 30px;
+      border-radius:10px;
+      min-width:250px;
+      text-align:center;
+      box-shadow:0 10px 30px rgba(0,0,0,.3);
+      font-size:16px;
+      font-weight:600;">
+      ⏳ <span id="waitMsg">Please wait...</span>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML("beforeend", popupHTML);
 
-      if (data.values && data.values.length > 1) {
-        column4Data = data.values
-          .slice(1)
-          .map(row => row[3])
-          .filter(item => item && item.trim()); // avoid empty/null
+  const showWait = (msg) => {
+    document.getElementById("waitMsg").innerText = msg;
+    document.getElementById("waitMFFOverlay").style.display = "flex";
+  };
 
-        // Optional: Remove duplicates
-        column4Data = [...new Set(column4Data)];
+  const hideWait = () => {
+    document.getElementById("waitMFFOverlay").style.display = "none";
+  };
 
-        populateLDGRDropdown(column4Data);
+  /* ================= MULTI FORM ================= */
+  const forms = document.querySelectorAll(".mainSRRForm");
+
+  /* ================= MODIFY ================= */
+  forms.forEach(form => {
+
+    const sNo = form.querySelector("#sNo");
+    const submitBtn = form.querySelector("#submitSRRButton");
+    const deleteBtn = form.querySelector("#deleteMButton");
+    const newBtn = form.querySelector("#newEntryMButton");
+    const modifyBtn = form.querySelector("#openMODIFYButton");
+    const srSpan = form.closest(".multiform-container").querySelector("#srNoSpan");
+
+    /* ========= MODIFY FETCH ========= */
+    modifyBtn.onclick = async () => {
+
+      const sr = prompt("Enter SR No");
+      if (!sr) return;
+
+      const sheet = form.querySelector("#datasheetname").value;
+      const usercode = form.querySelector("#msaf90").value;
+
+      showWait("Fetching data...");
+
+      try {
+
+        const res = await fetch(`${scriptURL}?sNo=${sr}&Usercode=${usercode}&datasheetname=${sheet}`);
+        const d = await res.json();
+
+        if (d.result === "unauthorized") {
+          alert(`You are not authorized. Contact "${d.owner}" User`);
+          return;
+        }
+
+        if (d.result !== "success") {
+          alert("Record not found");
+          return;
+        }
+
+        sNo.value = d.SNo;
+        srSpan.innerText = d.SNo;
+
+        form.querySelector("#msaf90").value = d.Usercode || "";
+        form.querySelector("#msaf91").value = d.Voucher || "";
+        form.querySelector("#DpSRRSearch").value = d.Ledger || "";
+        form.querySelector("#msaf92").value = d.Date || "";
+        form.querySelector("#msaf93").value = d.cl1 || "";
+        form.querySelector("#msaf94").value = d.cl2 || "";
+        form.querySelector("#msaf95").value = d.cl3 || "";
+        form.querySelector("#msaf96").value = d.cl4 || "";
+        form.querySelector("#msaf97").value = d.cl5 || "";
+        form.querySelector("#msaf98").value = d.cl6 || "";
+        form.querySelector("#msaf99").value = d.cl7 || "";
+
+        deleteBtn.style.display = "inline-block";
+        newBtn.style.display = "inline-block";
+
+/* 🔥 multiformTable refresh */
+if(typeof loadActiveTable === "function"){
+   loadActiveTable();
+}
+
+      } catch (err) {
+        alert("Fetch error");
+      } finally {
+        hideWait();
       }
-    } catch (error) {
-      console.error("Error fetching sheet data:", error);
+    };
+
+    /* ========= DELETE ========= */
+    deleteBtn.onclick = async () => {
+
+      if (!sNo.value) {
+        alert("No record selected");
+        return;
+      }
+
+      if (!confirm("Delete this entry?")) return;
+
+      const sheet = form.querySelector("#datasheetname").value;
+      const usercode = form.querySelector("#msaf90").value;
+
+      showWait("Deleting...");
+
+      try {
+
+        const res = await fetch(
+          `${scriptURL}?action=delete&SNo=${sNo.value}&Usercode=${usercode}&datasheetname=${sheet}`
+        );
+
+        const r = await res.json();
+
+        if (r.result === "success") {
+          alert("Deleted Successfully");
+          resetForm(form);
+
+          /* 🔥 multiformTable refresh */
+if(typeof loadActiveTable === "function"){
+   loadActiveTable();
+}
+
+        } else {
+          alert("Delete Failed");
+        }
+
+      } catch {
+        alert("Delete error");
+      } finally {
+        hideWait();
+      }
+    };
+
+    /* ========= SUBMIT ========= */
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+
+      submitBtn.disabled = true;
+      submitBtn.value = "Please wait...";
+      showWait("Saving...");
+
+      try {
+
+        const fd = new FormData(form);
+
+/* 🔥 DATE FORMAT CHANGE */
+    form.querySelectorAll("input[type='date']").forEach(input=>{
+      if(input.value){
+        const d = new Date(input.value);
+
+        const day = String(d.getDate()).padStart(2,"0");
+        const month = d.toLocaleString("en-GB",{month:"short"});
+        const year = d.getFullYear();
+
+        const formatted = `${day}-${month}-${year}`;
+
+        fd.set(input.name, formatted);
+      }
+    });
+//---------
+        if (sNo.value.trim() !== "") {
+          fd.set("action", "modify");
+          fd.set("SNo", sNo.value);
+        } else {
+          fd.set("action", "submit");
+        }
+
+        const res = await fetch(scriptURL, {
+          method: "POST",
+          body: fd
+        });
+
+        const r = await res.json();
+
+        if (r.result === "success") {
+          alert("Saved Successfully");
+          resetForm(form);
+
+          /* 🔥 multiformTable refresh */
+if(typeof loadActiveTable === "function"){
+   loadActiveTable();
+}
+
+        } else {
+          alert("Save Failed");
+        }
+
+      } catch {
+        alert("Submit error");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.value = "Submit";
+        hideWait();
+      }
+    };
+
+    /* ========= NEW ========= */
+    newBtn.onclick = () => resetForm(form);
+
+    function resetForm(form) {
+      form.reset();
+      sNo.value = "";
+      srSpan.innerText = "";
+      deleteBtn.style.display = "none";
+      newBtn.style.display = "none";
+    }
+
+    deleteBtn.style.display = "none";
+    newBtn.style.display = "none";
+
+  });
+
+});
+</script>
+<!-- ======= -- Form Submit/modify/delete script stop --- ======== Multiform Voucher Form  script 1 ========= xxx ====== -->
+
+
+
+<!-- ======= -- multiformTable script start --- ======== Multiform Voucher Form  script 2 ========= start ====== -->
+<script>
+
+/* ================= GOOGLE SHEET CONFIG ================= */
+const multiformKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const multiformId  = "1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU";
+
+/* ================= PREDEFINED HEADERS ================= */
+const sheetHeaders = {
+  DATAA:["SNo","User","Status","Date","Party","Type","Vcr. Type","Doc No.","Weight","Item Details | Narration","Vehicle No"],
+  DATAB:["SNo","User","Voucher","Date","Ledger","Weight","Rate","Amount","Doc. No.","Narration"],
+  DATAC:["SNo","User","Tr. Type","Date","Ledger","Amount","Narration","Balance"],
+  DATAD:["SNo","Voucher","V. Type","Date","Ledger","Vcr No/Amt.","Reff/PO","Amount","Weight","Rate","Vehicle/Narration","User"],
+  DATAE:["SNo","User","Status","Creat By","Party","Amount","Reff/UTR No.","Narration"],
+  DATAF:["SNo","User","Status","Clint Name","Project Name","Address","JOB/Reff","PO Amount","PO Weight","Order By"],
+  ADMIN:["SNo","User","Y/N","UserID","Password","Status","User Name","User Code","Vcr Permission"]
+};
+
+/* ================= GLOBAL CACHE ================= */
+let ledgerList = [];
+let reffPOList = [];
+let selectedMFTLedger = "";
+let selectedReffPO = "";
+let sheetCache = [];
+let ledgerIndex = -1;
+let reffIndex = -1;
+
+
+/* ================= GLOBAL OUTSIDE CLICK ================= */
+document.addEventListener("click", function(e){
+
+  const activeForm = getActiveForm();
+  if(!activeForm) return;
+
+  const ledgerInput = activeForm.querySelector("#DpSRRSearch");
+  const ledgerDrop = activeForm.querySelector(".ledgerDropdown");
+
+  const reffInput = activeForm.querySelector("#msaf94");
+  const reffDrop = activeForm.querySelector(".reffPODropdown");
+
+  /* ===== LEDGER ===== */
+
+  if(ledgerDrop && ledgerDrop.style.display === "block"){
+    if(!ledgerInput?.contains(e.target) && !ledgerDrop.contains(e.target)){
+
+      ledgerDrop.style.display = "none";
+
+      if(ledgerInput.value !== selectedMFTLedger){
+
+        if(ledgerList.includes(ledgerInput.value)){
+          selectedMFTLedger = ledgerInput.value;
+        }
+        else{
+          ledgerInput.value = "";
+        }
+
+      }
+
     }
   }
 
-  // Populate the dropdown list
-  function populateLDGRDropdown(data) {
-    const dropdownList = document.getElementById("dropdownList");
-    dropdownList.innerHTML = ""; // Clear existing items
+  /* ===== REFF ===== */
 
-    data.forEach(item => {
-      const li = document.createElement("li");
-      li.textContent = item;
-      li.onclick = () => {
-        document.getElementById("dropdownSearch").value = item;
-        dropdownList.style.display = "none";
-      };
-      dropdownList.appendChild(li);
+  if(reffDrop && reffDrop.style.display === "block"){
+    if(!reffInput?.contains(e.target) && !reffDrop.contains(e.target)){
+
+      reffDrop.style.display = "none";
+
+      if(reffInput.value !== selectedReffPO){
+
+        if(reffPOList.includes(reffInput.value)){
+          selectedReffPO = reffInput.value;
+        }
+        else{
+          reffInput.value = "";
+        }
+
+      }
+
+    }
+  }
+
+});
+
+/* ================= GET ACTIVE FORM ================= */
+function getActiveForm(){
+  return document.querySelector("#formsWrapper .active-form .mainSRRForm");
+}
+
+/* ================= LOAD TABLE ================= */
+async function loadActiveTable(){
+
+  const activeForm = getActiveForm();
+  if(!activeForm) return;
+
+  const sheetName = activeForm.querySelector("[name='datasheetname']")?.value;
+  if(!sheetName) return;
+
+  const range = sheetName + "!A:Z";
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${multiformId}/values/${range}?key=${multiformKey}`;
+
+  try{
+    const res = await fetch(url);
+    const data = await res.json();
+    let rows = data.values || [];
+
+    sheetCache = rows;
+
+    applySheetFilters(sheetName, rows);
+
+    createTable(sheetName, rows);
+    loadLedgerList(rows);
+    loadReffPOList(rows);
+
+  }catch(e){
+    console.error("Error loading table:", e);
+  }
+
+}
+
+/* ================= SHEET FILTER ================= */
+function applySheetFilters(sheetName, rows){
+
+  if(rows.length <= 1) return;
+
+  const header = rows[0];
+  let body = rows.slice(1);
+
+  const searchValue = document.getElementById("searchMFTInput")?.value.toLowerCase() || "";
+  const startDate = document.getElementById("startMFTDate")?.value;
+  const endDate   = document.getElementById("endMFTDate")?.value;
+
+  const filterActive = searchValue || startDate || endDate;
+
+  if(searchValue){
+    body = body.filter(row => row.some(cell => (cell||"").toLowerCase().includes(searchValue)));
+  }
+
+  if(startDate || endDate){
+    body = body.filter(row => {
+
+      const rowDate = new Date(row[3] || "");
+      if(!rowDate) return false;
+
+      if(startDate){
+        const from = new Date(startDate);
+        from.setHours(0,0,0,0);
+        if(rowDate < from) return false;
+      }
+
+      if(endDate){
+        const to = new Date(endDate);
+        to.setHours(23,59,59,999);
+        if(rowDate > to) return false;
+      }
+
+      return true;
+
     });
   }
 
-  // Filter dropdown based on input
-  function filterLDGRDropdown() {
-    const input = document.getElementById("dropdownSearch").value.toLowerCase();
-    const dropdownList = document.getElementById("dropdownList");
-    const items = dropdownList.getElementsByTagName("li");
+ /* ===== SORT ALWAYS DESCENDING ===== */
+body.sort((a,b)=> Number(b[0]||0)-Number(a[0]||0));
 
-    dropdownList.style.display = "block";
-
-    let anyVisible = false;
-    for (let i = 0; i < items.length; i++) {
-      const txtValue = items[i].textContent || items[i].innerText;
-      if (txtValue.toLowerCase().includes(input)) {
-        items[i].style.display = "";
-        anyVisible = true;
-      } else {
-        items[i].style.display = "none";
-      }
-    }
-
-    if (!anyVisible) {
-      dropdownList.style.display = "none";
-    }
-  }
-
-  // Hide dropdown when clicking outside
-  document.addEventListener("click", function (event) {
-    const dropdown = document.getElementById("dropdownList");
-    const searchInput = document.getElementById("dropdownSearch");
-    if (!searchInput.contains(event.target) && !dropdown.contains(event.target)) {
-      dropdown.style.display = "none";
-    }
-  });
-
-  // Initialize on page load
- // window.onload = () => {
-   // fetchSheetData();
-//  };
-</script>
-
-<!-- voucher floating-button with Sscript and DP Ledger Serch Code stop Heare -->
-
-
-
-
-
-
-  </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>STORE RAGISTER</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0 20px;
-        }
-
-        #tableSRContainer {
-            max-height: calc(100vh - 100px);
-            overflow-y: auto;
-            margin-top: 10px;
-        }
-
-          #searchSRContainer {
-            
-            top: 2px;
-            background: #c7e2fc;
-            color: #023748;
-            padding: 10px;
-            display: flex;
-            gap: 10px;
-            z-index: 1000;
-           
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        thead th {
-            position: sticky;
-            top: 0;
-            padding: 5px;
-            background-color: #024762;
-            font-size: 18px;
-            color: white;
-            border: 1px solid #ccc;
-            z-index: 1;
-        }
-
-        th, td {
-           
-            padding: 3px;
-            border: 1px solid #a0a0a0;
-            text-align: left;
-        }
-
-         table tr:hover {
-            background-color: #f3f710 ; color: rgb(12, 12, 12);
-        }
-        tr.hidden {
-            display: none;
-        }
-
-        tr.red {
-            background-color: #f6cdcc;
-            color: rgb(123, 3, 3);
-            font-weight: bold;
-            
-        }
-
-        tr.blue {
-            background-color: #bff9ee;
-            color: #01473b;
-            font-weight: bold;
-            font-size: 15px;
-        }
-
-        tr.bill {
-            background-color: #f1f1f1;
-            color: blue;
-        }
-    </style>
-</head>
-<body>
-    <script>
-      async function loadSRSheet() {
-    const apiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-    const sheetId = "1wvsPdAQA57HxhTxA3cCcQvUEz93IWkBre_Ix-qvzwss";
-    const range = 'FORM!A:K';
-
-    try {
-        const response = await fetch(
-            `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`
-        );
-        const data = await response.json();
-
-        if (data.values && data.values.length > 1) {
-            const headers = data.values[0];
-            const rows = data.values.slice(1);
-
-            // Filter where column 1 is 'store'
-            const storeRows = rows.filter(row => row[1]?.toLowerCase() === 'store');
-
-            // Sort by column 0 (numeric), in descending order
-            storeRows.sort((a, b) => {
-                const valA = parseInt(a[0]) || 0;
-                const valB = parseInt(b[0]) || 0;
-                return valB - valA;
-            });
-
-            const filteredData = [headers, ...storeRows];
-
-            populateSRTable(filteredData);
-            populateSRDropdowns(filteredData);
-        } else {
-            console.error("No data found in the specified range.");
-        }
-    } catch (error) {
-        console.error("Error fetching data from Google Sheets:", error);
-    }
+/* ===== DEFAULT MODE LIMIT ===== */
+if(!filterActive){
+  body = body.slice(0,250);
 }
 
+  rows.splice(0, rows.length, ...[header,...body]);
 
-        function populateSRTable(data) {
-            const tbody = document.querySelector('#myTable tbody');
-            tbody.innerHTML = '';
+}
 
-            data.slice(1).forEach((row) => {
-                const tr = document.createElement('tr');
+/* ================= CREATE TABLE ================= */
+function createTable(sheetName, rows){
 
-                row.forEach((cell, cellIndex) => {
-                    const td = document.createElement('td');
-                    td.textContent = cell;
-                    tr.appendChild(td);
+  const tableDiv = document.getElementById("multiformTable");
+  if(!tableDiv) return;
 
-                    if (cellIndex === 10) {
-                        const type = cell.toLowerCase().trim();
-                        if (type === "load") tr.classList.add('blue');
-                        else if (type === "unload") tr.classList.add('blue');
-                        else if (type === "x") tr.classList.add('red');
-                    }
-                });
+  tableDiv.innerHTML = "";
 
-                tbody.appendChild(tr);
-            });
+  const table = document.createElement("table");
+  table.className = "table";
+
+  const headers = sheetHeaders[sheetName] || [];
+
+  const thead = document.createElement("thead");
+  const trHead = document.createElement("tr");
+
+  headers.forEach(h=>{
+    const th = document.createElement("th");
+    th.textContent = h;
+    trHead.appendChild(th);
+  });
+
+  thead.appendChild(trHead);
+  table.appendChild(thead);
+
+  const tbody = document.createElement("tbody");
+
+  rows.forEach((row,i)=>{
+    if(i===0) return;
+
+    const tr = document.createElement("tr");
+
+    headers.forEach((_,col)=>{
+      const td = document.createElement("td");
+      td.textContent = row[col] || "";
+      tr.appendChild(td);
+    });
+
+    const type = (row[2] || "").toUpperCase();
+
+    if(type==="RECEIPT"||type==="X"||type==="REJECT"||type==="CANCELED"){
+      tr.style.color="#ff0000";
+      tr.style.backgroundColor="#ffe6e6";
+    }
+    else if(type==="PANDING"){ tr.style.color="blue"; }
+    else if(type==="LOAD"){ tr.style.backgroundColor="#cce5ff"; }
+    else if(type==="UNLOAD"){ tr.style.backgroundColor="#ccffcc"; }
+    else if(type==="BANK"){ tr.style.color="#ff0000"; }
+    else if(type==="COMPLETED"){ tr.style.color="green"; }
+
+    tbody.appendChild(tr);
+  });
+
+  table.appendChild(tbody);
+  tableDiv.appendChild(table);
+
+}
+
+/* ================= LEDGER LIST ================= */
+function loadLedgerList(rows){
+
+  const set = new Set();
+
+  rows.forEach((row,i)=>{
+    if(i===0) return;
+    if(row[4]) set.add(row[4]);
+  });
+
+  ledgerList = [...set].sort();
+
+}
+
+/* ================= REFF LIST ================= */
+function loadReffPOList(rows){
+
+  const activeForm = getActiveForm();
+  if(!activeForm) return;
+
+  const ledgerInput = activeForm.querySelector("#DpSRRSearch");
+  const selectedLedger = ledgerInput?.value || "";
+
+  const set = new Set();
+
+  rows.forEach((row,i)=>{
+
+    if(i===0) return;
+
+    const ledger = row[4] || "";
+    const reff   = row[6] || "";
+
+    if(reff){
+
+      if(selectedLedger){
+        if(ledger === selectedLedger){
+          set.add(reff);
         }
+      }
+      else{
+        set.add(reff);
+      }
 
-        function populateSRDropdowns(data) {
-            const dropdown1 = document.getElementById('filterSRColumn1');
-            const dropdown2 = document.getElementById('filterSRColumn2');
-            const dropdown4 = document.getElementById('filterSRColumn4');
+    }
 
-            const uniqueValues1 = [...new Set(data.slice(1).map(row => row[10]))];
-            const uniqueValues2 = [...new Set(data.slice(1).map(row => row[5]))];
-            const uniqueValues4 = [...new Set(data.slice(1).map(row => row[3]))];
+  });
 
-            populateSRDropdown(dropdown1, uniqueValues1);
-            populateSRDropdown(dropdown2, uniqueValues2);
-            populateSRDropdown(dropdown4, uniqueValues4);
+  reffPOList = [...set].sort();
 
-            $(dropdown4).select2({
-                placeholder: "-- Select --",
-                allowClear: true,
-                width: 'resolve'
-            });
+}
 
-            $(dropdown4).on('change', filterSRTable);
-        }
+/* ================= LEDGER DROPDOWN ================= */
+function filterLedgerDropdown(){
 
-        function populateSRDropdown(dropdown, values) {
-            dropdown.innerHTML = '<option value="">-- Select --</option>';
-            values.forEach(value => {
-                const option = document.createElement('option');
-                option.value = value;
-                option.textContent = value;
-                dropdown.appendChild(option);
-            });
-        }
+  const activeForm = getActiveForm();
+  if(!activeForm) return;
 
-        function filterSRTable() {
-            const filter1 = document.getElementById('filterSRColumn1').value.toLowerCase();
-            const filter2 = document.getElementById('filterSRColumn2').value.toLowerCase();
-            const filter4 = $('#filterSRColumn4').val()?.toLowerCase();
-            const startDate = new Date(document.getElementById("startDate").value);
-            const endDate = new Date(document.getElementById("endDate").value);
+  const input = activeForm.querySelector("#DpSRRSearch");
+  const dropdown = activeForm.querySelector(".ledgerDropdown");
 
-            const rows = document.querySelectorAll('#myTable tbody tr');
-            let visibleRows = 0;
+  const value = input.value.toLowerCase();
+  dropdown.innerHTML="";
+  ledgerIndex=-1;
 
-            rows.forEach((row) => {
-                const cells = row.querySelectorAll('td');
-                const date = new Date(cells[2]?.textContent.trim());
+  const filtered = ledgerList.filter(v => v.toLowerCase().includes(value));
 
-                let dateMatches = true;
-                if (startDate && date < startDate) dateMatches = false;
-                if (endDate && date > endDate) dateMatches = false;
+  filtered.forEach(item=>{
 
-                const matchesFilter1 = !filter1 || cells[10]?.textContent.toLowerCase() === filter1;
-                const matchesFilter2 = !filter2 || cells[5]?.textContent.toLowerCase() === filter2;
-                const matchesFilter4 = !filter4 || cells[3]?.textContent.toLowerCase() === filter4;
+    const div=document.createElement("div");
+    div.className="ledger-item";
+    div.textContent=item;
 
-                if (matchesFilter1 && matchesFilter2 && matchesFilter4 && dateMatches) {
-                    row.classList.remove('hidden');
-                    visibleRows++;
-                } else {
-                    row.classList.add('hidden');
-                }
-            });
+    div.onclick=()=>{
+      input.value=item;
+      selectedMFTLedger=item;
+      dropdown.style.display="none";
+       loadReffPOList(sheetCache);   // 🔹 refresh reff dropdown
+    };
 
-            displayNoResultsSRMessage(visibleRows);
-        }
+    dropdown.appendChild(div);
 
-        function displayNoResultsSRMessage(visibleRows) {
-            const noResultsMessage = document.getElementById('noResultsMessage');
-            if (!visibleRows) {
-                if (!noResultsMessage) {
-                    const message = document.createElement('p');
-                    message.id = 'noResultsMessage';
-                    message.textContent = 'No matching results found.';
-                    document.body.appendChild(message);
-                }
-            } else if (noResultsMessage) {
-                noResultsMessage.remove();
-            }
-        }
+  });
 
-        window.onload = () => {
-            loadSRSheet();
-            document.getElementById('filterSRColumn1').addEventListener('change', filterSRTable);
-            document.getElementById('filterSRColumn2').addEventListener('change', filterSRTable);
-            document.getElementById('startDate').addEventListener('change', filterSRTable);
-            document.getElementById('endDate').addEventListener('change', filterSRTable);
+  const newBtn=document.createElement("div");
+  newBtn.className="ledger-item ledger-new";
+  newBtn.textContent="Create New ➕";
 
-            //
-            //
-            //
-           fetchSheetData();
-             
-        };
-    </script>
+newBtn.onclick=()=>{
+  const newLedger=prompt("Enter New Ledger Name");
 
-</body>
-</html>
+  if(newLedger){
 
+    input.value=newLedger;
+    selectedMFTLedger=newLedger;
 
+    ledgerList.push(newLedger);
+    ledgerList.sort();
 
+    dropdown.style.display="none";
 
+  }
 
+};
 
+  dropdown.appendChild(newBtn);
+  dropdown.style.display="block";
 
+}
 
+/* ================= REFF DROPDOWN ================= */
+function filterReffDropdown(){
 
+  const activeForm = getActiveForm();
+  if(!activeForm) return;
 
+  const input = activeForm.querySelector("#msaf94");
+  const dropdown = activeForm.querySelector(".reffPODropdown");
 
+  const value = input.value.toLowerCase();
+  dropdown.innerHTML="";
+  reffIndex=-1;
 
+  const filtered = reffPOList.filter(v => v.toLowerCase().includes(value));
 
+  filtered.forEach(item=>{
 
+    const div=document.createElement("div");
+    div.className="ledger-item";
+    div.textContent=item;
 
+    div.onclick=()=>{
+      input.value=item;
+      selectedReffPO=item;
+      dropdown.style.display="none";
+    };
 
+    dropdown.appendChild(div);
 
+  });
+
+  const newBtn=document.createElement("div");
+  newBtn.className="ledger-item ledger-new";
+  newBtn.textContent="Create New ➕";
+
+ newBtn.onclick=()=>{
+  const newVal=prompt("Enter New Reff / PO");
+
+  if(newVal){
+
+    input.value=newVal;
+    selectedReffPO=newVal;
+
+    reffPOList.push(newVal);
+    reffPOList.sort();
+
+    dropdown.style.display="none";
+
+  }
+
+};
+
+  dropdown.appendChild(newBtn);
+  dropdown.style.display="block";
+
+}
+
+/* ================= GLOBAL FILTER ================= */
+function applyMFTFilters(){
+  loadActiveTable();
+}
+
+/* ================= DATE FORMAT ================= */
+function formatDate(dateStr){
+
+  if(!dateStr) return "";
+
+  const d = new Date(dateStr);
+
+  const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  return d.getDate()+"-"+months[d.getMonth()]+"-"+d.getFullYear();
+
+}
+
+/* ================= TIMESTAMP ================= */
+function getTimestamp(){
+
+  const d=new Date();
+
+  const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  let hours=d.getHours();
+  const minutes=d.getMinutes().toString().padStart(2,"0");
+  const ampm=hours>=12?"PM":"AM";
+
+  hours=hours%12;
+  hours=hours?hours:12;
+
+  return `${d.getDate()}-${months[d.getMonth()]}-${d.getFullYear()} ${hours}:${minutes} ${ampm}`;
+
+}
+
+/* ================= PRINT ================= */
+document.getElementById("MFTPrint")?.addEventListener("click", function(){
+
+  const table=document.querySelector("#multiformTable table:last-child");
+  if(!table) return;
+
+  const startDate=formatDate(document.getElementById("startMFTDate")?.value);
+  const endDate=formatDate(document.getElementById("endMFTDate")?.value);
+
+  const totalsHTML=document.getElementById("formdTotalsBox")?.innerHTML || "";
+  const timeStamp=getTimestamp();
+
+  const win=window.open("","_blank","width=900,height=700");
+
+  win.document.write(`
+
+  <html>
+  <head>
+  <title>Print</title>
+  <style>
+  body{font-family:Arial;padding:20px}
+  table{border-collapse:collapse;width:100%}
+  th,td{border:1px solid #000;padding:6px}
+  th{background:#f2f2f2}
+  .header{display:flex;justify-content:space-between}
+  </style>
+  </head>
+
+  <body>
+
+  <div class="header">
+  <h2>Display Report</h2>
+  <div>${timeStamp}</div>
+  </div>
+
+  <div><b>From:</b> ${startDate} &nbsp;&nbsp; <b>To:</b> ${endDate}</div>
+
+  <br>
+
+  ${totalsHTML}
+
+  <br>
+
+  ${table.outerHTML}
+
+  </body>
+  </html>
+
+  `);
+
+  win.document.close();
+  win.print();
+
+});
+
+/* ================= EVENTS ================= */
+document.addEventListener("multiformChanged", loadActiveTable);
+document.addEventListener("DOMContentLoaded", loadActiveTable);
+
+document.getElementById("searchMFTInput")?.addEventListener("input", applyMFTFilters);
+document.getElementById("startMFTDate")?.addEventListener("change", applyMFTFilters);
+document.getElementById("endMFTDate")?.addEventListener("change", applyMFTFilters);
+
+/* ================= ESC CLOSE ================= */
+document.addEventListener("keydown",function(e){
+  if(e.key==="Escape"){
+    document.querySelectorAll(".ledgerDropdown,.reffPODropdown").forEach(d=>d.style.display="none");
+  }
+});
+
+</script>
+
+<style>
+
+.ledgerDropdown,.reffPODropdown{
+position:absolute;
+background:#fff;
+border:1px solid #ccc;
+max-height:250px;
+overflow-y:auto;
+width:100%;
+z-index:9999;
+}
+
+.ledger-item{
+padding:8px;
+cursor:pointer;
+}
+
+.ledger-item:hover,
+.ledger-item.active{
+background:#007bff;
+color:#fff;
+}
+
+.ledger-new{
+font-weight:bold;
+}
+
+</style>
+<!-- ======= -- multiformTable script xxx --- ======== Multiform Voucher Form  script 2 ========= xxx ====== -->
