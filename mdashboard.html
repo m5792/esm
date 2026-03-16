@@ -4,6 +4,1004 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="UTF-8">
 <title>MIPL Daybook</title>
 
+<!-- ========= --- START --- ============ BSA Marksheet Div  START HARE ================  ---------- ============ -->
+
+
+<div id="bsamarksheet" class="report-content">
+
+
+<style>
+#marksheet{
+background:white;
+padding:20px;
+box-shadow:0 0 10px #ccc;
+}
+
+/* mytoolsbar */
+#mytoolsbar {
+    background-color: #027175;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+    border-radius: 10px;
+}
+
+/* Labels */
+#mytoolsbar strong{
+    color:white;
+    font-size:14px;
+}
+
+/* All inputs and selects same size */
+#mytoolsbar select,
+#mytoolsbar input[type="text"],
+#mytoolsbar input[type="date"]{
+    height:32px;
+    padding:4px 8px;
+    border-radius:4px;
+    border:1px solid #ccc;
+    font-size:14px;
+    box-sizing:border-box;
+}
+</style>
+
+</head>
+
+<body onload="loadBSAMARKSheet()">
+ <span style="color: rgb(0, 74, 88); font-size: 18px;font-weight: bold;"> Student Report Card</span> <br/><br/>
+
+<div id="mytoolsbar" style="padding: 5px 10px; background-color: rgb(226, 226, 226); border-radius: 10px;">
+<label>Session</label> <select id="session" onchange="updateAdmission()">
+
+<option value="">Select Session</option>
+<option value="2025-26">2025-26</option>
+<option value="2024-25">2024-25</option>
+<option value="2023-24">2023-24</option>
+
+</select>
+
+<label>Class</label> <select id="class" onchange="updateAdmission()">
+
+<option value="">Select Class</option>
+
+<option>Pre-Nursery</option>
+<option>NURSERY - A</option>
+<option>NURSERY - B</option>
+<option>LKG - A</option>
+<option>LKG - B</option>
+<option>UKG</option>
+<option>UKG - A</option>
+<option>UKG - B</option>
+
+<option>1st</option>
+<option>2nd</option>
+<option>3rd</option>
+<option>4th</option>
+<option>5th</option>
+<option>6th</option>
+
+</select>
+<label>Admission No</label> 
+<select id="admission" onchange="showMarksheet()">
+<option value="">Select Admission No</option>
+</select>
+<button onclick="downloadClassPDF()" style="border: none; color: black; font-weight: bold;  cursor: pointer; background: rgb(226, 226, 226);">📄 Download Full Class Marksheet PDF</button>
+</div>
+
+
+
+
+
+<style>
+  .toggleBox{
+background:#0c0c0c;
+color:rgb(248, 246, 246);
+padding:10px;
+font-weight:bold;
+cursor:pointer;
+border-radius:6px;
+}
+
+.expandContent{
+max-height:0;
+overflow:hidden;
+transition:0.4s ease;
+background:#f4f6f6;
+padding:0 10px;
+border-radius:6px;
+}
+
+.expandContent.open{
+max-height:1500px;
+padding:10px;
+}
+</style>
+<script>
+  function toggleDiv(){
+
+let div=document.getElementById("expandDiv");
+
+div.classList.toggle("open");
+
+}
+</script>
+<div class="toggleBox" onclick="toggleDiv()">
+  <span style="color: rgb(251, 171, 171);"> Click To View Marksheet (Open / Close)</span> |
+  <span id="sNameSpan"></span> |
+Grade: <span id="grade"></span> | 
+Class Position: <span id="positionSpan" style="color: rgb(239, 250, 239);"></span> 
+<button onclick="printMarksheet()" style="border: none; color: rgb(246, 247, 183); font-weight: bold;  cursor: pointer; background: black;" >🖨 Print Marksheet</button>
+
+</div>
+<div id="expandDiv" class="expandContent" style="border-bottom: solid 5PX red;"> <div id="marksheet"></div> </div>
+
+
+
+<div id="studentCount" style="color: #002569; font-size: 18px; font-weight: bold;"></div> 
+<div id="top5students" style="margin-top:10px;font-weight:bold;color:#0a0a0a; background-color: rgb(243, 255, 254);"></div>
+
+
+<table  id="positionTableBox" style="margin-top:15px;"></table>
+
+
+
+
+<!-- Marksheet Popup  start ----------- -->
+<div id="marksheetPopup" style="
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
+z-index:999;
+">
+
+<div style="
+background:white;
+width:900px;
+max-width:95%;
+margin:30px auto;
+padding:15px;
+border-radius:8px;
+position:relative;
+max-height:90%;
+overflow:auto;
+">
+
+<button onclick="closeBSAMARKPopup()" 
+style="position:absolute;right:10px;top:10px;font-size:20px;">✖</button>
+<div id="popupMarksheet"></div>
+<div style="margin-top:10px;text-align:center">
+</div></div></div>
+<!-- Marksheet Popup  stop ----------- -->
+
+
+</div>
+<!-- ========= --- xxx --- ============ BSA Marksheet Div  stop HARE ================  ---------- ============ -->
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<script>
+
+const apiBSAMARKKey="AIzaSyCerUAdaqNQ7mxjgNBbAeiHDEKgN0Dzoao";
+const sheetBSAMARKId="1BiADwSV64zXPz0UyVmYN7BlyW8DiCylgT3-bSrnIk38";
+
+let sheetBSAMARKData=[];
+
+
+
+const classSubjects={
+
+"Pre-Nursery":["Hindi","English","MATHEMATICS"],
+
+"NURSERY - A":["Hindi","English","MATHEMATICS"],
+"NURSERY - B":["Hindi","English","MATHEMATICS"],
+
+"LKG - A":["Hindi","English","MATHEMATICS"],
+"LKG - B":["Hindi","English","MATHEMATICS"],
+
+"UKG":["Hindi","English","MATHEMATICS","G.K"],
+"UKG - A":["Hindi","English","MATHEMATICS","G.K"],
+"UKG - B":["Hindi","English","MATHEMATICS","G.K"],
+
+"1st":["Hindi Literature/ Language","English Literature/ Language","MATHEMATICS","E.V.S","G.K","Computer"],
+
+"2nd":["Hindi Literature/ Language","English Literature/ Language","MATHEMATICS","E.V.S","G.K","Computer"],
+"3rd":["Hindi Literature/ Language","English Literature/ Language","MATHEMATICS","E.V.S","G.K","Computer","Sanskrit"],
+
+"4th":["Hindi Literature/ Language","English Literature/ Language","MATHEMATICS","E.V.S","G.K","Computer","Sanskrit"],
+
+"5th":["Hindi Literature/ Language","English Literature/ Language","MATHEMATICS","E.V.S","G.K","Computer","Sanskrit"],
+
+"6th":["Hindi Literature/ Language","English Literature/ Language","MATHEMATICS","E.V.S","G.K","Computer","Sanskrit","Social Science"]
+
+};
+
+
+
+const subjectIndex={
+
+"Hindi":[8,14,20,26],
+"English":[9,15,21,27],
+"Hindi Literature/ Language":[8,14,20,26],
+"English Literature/ Language":[9,15,21,27],
+"MATHEMATICS":[10,16,22,28],
+"E.V.S":[11,17,23,29],
+"G.K":[12,18,24,30],
+"Computer":[13,19,25,31],
+
+"Sanskrit":[41,42,43,44],
+"Social Science":[45,46,47,48]
+
+};
+
+
+
+async function loadBSAMARKSheet(){
+
+let url=`https://sheets.googleapis.com/v4/spreadsheets/${sheetBSAMARKId}/values/INDEX!A:AW?key=${apiBSAMARKKey}`;
+
+let res=await fetch(url);
+
+let data=await res.json();
+
+sheetBSAMARKData=data.values;
+
+}
+
+
+
+function updateAdmission(){
+
+let cls=document.getElementById("class").value;
+let session=document.getElementById("session").value;
+
+let admission=document.getElementById("admission");
+
+admission.innerHTML="<option>Select Admission No</option>";
+
+let count=0;
+
+for(let i=1;i<sheetBSAMARKData.length;i++){
+
+let row=sheetBSAMARKData[i];
+
+if(row[1]==cls && row[39]==session){
+
+let op=document.createElement("option");
+
+op.value=row[0];
+op.text=row[0];
+
+admission.appendChild(op);
+
+count++;
+
+}
+
+}
+
+document.getElementById("studentCount").innerHTML="Total Students : "+count;
+
+showTopStudents();
+showPositionTable();
+
+}
+
+function showTopStudents(){
+
+let cls=document.getElementById("class").value;
+let session=document.getElementById("session").value;
+
+if(!cls || !session) return;
+
+let subjects=classSubjects[cls];
+
+let students=[];
+
+for(let i=1;i<sheetBSAMARKData.length;i++){
+
+let row=sheetBSAMARKData[i];
+
+if(row[1]==cls && row[39]==session){
+
+let total=0;
+
+subjects.forEach(sub=>{
+
+let idx=subjectIndex[sub];
+if(!idx) return;
+
+idx.forEach(i=>{
+total+=parseInt(row[i])||0;
+});
+
+});
+
+students.push({name:row[2],adm:row[0],total:total});
+
+}
+
+}
+
+students.sort((a,b)=>b.total-a.total);
+
+let text="";
+
+students.slice(0,5).forEach((s,i)=>{
+
+let pos=["1st","2nd","3rd","4th","5th"][i];
+
+// position colors
+let colors=["green","blue","red","gray","#00C49E"];
+
+text+=`<span style="color:${colors[i]}; font-weight:bold;">
+${pos}: ${s.name} (A.No: ${s.adm}) (Total Marks: ${s.total})
+</span> | `;
+
+});
+
+document.getElementById("top5students").innerHTML=text;
+
+}
+
+
+
+function showMarksheet(){
+
+let adm=document.getElementById("admission").value;
+let cls=document.getElementById("class").value;
+let session=document.getElementById("session").value;
+
+if(!adm) return;
+
+let row=null;
+
+for(let i=1;i<sheetBSAMARKData.length;i++){
+
+if(sheetBSAMARKData[i][0]==adm && sheetBSAMARKData[i][1]==cls && sheetBSAMARKData[i][39]==session){
+
+row=sheetBSAMARKData[i];
+break;
+
+}
+
+}
+
+if(!row){
+
+document.getElementById("marksheet").innerHTML="Student not found";
+return;
+
+}
+
+let subjects=classSubjects[cls];
+
+let rows="";
+let total=0;
+
+subjects.forEach(sub=>{
+
+let idx=subjectIndex[sub];
+if(!idx) return;
+
+let m1=row[idx[0]] || "";
+let m2=row[idx[1]] || "";
+let m3=row[idx[2]] || "";
+let m4=row[idx[3]] || "";
+
+let n1=parseInt(m1)||0;
+let n2=parseInt(m2)||0;
+let n3=parseInt(m3)||0;
+let n4=parseInt(m4)||0;
+
+let sum=n1+n2+n3+n4;
+
+total+=sum;
+
+rows+=`
+
+<tr>
+
+<td style="background-color: white ;text-align: left ; color: balck ;">${sub}</td>
+
+<td>${m1}</td>
+<td>${m2}</td>
+<td style="color: black ;font-size:110%; font-weight: bold;">${(n1+n2)||""}</td>
+
+<td>${m3}</td>
+<td>${m4}</td>
+<td style="color: black ;font-size:110%; font-weight: bold;">${(n3+n4)||""}</td>
+
+<td style="color: black ;font-size:110%; font-weight: bold;">${sum}</td>
+
+</tr>
+
+`;
+
+});
+
+let max=subjects.length*200;
+
+let percentage=((total/max)*100).toFixed(2);
+
+let students=[];
+
+for(let i=1;i<sheetBSAMARKData.length;i++){
+  let r=sheetBSAMARKData[i];
+
+  if(r[1]==cls && r[39]==session){
+
+    let t=0;
+
+    subjects.forEach(sub=>{
+      let idx=subjectIndex[sub];
+      if(!idx) return;
+
+      idx.forEach(i=>{
+        t+=parseInt(r[i])||0;
+      });
+    });
+
+    students.push({adm:r[0],total:t});
+  }
+}
+
+students.sort((a,b)=>b.total-a.total);
+
+let position="";
+let posNum=0;
+
+students.forEach((s,i)=>{
+  if(s.adm==adm){
+    posNum = i+1;
+  }
+});
+
+// Activity row formating start*************************
+
+const classActivity = {
+
+"Pre-Nursery":["Games","Drawing","Moral Values / G.K","Cleanliness","Homework","Attendance"],
+
+"NURSERY - A":["Games","Drawing","Moral Values / G.K","Cleanliness","Homework","Attendance"],
+"NURSERY - B":["Games","Drawing","Moral Values / G.K","Cleanliness","Homework","Attendance"],
+
+"LKG - A":["Games","Drawing","Moral Values / G.K","Cleanliness","Homework","Attendance"],
+"LKG - B":["Games","Drawing","Moral Values / G.K","Cleanliness","Homework","Attendance"],
+
+"UKG":["Games","Drawing","Moral Values / G.K","Cleanliness","Homework","Attendance"],
+"UKG - A":["Games","Drawing","Moral Values / G.K","Cleanliness","Homework","Attendance"],
+"UKG - B":["Games","Drawing","Moral Values / G.K","Cleanliness","Homework","Attendance"],
+
+"1st":["Games","Drawing","Moral Values / G.K","Cleanliness","Homework","Attendance"],
+
+"2nd":["Games","Drawing","Moral Values / G.K","Cleanliness","Homework","Attendance"],
+"3rd":["Games","Drawing","Moral Values / G.K","Cleanliness","Scout","Homework","Attendance"],
+
+"4th":["Games","Drawing","Moral Values / G.K","Cleanliness","Scout","Homework","Attendance"],
+"5th":["Games","Drawing","Moral Values / G.K","Cleanliness","Scout","Homework","Attendance"],
+"6th":["Games","Drawing","Moral Values / G.K","Cleanliness","Scout","Homework","Attendance"]
+
+};
+
+
+const activityIndex = {
+"Games":32,
+"Drawing":34,
+"Moral Values / G.K":33,
+"Cleanliness":35,
+"Scout":35,
+"Homework":"Regular",
+"Attendance":36
+};
+
+let activities = classActivity[cls];
+let rowsActivity = "";
+
+if (activities) {
+
+let headerRow = '<tr><th style="width:280px;">Activity</th>';
+let gradeRow =  '<tr><th style="width:280px;background-color: white;color: black;">Grade</th>';
+
+activities.forEach(act => {
+
+let idx = activityIndex[act];
+//------------
+let grade = "";
+
+if(typeof idx === "number"){
+    grade = row[idx] || "";
+}else{
+    grade = idx;   // "Regular" fixed text
+}
+//let grade = row[idx] || "";
+
+headerRow += `<th>${act}</th>`;
+gradeRow += `<td style="font-weight:bold;">${grade}</td>`;
+
+});
+
+headerRow += "</tr>";
+gradeRow += "</tr>";
+
+rowsActivity = headerRow + gradeRow;
+
+}
+// Activity row formating xxxxx*************************
+
+
+
+// position format
+if(posNum==1){
+  position = "<span style='color:red;font-weight:bold;'>1st</span>";
+}
+else if(posNum==2){
+  position = "<span style='color:red;font-weight:bold;'>2nd</span>";
+}
+else if(posNum==3){
+  position = "<span style='color:red;font-weight:bold;'>3rd</span>";
+}
+else{
+  position = "<span style='color:white;font-weight:bold;'>"+posNum+"</span>"; // change the color in white when marksheet print 
+}
+
+let grade="";
+
+if(percentage>=90) grade="A++";
+else if(percentage>=80) grade="A+";
+else if(percentage>=70) grade="A";
+else if(percentage>=60) grade="B++";
+else if(percentage>=50) grade="B+";
+else if(percentage>=40) grade="B";
+else if(percentage>=33) grade="C";
+else grade="Fail";
+
+// span ke liye value
+document.getElementById("sNameSpan").innerHTML = `${row[2]}`;
+document.getElementById("positionSpan").innerHTML = position;
+document.getElementById("grade").innerHTML = grade;
+
+
+const issueDateMap = {
+
+"2025-26":"25-Mar-2026",
+"2024-25":"29-Mar-2025",
+"2023-24":"27-Mar-2024"
+
+};
+
+const issueDate = issueDateMap[session] || "N/A";
+// convert date string to Date object for "${label} - Original & Duplicate one Montn up & down"
+function parseDate(d){
+return new Date(d.replace(/-/g," "));
+}
+
+let label="Duplicate";
+
+if(issueDate!="N/A"){
+
+let issue=parseDate(issueDate);
+
+let start=new Date(issue);
+start.setMonth(start.getMonth()-1);
+start.setDate(start.getDate()+1);
+
+let end=new Date(issue);
+end.setMonth(end.getMonth()+1);
+end.setDate(end.getDate()-1);
+
+let today=new Date();
+
+if(today>=start && today<=end){
+label="Original";
+}
+
+}
+//------------
+
+const sessionBeginMap = {
+
+"2025-26":"01-Apr-2026 at 7:35 AM",
+"2024-25":"04-Apr-2025 at 7:35 AM",
+"2023-24":"04-Apr-2024 at 7:45 AM"
+
+};
+
+const sessionBegin = sessionBeginMap[session] || "N/A";
+
+
+
+// ------ ========== ----------------Marksheet HTML div Start Hare - ================ ----
+document.getElementById("marksheet").innerHTML=`
+
+<table class="marksheet-table">
+<table style="width:100%; border: none;"> 
+    
+
+</table>
+
+<table style="width:100%;">
+<td style="background-color: #1c2833 ;text-align: center; color: white ;"><span style="color: white ;font-size:150%; font-weight: bold;"> REPORT CARD:  ${row[39]}</span></td>
+</table>
+
+<table style="width:100%; ">
+<tr style="border: none;">  
+<td style="background-color: white ;text-align: RIGHT; color: balck ;border: none;"><span style="color: black ;font-size:100%; font-weight: bold;"> ADMISSION NO: </span> </td>
+<td style="background-color: white ;text-align: center; color: balck ;border: none; font-size:18px; font-weight: bold;">${row[0]}</td>
+<td style="background-color: white ;text-align: center; color: balck ;border: none;"></td>
+<td style="background-color: white ;text-align: RIGHT; color: balck ;border: none;"><span style="color: black ;font-size:100%; font-weight: bold;"> ROLL NO. : </span></td>
+<td style="background-color: white ;text-align: center; color: balck ;border: none; font-size:18px; font-weight: bold;">${row[6]}</td>
+<td style="background-color: white ;text-align: center; color: balck ;border: none;"></td>
+</td>
+
+</tr>
+  
+  <tr style="border: none;"> 
+<td style="background-color: white ;text-align: left; color: balck ;border: none;"><span style="color: black ;font-size:90%; font-weight: bold;"> NAME:  </span> ${row[2]} </td>
+<td style="background-color: white ;text-align: left ; color: balck ;border: none;"></td>
+<td style="background-color: white ;text-align: left ; color: balck ;border: none;"><span style="color: black ;font-size:90%; font-weight: bold;"> CLASS & SEC. : </span> ${row[1]}</td>
+<td style="background-color: white ;text-align: center; color: balck ;border: none;"></td>
+<td style="background-color: white ;text-align: center; color: balck ;border: none;"></td>
+<td style="background-color: white ;text-align: center; color: balck ;border: none;"></td>
+</td>
+
+</tr>
+  
+<tr style="border: none;"> 
+<td style="background-color: white ;text-align: left ; color: balck ;border: none;"><span style="color: black ;font-size:90%; font-weight: bold;"> DATE OF BIRTH :  </span> ${row[5]} </td>
+<td style="background-color: white ;text-align: center; color: balck ;border: none;"></td>
+<td style="background-color: white ;text-align: center; color: balck ;border: none;"></td>
+<td style="background-color: white ;text-align: center; color: balck ;border: none;"></td>
+<td style="background-color: white ;text-align: center; color: balck ;border: none;"></td>
+<td style="background-color: white ;text-align: center; color: balck ;border: none;"></td>
+</td>
+
+</tr>
+
+<tr style="border: none;">  
+<td style="background-color: white ;text-align: left ; color: balck ;border: none;"><span style="color: black ;font-size:90%; font-weight: bold;">FATHER'S NAME: </span> ${row[3]}</td>
+<td style="background-color: white ;text-align: center; color: balck ;border: none;"></td>
+<td style="background-color: white ;text-align: left ; color: balck ;border: none;"><span style="color: black ;font-size:90%; font-weight: bold;"> MOTHER'S NAME: </span>${row[4]}</td>
+<td style="background-color: white ;text-align: center; color: balck ;border: none;"></td>
+<td style="background-color: white ;text-align: center; color: balck ;border: none;"></td>
+<td style="background-color: white ;text-align: center; color: balck ;border: none;"><span style="color: black ;font-size:100%; font-weight: bold;"> ${label} </span></td>
+</td>
+
+</tr>
+</table>
+
+
+<table style="width:100%"> 
+<td style="background-color: #273746 ;text-align: center; font-weight: bold; color: white ;">ACADEMIC PERFORMANCE - FINAL TERM</td>
+</td>
+</table>
+
+<table style="width:100%; background-color: white ;"> 
+<tr> 
+<td style="background-color: #d5d8dc ;text-align: center ; color: balck ;font-family:Eras Bold ITC;font-weight: bold;">SUBJECTS</td>
+<td style="background-color: #d5d8dc ;text-align: center; color: balck ;font-family:Eras Bold ITC;font-weight: bold;">CLASS ASSESSMENT</td>
+<td style="background-color: #d5d8dc ;text-align: center ; color: balck ;font-family:Eras Bold ITC;font-weight: bold;">TERMS-1</td>
+<td style="background-color: #d5d8dc ;text-align: center; color: balck ;font-family:Eras Bold ITC;font-weight: bold;">TOTAL</td>
+<td style="background-color: #d5d8dc ;text-align: center; color: balck ;font-family:Eras Bold ITC;font-weight: bold;">CLASS ASSESSMENT</td>
+<td style="background-color: #d5d8dc ;text-align: center; color: balck ;font-family:Eras Bold ITC;font-weight: bold;">TERM-2</td>
+<td style="background-color: #d5d8dc ;text-align: center; color: balck ;font-family:Eras Bold ITC;font-weight: bold;">TOTAL</td>
+<td style="background-color: #d5d8dc ;text-align: center; color: balck ;font-family:Eras Bold ITC;font-weight: bold;">TOTAL</td>
+</tr>
+
+<tr> 
+<td style="background-color: #eaecee ;text-align: center ; color: balck ;font-weight: bold;">Max. Marks</td>
+<td style="background-color: #eaecee ;text-align: center; color: balck ;font-weight: bold;">30</td>
+<td style="background-color: #eaecee ;text-align: center ; color: balck ;font-weight: bold;">70</td>
+<td style="background-color: #eaecee ;text-align: center; color: balck ;font-weight: bold;">100</td>
+<td style="background-color: #eaecee ;text-align: center; color: balck ;font-weight: bold;">30</td>
+<td style="background-color: #eaecee ;text-align: center; color: balck ;font-weight: bold;">70</td>
+<td style="background-color: #eaecee ;text-align: center; color: balck ;font-weight: bold;">100</td>
+<td style="background-color: #eaecee ;text-align: center; color: balck ;font-weight: bold;">200</td>
+</tr>
+
+${rows}
+
+</table>
+
+
+<table style="width:100%"> 
+<td style="background-color: black ;text-align: right ; color: white ;font-weight: bold;border: none;">Mark Percentage: ${percentage}%</td>
+<td style="background-color: black ;text-align: center; color: white ;font-weight: bold;border: none;">Total Marks: ${total}/${max} </td>
+</td>
+</table>
+
+<table style="width:100%;margin-top:20px">
+
+<tr>
+<td style="background:#273746;color:white;text-align:center">
+CO- SCHOLASTIC PERFORMANCE - FINAL TERMS
+</td>
+</tr>
+
+
+</table>
+
+
+<table style="width:100%"> ${rowsActivity}</table>
+
+<br>
+
+<b>Teacher Remarks :</b> ${row[37]}
+
+<br><br>
+
+
+<table style="width:100%"> 
+<tr> 
+<td style="background-color: whit ;text-align: left ; color: balck ;"><span style="color: black ;font-size:95%; font-weight: bold;">Grade: ${grade} | Class Position: <span style="color: green ;font-size:95%; font-weight: bold;"> ${position} </span>  </span>   </span></td>
+<td style="background-color: whit ;text-align: left ; color: balck ;"><span style="color: black ;font-size:95%; font-weight: bold;">Promotion For Granted to Next Class: </span>Granted </td>
+</tr>
+</table>
+
+<br>
+
+<span style="color:black;font-size:95%">
+New Session begins on: ${sessionBegin}
+</span>
+
+<table style="width:100%;margin-top:20px">
+
+<tr>
+
+<td style="text-align:center">
+<br><br> ________________________________ <br>
+<b>Class Teacher Sign</b>
+</td>
+
+<td style="text-align:center">
+<br><br>    ________________________________
+<br>
+<b>Principal Sign</b>
+</td>
+
+<td style="text-align:center">
+<br><br>    ________________________________
+<br>
+<b>Parents / Guardian Sign</b>
+</td>
+
+</tr>
+
+</table>
+
+<br>
+
+<span style="font-size:65%">
+** Marks Grade (%): A++ (90-100), A+ (80-90), A (70-80),
+B++ (60-70), B+ (50-60), B (40-50), C (33-40)
+</span>
+
+<br>
+
+<span style="color:blue;font-size:95%">
+Issue Date : ${issueDate}
+</span>
+
+
+`;
+// ------ ========== ----------------Marksheet HTML div stop Hare - ================ ----
+}
+
+
+
+function printMarksheet() {
+
+    const printWindow = window.open("", "_blank");
+
+    const styles = `
+    <style>
+    body { 
+        font-family: Arial, sans-serif; 
+        margin: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        background-color: #fff;
+        margin-top: 20px;
+        border-radius: 10px;
+        overflow: hidden;
+        font-size: 15px;
+    }
+
+    th, td {
+        padding: 12px;
+        border: 1px solid #ddd;
+        text-align: center;
+    }
+
+    th {
+        background: #0077b6;
+        color: white;
+        font-weight: bold;
+        font-size: 15px;
+    }
+    </style>
+    `;
+
+    printWindow.document.write("<html><head><title>Student Marksheet</title>");
+    printWindow.document.write(styles);
+    printWindow.document.write("</head><body>");
+
+    // showMarksheet() se jo div ban rahi hai usko print karega
+    printWindow.document.write(document.getElementById("marksheet").outerHTML);
+
+    printWindow.document.write("</body></html>");
+
+    printWindow.document.close();
+    printWindow.print();
+}
+
+
+
+
+//----------------------------*****-------------------------****---------------------------
+
+function showPositionTable(){
+
+let cls=document.getElementById("class").value;
+let session=document.getElementById("session").value;
+
+if(!cls || !session) return;
+
+let subjects=classSubjects[cls];
+
+let students=[];
+
+for(let i=1;i<sheetBSAMARKData.length;i++){
+
+let row=sheetBSAMARKData[i];
+
+if(row[1]==cls && row[39]==session){
+
+let total=0;
+
+subjects.forEach(sub=>{
+let idx=subjectIndex[sub];
+if(!idx) return;
+
+idx.forEach(i=>{
+total+=parseInt(row[i])||0;
+});
+});
+
+students.push({
+adm:row[0],
+name:row[2],
+father:row[3],
+mother:row[4],
+dob:row[5],
+roll:row[6],
+total:total
+});
+
+}
+}
+
+students.sort((a,b)=>b.total-a.total);
+
+let html=`
+<table>
+<tr>
+<th>Position</th>
+<th>Admission No</th>
+<th>Student Name</th>
+<th>Father Name</th>
+<th>Mother Name</th>
+<th>Date Birth</th>
+<th>Roll No</th>
+</tr>
+`;
+
+students.forEach((s,i)=>{
+
+let pos=i+1;
+
+html+=`
+<tr>
+<td>${pos}</td>
+
+<td>
+<a href="javascript:void(0)" onclick="openMarksheet('${s.adm}')">
+${s.adm}
+</a>
+</td>
+
+<td>${s.name}</td>
+<td>${s.father}</td>
+<td>${s.mother}</td>
+<td>${s.dob}</td>
+<td>${s.roll}</td>
+
+</tr>
+`;
+
+});
+
+html+="</table>";
+
+document.getElementById("positionTableBox").innerHTML=html;
+
+}
+
+
+//-----------------------------------------------------------------
+
+function openMarksheet(adm){
+
+document.getElementById("admission").value=adm;
+
+showMarksheet();
+
+document.getElementById("popupMarksheet").innerHTML=
+document.getElementById("marksheet").innerHTML;
+
+document.getElementById("marksheetPopup").style.display="block";
+
+}
+
+function closeBSAMARKPopup(){
+
+document.getElementById("marksheetPopup").style.display="none";
+
+}
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========= --- START --- ============ MIPL Daybook Part Start Hare  ================  ---------- ============ -->
+
 <style>
 
 body{
@@ -133,7 +1131,7 @@ table{
   table{
   overflow-x: auto;
   display: block;
-  max-height: 670px; /* Optional scrolling */
+  max-height: 500px; /* Optional scrolling */
   }
 
   /* Table border & cell style */
@@ -217,6 +1215,7 @@ DATACARE SOFTECH
 
       <option value="https://drive.google.com/drive/folders/1Dc4In3NfpKdFdOLqcgyTFNC2tch7b6q2?usp=sharing"   style="color: rgb(244, 111, 94); font-weight: bold;">AFI Drive</option>
       <option value="https://taajazone.com/"   style="color: rgb(0, 160, 110); ">TAAZAZONE.COM</option>
+       <option value="https://m5792.github.io/BSA/BSA%20Marksheet.html"   style="color: rgb(0, 160, 110); ">BSA Marksheet</option>
         
       <option value="https://m5792.github.io/esm/IVVOUCHER.html" >Imprest Voucher (IV) Login</option>
       <option value="https://m5792.github.io/esm/NOINDEX.html" >Noida Office Dashboard</option>
@@ -332,7 +1331,7 @@ Multitech Infracon Pvt. Ltd.
 <button class="report-btn" onclick="showReport('3')">&#128197 Address | Attendance | ID/Password</button>
 <button class="report-btn" onclick="showReport('4')">Daybook Summary</button>
 <button class="report-btn" onclick="showReport('5')">WH Sales Report</button>
-<button class="report-btn" onclick="showReport('6')">Sales Order Report</button>
+<button class="report-btn" onclick="showReport('bsamarksheet')">BSA Marksheet</button>
 
 </div>
 
@@ -349,7 +1348,7 @@ Multitech Infracon Pvt. Ltd.
 <style>
 #homeDashboard{
   display:flex;
-  flex-direction:row;  /* horizontal layout */
+  flex-direction:column;  /* horizontal layout (row; for rowm mood) */ 
   height:700px;
   gap:10px; /* boxes ke beech gap */
   font-family:Arial, sans-serif;
@@ -404,6 +1403,9 @@ Multitech Infracon Pvt. Ltd.
 
 </div>
 <!-- ------ XXX ------------------ ============================= HOME DIV STOP ================ -------------------- -->
+
+
+
 
 
 
@@ -3537,13 +4539,15 @@ alert("PO File Not Found");
   #results{
   overflow-x: auto;
   display: block;
-  max-height: 400px; /* vertical scrolling */
+  max-height: 550px; /* vertical scrolling */
   overflow-y: auto;
 }
 </style>
 <div id="results"></div>
 
 </div>
+<!-- ========= --- xxx --- ============ RATION CARD DIC stop HARE ================  ---------- ============ -->
+
 
 
 
@@ -3830,5 +4834,37 @@ function toggleNote(num){
 
 </script>
 <!-- ========= Buttan Configure Details List stop Hare  ---------- ============ -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
