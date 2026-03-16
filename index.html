@@ -902,6 +902,7 @@ window.onload = fetchUserData;
 
       <option value="https://drive.google.com/drive/folders/1Dc4In3NfpKdFdOLqcgyTFNC2tch7b6q2?usp=sharing"   style="color: rgb(244, 111, 94); font-weight: bold;">AFI Drive</option>
       <option value="https://taajazone.com/"   style="color: rgb(0, 160, 110); ">TAAZAZONE.COM</option>
+       <option value="https://www.mapchart.net/world.html#"   style="color: rgb(0, 160, 110); ">World Map</option>
         
       <option value="https://m5792.github.io/esm/IVVOUCHER.html" >Imprest Voucher (IV) Login</option>
       <option value="https://m5792.github.io/esm/NOINDEX.html" >Noida Office Dashboard</option>
@@ -2609,11 +2610,12 @@ document.addEventListener("DOMContentLoaded", () => {
 <button id="MFTPrint"   style="border: none; font-weight: bold; cursor: pointer; background-color: #027175; color: rgb(245, 242, 163);">🏢 Print</button>
 </div> 
 
+
 <style>
   #multiformTable{
   overflow-x: auto;
   display: block;
-  max-height: 500px; /* vertical scrolling */
+  max-height: 400px; /* vertical scrolling */
   overflow-y: auto;
 }
 </style>
@@ -2898,7 +2900,7 @@ th {
 
 </div>
 
-<table id="dlrtable"><thead id="table786Head"></thead><tbody id="table786Body"></tbody> Please Wait!....</table>
+<table id="dlrtable"><thead id="table786Head"></thead><tbody id="table786Body"></tbody> </table>
 
 </div>
  <!--   =============   divclas="A" containt =============== stop  -->
@@ -5881,7 +5883,7 @@ function render785Table(rows, searchText="") {
   const config = table785Config[currentFilterType];
   if (!config) return;
 
-  // Header
+  // ===== HEADER =====
   const headerRow = document.createElement("tr");
   config.headers.forEach(h => {
     const th = document.createElement("th");
@@ -5890,8 +5892,48 @@ function render785Table(rows, searchText="") {
   });
   table785Head.appendChild(headerRow);
 
-  // Body
-  rows.slice(1).forEach(r => {
+
+  // ===== DATA COPY =====
+  let filteredData = rows.slice(1);
+
+
+  // ===== SORTING =====
+  filteredData.sort((a, b) => {
+
+    const parseDate = (str) => {
+      if (!str) return null;
+
+      const parts = str.trim().split("-");
+      if (parts.length !== 3) return null;
+
+      const day = parseInt(parts[0], 10);
+      const mon = parts[1].substring(0, 3);
+      const year = parseInt(parts[2], 10);
+
+      const months = {
+        Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,
+        Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11
+      };
+
+      if (months[mon] === undefined) return null;
+
+      return new Date(year, months[mon], day);
+    };
+
+    const dateA = parseDate(a[2]); 
+    const dateB = parseDate(b[2]);
+
+    if (dateA && dateB) {
+      return dateB - dateA;
+    }
+
+    return Number(b[0]) - Number(a[0]);
+
+  });
+
+
+  // ===== RENDER ROWS =====
+  filteredData.forEach(r => {
 
     const rowText = r.join(" ").toLowerCase();
     if (searchText && !rowText.includes(searchText.toLowerCase())) return;
@@ -5899,6 +5941,7 @@ function render785Table(rows, searchText="") {
     const tr = document.createElement("tr");
 
     config.cols.forEach(colIndex => {
+
       const td = document.createElement("td");
       let cellText = r[colIndex] || "";
 
@@ -5914,7 +5957,9 @@ function render785Table(rows, searchText="") {
     });
 
     table785Body.appendChild(tr);
+
   });
+
 }
 
 // ================= APPLY FILTER =================
@@ -6058,22 +6103,35 @@ function renderTable(sheet){
 filteredData.sort((a, b) => {
 
   const parseDate = (str) => {
-    if(!str) return new Date(0);
+    if (!str) return null;
 
     const parts = str.trim().split("-");
-    const day = parseInt(parts[0],10);
-    const mon = parts[1].substring(0,3);
-    const year = parseInt(parts[2],10);
+    if (parts.length !== 3) return null;
+
+    const day = parseInt(parts[0], 10);
+    const mon = parts[1].substring(0, 3);
+    const year = parseInt(parts[2], 10);
 
     const months = {
       Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,
       Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11
     };
 
+    if (months[mon] === undefined) return null;
+
     return new Date(year, months[mon], day);
   };
 
-  return parseDate(b[3]) - parseDate(a[3]); // column index 3 = Date
+  const dateA = parseDate(a[3]);
+  const dateB = parseDate(b[3]);
+
+  // Agar dono me date hai → date se sort
+  if (dateA && dateB) {
+    return dateB - dateA;
+  }
+
+  // Agar date missing hai → srno (column 0) se descending
+  return Number(b[0]) - Number(a[0]);
 });
 //
 
@@ -6416,7 +6474,7 @@ document.getElementById("reff786Input").addEventListener("change",()=>setTimeout
 
 
 
-
+<!-- ------------------ =========================== job/reff summry popup start hare ------------------------- ============ ===== -->
 
 <script>
 
@@ -10283,6 +10341,9 @@ document.addEventListener("click", (e) => {
 <br/>
 <p onclick="window.open('https://docs.google.com/spreadsheets/d/1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU/edit?gid=1462163867#gid=1462163867','_blank')" style="cursor:pointer;color:#0026ff;">Master Data Google Sheet</p>
 <p onclick="window.open('https://docs.google.com/spreadsheets/d/1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4/edit?gid=2007779252#gid=2007779252','_blank')" style="cursor:pointer;color:#0026ff;">Address, Event Other Google Sheet</p>
+
+
+
 
 </div>
 </div>
