@@ -9,8 +9,9 @@
 
 <div id="bsamarksheet" class="report-content">
 
-
 <style>
+
+
 #marksheet{
 background:white;
 padding:20px;
@@ -51,8 +52,10 @@ box-shadow:0 0 10px #ccc;
 
 </head>
 
-<body onload="loadBSAMARKSheet()">
- <span style="color: rgb(0, 74, 88); font-size: 18px;font-weight: bold;"> Student Report Card</span> <br/><br/>
+<!-- <body onload="loadBSAMARKSheet()"> -->
+<body onload="loadBSAMARKSheet().then(()=>showTodayBirthdays()); initStudentSearch();">
+
+<h2>Student Report Card</h2>
 
 <div id="mytoolsbar" style="padding: 5px 10px; background-color: rgb(226, 226, 226); border-radius: 10px;">
 <label>Session</label> <select id="session" onchange="updateAdmission()">
@@ -89,64 +92,107 @@ box-shadow:0 0 10px #ccc;
 <select id="admission" onchange="showMarksheet()">
 <option value="">Select Admission No</option>
 </select>
-<button onclick="downloadClassPDF()" style="border: none; color: black; font-weight: bold;  cursor: pointer; background: rgb(226, 226, 226);">📄 Download Full Class Marksheet PDF</button>
+
+<button onclick="printPositionTable()" style="border: none; color: black; font-weight: bold;  cursor: pointer; background: rgb(226, 226, 226);">🖨️Print</button>
 </div>
 
 
-
+<!-- Start ===== ------------------------------ expandbar code /script and content --------------------------- ===== -->
 
 
 <style>
-  .toggleBox{
-background:#0c0c0c;
-color:rgb(248, 246, 246);
-padding:10px;
-font-weight:bold;
-cursor:pointer;
-border-radius:6px;
+.toggleBox{
+  background:#0c0c0c;
+  color:#fff;
+  padding:10px;
+  font-weight:bold;
+  cursor:pointer;
+  border-radius:6px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:10px;
+}
+
+.leftText{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.statusBtn{
+  padding:3px 10px;
+  border-radius:20px;
+  font-size:12px;
+}
+
+.openBtn{
+  background:green;
+  color:#fff;
+}
+
+.closeBtn{
+  background:red;
+  color:#fff;
 }
 
 .expandContent{
-max-height:0;
-overflow:hidden;
-transition:0.4s ease;
-background:#f4f6f6;
-padding:0 10px;
-border-radius:6px;
+  max-height:0;
+  overflow:hidden;
+  transition:0.4s ease;
+  background:#f4f6f6;
+  padding:0 10px;
+  border-radius:6px;
 }
 
 .expandContent.open{
-max-height:1500px;
-padding:10px;
+  max-height:1500px;
+  padding:10px;
 }
 </style>
+
 <script>
-  function toggleDiv(){
+function toggleDiv(btn){
 
-let div=document.getElementById("expandDiv");
+  let content = btn.nextElementSibling;
+  let status = btn.querySelector(".statusBtn");
 
-div.classList.toggle("open");
+  content.classList.toggle("open");
 
+  if(content.classList.contains("open")){
+    status.innerText = "Close";
+    status.classList.remove("openBtn");
+    status.classList.add("closeBtn");
+  }else{
+    status.innerText = "Open";
+    status.classList.remove("closeBtn");
+    status.classList.add("openBtn");
+  }
 }
 </script>
-<div class="toggleBox" onclick="toggleDiv()">
-  <span style="color: rgb(251, 171, 171);"> Click To View Marksheet (Open / Close)</span> |
-  <span id="sNameSpan"></span> |
+
+
+
+<!-- start ===== expandbar 1 ===== -->
+<div class="toggleBox" onclick="toggleDiv(this)">
+  
+  <div class="leftText">
+    <span style="color:#ffabab;">📄 Marksheet Bar</span> |
+
+     <span id="sNameSpan"></span> |
 Grade: <span id="grade"></span> | 
 Class Position: <span id="positionSpan" style="color: rgb(239, 250, 239);"></span> 
-<button onclick="printMarksheet()" style="border: none; color: rgb(246, 247, 183); font-weight: bold;  cursor: pointer; background: black;" >🖨 Print Marksheet</button>
+<button onclick="printMarksheet()" style="border: none; color: rgb(246, 247, 183); font-weight: bold;  cursor: pointer; background: black;" >🖨️ Print Marksheet</button>
 
-</div>
-<div id="expandDiv" class="expandContent" style="border-bottom: solid 5PX red;"> <div id="marksheet"></div> </div>
+</div> <div class="statusBtn openBtn">Open</div> </div>
 
+<div class="expandContent"  style="border-bottom: solid 5PX red;"> <div id="marksheet"></div> </div>
 
+<!-- xxx ===== expandbar 1 ===== -->
 
 <div id="studentCount" style="color: #002569; font-size: 18px; font-weight: bold;"></div> 
 <div id="top5students" style="margin-top:10px;font-weight:bold;color:#0a0a0a; background-color: rgb(243, 255, 254);"></div>
-
-
 <table  id="positionTableBox" style="margin-top:15px;"></table>
-
 
 
 
@@ -182,9 +228,49 @@ style="position:absolute;right:10px;top:10px;font-size:20px;">✖</button>
 <!-- Marksheet Popup  stop ----------- -->
 
 
+
+
+
+
+<!-- start ===== expandbar 2 ===== -->
+<div class="toggleBox" onclick="toggleDiv(this)" style="background-color: #006868;">
+  
+<div class="leftText">
+<span style="color:#f1efef;">📄 Student Search Bar</span> |
+
+</div>
+
+<div class="statusBtn openBtn">Open</div> </div>
+
+<div class="expandContent"  style="border-bottom: solid 5PX rgb(241, 213, 1);">
+ 
+<input type="text" id="searchInput" placeholder="Search student..." 
+onkeyup="globalStudentSearch()" 
+style="width:300px;padding:6px;">
+
+<table border="1" width="100%" id="resultTable" 
+style="margin-top:10px;border-collapse:collapse;">
+
+<thead>
+<tr></tr>
+</thead>
+
+<tbody></tbody>
+
+</table>
+
+
+</div>
+
+<!-- xxx ===== expandbar 2 ===== -->
+
+
+
+
+
+
 </div>
 <!-- ========= --- xxx --- ============ BSA Marksheet Div  stop HARE ================  ---------- ============ -->
-
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -411,17 +497,17 @@ rows+=`
 
 <tr>
 
-<td style="background-color: white ;text-align: left ; color: balck ;">${sub}</td>
+<td style="background-color: white ;text-align: left ;font-size:18px; color: balck ;">${sub}</td>
 
-<td>${m1}</td>
-<td>${m2}</td>
-<td style="color: black ;font-size:110%; font-weight: bold;">${(n1+n2)||""}</td>
+<td style="font-size:18px; color: balck ;">${m1}</td>
+<td style="font-size:18px; color: balck ;">${m2}</td>
+<td style="color: black ;font-size:18px; font-weight: bold;">${(n1+n2)||""}</td>
 
-<td>${m3}</td>
-<td>${m4}</td>
-<td style="color: black ;font-size:110%; font-weight: bold;">${(n3+n4)||""}</td>
+<td style="font-size:18px; color: balck ;">${m3}</td>
+<td style="font-size:18px; color: balck ;">${m4}</td>
+<td style="color: black ;font-size:18px; font-weight: bold;">${(n3+n4)||""}</td>
 
-<td style="color: black ;font-size:110%; font-weight: bold;">${sum}</td>
+<td style="color: black ;font-size:18px; font-weight: bold;">${sum}</td>
 
 </tr>
 
@@ -509,8 +595,8 @@ let rowsActivity = "";
 
 if (activities) {
 
-let headerRow = '<tr><th style="width:280px;">Activity</th>';
-let gradeRow =  '<tr><th style="width:280px;background-color: white;color: black;">Grade</th>';
+let headerRow = '<tr><th style="width:200px;">Activity</th>';
+let gradeRow =  '<tr><th style="width:200px;background-color: white;color: black;">Grade</th>';
 
 activities.forEach(act => {
 
@@ -526,7 +612,7 @@ if(typeof idx === "number"){
 //let grade = row[idx] || "";
 
 headerRow += `<th>${act}</th>`;
-gradeRow += `<td style="font-weight:bold;">${grade}</td>`;
+gradeRow += `<td >${grade}</td>`;
 
 });
 
@@ -623,17 +709,39 @@ const sessionBegin = sessionBeginMap[session] || "N/A";
 // ------ ========== ----------------Marksheet HTML div Start Hare - ================ ----
 document.getElementById("marksheet").innerHTML=`
 
-<table class="marksheet-table">
-<table style="width:100%; border: none;"> 
-    
+<style>
+.marksheet-table {
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
 
-</table>
+.marksheet-table td,
+.marksheet-table th {
+  border:1px solid #ccc;
+  padding:6px;
+  text-align:center;
+}
 
+.marksheet-table th {
+  background:#d5d8dc;
+}
+
+.marksheet-table tr:nth-child(even) {
+  background-color:#f9f9f9;
+}
+
+.marksheet-table tr:hover td {
+  background:#fccc49;
+  color:rgb(0, 15, 15);
+  transition: background-color 1s ease, color 1s ease;
+}
+</style>
 <table style="width:100%;">
 <td style="background-color: #1c2833 ;text-align: center; color: white ;"><span style="color: white ;font-size:150%; font-weight: bold;"> REPORT CARD:  ${row[39]}</span></td>
 </table>
 
-<table style="width:100%; ">
+<table style="width:100%; font-size:18px;">
 <tr style="border: none;">  
 <td style="background-color: white ;text-align: RIGHT; color: balck ;border: none;"><span style="color: black ;font-size:100%; font-weight: bold;"> ADMISSION NO: </span> </td>
 <td style="background-color: white ;text-align: center; color: balck ;border: none; font-size:18px; font-weight: bold;">${row[0]}</td>
@@ -685,27 +793,27 @@ document.getElementById("marksheet").innerHTML=`
 </td>
 </table>
 
-<table style="width:100%; background-color: white ;"> 
+<table style="width:100%; background-color: white ;font-size:18px;"> 
 <tr> 
-<td style="background-color: #d5d8dc ;text-align: center ; color: balck ;font-family:Eras Bold ITC;font-weight: bold;">SUBJECTS</td>
-<td style="background-color: #d5d8dc ;text-align: center; color: balck ;font-family:Eras Bold ITC;font-weight: bold;">CLASS ASSESSMENT</td>
-<td style="background-color: #d5d8dc ;text-align: center ; color: balck ;font-family:Eras Bold ITC;font-weight: bold;">TERMS-1</td>
-<td style="background-color: #d5d8dc ;text-align: center; color: balck ;font-family:Eras Bold ITC;font-weight: bold;">TOTAL</td>
-<td style="background-color: #d5d8dc ;text-align: center; color: balck ;font-family:Eras Bold ITC;font-weight: bold;">CLASS ASSESSMENT</td>
-<td style="background-color: #d5d8dc ;text-align: center; color: balck ;font-family:Eras Bold ITC;font-weight: bold;">TERM-2</td>
-<td style="background-color: #d5d8dc ;text-align: center; color: balck ;font-family:Eras Bold ITC;font-weight: bold;">TOTAL</td>
-<td style="background-color: #d5d8dc ;text-align: center; color: balck ;font-family:Eras Bold ITC;font-weight: bold;">TOTAL</td>
+<td style="background-color: #d5d8dc ;text-align: center ; color: balck ;font-weight: bold;">Subjects</td>
+<td style="background-color: #d5d8dc ;text-align: center; color: balck ;font-weight: bold;">Class Assessment</td>
+<td style="background-color: #d5d8dc ;text-align: center ; color: balck ;font-weight: bold;">Terms-1</td>
+<td style="background-color: #d5d8dc ;text-align: center; color: balck ;font-weight: bold;">Total</td>
+<td style="background-color: #d5d8dc ;text-align: center; color: balck ;font-weight: bold;">Class Assessment</td>
+<td style="background-color: #d5d8dc ;text-align: center; color: balck ;font-weight: bold;">Terms-2</td>
+<td style="background-color: #d5d8dc ;text-align: center; color: balck ;font-weight: bold;">Total</td>
+<td style="background-color: #d5d8dc ;text-align: center; color: balck ;font-weight: bold;">G.Total</td>
 </tr>
 
 <tr> 
 <td style="background-color: #eaecee ;text-align: center ; color: balck ;font-weight: bold;">Max. Marks</td>
-<td style="background-color: #eaecee ;text-align: center; color: balck ;font-weight: bold;">30</td>
-<td style="background-color: #eaecee ;text-align: center ; color: balck ;font-weight: bold;">70</td>
-<td style="background-color: #eaecee ;text-align: center; color: balck ;font-weight: bold;">100</td>
-<td style="background-color: #eaecee ;text-align: center; color: balck ;font-weight: bold;">30</td>
-<td style="background-color: #eaecee ;text-align: center; color: balck ;font-weight: bold;">70</td>
-<td style="background-color: #eaecee ;text-align: center; color: balck ;font-weight: bold;">100</td>
-<td style="background-color: #eaecee ;text-align: center; color: balck ;font-weight: bold;">200</td>
+<td style="background-color: #eaecee ;text-align: center; color: balck ;font-weight: bold;font-size:18px;">30</td>
+<td style="background-color: #eaecee ;text-align: center ; color: balck ;font-weight: bold;font-size:18px;">70</td>
+<td style="background-color: #eaecee ;text-align: center; color: balck ;font-weight: bold;font-size:18px;">100</td>
+<td style="background-color: #eaecee ;text-align: center; color: balck ;font-weight: bold;font-size:18px;">30</td>
+<td style="background-color: #eaecee ;text-align: center; color: balck ;font-weight: bold;font-size:18px;">70</td>
+<td style="background-color: #eaecee ;text-align: center; color: balck ;font-weight: bold;font-size:18px;">100</td>
+<td style="background-color: #eaecee ;text-align: center; color: balck ;font-weight: bold;font-size:18px;">200</td>
 </tr>
 
 ${rows}
@@ -827,8 +935,8 @@ function printMarksheet() {
     }
 
     th {
-        background: #0077b6;
-        color: white;
+         background: #c1c3c3;
+        color: rgb(9, 9, 9);
         font-weight: bold;
         font-size: 15px;
     }
@@ -847,9 +955,6 @@ function printMarksheet() {
     printWindow.document.close();
     printWindow.print();
 }
-
-
-
 
 //----------------------------*****-------------------------****---------------------------
 
@@ -963,9 +1068,275 @@ document.getElementById("marksheetPopup").style.display="none";
 }
 
 
+// -----------  printPositionTable --------------------------------------------------
+function printPositionTable() {
+
+let session = document.getElementById("session");
+let className = document.getElementById("class");
+
+let sessionText = session.options[session.selectedIndex].text;
+let classText = className.options[className.selectedIndex].text;
+
+let tableData = document.getElementById("positionTableBox").outerHTML;
+
+/* ===== Timestamp Format ===== */
+let now = new Date();
+
+let day = now.getDate();
+let year = now.getFullYear();
+
+let months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+let month = months[now.getMonth()];
+
+let hours = now.getHours();
+let minutes = now.getMinutes().toString().padStart(2,"0");
+
+let ampm = hours >= 12 ? "PM" : "AM";
+hours = hours % 12;
+hours = hours ? hours : 12;
+
+let timeStamp = `${day}-${month}-${year}/${hours}:${minutes} ${ampm}`;
+/* ============================ */
+
+let printWindow = window.open("", "", "width=900,height=700");
+
+printWindow.document.write(`
+<html>
+<head>
+<title>Print</title>
+
+<style>
+
+body{
+font-family: Arial;
+margin:20px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.left{
+font-size:20px;
+font-weight:bold;
+}
+
+.right{
+font-size:14px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:15px;
+}
+
+table, th, td{
+border:1px solid black;
+}
+
+th,td{
+padding:6px;
+text-align:center;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+<div class="left">Session : ${sessionText} | Class : ${classText}</div>
+<div class="right">${timeStamp}</div>
+</div>
+
+${tableData}
+
+</body>
+</html>
+`);
+
+printWindow.document.close();
+printWindow.print();
+
+}
+
+//  Birtday Function ------------------
+function parseDOB(dob){
+
+  if(!dob) return null;
+
+  // example: 24-Dec-2016 / 4-Dec-16
+  let parts = dob.split("-");
+
+  if(parts.length !== 3) return null;
+
+  let day = parseInt(parts[0]);
+
+  let monthStr = parts[1].toLowerCase();
+
+  let year = parseInt(parts[2]);
+
+  // convert 2 digit year → 4 digit
+  if(year < 100){
+    year += 2000;
+  }
+
+  const months = {
+    jan:0,feb:1,mar:2,apr:3,may:4,jun:5,
+    jul:6,aug:7,sep:8,oct:9,nov:10,dec:11
+  };
+
+  let month = months[monthStr.substring(0,3)];
+
+  if(month === undefined) return null;
+
+  return new Date(year, month, day);
+
+}function showTodayBirthdays(){
+
+let session = "2025-26";
+let today = new Date();
+
+let tDate = today.getDate();
+let tMonth = today.getMonth();
+
+let listHTML = "";
+
+for(let i=1; i<sheetBSAMARKData.length; i++){
+
+  let row = sheetBSAMARKData[i];
+
+  if(row[39] != session) continue;
+
+  let dob = row[5];
+  let d = parseDOB(dob);
+
+  if(!d) continue;
+
+  if(d.getDate() == tDate && d.getMonth() == tMonth){
+
+    listHTML += `
+      <li style="list-style:none; padding:4px 0; font-weight:bold; color:blue;font-size: 12px;">
+        🎂 ${row[2]} | Class - ${row[1]} | A.No - ${row[0]}
+      </li>
+    `;
+  }
+
+}
+
+if(listHTML == ""){
+  listHTML = `<li style="list-style:none;color:red;">No Birthday Today</li>`;
+}
+
+document.getElementById("birthdayList").innerHTML = listHTML;
+
+}
 </script>
 
 
+
+<!-- ============= Student Search Bar Script ====================== -->
+<script>
+const apiSRldgrKey = "AIzaSyCerUAdaqNQ7mxjgNBbAeiHDEKgN0Dzoao";
+const sheetSRldgrId = "1BiADwSV64zXPz0UyVmYN7BlyW8DiCylgT3-bSrnIk38";
+const rangeID = "RAGISTER!A:Q";
+
+let allStudents = [];
+
+// 👉 Header + Column Mapping
+const columns = [
+     { name: "A.NO", index: 0 },
+    { name: "Student Name", index: 2 },
+    { name: "Date of Birth", index: 3 },
+    { name: "Father Name", index: 4 },
+    { name: "Mother Name", index: 5 },
+    { name: "Adhar No.", index: 6 },
+    { name: "Mobile No.", index: 7 },
+    { name: "Apaar No", index: 8 },
+    { name: "Address", index: 9 },
+    { name: "PEN NO.", index: 10 },
+    { name: "Religion", index: 11 },
+    { name: "Cast", index: 12 },
+    { name: "Roll No.", index: 13 },
+    { name: "R/T", index: 14 }
+];
+
+// 👉 Init function
+async function initStudentSearch(){
+    await loadStudents();
+    createHeader();
+}
+
+// 👉 Load Data
+async function loadStudents() {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetSRldgrId}/values/${rangeID}?key=${apiSRldgrKey}`;
+    
+    const res = await fetch(url);
+    const data = await res.json();
+    
+    allStudents = data.values || [];
+}
+
+// 👉 Create Header
+function createHeader() {
+    let theadRow = document.querySelector("#resultTable thead tr");
+
+    let html = "<th>SNo</th>";
+
+    columns.forEach(col => {
+        html += `<th>${col.name}</th>`;
+    });
+
+    theadRow.innerHTML = html;
+}
+
+// 👉 Search Function
+function globalStudentSearch() {
+
+    let input = document.getElementById("searchInput").value.toLowerCase();
+    let tbody = document.querySelector("#resultTable tbody");
+
+    tbody.innerHTML = "";
+
+    if (!input) return;
+
+    let count = 1;
+
+    allStudents.forEach(row => {
+
+        let rowText = row.join(" ").toLowerCase();
+
+        if (rowText.includes(input)) {
+
+            let tr = document.createElement("tr");
+
+            // 👉 R/T check
+            if (row[14] && row[14].toUpperCase() === "T") {
+                tr.style.background = "#ffcccc";
+            }
+
+            let html = `<td>${count++}</td>`;
+
+            columns.forEach(col => {
+                html += `<td>${row[col.index] || ""}</td>`;
+            });
+
+            tr.innerHTML = html;
+            tbody.appendChild(tr);
+        }
+    });
+}
+</script>
+
+
+</body>
+</html>
+
+<!-- xxx -->
 
 
 
@@ -1357,6 +1728,7 @@ Multitech Infracon Pvt. Ltd.
 .boxCol1{ flex:4; background:#f7e9e9; border:1px solid #999; padding:10px; }
 .boxCol2{ flex:3; background:#d9edf7; border:1px solid #999; padding:10px; }
 .boxCol3{ flex:3; background:#eaf5ea; border:1px solid #999; padding:10px; }
+.boxCol4{ flex:3; background:#f5f5ea; border:1px solid #999; padding:10px; }
 
 /* ===== Card ===== */
 .card{
@@ -1372,7 +1744,7 @@ Multitech Infracon Pvt. Ltd.
     flex-direction:column;
     height:auto;
   }
-  .boxCol1,.boxCol2,.boxCol3{
+  .boxCol1,.boxCol2,.boxCol3,.boxCol4{
     width:100%;
   }
 }
@@ -1397,7 +1769,14 @@ Multitech Infracon Pvt. Ltd.
 <div class="boxCol3">
   <div class="card">
     <span style="color: rgb(1, 97, 81); font-size: 14px; font-weight: bold; font-style: italic;">Payment Demand Status..</span>
-      <ul id="pendingList"></ul>
+      <ul id="pendingList" style="padding:0;"></ul>
+  </div>
+</div>
+
+<div class="boxCol4">
+  <div class="card">
+    <span style="color: rgb(0, 59, 108); font-size: 14px; font-weight: bold; font-style: italic;">BSA Today Birthday..</span> 
+<ul id="birthdayList" style="padding:0;"></ul>
   </div>
 </div>
 
@@ -4732,12 +5111,26 @@ loadRationCardData();
 <p onclick="window.open('https://docs.google.com/spreadsheets/d/1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU/edit?gid=1462163867#gid=1462163867','_blank')" style="cursor:pointer;color:#0026ff;">Master Data Google Sheet</p>
 <p onclick="window.open('https://docs.google.com/spreadsheets/d/1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4/edit?gid=2007779252#gid=2007779252','_blank')" style="cursor:pointer;color:#0026ff;">Address, Event Other Google Sheet</p>
 <p onclick="showReport('rationcard')" style="cursor:pointer;color:#038670;">Ration Card Search</p>
-</div>
-</div>
+
+
 
 <!-- ========= Button Configure Details List Stop Here ---------- ============ -->
 
 
+
+<!-- ===== BUTTON 4 ===== -->
+<button class="noteBtn" onclick="toggleNote(4)">BSA Links</button>
+
+<div id="noteContent4" class="noteContent">
+  
+  <p onclick="window.open('https://docs.google.com/spreadsheets/d/1BiADwSV64zXPz0UyVmYN7BlyW8DiCylgT3-bSrnIk38/edit?gid=435632414#gid=435632414','_blank')" style="cursor:pointer;color:#0026ff;">BSA Master Google Sheet</p>
+<p onclick="window.open('https://docs.google.com/spreadsheets/d/1tbVXCvnuH4eYLQo9WWrmqkvst2MXc5ok6y8ozqXiOv0/edit?gid=1647225676#gid=1647225676','_blank')" style="cursor:pointer;color:#0026ff;">BSA Data Entry Sheet</p>
+<p onclick="window.open('https://m5792.github.io/BSA/','_blank')" style="cursor:pointer;color:#0026ff;">BSA Index Html</p>
+<p onclick="window.open('https://m5792.github.io/BSA/BSA%20Marksheet.html','_blank')" style="cursor:pointer;color:#0026ff;">BSA Marksheet Index Html</p>
+
+</div>
+
+</div>
 <style>
 
 .sidebarnotes{
