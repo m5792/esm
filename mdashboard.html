@@ -1930,6 +1930,41 @@ Multitech Infracon Pvt. Ltd.
 
 <!-- ------ start ------------------ ============================= EMI / Loan CalculatorDIV start ================ -------------------- -->
 <div id="5" class="report-content">
+
+
+  <!-- ===== toggleNote BUTTON 10  start===== -->
+<button class="noteBtn" onclick="toggleNote(10)">📑 My Loan - Mukhtar Ahamad</button>
+
+<div id="noteContent10" class="noteContent">
+  
+  <style>
+button { padding: 5px 10px; cursor: pointer; }
+.schedule-row { background-color: #f9f9f9; display: none; }
+/* Closed row red */
+.closed-loan { background-color: #ffcccc; }
+/* Summary box */
+.summary-box {
+    border: 2px solid #333;
+    padding: 10px;
+    margin-bottom: 15px;
+    background: #f5f5f5;
+    font-weight: bold;
+}
+</style>
+
+<h1>Live EMI Summary with Repayment Schedule</h1>
+<div class="summary-box" id="summaryBox">Loading...</div>
+<table><thead><tr>
+<th>Firm Name</th><th>Loan No</th><th>Loan Type</th><th>Start EMI Date</th><th>Loan Amount</th><th>ROI (%)</th><th>EMI</th><th>No of Month</th><th>Status</th><th>Principal Paid</th><th>Interest Paid</th><th>Remaining Principal</th><th>No of EMI Balance</th><th>Total EMI Remaining</th><th>Schedule</th>
+</tr>
+</thead>
+
+<tbody id="loan-table-body"></tbody>
+</table>
+</div>
+  <!-- ===== toggleNote BUTTON 10  stop xxx ===== -->
+
+
 <h3>EMI Calculator</h3>
 <div style="
 display:flex;
@@ -2922,9 +2957,214 @@ load785Data();
  <!--   ============= -----   mipl785Table with poref/address/ attandase buttan code script ------ =============== stop  -->
 
 
- <!--  Start  ============= -----   EMI / Loan buttan code script ------ =============== Start  -->
+ <!--  Start  ============= ----- ***************************   EMI / Loan buttan code script ************************************* ------ =============== Start  -->
 
- 
+  <!--  Start  ============= -----   My Loan (toggleNote buttan 10 ) buttan code script ------ =============== Start  -->
+
+<script>
+const apiEMIKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheetEMIId = "1EOO0QzwNaPhwIfZN_DCLlhQB9yeC-j-GpmtM_6JMRmw";
+const rangeEMI = "LOAN!A:K";
+
+// Loan Status Calculation (EMI from sheet)
+function calculateLoanStatus(loan){
+
+    const principal = loan.LoanAmount;
+    const roi = loan.ROI;
+    const noOfMonth = loan.NoOfMonth;
+    const startDate = new Date(loan.StartDate);
+
+    const emi = loan.EMI; // ✅ Sheet EMI
+
+    const today = new Date();
+
+    let monthsPassed = (today.getFullYear() - startDate.getFullYear())*12 +
+                       (today.getMonth() - startDate.getMonth());
+
+    monthsPassed = Math.min(monthsPassed, noOfMonth);
+    monthsPassed = Math.max(monthsPassed, 0);
+
+    let remainingPrincipal = principal;
+    let principalPaid = 0;
+    let interestPaid = 0;
+
+    for(let i=0; i<monthsPassed; i++){
+        const interestForMonth = remainingPrincipal * roi / 12 /100;
+        const principalForMonth = emi - interestForMonth;
+
+        remainingPrincipal -= principalForMonth;
+        principalPaid += principalForMonth;
+        interestPaid += interestForMonth;
+    }
+
+    const emiBalance = noOfMonth - monthsPassed;
+    const totalEMIremaining = emi * emiBalance;
+
+    return {emi, principalPaid, interestPaid, remainingPrincipal, totalEMIremaining, emiBalance};
+}
+
+// Schedule (EMI from sheet)
+function generateSchedule(loan){
+
+    const schedule = [];
+    const principal = loan.LoanAmount;
+    const roi = loan.ROI;
+    const noOfMonth = loan.NoOfMonth;
+    const startDate = new Date(loan.StartDate);
+
+    const emi = loan.EMI; // ✅ Sheet EMI
+
+    let remainingPrincipal = principal;
+
+    for(let i=0; i<noOfMonth; i++){
+
+        const interestForMonth = remainingPrincipal * roi /12 /100;
+        const principalForMonth = emi - interestForMonth;
+        remainingPrincipal -= principalForMonth;
+
+        const emiDate = new Date(startDate);
+        emiDate.setMonth(emiDate.getMonth() + i);
+
+        schedule.push({
+            EMI_No: i+1,
+            Date: emiDate.toLocaleDateString(),
+            EMI: emi.toFixed(2),
+            Principal: principalForMonth.toFixed(2),
+            Interest: interestForMonth.toFixed(2),
+            RemainingPrincipal: remainingPrincipal.toFixed(2)
+        });
+    }
+
+    return schedule;
+}
+
+// Load Loans
+async function loadLoans(){
+
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetEMIId}/values/${rangeEMI}?key=${apiEMIKey}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const rows = data.values.slice(1);
+
+    const tbody = document.getElementById('loan-table-body');
+
+    let totalActive = 0, totalClosed = 0;
+    let activeLoanAmount = 0, closedLoanAmount = 0;
+    let activeEmiAmount = 0;
+    let pendingPrincipal = 0;
+
+    rows.forEach((row, index) => {
+
+        const loan = {
+            FirmName: row[0],
+            LoanNo: row[2],
+            LoanType: row[3],
+            StartDate: row[4],
+            LoanAmount: parseFloat(row[5]),
+            ROI: parseFloat(row[6]),
+            EMI: parseFloat(row[7]), // ✅ EMI from sheet
+            NoOfMonth: parseInt(row[8]),
+            Status: row[9],
+        };
+
+        const status = calculateLoanStatus(loan);
+
+        const statusText = loan.Status.toLowerCase().trim();
+
+        if(statusText === "closed" || statusText === "close"){
+            totalClosed++;
+            closedLoanAmount += loan.LoanAmount;
+        } else {
+            totalActive++;
+            activeLoanAmount += loan.LoanAmount;
+            activeEmiAmount += loan.EMI; // ✅ FIXED
+            pendingPrincipal += status.remainingPrincipal;
+        }
+
+        const tr = document.createElement('tr');
+
+        if(statusText === "closed" || statusText === "close"){
+            tr.classList.add('closed-loan');
+        }
+
+        tr.innerHTML = `
+<td>${loan.FirmName}</td>
+<td>${loan.LoanNo}</td>
+<td>${loan.LoanType}</td>
+<td>${loan.StartDate}</td>
+<td>${loan.LoanAmount.toFixed(2)}</td>
+<td>${loan.ROI}</td>
+<td>${loan.EMI.toFixed(2)}</td>
+<td>${loan.NoOfMonth}</td>
+<td>${loan.Status}</td>
+<td>${status.principalPaid.toFixed(2)}</td>
+<td>${status.interestPaid.toFixed(2)}</td>
+<td>${status.remainingPrincipal.toFixed(2)}</td>
+<td>${status.emiBalance}</td>
+<td>${status.totalEMIremaining.toFixed(2)}</td>
+<td><button onclick="toggleSchedule(${index})">Show</button></td>
+        `;
+
+        tbody.appendChild(tr);
+
+        // Schedule row
+        const scheduleRow = document.createElement('tr');
+        scheduleRow.classList.add('schedule-row');
+        scheduleRow.id = `schedule-${index}`;
+
+        const schedule = generateSchedule(loan);
+
+        scheduleRow.innerHTML = `
+<td colspan="15">
+<table style="width:100%">
+<tr>
+<th>EMI No</th>
+<th>Date</th>
+<th>EMI</th>
+<th>Principal</th>
+<th>Interest</th>
+<th>Remaining Principal</th>
+</tr>
+${schedule.map(s => `
+<tr>
+<td>${s.EMI_No}</td>
+<td>${s.Date}</td>
+<td>${s.EMI}</td>
+<td>${s.Principal}</td>
+<td>${s.Interest}</td>
+<td>${s.RemainingPrincipal}</td>
+</tr>
+`).join('')}
+</table>
+</td>
+        `;
+
+        tbody.appendChild(scheduleRow);
+    });
+
+    // Summary
+    document.getElementById("summaryBox").innerHTML = `
+✅ Active Loan: ${totalActive} (₹${activeLoanAmount.toFixed(2)}) |
+💳 Total EMI (Active): ₹${activeEmiAmount.toFixed(2)} <br>
+
+❌ Closed Loan: ${totalClosed} (₹${closedLoanAmount.toFixed(2)}) <br>
+
+💰 Pending Principal (Active): ₹${pendingPrincipal.toFixed(2)}
+    `;
+}
+
+// Toggle Schedule
+function toggleSchedule(index){
+    const row = document.getElementById(`schedule-${index}`);
+    row.style.display = row.style.display === 'table-row' ? 'none' : 'table-row';
+}
+
+loadLoans();
+</script>
+<!--  xxx  ============= -----   My Loan (toggleNote buttan 10 ) buttan code script ------ =============== xxx  -->
+
+
+ <!--  Start ----   EMI / Loan buttan code script ----======= Start  -->
 <script>
 
 // EMI Formula
@@ -4114,13 +4354,38 @@ document.addEventListener("keydown", function (e) {
   <!-- Current Time -->
   <div id="currentDateTime" style="padding: 5px 10px; white-space: nowrap; font-size: 16px; background-color: blue; color: white; "></div>
  
-   <marquee behavior="left" direction="RIG" scrollamount="5">
-  <span id="todayEvent" style="color: rgb(0, 65, 69);font-weight: bold;font-size: 14px; "></span>
-  </marquee>
+   <div class="ticker-wrap"> <div class="ticker"> <span id="todayEvent"></span> </div></div>
 
 </div>
  
+<style>
+  .ticker-wrap {
+  width: 100%;
+  overflow: hidden;
+  background: #f1f1f1;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
 
+.ticker {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  animation: tickerMove 50s linear infinite;
+  font-weight: bold;
+  color: rgb(0, 65, 69);
+  font-size: 14px;
+}
+
+@keyframes tickerMove {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+</style>
 
 <!-- ✅ Fixed Positioned Refresh Button -->
  
