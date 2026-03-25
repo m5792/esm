@@ -933,7 +933,11 @@ window.onload = fetchUserData;
 	    <option value="https://docs.google.com/spreadsheets/d/17GZv2O6uupdA5r6p7-zqKZ8AQgZozbGQf2aXPlUzhDA/edit?gid=1122888223#gid=1122888223">	Mipl Office</option>
 	    <option value="https://docs.google.com/spreadsheets/d/13N0HBuorZJM-ARnlTh36EUaD1-uQckaC6sLLzMnWAks/edit?gid=696561165#gid=696561165">	Office Noida</option>
 	    <option value="https://docs.google.com/spreadsheets/d/1Rw_6cDYP-ETicn9YhHkdF_Sgmi8ps5JhjhlrkWvtwRQ/edit?gid=2123243236#gid=2123243236">	GUPTA CAMUNICATION Sheet*</option>
-      </select>
+       <option value="https://bouncyballs.org/">	Game-   Bouncy Balls</option>
+        <option value="https://codepen.io/XAuBAH/pen/BadLGaw?utm_source=chatgpt.com">	Live Html Editing- Canvas</option>
+        <option value="https://thisissand.com/">Game - Sand Picture Making</option>
+      
+    </select>
 
            
 
@@ -1025,7 +1029,6 @@ window.onload = fetchUserData;
 <table id="MIPLDATATABLE"></table>
 
 </td>
-
 
 </div>
 
@@ -10969,3 +10972,337 @@ function toggleNote(num){
 
 </script>
 <!-- ========= Buttan Configure Details List stop Hare  ---------- ============ -->
+
+
+
+
+
+
+
+
+
+<script>
+  /*--  ========================= App script Global serch, Invoice , Packing list and other file open code ===================================
+
+  function doGet(e) {
+
+  // https://script.google.com/macros/s/AKfycbwOHYec5NXGIbTO1SOMjnz1TrZKBh7QacaXDb2E_AUT0StNVA61PafvML9IRA-j_ufH/exec
+
+  // 📂 Folder IDs (NO CHANGE)
+  const folderId1 = "1nyyUylb0122WN9o3x65WWPsJb-KyXkWd"; // Case 1: Sales Invoice
+  const folderId2 = "1qVbY-myjhdJQ8Pm9Dc9bsWWoPmc1XX1S"; // Case 2: Packing List
+  const folderId3 = "1UE3AEeWYO3g3zldZZ7HLQ96SBBxJy89e"; // Case 3: Purchase Order
+  const folderId4 = "1eK69Et0MXJdv2o7CfV4gth8Z-uRkClW7"; // Case 4: Document Download
+
+  if (!e || !e.parameter) {
+    return ContentService.createTextOutput("Missing parameters");
+  }
+
+  // Parameters (NO CHANGE)
+  const invoiceNo = e.parameter.invoice;
+  const poNo = e.parameter.po;
+
+  // ==================================================
+  // Case 1: Sales Invoice
+  // URL: ?invoice=25-26_435
+  // ==================================================
+  if (invoiceNo && invoiceNo.includes("_")) {
+    const fileName = "Sales_" + invoiceNo + ".pdf";
+    const files = DriveApp.getFolderById(folderId1).getFilesByName(fileName);
+
+    if (files.hasNext()) {
+      const file = files.next();
+      return ContentService.createTextOutput(
+        "https://drive.google.com/file/d/" + file.getId() + "/preview"
+      );
+    }
+  }
+
+  // ==================================================
+  // Case 2: Packing List
+  // URL: ?invoice=25-26/435
+  // ==================================================
+  if (invoiceNo && invoiceNo.includes("/")) {
+    const numberPart = invoiceNo.split("/")[1];
+    const fileName = numberPart + ".pdf";
+    const files = DriveApp.getFolderById(folderId2).getFilesByName(fileName);
+
+    if (files.hasNext()) {
+      const file = files.next();
+      return ContentService.createTextOutput(
+        "https://drive.google.com/file/d/" + file.getId() + "/preview"
+      );
+    }
+  }
+
+  // ==================================================
+  // Case 3: Purchase Order
+  // URL: ?po=PO123
+  // ==================================================
+  if (poNo) {
+    const files = DriveApp.getFolderById(folderId3).getFilesByName(poNo + ".pdf");
+
+    if (files.hasNext()) {
+      const file = files.next();
+      return ContentService.createTextOutput(
+        "https://drive.google.com/file/d/" + file.getId() + "/preview"
+      );
+    }
+  }
+
+  // ==================================================
+  // Case 4: Document Download List
+  // URL: ?list=1
+  // ==================================================
+  if (e.parameter.list == "1") {
+
+    const folder = DriveApp.getFolderById(folderId4);
+    const files = folder.getFiles();
+    let result = [];
+
+    while (files.hasNext()) {
+      const file = files.next();
+      result.push({
+        id: file.getId(),
+        name: file.getName(),
+        mimeType: file.getMimeType(),
+        downloadUrl: "https://drive.google.com/uc?export=download&id=" + file.getId(),
+        previewUrl: "https://drive.google.com/file/d/" + file.getId() + "/preview"
+      });
+    }
+
+    return ContentService
+      .createTextOutput(JSON.stringify(result))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+
+
+  // ==================================================
+   // ==================================================
+  // Case 5: Invoice / Packing List Search (IMPROVED & SAFE)
+  // URL:
+  // ?searchType=invoice&query=25-26
+  // ?searchType=packing&query=435
+  // ?searchType=invoice            (returns all files)
+  // ==================================================
+  if (e.parameter.searchType) {
+
+    let folderId = "";
+    if (e.parameter.searchType === "invoice") {
+      folderId = folderId1;
+    } else if (e.parameter.searchType === "packing") {
+      folderId = folderId2;
+    }
+
+    if (folderId) {
+      const folder = DriveApp.getFolderById(folderId);
+      const files = folder.getFiles();
+
+      const query = (e.parameter.query || "").toLowerCase();
+      let result = [];
+
+      while (files.hasNext()) {
+        const file = files.next();
+        const name = file.getName().toLowerCase();
+
+        // ✅ If query empty → return all files
+        // ✅ If query present → filter
+        if (!query || name.includes(query)) {
+          result.push({
+            id: file.getId(),
+            name: file.getName(),
+            previewUrl: "https://drive.google.com/file/d/" + file.getId() + "/preview",
+            downloadUrl: "https://drive.google.com/uc?export=download&id=" + file.getId()
+          });
+        }
+      }
+
+      return ContentService
+        .createTextOutput(JSON.stringify(result))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
+
+// ==================================================
+// Case 6: Purchase Order SEARCH (ONLY FOR DROPDOWN)
+// URL: ?searchType=po
+// ==================================================
+if (e.parameter.searchType === "po") {
+
+  const folder = DriveApp.getFolderById(folderId3);
+  const files = folder.getFiles();
+  const query = (e.parameter.query || "").toLowerCase();
+
+  let result = [];
+
+  while (files.hasNext()) {
+    const file = files.next();
+    const name = file.getName().toLowerCase();
+
+    // Empty query → return all PO files
+    // With query → filtered result
+    if (!query || name.includes(query)) {
+      result.push({
+        id: file.getId(),
+        name: file.getName(),
+        previewUrl: "https://drive.google.com/file/d/" + file.getId() + "/preview",
+        downloadUrl: "https://drive.google.com/uc?export=download&id=" + file.getId()
+      });
+    }
+  }
+
+  return ContentService
+    .createTextOutput(JSON.stringify(result))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+
+// ==================================================
+// Case 7: WEB SHORTCUT (.url) FILE SUPPORT
+// URL: ?web=1
+// ==================================================
+if (e.parameter.web == "1") {
+
+  const folder = DriveApp.getFolderById(folderId4); // Document folder
+  const files = folder.getFiles();
+  let result = [];
+
+  while (files.hasNext()) {
+    const file = files.next();
+    const name = file.getName();
+
+    // ONLY .url files
+    if (name.toLowerCase().endsWith(".url")) {
+      const content = file.getBlob().getDataAsString();
+      const match = content.match(/URL=(.*)/i);
+
+      if (match) {
+        result.push({
+          id: file.getId(),
+          name: name,
+          webUrl: match[1].trim(),
+          isWeb: true
+        });
+      }
+    }
+  }
+
+  return ContentService
+    .createTextOutput(JSON.stringify(result))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+
+  // ==================================================
+  // NOT FOUND (NO CHANGE)
+  // ==================================================
+  return ContentService.createTextOutput("NOT_FOUND");
+}
+
+
+  */
+</script>
+
+
+<!-- ====================  ````````````````````````````FLOTTING ANIMATION CODE  START HARE``````````````````````````` ==================== -->
+
+  <style>
+    #rabbitDiv {
+      position: fixed;
+      bottom: 70px;
+      left: 0;
+      width: 100%;
+      height: 150px;
+      background: transparent;
+      z-index: 9999;
+    }
+
+    #rabbit {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s linear;
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="rabbitDiv">
+  <img id="rabbit" src="https://png.pngtree.com/png-vector/20250104/ourmid/pngtree-rabbit-cartoon-png-image_15045752.png">
+</div>
+
+<script>
+const rabbit = document.getElementById('rabbit');
+const rabbitDiv = document.getElementById('rabbitDiv');
+
+let rabbitPos = { x: window.innerWidth / 2 };
+let rabbitVel = 2;
+
+let mousePos = null;
+let lastMouseMove = 0;
+
+let walkOffset = 0;
+
+// ✅ Mouse tracking ONLY inside rabbitDiv
+rabbitDiv.addEventListener('mousemove', e => {
+  const rect = rabbitDiv.getBoundingClientRect();
+  mousePos = { x: e.clientX - rect.left };
+  lastMouseMove = Date.now();
+});
+
+// ✅ Mouse leave → stop follow
+rabbitDiv.addEventListener('mouseleave', () => {
+  mousePos = null;
+});
+
+// Animation loop
+function animate() {
+
+  walkOffset += 0.15;
+  let bob = Math.sin(walkOffset) * 5;
+
+  let now = Date.now();
+
+  // 👉 Follow mode
+  if (mousePos && (now - lastMouseMove < 1000)) {
+
+    let dx = mousePos.x - rabbitPos.x;
+
+    if (Math.abs(dx) > 1) {
+      rabbitPos.x += dx * 0.05;
+    }
+
+    rabbit.style.transform =
+      `translate(-50%, -50%) scaleX(${dx < 0 ? -1 : 1})`;
+
+  } else {
+    // 👉 Auto walk mode
+    rabbitPos.x += rabbitVel;
+
+    if (rabbitPos.x < 40 || rabbitPos.x > rabbitDiv.offsetWidth - 40) {
+      rabbitVel *= -1;
+    }
+
+    rabbit.style.transform =
+      `translate(-50%, -50%) scaleX(${rabbitVel > 0 ? 1 : -1})`;
+  }
+
+  // Keep inside div
+  rabbitPos.x = Math.max(40, Math.min(rabbitDiv.offsetWidth - 40, rabbitPos.x));
+
+  // Apply position
+  rabbit.style.left = rabbitPos.x + 'px';
+  rabbit.style.top = (75 + bob) + 'px';
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+
+<!-- ====================  ````````````````````````````FLOTTING ANIMATION CODE  STOP HARE``````````````````````````` ==================== -->
