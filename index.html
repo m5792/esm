@@ -485,7 +485,7 @@ th {
            <button onclick="showSection(6)">Job/Reff</button> 
       -->
   
-    <button onclick="showSection(8)" id="f6" style="color: rgb(2, 79, 245);" >Rabbit Game &nbsp;<span style="color:  red;font-weight: bold;">(F6)</span></button>
+    <button onclick="showSection(8)" id="f6" style="color: rgb(2, 79, 245);"  mfvbtn="51">Rabbit Game &nbsp;<span style="color:  red;font-weight: bold;">(F6)</span></button>
  
       
  
@@ -10827,6 +10827,7 @@ function closeSchedule(){
   <p style="color: red;">--- 🔎 Global Serch --- </p>
  <p> 15- Document View  | 16- PO/Reff View </p>
   <p> 20- Footer Serch Input </p>
+<p onclick="showSection(8)" style="cursor:pointer;color:#0026ff;">51- Rabbit Game (shortcuts-F6)</p>
 <p onclick="openPOMaster()" style="cursor:pointer;color:#0026ff;">📊 Job/Reff Summary</p>
 </div>
 
@@ -11332,11 +11333,21 @@ animate();
  <!-- -----------------======================   Rabbit Game Script start HERE (SECTION8 MIPL508) ==================== ------------------------- -->
   <style> canvas {border: 3px solid #333;}</style>
 
+
+<style>
+
+  #gamepad { background:black; display:block; margin:0 auto; }
+
+</style>
+</head>
+<body>
+
+
 <script>
 let animationId;
-  
+
+//================ RESET =================
 function resetGame(){
-  // 🔁 basic reset
   scrollX = 0;
   score = 0;
   life = 10;
@@ -11344,412 +11355,232 @@ function resetGame(){
 
   lastLifeDrop = Date.now();
   startTime = Date.now();
+  remainingTime = 45; // timer
 
-  // 🐰 player reset
   rabbitgame.x = 150;
   rabbitgame.y = floorY - 30;
   rabbitgame.vy = 0;
   rabbitgame.onGround = true;
   rabbitgame.facing = 1;
 
-  // 🔄 world reset
   platforms = [];
   coins = [];
+  watches = [];
+
   generateWorld();
-    // ✅ IMPORTANT: loop ko dubara start karo
+
   animationId = requestAnimationFrame(gameLoop);
 }
 
-//---------------------------------------------------------------------
+//================ BASIC =================
 const canvas = document.getElementById('gamepad');
 const ctx = canvas.getContext('2d');
 
-const gravity = 0.3;        // 🔧 gravity control
+const gravity = 0.3;
 const floorY = 380;
 
 let scrollX = 0;
 let score = 0;
-let life = 10;              // 🔧 starting life
+let life = 10;
 let gameOver = false;
 
-let lastLifeDrop = Date.now();  // ❤️ life timing control
+let lastLifeDrop = Date.now();
+let startTime = Date.now();
+let remainingTime = 45;
 
-// 👤 Player + Timer
-// let playerName = prompt("Enter Player Name") || "Mukhtiyar";
 let playerName = "Mukhtiyar";
-
-// 🔄 Function to read name from span
 function updatePlayerName() {
   let span = document.getElementById("username");
   if(span && span.innerText.trim() !== ""){
     playerName = span.innerText.trim();
   }
 }
-
-// ⏱ Har 500ms me check kare (kyunki dusri script baad me load hoti hai)
 setInterval(updatePlayerName, 500);
-//-----------
-let startTime = Date.now();
 
-// 🐰 rabbitgame
+//================ PLAYER =================
 const rabbitgameImg = new Image();
 rabbitgameImg.src = "https://png.pngtree.com/png-vector/20250104/ourmid/pngtree-rabbit-cartoon-png-image_15045752.png";
 
-let rabbitgame = {
-  x: 150,
-  y: floorY - 30,
-  vy: 0,
-  onGround: true,
-  facing: 1
-};
-
+let rabbitgame = { x:150, y:floorY-30, vy:0, onGround:true, facing:1 };
 let walkFrame = 0;
 
+//================ WORLD =================
 let platforms = [];
 let coins = [];
+let watches = [];
 
-//=========================
-// 🌄 Background Images (15 sec change)
-//=========================
-// 🌄 Background Images (SAFE SYSTEM)
-
+//================ BACKGROUND =================
 let bgImages = [
-  "https://png.pngtree.com/thumb_back/fh260/background/20241114/pngtree-majestic-green-hills-surrounded-by-clouds-in-the-sky-for-a-image_16590526.jpg",
-  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRa9SIII1u8VOb-di78MLjUDKY_40QvukrAzA&s",
-   "https://t4.ftcdn.net/jpg/02/13/92/07/360_F_213920767_P5ZhDtVbomvi2TSnKMZkgGW0Iej3LY2b.jpg",
-   "https://media.gettyimages.com/id/637876546/video/4k-time-lapse-of-beautiful-night-sky-milky-way-stars.jpg?s=640x640&k=20&c=Y_SSF0i0ln7nVA3ZeLqYhPJPsmFn4QLATXTc4s6c0II=",
-   
-  "https://i.ytimg.com/vi/f1YOHTJSf_8/maxresdefault.jpg"
+   "https://media.cntraveler.com/photos/555e1076d9889c6c03abc3a4/master/pass/burj-khalifa-01-cr-getty.jpg",
+  "https://images.pexels.com/photos/130576/pexels-photo-130576.jpeg",
+  "https://www.holidify.com/images/bgImages/DARJEELING.jpg",
+  "https://c4.wallpaperflare.com/wallpaper/996/438/490/nature-clouds-forest-space-wallpaper-preview.jpg",
+  "https://t4.ftcdn.net/jpg/01/57/71/49/360_F_157714920_nm5N15vA2y2pOu2dlT06IvPgDbWLKfcy.jpg"
 ];
-
-let bgLoaded = [];
-let bgReady = [];
-
-let bgIndex = 0;
-let nextBgIndex = 1;
-let bgAlpha = 0;
+let bgLoaded = [], bgReady = [];
+let bgIndex = 0, nextBgIndex = 1;
 let lastBgTime = Date.now();
 
-// 🔄 preload + load check
-bgImages.forEach((src, i)=>{
+bgImages.forEach((src,i)=>{
   let img = new Image();
-
-  bgReady[i] = false;
-
-  img.onload = () => {
-    bgReady[i] = true;  // ✅ mark loaded
-  };
-
-  img.onerror = () => {
-    bgReady[i] = false; // ❌ skip if error
-  };
-
-  img.src = src;
+  bgReady[i]=false;
+  img.onload=()=>bgReady[i]=true;
+  img.onerror=()=>bgReady[i]=false;
+  img.src=src;
   bgLoaded.push(img);
 });
 
-//===============================================================
-// 🌍 WORLD GENERATION
+//================ GENERATE WORLD =================
 function generateWorld(){
-  let x = 0;
-
-  for(let i=0;i<450;i++){   // ✅ 150 → 450, world lamba hua 4500 pixels tak approx
-
-    let gapChance = Math.random();
-
-    // 🔥 BIG GAP
-    if(i > 5 && gapChance < 0.2){
-      let gapSize = 120 + Math.random()*100;     // gap size thoda bada kar sakte ho, optional
-      let bridgeWidth = 100 + Math.random()*60;
-
-      platforms.push({
-        x: x + gapSize/2 - bridgeWidth/2,
-        baseX: x + gapSize/2 - bridgeWidth/2,
-        y: floorY - 80,
-        width: bridgeWidth,
-        height: 12,
-        type: "move",
-        dir: 1,
-        range: 80
-      });
-
-      x += gapSize;
+  let x=0;
+  for(let i=0;i<450;i++){
+    let gapChance=Math.random();
+    if(i>5 && gapChance<0.2){
+      let gapSize=120+Math.random()*100;
+      let bridgeWidth=100+Math.random()*60;
+      platforms.push({x:x+gapSize/2-bridgeWidth/2, baseX:x+gapSize/2-bridgeWidth/2, y:floorY-80, width:bridgeWidth, height:12, type:"move", dir:1, range:80});
+      x+=gapSize;
       continue;
     }
+    let width=140+Math.random()*60;
+    platforms.push({x:x, y:floorY, width:width, height:70, type:"ground"});
+    let steps=2+Math.floor(Math.random()*2);
+    let stepX=x+width/2-30;
+    for(let s=0;s<steps;s++){
+      let py=floorY-70-(s*45);
+      let px=stepX+s*50;
+      let type="normal";
+      if(Math.random()<0.2) type="fall";
+      else if(Math.random()<0.2) type="move";
+      platforms.push({x:px, baseX:px, y:py, width:50, height:12, type:type, dir:1, range:40, falling:false});
 
-    // 🟢 Ground
-    let width = 140 + Math.random()*60;
-
-    platforms.push({
-      x:x,
-      y:floorY,
-      width:width,
-      height:70,
-      type:"ground"
-    });
-
-    // 🪜 STAIRS
-    let steps = 2 + Math.floor(Math.random()*2);
-    let stepX = x + width/2 - 30;
-
-    for(let s=0; s<steps; s++){
-      let py = floorY - 70 - (s*45);
-      let type = "normal";
-
-      if(Math.random() < 0.2) type = "fall";
-      else if(Math.random() < 0.2) type = "move";
-
-      let px = stepX + s*50;
-
-      platforms.push({
-        x:px,
-        baseX:px,
-        y:py,
-        width:50,
-        height:12,
-        type:type,
-        dir:1,
-        range:40
-      });
-
-      // 🪙 Coins
-      if(Math.random() < 0.25){
-        let isRed = Math.random() < 0.2;
-
-        coins.push({
-          x: px + 25,
-          y: py - (20 + Math.random()*20),
-          collected:false,
-          type: isRed ? "red" : "gold"
-        });
-      }
+      // coins
+      if(Math.random()<0.25) coins.push({x:px+25, y:py-20-Math.random()*20, collected:false, type:Math.random()<0.2?"red":"gold"});
+      // watches
+      if(Math.random()<0.15) watches.push({x:px+25, y:py-45, collected:false, type:Math.random()<0.5?"red":"green"});
     }
-
-    x += width;
+    x+=width;
   }
 }
 generateWorld();
 
-// 🎮 Controls
-let keys = {};
-window.addEventListener('keydown', e=>{
-  keys[e.key]=true;
-
-  if(e.key==="Enter" && gameOver){
-   // location.reload(); // 🔁 restart
-     resetGame();
-  }
-});
+//================ CONTROLS =================
+let keys={};
+window.addEventListener('keydown', e=>{ keys[e.key]=true; if(e.key==="Enter" && gameOver) resetGame(); });
 window.addEventListener('keyup', e=>keys[e.key]=false);
 
-//===============================================================
-// 🌄 BACKGROUND FIXED (MAIN PART)
+//================ BACKGROUND DRAW =================
 function drawBackground(){
-
-  // ⏱ 15 sec change
   if(Date.now() - lastBgTime > 15000){
-
-    // 🔁 find next available image (loaded)
-    let attempts = 0;
-    do {
-      nextBgIndex = (nextBgIndex + 1) % bgLoaded.length;
-      attempts++;
-    } while(!bgReady[nextBgIndex] && attempts < bgLoaded.length);
-
-    bgIndex = nextBgIndex;
-    bgAlpha = 0;
-    lastBgTime = Date.now();
+    nextBgIndex=(nextBgIndex+1)%bgLoaded.length;
+    bgIndex=nextBgIndex;
+    lastBgTime=Date.now();
   }
-
-  // 🖼 ALWAYS draw current if loaded
-  if(bgReady[bgIndex]){
-    ctx.globalAlpha = 1;
-    ctx.drawImage(bgLoaded[bgIndex], 0, 0, canvas.width, canvas.height);
-  } else {
-    // fallback color (never blank screen)
-    ctx.fillStyle = "#87CEEB";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-  }
-
-  // 🌫 smooth fade (only if next ready)
-  if(bgReady[nextBgIndex] && bgAlpha < 1){
-    bgAlpha += 0.004;  // 🔧 smoothness control
-    ctx.globalAlpha = bgAlpha;
-    ctx.drawImage(bgLoaded[nextBgIndex], 0, 0, canvas.width, canvas.height);
-  }
-
-  ctx.globalAlpha = 1; // ⚠️ reset जरूरी
+  if(bgReady[bgIndex]) ctx.drawImage(bgLoaded[bgIndex],0,0,canvas.width,canvas.height);
 }
 
-//===============================================================
-// 🎮 GAME LOOP
+//================ GAME LOOP =================
 function gameLoop(){
-
   if(gameOver){
     ctx.fillStyle="rgba(0,0,0,0.7)";
-    ctx.fillRect(0,0,1600,450);
-
-    ctx.fillStyle="white";
-    ctx.font="40px Arial";
-    ctx.fillText("GAME OVER",250,200);
-
-    ctx.font="20px Arial";
-    ctx.fillText("Press ENTER to Restart",260,240);
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="white"; ctx.font="40px Arial";
+    ctx.fillText("Game Over",150,150);
+    ctx.fillText("Press ENTER, Rset Game",200,200);
     return;
   }
 
-  ctx.clearRect(0,0,800,450);
-
-  // ✅ FIRST background draw (FIX)
+  ctx.clearRect(0,0,canvas.width,canvas.height);
   drawBackground();
 
-  // 🎯 Movement
-  if(keys['ArrowRight']){
-    rabbitgame.facing = 1;
-    walkFrame += 0.2;
-    if(rabbitgame.x < 400) rabbitgame.x += 5;
-    else scrollX += 5;
-  }
+  // movement
+  if(keys['ArrowRight']){ rabbitgame.facing=1; walkFrame+=0.2; if(rabbitgame.x<600) rabbitgame.x+=5; else scrollX+=5; }
+  if(keys['ArrowLeft']){ rabbitgame.facing=-1; walkFrame+=0.2; if(rabbitgame.x>200) rabbitgame.x-=5; else scrollX-=5; }
+  if(keys['ArrowUp'] && rabbitgame.onGround){ rabbitgame.vy=-11; rabbitgame.onGround=false; }
 
-  if(keys['ArrowLeft']){
-    rabbitgame.facing = -1;
-    walkFrame += 0.2;
-    if(rabbitgame.x > 200) rabbitgame.x -= 5;
-    else scrollX -= 5;
-  }
+  // physics
+  rabbitgame.vy+=gravity; rabbitgame.y+=rabbitgame.vy; rabbitgame.onGround=false;
 
-  if(keys['ArrowUp'] && rabbitgame.onGround){
-    rabbitgame.vy = -11;
-    rabbitgame.onGround = false;
-  }
-
-  // ⚙ Physics
-  rabbitgame.vy += gravity;
-  rabbitgame.y += rabbitgame.vy;
-  rabbitgame.onGround = false;
-
-  // 🪜 Platform logic
+  // moving/falling platforms
   platforms.forEach(p=>{
-    if(p.type==="move"){
-      p.x += p.dir*2;
-      if(p.x > p.baseX+p.range || p.x < p.baseX-p.range){
-        p.dir *= -1;
-      }
-    }
-
-    if(p.type==="fall" && p.falling){
-      p.y += 4;
-    }
+    if(p.type==="move"){ p.x+=p.dir*2; if(p.x>p.baseX+p.range || p.x<p.baseX-p.range) p.dir*=-1; }
+    if(p.type==="fall" && p.falling) p.y+=4;
   });
 
-  let onPlatform = false;
-
+  let onPlatform=false;
   platforms.forEach(p=>{
-    let px = p.x - scrollX;
-
-    if(
-      rabbitgame.x + 25 > px &&
-      rabbitgame.x - 25 < px + p.width &&
-      rabbitgame.y + 30 > p.y &&
-      rabbitgame.y + 30 - rabbitgame.vy <= p.y
-    ){
-      rabbitgame.y = p.y - 30;
-      rabbitgame.vy = 0;
-      rabbitgame.onGround = true;
-      onPlatform = true;
-
-      if(p.type==="fall") p.falling = true;
+    let px=p.x-scrollX;
+    if(rabbitgame.x+25>px && rabbitgame.x-25<px+p.width && rabbitgame.y+30>p.y && rabbitgame.y+30-rabbitgame.vy<=p.y){
+      rabbitgame.y=p.y-30; rabbitgame.vy=0; rabbitgame.onGround=true; onPlatform=true;
+      if(p.type==="fall") p.falling=true;
     }
   });
+  if(!onPlatform && rabbitgame.y>floorY+120) gameOver=true;
 
-  if(!onPlatform && rabbitgame.y > floorY+120){
-    gameOver = true;
-  }
-
-  // 🪙 Coins
+  // coins
   coins.forEach(c=>{
-    let cx = c.x - scrollX;
-
-    if(!c.collected &&
-      Math.abs(rabbitgame.x - cx) < 30 &&
-      Math.abs(rabbitgame.y - c.y) < 30
-    ){
-      c.collected = true;
-
-      if(c.type==="red"){
-        life -= 4; // 🔴 danger coin
-      } else {
-        score += 10;
-        life += 2;
-      }
+    let cx=c.x-scrollX;
+    if(!c.collected && Math.abs(rabbitgame.x-cx)<30 && Math.abs(rabbitgame.y-c.y)<30){
+      c.collected=true;
+      if(c.type==="red") life-=4; else { score+=10; life+=2; }
     }
-
-    if(!c.collected){
-      ctx.fillStyle = c.type==="red" ? "red" : "gold";
-      ctx.beginPath();
-      ctx.arc(cx, c.y, 10, 0, Math.PI*2);
-      ctx.fill();
-    }
+    if(!c.collected){ ctx.fillStyle=c.type==="red"?"red":"gold"; ctx.beginPath(); ctx.arc(cx,c.y,10,0,Math.PI*2); ctx.fill(); }
   });
 
-  // ❤️ Life system (🔧 yaha timing change karo)
-  if(Date.now() - lastLifeDrop > 3000){
-    life -= 1;
-    lastLifeDrop = Date.now();
-  }
+  // watches
+  watches.forEach(w=>{
+    let wx=w.x-scrollX;
+    if(!w.collected && Math.abs(rabbitgame.x-wx)<30 && Math.abs(rabbitgame.y-w.y)<30){
+      w.collected=true;
+      remainingTime+=(w.type==="green"?10:5);
+    }
+    if(!w.collected){ ctx.font="16px Arial"; ctx.fillText(w.type==="green"?"⏱ 10s":"⌚ 5s",wx-8,w.y); }
+  });
 
-  if(life <= 0){
-    gameOver = true;
-  }
+  // life decrement
+  if(Date.now()-lastLifeDrop>3000){ life--; lastLifeDrop=Date.now(); }
 
-  // 🟫 Platforms draw
+  // timer
+  let elapsed=(Date.now()-startTime)/1000;
+  let timeLeft=Math.max(0, Math.floor(remainingTime-elapsed));
+  if(timeLeft<=0 || life<=0) gameOver=true;
+
+  // draw platforms
   platforms.forEach(p=>{
-    let px = p.x - scrollX;
-
+    let px=p.x-scrollX;
     if(p.type==="ground") ctx.fillStyle="green";
     else if(p.type==="fall") ctx.fillStyle="red";
     else if(p.type==="move") ctx.fillStyle="blue";
     else ctx.fillStyle="pink";
-
-    ctx.fillRect(px, p.y, p.width, p.height);
+    ctx.fillRect(px,p.y,p.width,p.height);
   });
 
-  // 🐰 rabbitgame draw
-  let bob = Math.sin(walkFrame)*3;
+  // draw player
+// 🐰 PLAYER WITH FLIP
+ctx.save();
 
-  ctx.save();
-  ctx.translate(rabbitgame.x, rabbitgame.y + bob);
-  ctx.scale(rabbitgame.facing,1);
-  ctx.drawImage(rabbitgameImg,-30,-30,60,60);
-  ctx.restore();
+ctx.translate(rabbitgame.x, rabbitgame.y); // rabbit ke center pe translate
+if(rabbitgame.facing === -1) ctx.scale(-1,1); // left me flip
+ctx.drawImage(rabbitgameImg, -30, -30, 60, 60);
 
-  // 🎯 UI
-  // 🎯 UI (Single Row + Outline)
-let time = Math.floor((Date.now() - startTime)/1000);
+ctx.restore();
 
-let uiText = `Player: ${playerName}   |   Score: ${score}   |   Life: ${life}   |   Time: ${time}s`;
+  // UI
+  let uiText=`Player: ${playerName} | Score: ${score} | Life: ${life} | Time: ${timeLeft}s`;
+  ctx.strokeStyle="white"; ctx.lineWidth=3; ctx.strokeText(uiText,10,20);
+  ctx.fillStyle="black"; ctx.fillText(uiText,10,20);
 
-ctx.font = "14px Arial";
+  // life bar
+  ctx.fillStyle="red"; ctx.fillRect(10,40,200,12);
+  ctx.fillStyle="lime"; ctx.fillRect(10,40,Math.max(0,life*20),12);
 
-// ✏ White outline
-ctx.strokeStyle = "white";
-ctx.lineWidth = 3;
-ctx.strokeText(uiText, 10, 20);
-
-// 🖤 Fill text
-ctx.fillStyle = "black";
-ctx.fillText(uiText, 10, 20);
-
-  ctx.fillStyle="red";
-  ctx.fillRect(10,90,200,10);
-
-  ctx.fillStyle="lime";
-  ctx.fillRect(10,90,Math.max(0, Math.min(life*10,200)),10);
-
- cancelAnimationFrame(animationId);
-requestAnimationFrame(gameLoop);
+  animationId=requestAnimationFrame(gameLoop);
 }
 
-rabbitgameImg.onload = gameLoop;
+rabbitgameImg.onload=gameLoop;
+
 </script>
+
+</body>
+</html>
  <!-- -----------------======================   Rabbit Game Script stop HERE (SECTION8 MIPL508) ==================== ------------------------- -->
