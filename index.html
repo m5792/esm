@@ -491,7 +491,7 @@ th {
  
   </div>
   <div class="user-info">
-  <span id="username" onclick="showUserDetails()" style="cursor:pointer;"></span>
+  <span id="username" onclick="showSection(9);showUserDetails();" style="cursor:pointer;"></span>
 
   <!-- hidden spans -->
   <span id="userid" style="display:none;"></span>
@@ -1049,6 +1049,7 @@ window.onload = fetchUserData;
 <span style="color: blue;">Your Network ID:- </span>
 <span id="ipBox" style="color: rgb(78, 78, 243);"></span>
 
+  
 <script>
 // Allowed Office Network Starting Values
 const officeList = ["152.59", "152.58", "49.36", "106.205", "103.93", "117.99"];
@@ -1647,7 +1648,8 @@ const userCodeMap = {
   "Rahul Kumar": "RAH14",
   "RAHUL MALIK": "RAH15",
   "V.K Giri": "VIR16",
-   "NITIN": "NIT17"
+   "NITIN": "NIT17",
+    "Vijender Sharma": "VKS02"
 };
 
 
@@ -1679,6 +1681,11 @@ function updateUserDropdown(username) {
     });
 
     select.dataset.loaded = "yes";
+     // ✅🔥 IMPORTANT: AUTO LOAD EMPLOYEES *****************
+    if (select.value) {
+        loadEmployees(select.value);
+    }
+    //********************
   });
 }
 
@@ -3040,8 +3047,6 @@ th {
 
 
 
-
-
  <!-- -----------------======================  SECTION7 START HERE (SECTION7 MIPL507) ==================== ------------------------- -->
   <div id="section7" class="section hidden" style="border-radius: 10px;"> 
    
@@ -3294,7 +3299,6 @@ Calculate
 
     <!-- Content for the dropdown tab options -->
     <div class="tab-toolcontent" id="dropdownContent1">
- <h2>Content for Option 1</h2>
         <p>This is the content for Option 1 in the dropdown.</p>
     </div>
 
@@ -3365,6 +3369,48 @@ Calculate
         <h2>Rabbit Game</h2>
      <canvas id="gamepad" width="1600" height="450"></canvas>
     </div>
+
+
+     <!-- -----------------======================  SECTION9 START HERE (SECTION8 MIPL509) ==================== ------------------------- -->
+  <div id="section9" class="section hidden" style="border-radius: 10px;"> 
+
+    <h2>Payslip Generator</h2>
+
+
+<div style="
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+align-items:center;
+border:2px solid #333;
+padding:12px;
+margin-bottom:20px;
+border-radius:10px;
+background:#f9fbfc;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+">
+<label>Select Employee: </label>
+<!-- Employee -->
+<select id="employeeDropdown">
+    <option value="">Select Employee</option>
+</select>
+
+<!-- Month -->
+<select id="monthDp">
+    <option value="">Select Month</option>
+</select>
+
+<!-- Print -->
+<button onclick="printPayslip()">🖨️ Print</button>
+
+  </div>
+
+<!-- Payslip -->
+<div id="payslip" class="SalarySheetContainer"></div>
+
+</div> 
+ <!--  XXX -----------------======================  SECTION9 STOP HERE (SECTION8 MIPL509) ==================== ------------------------- -->
+
 
 
 </div>  <!-- sections Div close--> </div>  <!-- Dashboard div open -->
@@ -11586,3 +11632,339 @@ rabbitgameImg.onload=gameLoop;
 </body>
 </html>
  <!-- -----------------======================   Rabbit Game Script stop HERE (SECTION8 MIPL508) ==================== ------------------------- -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <!-- -----------------======================  SALARU SHEET (PAY SLIP) SCRIPT  START HERE (SECTION9 MIPL509) ==================== ------------------------- -->
+<style>
+
+.SalarySheetContainer {
+    width: 900px;
+    border:1px solid #000;
+    padding:15px;
+    margin-top:20px;
+}
+
+
+</style>
+</head>
+<body>
+
+
+
+<script>
+  //--- undefined KI JAGAH "" KE LYE FUNCTION--------------------
+function val(v) {
+    return (v === undefined || v === null || v === "") ? "" : v;
+}
+//------------------------------------------------------
+
+const payslipKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const payslipId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
+
+const paysliprange = "PAYSLIP!A:N";
+const employeerange = "EMPLOYEE!A:N";
+
+let payData = [];
+let employeeData = [];
+
+const employeeDropdown = document.getElementById("employeeDropdown");
+const monthDp = document.getElementById("monthDp");
+const payslipDiv = document.getElementById("payslip");
+
+// ✅ GET USER CODE FROM SPAN
+function getempCode() {
+    return document.getElementById("vcrauth").innerText.trim();
+}
+
+// FETCH DATA
+async function fetchData() {
+
+    let urlPayslip = `https://sheets.googleapis.com/v4/spreadsheets/${payslipId}/values/${paysliprange}?key=${payslipKey}`;
+    let res1 = await fetch(urlPayslip);
+    let data1 = await res1.json();
+    payData = data1.values;
+
+    let urlEmployee = `https://sheets.googleapis.com/v4/spreadsheets/${payslipId}/values/${employeerange}?key=${payslipKey}`;
+    let res2 = await fetch(urlEmployee);
+    let data2 = await res2.json();
+    employeeData = data2.values;
+
+    // AUTO LOAD EMPLOYEES
+    let empCode = getempCode();
+    if (empCode) {
+        loadEmployees(empCode);
+    }
+}
+
+// LOAD EMPLOYEES (FROM EMPLOYEE SHEET)
+function loadEmployees(empCode) {
+
+    let employees;
+
+    if (empCode === "MA") {
+        employees = employeeData.slice(1).map(r => r[1]);
+    } else {
+        employees = employeeData
+            .slice(1)
+            .filter(r => r[0] === empCode)
+            .map(r => r[1]);
+    }
+
+    employees = [...new Set(employees)].sort((a,b)=>a.localeCompare(b));
+
+    employeeDropdown.innerHTML = `<option value="">Select Employee</option>`;
+    employees.forEach(name=>{
+        employeeDropdown.innerHTML += `<option value="${name}">${name}</option>`;
+    });
+}
+
+// LOAD MONTHS
+function loadMonths(employee) {
+
+    if (!employee) {
+        monthDp.innerHTML = `<option value="">Select Month</option>`;
+        return;
+    }
+
+    // ✅ Only filter by employee (NO empCode)
+    let filtered = payData.slice(1).filter(r => {
+        return r[2] && r[2].trim().toLowerCase() === employee.trim().toLowerCase();
+    });
+
+    // ✅ Extract unique months
+    let months = [...new Set(filtered.map(r => {
+        let d = new Date(r[1]);
+        if (isNaN(d)) return "";
+        return d.toLocaleString('en-US', { month: 'short', year: 'numeric' });
+    }).filter(m => m !== ""))];
+
+    // ✅ Sort latest first (optional but useful 🔥)
+    months.sort((a, b) => new Date(b) - new Date(a));
+
+    // ✅ Fill dropdown
+    monthDp.innerHTML = `<option value="">Select Month</option>`;
+    months.forEach(m => {
+        monthDp.innerHTML += `<option value="${m}">${m}</option>`;
+    });
+}
+
+// RENDER PAYSLIP
+function renderPayslip() {
+
+    let user = getempCode();
+    let employee = employeeDropdown.value;
+    let month = monthDp.value;
+
+    if (!employee || !month) return;
+
+   let pay = payData.slice(1).find(r=>{
+    let d = new Date(r[1]);
+    let m = d.toLocaleString('en-US',{month:'short',year:'numeric'});
+    return r[2].trim().toLowerCase()===employee.trim().toLowerCase() &&
+           m===month;
+});
+
+    if(!pay) return;
+
+    let emp = employeeData.slice(1).find(r =>
+        r[1].trim().toLowerCase() === employee.trim().toLowerCase()
+    );
+
+    let empDetailsHTML = "";
+
+    if(emp){
+        empDetailsHTML = `
+          <div style="font-size: 16px; color: black; font-weight: bold;" >Multitech Infracon Pvt. Ltd.</div>
+    <div style="font-size: 14px; color: black;">N.H.74, 12th Km. Stone, Way to Suraj Stone Crusher</div>
+    <div style="font-size: 14px; color: black;">Vill. Dabhora Mustakam, Bazpur Road Kashipur</div>
+    <div style="font-size: 14px; color: black;">CIN: U45200UR2019PT</div>
+<br>
+ <span style="font-size: 14px; color: black; font-weight: bold;"> Employee Details: </span>
+
+        <table>
+            <tr><td><b>Employee Name</b></td><td>${val(emp[1])}</td>          <td><b>Date of Joining</b></td><td>${val(emp[8])}</td>  </tr>
+            <tr><td><b>Employee Number</b></td><td>${val(emp[2])}</td>       <td><b>Adhar No. (UDIN)</b></td><td>${val(emp[9])}</td>   </tr>
+            <tr><td><b>Father Name</b></td><td>${val(emp[3])}</td>           <td><b>Universal Account Number (UAN)</b></td><td>${val(emp[10])}</td>  </tr>
+            <tr><td><b>Designation</b></td><td>${val(emp[4])}</td>           <td><b>ESI Number</b></td><td>${val(emp[11])}</td>   </tr>
+            <tr><td><b>Address</b></td><td>${val(emp[13])}</td>                  <td><b>Mobail No.</b></td><td>${val(emp[12])}</td>    </tr>
+                </table>
+
+            <table>
+
+              <span style="font-size: 14px; color: black; font-weight: bold;"> Bank Details: </span>
+        
+             <tr class="bold center">
+                <td style="background-color: rgb(203, 202, 202); color: black; font-weight: bold;">Bank Name</td>
+                <td style="background-color: rgb(203, 202, 202); color: black; font-weight: bold;">Account No</td>
+                <td style="background-color: rgb(203, 202, 202); color: black; font-weight: bold;">IFSC Code</td>
+            </tr>
+
+            <tr>  <td>${val(emp[5])}</td>  <td>${val(emp[6])}</td>   <td>${val(emp[7])}</td> </tr>
+        </table>`;
+    }
+
+    let basic = +pay[3]||0;
+    let hra = +pay[4]||0;
+    let con = +pay[5]||0;
+    let adv = +pay[7]||0;
+    let esi = +pay[8]||0;
+    let epf = +pay[9]||0;
+
+    let totalEarn = basic+hra+con;
+    let totalDed = esi+epf+adv;
+    let net = totalEarn-totalDed;
+
+    let netInWords = numberToWords(Math.round(net));
+
+    payslipDiv.innerHTML = `
+        <h3 class="center">Pay Slip - ${month}</h3>
+        ${empDetailsHTML}
+
+        <span style="font-size: 14px; color: black; font-weight: bold;"> Salary Details: </span>
+         <table>
+            <tr class="bold center">
+                <td style="background-color: rgb(203, 202, 202); color: black; font-weight: bold;">Earnings</td>
+                <td style="background-color: rgb(203, 202, 202); color: black; font-weight: bold;">Amount</td>
+                <td style="background-color: rgb(203, 202, 202); color: black; font-weight: bold;">Deductions</td>
+                <td style="background-color: rgb(203, 202, 202); color: black; font-weight: bold;">Amount</td>
+            </tr>
+            <tr>
+                <td><b>Basic</b></td><td>${basic}</td>
+                <td><b>EPF</b></td><td>${epf}</td>
+            </tr>
+            <tr>
+                <td><b>HRA</b></td><td>${hra}</td>
+                <td><b>ESI</b></td><td>${esi}</td>
+            </tr>
+            <tr>
+                <td><b>Conveyance</b></td><td>${con}</td>
+                 <td><b>Advance</b></td><td>${adv}</td>
+              
+            </tr>
+            <tr class="bold">
+                <td style="background-color: rgb(203, 202, 202); color: black; font-weight: bold;">Total Earnings</td>
+                <td style="background-color: rgb(203, 202, 202); color: black; font-weight: bold;">${totalEarn}</td>
+                <td style="background-color: rgb(203, 202, 202); color: black; font-weight: bold;">Total Deduction</td>
+                <td style="background-color: rgb(203, 202, 202); color: black; font-weight: bold;">${totalDed}</td>
+            </tr>
+            <tr class="bold">
+                <td colspan="2">Net Salary</td>
+                <td colspan="2">₹ ${net}</td>
+            </tr>
+
+             <tr class="bold">
+                
+        </table>
+        <table>
+        <span style="font-size: 14px; color: black;"> <b>Amount in Words:</b> ${netInWords} </span>
+
+          <br><br>
+      <div style="font-weight: bold; text-align: right; font-size: 14px;">for Multitech Infracon Pvt. Ltd.</div>
+    <br><br>
+    <div style= "text-align: right; font-size: 14px;">Authorised Signatory</div>
+    </table>
+    `;
+
+    payslipDiv.style.display="block";
+}
+
+// PRINT
+// Print Payslip
+function printPayslip(){
+    let content = payslipDiv.innerHTML;
+    if(!content){ 
+        alert("Please generate payslip first"); 
+        return; 
+    }
+
+    let employee = employeeDropdown.value;
+    let month = monthDp.value;
+
+    let fileName = `${employee}-${month}`;
+
+    // Timestamp
+    let now = new Date();
+    let options = { 
+        day: '2-digit', 
+        month: 'short', 
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+    };
+    let timestamp = now.toLocaleString('en-GB', options).replace(',', '');
+
+    let win = window.open('', '', 'width=900,height=700');
+
+    win.document.write(`
+        <html>
+        <head>
+            <title>${fileName}</title> <!-- 🔥 THIS IS IMPORTANT -->
+            <style>
+                body { font-family: Arial; padding:10px; }
+                table { width:100%; border-collapse:collapse; margin-top:10px;}
+                td, th { border:1px solid #000; padding:3px; font-size:12px; }
+                .center { text-align:center; }
+                .timestamp { text-align:right; font-size:12px;margin-bottom:5px; }
+            </style>
+        </head>
+        <body>
+            <div class="timestamp">${timestamp}</div>
+            ${content}
+        </body>
+        </html>
+    `);
+
+    win.document.close();
+    win.focus();
+    win.print();
+}
+
+// EVENTS
+employeeDropdown.addEventListener("change", ()=>{
+    loadMonths(employeeDropdown.value);
+});
+
+monthDp.addEventListener("change", renderPayslip);
+
+// NUMBER TO WORDS
+function numberToWords(num) {
+    const a = ["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten",
+    "Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
+    const b = ["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+
+    if (num === 0) return "Zero Only";
+
+    function convert(n){
+        if (n < 20) return a[n];
+        if (n < 100) return b[Math.floor(n/10)] + " " + a[n%10];
+        if (n < 1000) return a[Math.floor(n/100)] + " Hundred " + convert(n%100);
+        if (n < 100000) return convert(Math.floor(n/1000)) + " Thousand " + convert(n%1000);
+        return "";
+    }
+
+    return convert(num) + " Only";
+}
+
+// INIT
+fetchData();
+
+</script>
+   <!-- XXX -----------------======================  SALARU SHEET (PAY SLIP) SCRIPT  STOP HERE (SECTION9 MIPL509) ==================== ------------------------- -->
