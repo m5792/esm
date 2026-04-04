@@ -11821,13 +11821,14 @@ function renderPayslip() {
     }
 
     let basic = +pay[3]||0;
-    let hra = +pay[4]||0;
-    let con = +pay[5]||0;
-    let adv = +pay[7]||0;
-    let esi = +pay[8]||0;
-    let epf = +pay[9]||0;
+     let con = +pay[4]||0;
+    let hra = +pay[5]||0;
+    let oth = +pay[6]||0;
+    let adv = +pay[8]||0;
+    let esi = +pay[9]||0;
+    let epf = +pay[10]||0;
 
-    let totalEarn = basic+hra+con;
+    let totalEarn = basic+hra+con+oth;
     let totalDed = esi+epf+adv;
     let net = totalEarn-totalDed;
 
@@ -11856,6 +11857,11 @@ function renderPayslip() {
             <tr>
                 <td><b>Conveyance</b></td><td>${con}</td>
                  <td><b>Advance</b></td><td>${adv}</td>
+              
+            </tr>
+             <tr>
+                <td><b>Other</b></td><td>${oth}</td>
+               
               
             </tr>
             <tr class="bold">
