@@ -1551,11 +1551,175 @@ th {
 
 <body>
 
-<div class="header">
-DATACARE SOFTECH
+<div class="header"> Mukhtar Ahamad Accounting Programe </div>
 
+<!-- ===== ----------------- noteBtn BUTTON 11 start =====  ----------------------------- start --------------- -->
+<button class="noteBtn" onclick="toggleNote(11)" style="border-bottom:5px solid #d40202;background-color: black; font-size: 16px;">&#128211 Dishpaly Ledger Report</button>
+<div id="noteContent11" class="noteContent">
+
+<style>
+.DALDiv {display: flex; flex-direction: column; height: 60vh;}
+.topDiv { height: 75%; background: #e3f2fd;}
+.bottomDiv { height: 25%; background: #ffe0b2;}
+</style>
+
+<style>
+#ledgerList div {padding: 5px;cursor: pointer;}
+/* Even rows */
+#ledgerList div:nth-child(even) { background: #f5faff;}
+/* Odd rows */
+#ledgerList div:nth-child(odd) {background: #ffffff;}
+/* Hover effect */
+#ledgerList div:hover { background: #dbeafe;}
+
+/* ----------- ====================== ========================= ----------------------- */
+
+</style>
+</head>
+
+<body>
+
+<!-- ===== ~~~~~~~~~~~~~ topDiv Start ~~~~~~~~~~~~~  ----------------------------- Start --------------- -->
+<div class="DALDiv">
+    
+<!-- ===== ~~~~~~~~~~~~~ topDiv Start ~~~~~~~~~~~~~  ----------------------------- Start --------------- -->
+<div class="topDiv">
+
+    <div style="
+display:flex;
+flex-wrap:wrap;
+justify-content:center; /* ✅ center */
+align-items:center;
+padding:2px;
+margin-bottom:20px;
+border-radius:10px;
+border-bottom: 3px solid #690202;
+background:#f9fbfc;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+">
+<style>
+  #reffContainer span{
+  padding:4px 10px;
+  background:#f9fbfc; color: #890b00;
+  border-radius:5px;
+  cursor:pointer;
+}
+#reffContainer span:hover{
+  background:#f9fbfc;
+}
+</style>
+<!-- REFF -->
+<div id="reffContainer" style=" display:flex; flex-wrap:wrap; gap:6px; justify-content:center; align-items:center;"></div>
 
 </div>
+
+<div style="
+display:flex;
+flex-wrap:wrap;
+gap:15px;
+align-items:center;
+justify-content:center; /* ✅ center alignment */
+border-bottom: 5px solid #024369;
+padding:5px;
+margin-bottom:20px;
+border-radius:10px;
+background:#f9fbfc;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+">
+
+  <!-- SEARCH -->
+<input id="globalSearchInput" style="padding:6px 10px; border-radius:6px; border:1px solid #ccc; width:800px;  background-color:#f8f1ea;" placeholder="🔍 Search in MIPL Data Table...">
+
+  <!-- DATE GROUP -->
+<div style="display:flex; align-items:center; gap:8px;">
+<label>From:</label>
+<input type="date" style="padding:6px; border-radius:6px; border:1px solid #ccc;"id="from786Date">
+
+<label>To:</label>
+<input type="date" style="padding:6px; border-radius:6px; border:1px solid #ccc;" id="to786Date">
+</div>
+
+<!-- BUTTON -->
+<button onclick="print786Report()"style=" padding:6px 12px;border-radius:6px; border: none; cursor:pointer; background:#f9fbfc; color:#fff; font-weight:bold; color: rgb(1, 38, 73); "> 🖨️ Print </button>
+<button id="exportBtn" data-value="exportBtn" data-target="dlrtable" style="border: none; font-weight: bold; cursor: pointer; background-color: #f9fbfc; color: rgb(1, 38, 73);">🏢 Export</button>
+
+</div>
+
+<span id="selectionInfo"></span><br/>
+<!-- TOTAL -->
+<div id="totalsBox" style="
+margin-top:10px;
+padding:10px;
+background:#eaf2f3;
+display:none;
+border-bottom:3px solid #a60404;
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+align-items:center;
+gap:15px;
+text-align:center;
+">
+  <span><span style="color:red;">Total Receipt:</span> <b id="totalReceipt">0</b></span><span>|</span>
+  <span><span style="color:rgb(186, 121, 0);">Total TDS:</span> <b id="totalTds">0</b></span> <span>|</span>
+  <span><span style="color:blue;">Total Bill:</span> <b id="totalBill">0</b></span><span>|</span>
+  <span><span style="color:green;">Total Net Weight:</span> <b id="totalPEBWeight">0</b></span><span>|</span>
+  <span><span style="color:#111;">Balance:</span> <b id="totalDifference">0</b></span><span>|</span>
+  <span><span>Total CN:</span> <b id="totalCn">0</b></span>
+</div>
+
+<style>
+#dlrtable {
+ overflow-x: auto;
+  display: block;
+  max-height: 550px; /* Optional scrolling */
+}
+  </style>
+
+  <div class="dlrtable">
+  <!-- TABLE -->
+  <table id="dlrtable">
+    <thead id="table786Head"></thead>
+    <tbody id="table786Body"></tbody>
+  </table>
+</div>
+ <br/>
+<div id="poDetailsBox" style="margin-bottom:5px;padding:5px;background:#f1f1f1; border-bottom:1px solid #0f0f0f; border-top:5px solid #01586e; display:none; font-size:16px; height: 10vh;"></div>
+
+</div>  <!-- ===== ~~~~~~~~~~~~~ topDiv stop ~~~~~~~~~~~~~  ----------------------------- stop --------------- -->
+</div>  <!-- ===== ~~~~~~~~~~~~~ DALDiv stop ~~~~~~~~~~~~~  ----------------------------- stop --------------- -->
+<!-- ===== ~~~~~~~~~~~~~ bottomDiv strat ~~~~~~~~~~~~~  ----------------------------- start --------------- -->
+<div class="bottomDiv">
+ 
+  <div style="
+display:flex;
+flex-wrap:wrap;
+gap:15px;
+align-items:center;
+justify-content:center; /* ✅ center alignment */
+border-bottom: 5px solid #024369;
+padding:5px;
+margin-bottom:20px;
+border-radius:10px;
+background:#f9fbfc;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+">
+<select id="searchType" style="padding:6px 10px; border: none; width:150px; text-align: center; background-color:#fffefe;">
+  <option value="ledger">By Ledger</option>
+  <option value="reff">By PO/Reff</option>
+</select>
+ <input id="ledgerSearch" style="padding:6px 10px; border-radius:6px; border:1px solid #ccc; width:500px;  background-color:#f8f1ea;" placeholder="🔍 Search Ledger" >
+ </div>
+
+<div id="ledgerList" style="height:20vh; overflow:auto; border-bottom:3px solid #003141;border-top:3px solid #01526d;"></div> 
+
+</div>  <!-- ===== ~~~~~~~~~~~~~ bottomDiv stop ~~~~~~~~~~~~~  ----------------------------- stop --------------- -->
+
+
+
+</div>  <!-- ===== noteBtn BUTTON 11 Stop =====  ----------------------------- Stop --------------- -->
+
+
 
 <div class="title">Month's Summary</div>
 
@@ -1563,8 +1727,6 @@ DATACARE SOFTECH
 <div class="rate">
  <select id="monthDropdown" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #156da8; margin-bottom:10px; width:200px; width: 1.5in; background-color: rgb(3, 117, 170); color: white;"></select>
 <sapn id="monthlyTotals"></sapn>
-
-
 
 <!-- यह एक नोट है, Dropdown URL  Script Start Heare -->
 
@@ -1648,8 +1810,6 @@ DATACARE SOFTECH
 </select>
 
 
-
-
 <script>
 
 function showVoucher(index){
@@ -1698,26 +1858,19 @@ Multitech Infracon Pvt. Ltd.
 <div class="title">Reports</div>
 
 <div class="reports">
-
-<button class="report-btn" onclick="showReport('1')"> &#128211 MIPL Ledger Report</button>
+<button class="report-btn" onclick="showReport('1')">-</button>
 <button class="report-btn" onclick="showReport('2')">&#128176 Cash Ledger Report</button>
 <button class="report-btn" onclick="showReport('3')">&#128197 Address | Attendance | ID/Password</button>
 <button class="report-btn" onclick="showReport('4')">Daybook Summary</button>
 <button class="report-btn" onclick="showReport('5')">EMI / Loan Calculator</button>
 <button class="report-btn" onclick="showReport('bsamarksheet')">BSA Marksheet</button>
-
 </div>
 
 
 <!-- REPORT DIV -->
-
-
-
 <!-- ------ START ------------------ ============================= HOME DIV START ================ -------------------- -->
-
 <body onload="showReport('homeDashboard')"></body>
 <div id="homeDashboard" class="report-content">
-
 <style>
 #homeDashboard{
   display:flex;
@@ -1733,26 +1886,13 @@ Multitech Infracon Pvt. Ltd.
 .boxCol4{ flex:3; background:#f5f5ea; border:1px solid #999; padding:10px; }
 
 /* ===== Card ===== */
-.card{
-  padding:15px;
-  border-radius:8px;
-  margin-bottom:10px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.1);
-}
+.card{ padding:15px; border-radius:8px; margin-bottom:10px; box-shadow:0 2px 6px rgba(0,0,0,0.1);}
 
 /* ===== Responsive ===== */
 @media(max-width:768px){
-  #homeDashboard{
-    flex-direction:column;
-    height:auto;
-  }
-  .boxCol1,.boxCol2,.boxCol3,.boxCol4{
-    width:100%;
-  }
-}
+  #homeDashboard{ flex-direction:column; height:auto;}
+  .boxCol1,.boxCol2,.boxCol3,.boxCol4{width:100%;}}
 </style>
-
-
 <div class="boxCol1">
   <div class="card">
     <span style="color: rgb(1, 97, 81); font-size: 14px; font-weight: bold; font-style: italic;">Packing List Status..</span>
@@ -1780,71 +1920,9 @@ Multitech Infracon Pvt. Ltd.
 </div>
 <!-- ------ XXX ------------------ ============================= HOME DIV STOP ================ -------------------- -->
 
-
-
-
-
-
 <!-- ------ START ------------------ ============================= LEDEGR REPORT DIV START ================ -------------------- -->
 <div id="1" class="report-content">
-
-
-<div style="text-align:center; background-color: #dcdddd; color: #002630; font-weight: bold;"> <strong>MIPL Ledger Report</strong></div> <br/>
-
-<div  style="display: flex; gap: 8px;  border-bottom:5px solid #822501;  flex-wrap: wrap; justify-content: center; margin-bottom: 10px; background-color: rgb(0, 56, 88); padding: 2px 2px; ">
- 
-  <strong style="color: rgb(248, 249, 250); font-size: 25px; font-weight: bold;">|</strong>
-  <button class="filter-btn"   data-sheet="DATAD" id="ctr1">&#128211 Dishplay Ledger Report</button>
-  <button class="filter-btn"   data-sheet="DATAF">&#128179 PO/REFF Report</button>
-    <strong style="color: rgb(248, 249, 250); font-size: 25px; font-weight: bold;">|</strong>
-
-  <button id="refresh786Btn" style="background-color: rgb(0, 56, 88);  color: #f3ccc2; border: none; cursor: pointer;">🔄 Refresh</button>
-<button onclick="print786Report()" style="background-color: rgb(0, 56, 88);  color: #b7f7bc; border: none; cursor: pointer;">🖨️ Print Report</button>
-<button id="exportBtn" data-value="exportBtn" data-target="dlrtable" style="background-color: rgb(0, 56, 88);  color: #b5d6f8; border: none; cursor: pointer;">Export</button>
-
-</div>
-
-<div  id="mytoolsbar" style="padding: 5px 10px; background-color: rgb(238, 236, 236); border-radius: 10px;">
-
-  <label>Select Ledger.:</label>
- <div class="ledger786box" id="ledgerBox">
-<input type="text" id="ledger786Input" placeholder="🔍 Search Ledger..." autocomplete="off">
-<div id="ledgerdropdown786" class="dropdown786"></div>
-</div>
-
-<label>Select PO/Reff No.:</label>
-<div class="ledger786box" id="reffBox">
-<input type="text" id="reff786Input" placeholder="🔍 Search Reff..." autocomplete="off">
-<div id="reffdropdown786" class="dropdown786"></div>
-</div>
-</div>
-
-  <br/>
-
-<div id="mytoolsbar" style="padding: 5px 10px; background-color: rgb(194, 236, 247); border-radius: 10px;">
-<input type="text" id="global786Search" placeholder="🔍 Global Search">
-<label  style="color: rgb(14, 13, 13);">From:</label><input type="date" id="from786Date">
-<label  style="color: rgb(14, 13, 13);">To:</label><input type="date" id="to786Date">
-
-</div>   <!-- <div id="search2011Bar"> stop  -->
-
-
-    
-<div id="totalsBox" style="margin-top:10px; padding:10px; background:#eaf2f3; color:#0c0c0c; font-family: arial black; text-align: center; display:none;">
-  
-  <span style="color: rgb(189, 5, 5);">Total Receipt:</span> <span id="totalReceipt">0</span> |
-  <span style="color: rgb(167, 42, 4);">Total TDS:</span> <span id="totalTds">0</span> |
-  <span  style="color: rgb(1, 93, 121);">Total Bill:</span> <span id="totalBill">0</span> |
-  <span style="color: rgb(3, 139, 98);">Total Net Weight:</span> <span id="totalPEBWeight">0</span> |
-  <span style="color: rgb(2, 129, 19);">Balance:</span> <span id="totalDifference">0</span> |
-  <span style="color: rgb(14, 13, 13);">Total Credit Note: </span> 
-  <span id="totalCn">0</span>
-
-</div>
-
-<table id="dlrtable"><thead id="table786Head"></thead><tbody id="table786Body"></tbody> </table>
-
-
+ hello div1
 </div>  
 <!-- ------ XXXX ------------------ ============================= LEDEGR REPORT DIV STOP ================ -------------------- -->
 
@@ -1853,7 +1931,6 @@ Multitech Infracon Pvt. Ltd.
 
   
 <div style="text-align:center; background-color: #dcdddd; color: #002630; font-weight: bold;"> <strong>Cash Ledger Report</strong></div> <br/>
-
 
   <!-- Ledger Filter -->
  <div  style="display: flex; gap: 20px;  border-bottom:5px solid #822501;  flex-wrap: wrap; justify-content: center; margin-bottom: 10px; background-color: white; padding: 2px 2px; ">
@@ -2121,58 +2198,6 @@ input{
 }
 
 
-
-
-/* dropdown786 FIXED */
-.dropdown786{
-  position:absolute;
-  top:100%;
-  left:0;
-  width:300px;               /* input ke equal width */
-  background:#fff;
-  border:1px solid #ccc;
-  height:400px;               /* 6 inch height */
-  max-height:6in;
-  overflow-y:auto;          /* vertical scroll */
-  overflow-x:hidden;
-  display:none;
-  z-index:9999;
-  box-shadow:0 4px 10px rgba(0,0,0,0.15);
-  border-radius:4px;
-}
-
-/* dropdown786 Items */
-.dropdown786 div{
-  padding:8px;
-  cursor:pointer;
-  font-size:14px;
-}
-
-.dropdown786 div:hover{
-  background:#f0f0f0;
-}
-
-
-/* Ledger & Reff Box Proper Width */
-.ledger786box{
-  position:relative;
-  display:none;
-  width:300px;              /* fixed width so dropdown786 align properly */
- 
-}
-/* Ensure Input Full Width */
-.ledger786box input{
-  width:100%;
-  box-sizing:border-box;
-}
-
-
-
-/* serch heiglight */
-.highlight {
-  background-color: yellow;
-  font-weight: bold;
-}
 </style>
 
 
@@ -2180,611 +2205,578 @@ input{
 
 <!--   ============= -----   mipl786Table with Dishplay Ledger Report script ------ =============== start  -->
 
+
+<!--   ============= -----   mipl786Table with Dishplay Ledger Report print reportscript ------ =============== stop  -->
+
+
 <script>
-const API_KEY = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-const SHEET_ID = "1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU";
 
-const reportConfig = {
-  DATAD: {
-    showLedger: true,
-    dateIndex: 3, // Date is in 4th column (0-based)
-    headers: ["Sr No","Type","Date","Ledger","Rcpt/Inv. No.","Reff. No.","Amount","Waight","Rate","Vehicle No./Narration","V.Type"],
-    cols: [0,2,3,4,5,6,7,8,9,10,1]
-  },
-  DATAF: {
-    showLedger: false,
-    dateIndex: 3, // Date in 4th column
-    headers: ["Sr No","User","Status","Clint Name","Project Name","Address","PO/Reff No.","PO Amt.","PO Weight","Order By","V.Type"],
-    cols: [0,1,2,3,4,5,6,7,8,9,10]
-  }
-};
+const API_KEY="AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const SHEET_ID="1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU";
 
-let allData = [], filteredData = [];
-let selectedLedger = "", selectedReff = "";
-let currentSheet = "";
+let allData=[];
+let selectedLedger="";
+let selectedReff="";
+let selectedType=""; // ✅ LEDGER SALECT  (default ALL Entry)
+let searchMode = "ledger"; // 🔥 NOTE: default mode = ledger
 
-// FILTER BUTTONS
-document.querySelectorAll(".filter-btn").forEach(btn => {
-  btn.onclick = () => {
-    currentSheet = btn.dataset.sheet;
-    const config = reportConfig[currentSheet];
+let dataF = []; // DATAF storage
 
-    ledgerBox.style.display = config.showLedger ? "block" : "none";
-    reffBox.style.display = config.showLedger ? "block" : "none";
 
-    loadSheet(currentSheet);
-  };
-});
+  let totalBill = 0;
+let totalCn = 0;
+let totalPEBWeight = 0;
 
-// LOAD SHEET DATA
-async function loadSheet(sheet){
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${sheet}!A:Z?key=${API_KEY}`;
-  const res = await fetch(url);
-  const data = await res.json();
-  const rows = data.values || [];
+// ================== Dropdown CHANGE event ================================
+document.getElementById("searchType").onchange = function(){
 
-  if(rows.length < 2){
-    table786Head.innerHTML = "";
-    table786Body.innerHTML = "";
-    return;
-  }
-
-  allData = rows.slice(1); // skip header row
-  filteredData = [...allData];
+  searchMode = this.value; // 🔥 NOTE: mode change
 
   selectedLedger = "";
   selectedReff = "";
-  ledger786Input.value = "";
-  reff786Input.value = "";
-  global786Search.value = "";
-  from786Date.value = "";
-  to786Date.value = "";
+  selectedType = "";
 
-  renderHeader(sheet);
-  renderLedgerOptions(allData);
-  renderReffOptions(allData);
-  applyFilter();
-}
+  document.getElementById("ledgerSearch").value = "";
 
-// REFRESH BUTTON
-document.getElementById("refresh786Btn").onclick = function(){
-  if(!currentSheet){
-    alert("Select report first!");
-    return;
-  }
-  const btn = this;
-  btn.disabled = true;
-  btn.textContent = "⏳ Refreshing...";
-  loadSheet(currentSheet).then(() => {
-    btn.textContent = "🔄 Refresh";
-    btn.disabled = false;
-    alert("✅ Refreshed Successfully");
-  });
+  document.getElementById("ledgerSearch").placeholder =
+    (searchMode === "ledger") ? "🔍 Search Ledger" : "🔍 Search Reff No";
+
+  renderLedgerList();
+  document.getElementById("reffContainer").innerHTML="";
+  document.getElementById("table786Body").innerHTML="";
 };
 
-// RENDER TABLE HEADERS
-function renderHeader(sheet){
-  const config = reportConfig[sheet];
-  table786Head.innerHTML = "";
-  const tr = document.createElement("tr");
-  config.headers.forEach(h => {
-    const th = document.createElement("th");
-    th.textContent = h;
-    tr.appendChild(th);
-  });
-  table786Head.appendChild(tr);
+// ================= LOAD DATA =================
+async function loadData(){
+
+  const datadUrl=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/DATAD!A:Z?key=${API_KEY}`;
+  const datafUrl=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/DATAF!A:Z?key=${API_KEY}`;
+
+  const [dRes,fRes]=await Promise.all([
+    fetch(datadUrl),
+    fetch(datafUrl)
+  ]);
+
+  const dData=await dRes.json();
+  const fData=await fRes.json();
+
+  allData=(dData.values||[]).slice(1);
+  dataF=(fData.values||[]).slice(1);
+
+  renderLedgerList();
 }
+loadData();
 
-// RENDER TABLE BODY
-function renderTable(sheet){
-  const config = reportConfig[sheet];
-  table786Body.innerHTML = "";
+// ================= LEDGER LIST =================
+function renderLedgerList(search=""){
 
-  // filteredData.sort((a,b) => Number(b[0]) - Number(a[0])); // SORT DESCENDING by srno no
-filteredData.sort((a, b) => {
+  let list=[];
 
-  const parseDate = (str) => {
-    if (!str) return null;
-
-    const parts = str.trim().split("-");
-    if (parts.length !== 3) return null;
-
-    const day = parseInt(parts[0], 10);
-    const mon = parts[1].substring(0, 3);
-    const year = parseInt(parts[2], 10);
-
-    const months = {
-      Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,
-      Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11
-    };
-
-    if (months[mon] === undefined) return null;
-
-    return new Date(year, months[mon], day);
-  };
-
-  const dateA = parseDate(a[3]);
-  const dateB = parseDate(b[3]);
-
-  // Agar dono me date hai → date se sort
-  if (dateA && dateB) {
-    return dateB - dateA;
+  if(searchMode==="ledger"){
+    list=[...new Set(allData.map(r=>r[4]||""))]; // 🔥 NOTE: ledger list
+  }
+  else{
+    list=[...new Set(allData.map(r=>r[6]||""))]; // 🔥 NOTE: only reff list
   }
 
-  // Agar date missing hai → srno (column 0) se descending
-  return Number(b[0]) - Number(a[0]);
-});
-//
+  list = list
+    .filter(v=>v.toLowerCase().includes(search.toLowerCase()))
+    .sort();
 
-  let totalTds = 0, totalReceipt = 0, totalBill = 0, totalCn = 0, totalPEBWeight = 0;
+  let box=document.getElementById("ledgerList");
+  box.innerHTML="";
 
-  filteredData.forEach(row => {
-    const tr = document.createElement("tr");
-    const typeCell = row[2]?.toUpperCase().trim(); // Type column
+  list.forEach(l=>{
+    let div=document.createElement("div");
+    div.textContent=l;
 
-    // 🎨 ROW COLOR
-    if(typeCell === "BANK" || typeCell === "CASH") tr.style.color = "red";
-    else if(typeCell === "CREDIT NOTE") tr.style.color = "grey";
-    else if(typeCell === "CHALLAN") tr.style.color = "green";
+    div.onclick=()=>{
 
-    // ✅ TOTAL CALCULATION ONLY FOR DATAD
-    if(currentSheet === "DATAD"){
-      const type = row[2]?.trim().toUpperCase();
-      const receipt = parseFloat(row[5]) || 0;
-      const amount = parseFloat(row[7]) || 0;
-      const weight = parseFloat(row[8]) || 0;
-
-      if(type === "TDS") totalTds += receipt;
-      else if(type === "BANK" || type === "CASH") totalReceipt += receipt;
-   
-   /*   else if(type === "TAX INVOICE" || type === "CHALLAN"|| type === "CREDIT NOTE"){
-        totalBill += amount;
-        totalPEBWeight += weight;
+      if(searchMode==="ledger"){
+        selectedLedger=l;
+        selectedReff="";
+      }else{
+        selectedReff=l;
+        selectedLedger=""; // 🔥 NOTE: ledger ignore in reff mode
+        updateSelectionInfo(); // ✅ update ledger and po name
       }
-      else if(type === "CREDIT NOTE") totalCn += amount;   */
 
-// Add CREDIT NOTE to totalBill along with TAX INVOICE / CHALLAN
-if(type === "TAX INVOICE" || type === "CHALLAN") {
-    totalBill += amount;
-    }
+      selectedType="";
+      resetDateFilter();
 
-if(type === "TAX INVOICE" || type === "CHALLAN" || type === "CREDIT NOTE") {
-    totalPEBWeight += weight;
-}
+      document.getElementById("poDetailsBox").style.display="none";
 
-// Also, separately track totalCn for CREDIT NOTE
-if(type === "CREDIT NOTE") {
-    totalCn += amount;
-}
-    }
+      renderReff();
+      renderTable();
+      updateSelectionInfo();
 
-    // 🧱 TABLE CELLS
-    config.cols.forEach(index => {
-      const td = document.createElement("td");
-      td.textContent = row[index] || "";
-      tr.appendChild(td);
-    });
+      if(searchMode==="reff"){
+        showPODetails(selectedReff); // 🔥 NOTE: auto PO details
+      }
+    };
 
-    table786Body.appendChild(tr);
+    box.appendChild(div);
   });
+}
 
-  // UPDATE TOTAL BOX
-  if(currentSheet === "DATAD"){
-    updateTotals(totalTds, totalReceipt, totalBill, totalCn, totalPEBWeight);
-    document.getElementById("totalsBox").style.display = "block";
-  } else {
-    document.getElementById("totalsBox").style.display = "none";
+// SEARCH
+document.getElementById("ledgerSearch").oninput=function(){
+  renderLedgerList(this.value);
+};
+
+// ================= REFF =================
+function renderReff(){
+
+  let data=[];
+
+  // 🔥 CHANGE: mode based data
+  if(searchMode==="ledger"){
+    data = allData.filter(r=>r[4]==selectedLedger); // ledger base
+  }else{
+    data = allData.filter(r=>r[6]==selectedReff); // reff base
   }
-}
 
-// UPDATE TOTALS
-function updateTotals(totalTds, totalReceipt, totalBill, totalCn, totalPEBWeight){
-  document.getElementById("totalTds").textContent = totalTds.toFixed(0);
-  document.getElementById("totalReceipt").textContent = totalReceipt.toFixed(0);
-  document.getElementById("totalBill").textContent = totalBill.toFixed(0);
-  document.getElementById("totalCn").textContent = totalCn.toFixed(0);
-  document.getElementById("totalPEBWeight").textContent = totalPEBWeight.toFixed(0);
+  let list=[...new Set(data.map(r=>r[6]||""))];
 
-  const difference = totalBill - totalReceipt - totalTds + totalCn;
-  const diffElement = document.getElementById("totalDifference");
-  diffElement.textContent = difference.toFixed(0);
-  diffElement.style.color = difference < 0 ? "red" : "green";
-}
+  let box=document.getElementById("reffContainer");
+  box.innerHTML="";
 
-// PARSE SHEET DATE (supports 9-Feb-2026 or 2026-02-09)
-function parseSheetDate(dateStr){
-  if(!dateStr) return null;
+  // ===== DEFAULT OPTIONS =====
+  const defaultOptions = [
+    {label:"View All", value:""},
+    {label:"SALE", value:"SALE"},
+    {label:"RECEIPT", value:"RECEIPT"}
+  ];
 
-  if(dateStr.includes("-")){
-    const parts = dateStr.split("-");
-    if(parts[1].length === 3){ // e.g., 9-Feb-2026
-      const months = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
-      const d = new Date(parseInt(parts[2]), months[parts[1]], parseInt(parts[0]));
-      d.setHours(0,0,0,0);
-      return d;
-    } else { // e.g., 2026-02-09
-      const d = new Date(dateStr);
-      d.setHours(0,0,0,0);
-      return d;
-    }
-  }
-  return null;
-}
+  defaultOptions.forEach(opt=>{
+    let span=document.createElement("span");
+    span.textContent=opt.label;
+    span.style.background="#f9fbfc";
+    span.style.color = "#1e3a8a";
 
-// APPLY FILTERS
-function applyFilter(){
-  if(!currentSheet) return;
-
-  const config = reportConfig[currentSheet];
-  const search = global786Search.value.toLowerCase();
-  const from = from786Date.value ? new Date(from786Date.value) : null;
-  const to = to786Date.value ? new Date(to786Date.value) : null;
-  if(from) from.setHours(0,0,0,0);
-  if(to) to.setHours(23,59,59,999);
-
-  filteredData = allData.filter(r => {
-    let ok = true;
-
-    if(selectedLedger && r[4] !== selectedLedger) ok = false;
-    if(selectedReff && r[6] !== selectedReff) ok = false;
-
-    const rowDate = parseSheetDate(r[config.dateIndex]);
-    if(from && rowDate && rowDate < from) ok = false;
-    if(to && rowDate && rowDate > to) ok = false;
-
-    if(search){
-      const found = r.some(cell => (cell||"").toLowerCase().includes(search));
-      if(!found) ok = false;
-    }
-
-    return ok;
-  });
-
-  renderTable(currentSheet);
-}
-
-// GLOBAL SEARCH AND DATE EVENTS
-global786Search.oninput = applyFilter;
-from786Date.onchange = applyFilter;
-to786Date.onchange = applyFilter;
-
-// LEDGER dropdown786
-function renderLedgerOptions(data, search=""){
-  ledgerdropdown786.innerHTML = "";
-  const list = [...new Set(data.map(r => r[4]||""))].filter(v => v.toLowerCase().includes(search.toLowerCase()));
-  list.forEach(val => {
-    const div = document.createElement("div");
-    div.textContent = val;
-    div.onclick = () => {
-      selectedLedger = val;
-      ledger786Input.value = val;
-      ledgerdropdown786.style.display = "none";
-
+    span.onclick=()=>{
+      selectedType = opt.value;
       selectedReff = "";
-      reff786Input.value = "";
-      renderReffOptions(allData);
-
-      applyFilter();
+      renderTable();
+      showPODetails(selectedReff);
+      updateSelectionInfo(); // ✅ update ledger and po name
     };
-    ledgerdropdown786.appendChild(div);
+
+    box.appendChild(span);
+  });
+
+  // ===== LABEL =====
+  let label=document.createElement("span");
+  label.textContent="Select PO/Reff No:";
+  label.style.background="transparent";
+  label.style.fontWeight="bold";
+  label.style.cursor="default";
+
+  box.appendChild(label);
+
+  // ===== REFF LIST =====
+  list.forEach(r=>{
+    let span=document.createElement("span");
+    span.textContent=r;
+
+    span.onclick=()=>{
+      selectedReff=r;
+      selectedType="";
+      renderTable();
+      showPODetails(selectedReff);
+      updateSelectionInfo(); // ✅ update ledger and po name
+    };
+
+    box.appendChild(span);
   });
 }
 
-ledger786Input.oninput = function(){
-  selectedLedger = "";
-  renderLedgerOptions(allData,this.value);
-  ledgerdropdown786.style.display="block";
-};
-ledger786Input.onclick = () => ledgerdropdown786.style.display = "block";
+// ================= TABLE =================
+function renderTable(){
 
-// REFF dropdown786
-function renderReffOptions(data, search=""){
-  reffdropdown786.innerHTML = "";
-  let baseData = data;
-  if(selectedLedger) baseData = data.filter(r => r[4] === selectedLedger);
-  const list = [...new Set(baseData.map(r => r[6]||""))].filter(v => v.toLowerCase().includes(search.toLowerCase()));
-  list.forEach(val => {
-    const div = document.createElement("div");
-    div.textContent = val;
-    div.onclick = () => {
-      selectedReff = val;
-      reff786Input.value = val;
-      reffdropdown786.style.display = "none";
-      applyFilter();
-    };
-    reffdropdown786.appendChild(div);
+let data=[];
+
+// 🔥 MODE BASE FILTER
+if(searchMode==="ledger"){
+  data = allData.filter(r=>r[4]==selectedLedger);
+}
+else{
+  data = allData.filter(r=>r[6]==selectedReff);
+}
+
+// ✅ SINGLE REFF FILTER
+if(selectedReff){
+  data = data.filter(r=>r[6]==selectedReff);
+}
+
+// ===== DATE FILTER =====
+let from = document.getElementById("from786Date").value;
+let to = document.getElementById("to786Date").value;
+
+let fromDate = from ? new Date(from) : null;
+let toDate = to ? new Date(to) : null;
+
+if(fromDate) fromDate.setHours(0,0,0,0);
+if(toDate) toDate.setHours(23,59,59,999);
+
+// TYPE FILTER
+if(selectedType){
+  data = data.filter(r=>(r[1]||"").toUpperCase()===selectedType);
+}
+
+// DATE FILTER
+if(fromDate || toDate){
+  data = data.filter(r=>{
+    let d = parseCustomDate(r[3]);
+    if(!d) return false;
+
+    if(fromDate && d < fromDate) return false;
+    if(toDate && d > toDate) return false;
+
+    return true;
   });
 }
 
-reff786Input.oninput = function(){
-  selectedReff = "";
-  renderReffOptions(allData,this.value);
-  reffdropdown786.style.display = "block";
-};
-reff786Input.onclick = () => renderReffOptions(allData);
+// SORT BY DATE
+data.sort((a,b)=>{
+  let d1 = parseCustomDate(a[3]);
+  let d2 = parseCustomDate(b[3]);
 
-// CLICK OUTSIDE TO CLOSE dropdown786
-document.addEventListener("click", function(e){
-  if(!e.target.closest(".ledger786box")){
-    ledgerdropdown786.style.display = "none";
-    reffdropdown786.style.display = "none";
-  }
+  if(!d1) return 1;
+  if(!d2) return -1;
+
+  return d2 - d1;
 });
-</script>
 
+// ===== HEADER =====
+table786Head.innerHTML=`
+<tr>
+<th>Sr No</th>
+<th>Type</th>
+<th>Date</th>
+<th>Ledger</th>
+<th>Rcpt/Inv</th>
+<th>Reff</th>
+<th>Amount</th>
+<th>Weight</th>
+<th>Rate</th>
+<th>Narration</th>
+<th>V.Type</th>
+</tr>`;
 
-<!--     ========= ------------- poreff summry in poup view ----------------- ================== start hare -----------      -->
-<script>
-const SUMM_API_KEY = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-const SUMM_SHEET_ID = "1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU";
+table786Body.innerHTML="";
 
-// MAIN FUNCTION TO LOAD POPUP
-async function loadReffSummaryWidgetFixed(reffValue=null){
-    // Use input value if reffValue not provided
-    if(!reffValue) {
-        reffValue = document.getElementById("reff786Input")?.value.trim() || "";
-    }
+// ===== RESET GLOBAL TOTALS =====
+let totalTds=0, totalReceipt=0;
 
-    // Fetch DATAF and DATAD
-    const datafUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SUMM_SHEET_ID}/values/DATAF!A:Z?key=${SUMM_API_KEY}`;
-    const datadUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SUMM_SHEET_ID}/values/DATAD!A:Z?key=${SUMM_API_KEY}`;
+totalBill = 0;
+totalCn = 0;
+totalPEBWeight = 0;
 
-    const [fRes,dRes] = await Promise.all([fetch(datafUrl), fetch(datadUrl)]);
-    const datafRows = (await fRes.json()).values?.slice(1) || [];
-    const datadRows = (await dRes.json()).values?.slice(1) || [];
+// ===== LOOP =====
+data.forEach(r=>{
 
-    let poAmt=0, poWeight=0, saleAmt=0, saleWeight=0;
-    let poName="", poNo="";
+  let tr=document.createElement("tr");
 
-    // DATAF -> PO totals
-    datafRows.forEach(r=>{
-        if((r[6]||"") === reffValue){
-            poAmt += parseFloat(r[7])||0;
-            poWeight += parseFloat(r[8])||0;
-            poName = r[4]||"";  
-            poNo = r[6]||"";    
-        }
-    });
+  let type=(r[2]||"").toUpperCase().trim();
 
-    // DATAD -> Sale totals
-    datadRows.forEach(r=>{
-        if((r[6]||"") === reffValue){
-            saleAmt += parseFloat(r[7])||0;
-            saleWeight += parseFloat(r[8])||0;
-        }
-    });
+  let receipt=parseFloat(r[5])||0;
+  let amount=parseFloat(r[7])||0;
+  let weight=parseFloat(r[8])||0;
 
-    const amtBalance = poAmt - saleAmt;
-    const weightBalance = poWeight - saleWeight;
-    const progress = poAmt ? (saleAmt / poAmt *100) : 0;
+  // TOTAL LOGIC
+  if(type==="TDS") totalTds += receipt;
+  else if(type==="BANK"||type==="CASH") totalReceipt += receipt;
 
-    renderWidget(poName, poNo, datafRows, poAmt, poWeight, saleAmt, saleWeight, amtBalance, weightBalance, progress);
-}
-
-// RENDER POPUP
-function renderWidget(poName, poNo, datafRows, poAmt, poWeight, saleAmt, saleWeight, amtBalance, weightBalance, progress){
-    let box = document.getElementById("reffSummaryWidget");
-    if(!box){
-        box = document.createElement("div");
-        box.id="reffSummaryWidget";
-        box.style.position="fixed";
-        box.style.right="80px";
-        box.style.top="3in";
-        box.style.width="370px";
-      //  box.style.height="920px";
-        box.style.background="#0f172a";
-        box.style.color="white";
-        box.style.borderRadius="10px";
-        box.style.padding="15px";
-        box.style.boxShadow="0 0 15px rgba(0,0,0,0.6)";
-        box.style.zIndex="9999";
-        document.body.appendChild(box);
-    }
-
-    let poList = [...new Set(datafRows.map(r=>r[6]||""))].filter(v=>v);
-
-    box.innerHTML = `
-    <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
-      <b>📊 PO Summary</b>
-      <span style="cursor:pointer" onclick="document.getElementById('reffSummaryWidget').remove()">✖</span>
-    </div>
-
-    <input type="text" id="reffSearchInput" placeholder="🔍 Search PO..." 
-           style="width:100%;padding:5px;margin-bottom:5px;border-radius:5px;border:none;">
-
-    <div id="reffDropdown" style="background:#1e293b;max-height:100px;overflow-y:auto;
-                                 border-radius:5px;margin-bottom:10px;display:none;"></div>
-
-    <div style="font-size:16px">
-      <b>Clint Details</b><br>
-      Name : ${poName}<br>
-      PO No : ${poNo}<br>
-      <hr style="border-color:#333">
-      <b>PO Details</b><br>
-      Amount : ${poAmt.toFixed(0)}<br>
-      Weight : ${poWeight.toFixed(0)}
-      <hr style="border-color:#333">
-      <b>Sale Details</b><br>
-      Amount : ${saleAmt.toFixed(0)}<br>
-      Weight : ${saleWeight.toFixed(0)}
-      <hr style="border-color:#333">
-      <b style="color:${amtBalance<0?'red':'lime'}">Balance Amt : ${amtBalance.toFixed(0)}</b><br>
-      <b style="color:${weightBalance<0?'red':'cyan'}">Balance Wt : ${weightBalance.toFixed(0)}</b>
-      <hr style="border-color:#333">
-      Progress
-      <div style="background:#222;height:8px;border-radius:5px;margin-top:5px">
-        <div style="width:${progress}%;height:8px;background:${progress>=100?'lime':'orange'};
-                    border-radius:5px"></div>
-      </div>
-      <div style="font-size:13px;margin-top:3px">${progress.toFixed(1)}% Completed (as/Weight)</div>
-    </div>
-    `;
-
-    // Setup search dropdown logic
-    const searchInput = document.getElementById("reffSearchInput");
-    const dropdown = document.getElementById("reffDropdown");
-    searchInput.value = "";
-    searchInput.oninput = function(){
-        const val = this.value.toLowerCase();
-        const filtered = poList.filter(v=>v.toLowerCase().includes(val));
-        dropdown.innerHTML = "";
-        if(filtered.length>0){
-            filtered.forEach(f=>{
-                const div = document.createElement("div");
-                div.textContent = f;
-                div.style.padding="5px";
-                div.style.cursor="pointer";
-                div.onmouseover=()=>div.style.background="#334155";
-                div.onmouseout=()=>div.style.background="";
-                div.onclick=()=>{
-                    searchInput.value=f;
-                    dropdown.style.display="none";
-                    loadReffSummaryWidgetFixed(f);
-                };
-                dropdown.appendChild(div);
-            });
-            dropdown.style.display="block";
-        } else dropdown.style.display="none";
-    };
-}
-
-// Auto trigger when reff786Input changes
-document.getElementById("reff786Input").addEventListener("change",()=>setTimeout(()=>loadReffSummaryWidgetFixed(),300));
-</script>
-
-
-<!--   ============= -----   mipl786Table with Dishplay Ledger Report print reportscript ------ =============== start  -->
-<script>
-function print786Report() {
-
-  function formatDate(dateStr){
-    if(!dateStr) return "";
-    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-    const d = new Date(dateStr);
-    return d.getDate() + "-" + months[d.getMonth()] + "-" + d.getFullYear();
+  if(type==="TAX INVOICE"||type==="CHALLAN"){
+    totalBill += amount;
   }
 
-  const fromRaw = document.getElementById("from786Date").value;
-  const toRaw = document.getElementById("to786Date").value;
+  if(type==="CREDIT NOTE"){
+    totalCn += amount;
+  }
 
-  const from786Date = formatDate(fromRaw);
-  const to786Date = formatDate(toRaw);
+  if(type==="TAX INVOICE"||type==="CHALLAN"||type==="CREDIT NOTE"){
+    totalPEBWeight += weight;
+  }
 
-  const ledger = document.getElementById("ledger786Input").value || "";
-  const reff = document.getElementById("reff786Input").value || "";
+  // COLOR
+  if(type==="BANK"||type==="CASH") tr.style.color="red";
+  else if(type==="CREDIT NOTE") tr.style.color="grey";
+  else if(type==="CHALLAN") tr.style.color="green";
 
-  // ===== TOTAL VALUES =====
-  const totalReceipt = document.getElementById("totalReceipt")?.innerText || "0";
-  const totalTds = document.getElementById("totalTds")?.innerText || "0";
-  const totalBill = document.getElementById("totalBill")?.innerText || "0";
-  const totalWeight = document.getElementById("totalPEBWeight")?.innerText || "0";
-  const totalDiff = document.getElementById("totalDifference")?.innerText || "0";
-  const totalCn = document.getElementById("totalCn")?.innerText || "0";
+  tr.innerHTML=`
+  <td>${r[0]||""}</td>
+  <td>${r[2]||""}</td>
+  <td>${r[3]||""}</td>
+  <td>${r[4]||""}</td>
+  <td>${r[5]||""}</td>
+  <td>${r[6]||""}</td>
+  <td>${r[7]||""}</td>
+  <td>${r[8]||""}</td>
+  <td>${r[9]||""}</td>
+  <td>${r[10]||""}</td>
+  <td>${r[1]||""}</td>
+  `;
 
-  const tableHead = document.getElementById("table786Head").innerHTML;
-  const tableBody = document.getElementById("table786Body").innerHTML;
+  table786Body.appendChild(tr);
+});
 
-  // ===== TIMESTAMP =====
-  const now = new Date();
-  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+// ===== TOTAL ROUND =====
+totalTds = Math.round(totalTds);
+totalReceipt = Math.round(totalReceipt);
+totalBill = Math.round(totalBill);
+totalCn = Math.round(totalCn);
+totalPEBWeight = Math.round(totalPEBWeight);
+
+// ===== DIFF =====
+let diff = totalBill - totalReceipt - totalTds + totalCn;
+
+// ===== UPDATE UI =====
+document.getElementById("totalTds").textContent = totalTds;
+document.getElementById("totalReceipt").textContent = totalReceipt;
+document.getElementById("totalBill").textContent = totalBill;
+document.getElementById("totalCn").textContent = totalCn;
+document.getElementById("totalPEBWeight").textContent = totalPEBWeight;
+
+let diffEl = document.getElementById("totalDifference");
+diffEl.textContent = diff;
+diffEl.style.color = diff<0 ? "red" : "green";
+
+// ===== SEARCH RESET =====
+let input = document.getElementById("globalSearchInput");
+if(input) input.value="";
+}
+
+document.getElementById("from786Date").addEventListener("change", renderTable);
+document.getElementById("to786Date").addEventListener("change", renderTable);
+
+//--------------- PO/Reff Details div script ---------- start
+function showPODetails(reff){
+
+  let match = dataF.find(r => (r[6]||"") === reff);
+
+  let box = document.getElementById("poDetailsBox");
+
+  if(!match){
+    box.style.display="none";
+    return;
+  }
+
+  // ✅ PO values
+  let poAmt = parseFloat(match[7]) || 0;
+  let poWt = parseFloat(match[8]) || 0;
+
+  // ✅ BALANCE CALCULATION (YAHI ADD KARNA HAI)
+  let balanceAmt = poAmt - totalBill - totalCn;
+  let balanceWt = poWt - totalPEBWeight;
+
+  box.style.display="block";
+
+  box.innerHTML=`
+  <b>📄 PO / Reff Details</b><br><br>
+
+  <b>Order By:</b> ${match[9]||""}
+  <b>Design By:</b> ${match[1]||""} |
+  <b>Status:</b> ${match[2]||""} |
+  <b>Client:</b> ${match[3]||""} |
+  <b>Address:</b> ${match[5]||""}
+
+  <br/><br/>
+
+  <b style="color:#6e0000;">PO Value:</b> Rs. ${poAmt} |
+  <b style="color:#006658;">PO Weight:</b> ${poWt} Kg.
+
+  <br/><br/>
+
+<span style="color:#b91c1c;font-weight:bold;">
+Balance Amount: Rs. ${Math.round(balanceAmt)}
+</span> |
+
+<span style="color:#065f46;font-weight:bold;">
+Balance Weight: ${Math.round(balanceWt)} Kg
+</span>
+  `;
+}
+//--------------- PO/Reff Details div script ---------- stop
+
+function updateSelectionInfo(){
+
+  let ledgerText = selectedLedger || "All";
+  let reffText = selectedReff || "All";
+
+  document.getElementById("selectionInfo").innerHTML =
+    `Ledger:- <span style="color:#2563eb">${ledgerText}</span> | 
+     PO/Reff No: <span style="color:#16a34a">${reffText}</span>`;
+}
+
+
+// -------------- filter by date script start ----------
+function parseCustomDate(str){
+  if(!str) return null;
+
+  str = str.trim();
+
+  let parts = str.split("-");
+  if(parts.length !== 3) return null;
+
+  let day = parseInt(parts[0]);
+  let mon = parts[1].substring(0,3);
+  let year = parseInt(parts[2]);
+
+  // 2 digit year fix
+  if(year < 100){
+    year += 2000;
+  }
+
+  const months = {
+    Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,
+    Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11
+  };
+
+  if(months[mon] === undefined) return null;
+
+  let d = new Date(year, months[mon], day);
+  d.setHours(0,0,0,0);
+
+  return d;
+}
+
+function resetDateFilter(){
+  document.getElementById("from786Date").value = "";
+  document.getElementById("to786Date").value = "";
+}
+// -------------- filter by date script stop ----------
+// ================= GLOBAL TABLE SEARCH (REMOVABLE) start hare =================
+
+function globalDataSearch(){
+
+  const input = document.getElementById("globalSearchInput");
+  const keyword = input.value.toLowerCase();
+
+  const rows = document.querySelectorAll("#table786Body tr");
+
+  rows.forEach(row=>{
+    let text = row.innerText.toLowerCase();
+
+    // RESET पहले
+    row.style.display = "";
+    row.innerHTML = row.innerHTML.replace(/<mark>/g,"").replace(/<\/mark>/g,"");
+
+    if(keyword){
+      if(text.includes(keyword)){
+
+        // SHOW + HIGHLIGHT
+        row.style.display = "";
+
+        let cells = row.querySelectorAll("td");
+
+        cells.forEach(td=>{
+          let val = td.innerText;
+
+          if(val.toLowerCase().includes(keyword)){
+            let regex = new RegExp(`(${keyword})`,"gi");
+            td.innerHTML = val.replace(regex,"<mark>$1</mark>");
+          }
+        });
+
+      } else {
+        row.style.display = "none";
+      }
+    }
+
+  });
+}
+
+// EVENT
+document.getElementById("globalSearchInput").addEventListener("input", globalDataSearch);
+// ================= GLOBAL TABLE SEARCH (REMOVABLE) STop hare =================
+ //----------------------- print function start
+ function print786Report(){
+
+  let printWindow = window.open('', '', 'width=1000,height=700');
+
+  // ===== DATA GET =====
+  let selectionText = document.getElementById("selectionInfo").innerHTML;
+
+  let fromDate = document.getElementById("from786Date").value;
+  let toDate = document.getElementById("to786Date").value;
+
+  let totalsHTML = document.getElementById("totalsBox").innerHTML;
+  let tableHead = document.getElementById("table786Head").innerHTML;
+  let tableBody = document.getElementById("table786Body").innerHTML;
+
+  // ===== TIMESTAMP FORMAT =====
+  let now = new Date();
 
   let day = now.getDate();
-  let month = months[now.getMonth()];
   let year = now.getFullYear();
+
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  let month = months[now.getMonth()];
 
   let hours = now.getHours();
   let minutes = now.getMinutes().toString().padStart(2,'0');
 
   let ampm = hours >= 12 ? "PM" : "AM";
-  hours = hours % 12;
-  hours = hours ? hours : 12;
+  hours = hours % 12 || 12;
 
-  const timeStamp = `${day}-${month}-${year}/ ${hours}:${minutes} ${ampm}`;
+  let timeStamp = `${day}-${month}-${year} / ${hours}:${minutes} ${ampm}`;
 
-  // ===== PRINT WINDOW =====
-  const printWindow = window.open('', '', 'width=1100,height=700');
-
+  // ===== PRINT HTML =====
   printWindow.document.write(`
-    <html>
-    <head>
-      <title>MIPL Report Preview</title>
-      <style>
-        body{ font-family: Arial; padding:25px; position:relative; }
-        h2{ text-align:center; margin-bottom:10px; }
-        .timestamp{
-          position:absolute;
-          top:25px;
-          right:30px;
-          font-weight:bold;
-          font-size:13px;
-        }
-        .section{ margin-bottom:10px; font-size:14px; }
-        .totals{
-          background:#f4f4f4;
-          padding:8px;
-          border:1px solid #ccc;
-          margin-top:5px;
-          font-size:13px;
-        }
-        table{
-          width:100%;
-          border-collapse:collapse;
-          margin-top:15px;
-        }
-        th, td{
-          border:1px solid #000;
-          padding:6px;
-          font-size:12px;
-        }
-        th{ background:#eaeaea; }
-      </style>
-    </head>
-    <body>
+  <html>
+  <head>
+    <title>Ledger Report</title>
+    <style>
+      body{font-family:Arial; padding:15px;}
+      table{width:100%; border-collapse:collapse; font-size:14px;}
+      th,td{border:1px solid #000; padding:4px; text-align:left;}
+      th{background:#eee;}
+      .topbar{display:flex; justify-content:space-between; margin-bottom:10px;}
+      .row{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
+      .totals{font-size:12px;}
+    </style>
+  </head>
 
-      <div class="timestamp">${timeStamp}</div>
+  <body>
 
-      <h2>MIPL Report Preview</h2>
+     <h2>MIPL Report Preview</h2>
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div>${selectionText}</div>
+      <div>${timeStamp}</div>
+    </div>
 
-      <div class="section">
-        <strong>From:</strong> ${from786Date} &nbsp;&nbsp;
-        <strong>To:</strong> ${to786Date}
+    <!-- DATE + TOTAL -->
+    <div class="row">
+      <div>
+        <b>From:</b> ${fromDate || "-"} 
+        <b style="margin-left:10px;">To:</b> ${toDate || "-"}
       </div>
 
-      <div class="section">
-        <strong>Ledger:</strong> ${ledger}
-        &nbsp;&nbsp; | &nbsp;&nbsp;
-        <strong>Reff:</strong> ${reff}
+    </div>
+
+    <div class="totals" style="color:#0c0c0c;font-size:16px;font-family:Arial;">
+        ${totalsHTML}
       </div>
+<br/>
+    <!-- TABLE -->
+    <table>
+      <thead>${tableHead}</thead>
+      <tbody>${tableBody}</tbody>
+    </table>
 
-      <div class="totals">
-        <span><strong>Total Receipt:</strong> ${totalReceipt}</span> |
-        <span><strong>Total TDS:</strong> ${totalTds}</span> |
-        <span><strong>Total Bill:</strong> ${totalBill}</span> |
-        <span><strong>Total Net Weight:</strong> ${totalWeight}</span> |
-        <span><strong>Balance:</strong> ${totalDiff}</span> |
-        <span><strong>Total Credit Note:</strong> ${totalCn}</span>
-      </div>
-
-      <table>
-        <thead>${tableHead}</thead>
-        <tbody>${tableBody}</tbody>
-      </table>
-
-    </body>
-    </html>
+  </body>
+  </html>
   `);
 
   printWindow.document.close();
-  printWindow.focus();
   printWindow.print();
 }
+// -------------------- print function stop ---------------------------
+
 </script>
-<!--   ============= -----   mipl786Table with Dishplay Ledger Report print reportscript ------ =============== stop  -->
-
-
- <!--   ============= -----   mipl786Table with poref/address/ attandase buttan code script ------ =============== stop  -->
-
-
 
 
 
@@ -5630,6 +5622,7 @@ loadRationCardData();
 <br/>
 <p onclick="window.open('https://docs.google.com/spreadsheets/d/1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU/edit?gid=1462163867#gid=1462163867','_blank')" style="cursor:pointer;color:#0026ff;">Master Data Google Sheet</p>
 <p onclick="window.open('https://docs.google.com/spreadsheets/d/1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4/edit?gid=2007779252#gid=2007779252','_blank')" style="cursor:pointer;color:#0026ff;">Address, Event Other Google Sheet</p>
+<p onclick="window.open('https://m5792.github.io/esm/','_blank')" style="cursor:pointer;color:#0026ff;">MIPL Dashboard</p>
 <p onclick="showReport('rationcard')" style="cursor:pointer;color:#038670;">Ration Card Search</p>
 
 
@@ -5699,7 +5692,7 @@ loadRationCardData();
   background:#0093A1;
   color:white;
   font-weight:bold;
-  text-align:left;
+ /* text-align:left; */
   cursor:pointer;
   border-radius:4px;
 }
@@ -5747,35 +5740,6 @@ function toggleNote(num){
 
 </script>
 <!-- ========= Buttan Configure Details List stop Hare  ---------- ============ -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
