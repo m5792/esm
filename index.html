@@ -1031,7 +1031,7 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
     <div class="home-title">Dashboard</div>
 
 
-   <div style="height:600px; overflow-y:auto; overflow-x:auto; border:5px solid #545454;border-radius: 10px; padding:8px; background-color: #fffff7;" >
+   <div style="height:90vh; overflow-y:auto; overflow-x:auto; border:5px solid #545454;border-radius: 10px; padding:8px; background-color: #fffff7;" >
         <!-- ===== BUTTON 12 ===== -->
 <button class="noteBtn" onclick="toggleNote(12); daybookRefresh();" style="color: #000;">📑 (Click to More Details) | <span id="monthlyTotals"></span></button>
 <div id="noteContent12" class="noteContent">
@@ -3965,14 +3965,13 @@ loadTodayEvent();
 
 
 <!-- ================ -------------------------   GLOBAL SERCH BAR SCRIPT AND CODE START HERE --------------- ===============================-->
-
 <script>
 /* ===================================================================
    🔐 AUTHORIZATION SECTION
    =================================================================== */
 
-let documentAllowed = false;   // permission 15
-let purchaseAllowed = false;   // permission 16
+let documentAllowed = false;
+let purchaseAllowed = false;
 
 function applyDocumentPermission() {
   const authText =
@@ -4003,14 +4002,30 @@ function waitForReportAuth() {
 const BASE_URL =
   "https://script.google.com/macros/s/AKfycbwRqkoJAhLxzZ9YEXUuw8m5maCHpuAzjOM7cI4tz0qop-Epfbqb_4ZbGhuECVjmhvA6/exec";
 
+/* ================= SAFE FETCH ================= */
+async function safeFetch(url) {
+  try {
+    const res = await fetch(url);
+    const text = await res.text();
+
+    try {
+      return JSON.parse(text);
+    } catch {
+      return [];
+    }
+  } catch {
+    return [];
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
 
   let invoiceFiles = [];
   let documentFiles = [];
   let purchaseFiles = [];
-  let webFiles = []; // 🌐 NEW
+  let webFiles = [];
 
-  /* ===== UI CONTAINER ===== */
+  /* ===== UI ===== */
   const container = document.createElement("div");
   container.style = `
     position:fixed;
@@ -4022,7 +4037,6 @@ document.addEventListener("DOMContentLoaded", () => {
   `;
   document.body.appendChild(container);
 
-  /* ===== INPUT ===== */
   const input = document.createElement("input");
   input.disabled = true;
   input.placeholder = "⏳ Please Wait ! Loading...";
@@ -4038,7 +4052,6 @@ document.addEventListener("DOMContentLoaded", () => {
   `;
   container.appendChild(input);
 
-  /* ===== DROPDOWN ===== */
   const dropdown = document.createElement("ul");
   dropdown.style = `
     list-style:none;
@@ -4060,38 +4073,74 @@ document.addEventListener("DOMContentLoaded", () => {
   container.appendChild(dropdown);
 
   /* ===== LOAD DATA ===== */
-  function loadAllData() {
+  async function loadAllData(retry = 0) {
     input.disabled = true;
     input.placeholder = "⏳ Please Wait ! Loading...";
 
-    Promise.all([
-      fetch(`${BASE_URL}?searchType=invoice`).then(r => r.json()),
-      fetch(`${BASE_URL}?searchType=packing`).then(r => r.json()),
-      fetch(`${BASE_URL}?list=1`).then(r => r.json()),
-      fetch(`${BASE_URL}?searchType=po`).then(r => r.json()).catch(() => []),
-      fetch(`${BASE_URL}?web=1`).then(r => r.json()).catch(() => []) // 🌐 NEW
-    ])
-    .then(([inv, pack, docs, po, web]) => {
+    const [inv, pack, docs, po, web] = await Promise.all([
+      safeFetch(`${BASE_URL}?searchType=invoice`),
+      safeFetch(`${BASE_URL}?searchType=packing`),
+      safeFetch(`${BASE_URL}?list=1`),
+      safeFetch(`${BASE_URL}?searchType=po`),
+      safeFetch(`${BASE_URL}?web=1`)
+    ]);
 
-      invoiceFiles = [
-        ...(inv || []).map(i => ({ ...i, __inv: true })),
-        ...(pack || []).map(p => ({ ...p, __pl: true }))
-      ];
+    // 🔥 FIX: NAME NORMALIZATION
+    invoiceFiles = [
+      ...(inv || []).map(i => ({
+        ...i,
+        name: i.name || i.invoiceNo || i.fileName || "INV File",
+        __inv: true
+      })),
 
-      documentFiles = docs || [];
-      purchaseFiles = po || [];
-      webFiles = web || [];
+      ...(pack || []).map(p => ({
+        ...p,
+        name: p.name || p.packingNo || p.fileName || "Packing List",
+        __pl: true
+      }))
+    ];
 
-      input.disabled = false;
-      input.placeholder =
-        "🔍 Search Inv, PL, PO, Documents (Alt+G)";
-    })
-    .catch(() => {
+    documentFiles = (docs || []).map(d => ({
+      ...d,
+      name: d.name || d.fileName || "Document",
+      __doc: true
+    }));
+
+    purchaseFiles = (po || []).map(p => ({
+      ...p,
+      name: p.name || p.poNo || p.fileName || "PO File",
+      __po: true
+    }));
+
+    webFiles = (web || []).map(w => ({
+      ...w,
+      name: w.name || w.title || "Web Link",
+      __web: true
+    }));
+
+    const total =
+      invoiceFiles.length +
+      documentFiles.length +
+      purchaseFiles.length +
+      webFiles.length;
+
+    if (total === 0 && retry < 3) {
+      input.placeholder = "⚠️ Retrying...";
+      setTimeout(() => loadAllData(retry + 1), 3000);
+      return;
+    }
+
+    if (total === 0) {
       input.placeholder = "❌ Data load failed";
-    });
+      input.disabled = false;
+      return;
+    }
+
+    input.disabled = false;
+    input.placeholder = "🔍 Search Inv, PL, PO, Documents (Alt+G)";
   }
 
-  /* ===== SEARCH LOGIC ===== */
+  /* ===== SEARCH ===== */
   input.addEventListener("input", () => {
     const q = input.value.toLowerCase().trim();
     dropdown.innerHTML = "";
@@ -4103,28 +4152,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let filesToSearch = [...invoiceFiles];
 
-   if (documentAllowed) {
-  filesToSearch = filesToSearch.concat(
-    documentFiles
-      .filter(d => !d.name.toLowerCase().endsWith(".url")) // ❌ remove web shortcuts
-      .map(d => ({ ...d, __doc: true }))
-  );
-}
-
-
-    if (purchaseAllowed) {
+    if (documentAllowed) {
       filesToSearch = filesToSearch.concat(
-        purchaseFiles.map(p => ({ ...p, __po: true }))
+        documentFiles.filter(d => !d.name.toLowerCase().endsWith(".url"))
       );
     }
 
-    // 🌐 WEB FILES (always allowed)
-    filesToSearch = filesToSearch.concat(
-      webFiles.map(w => ({ ...w, __web: true }))
-    );
+    if (purchaseAllowed) {
+      filesToSearch = filesToSearch.concat(purchaseFiles);
+    }
 
+    filesToSearch = filesToSearch.concat(webFiles);
+
+    // 🔥 FIX: SAFE FILTER
     const matched = filesToSearch.filter(f =>
-      f.name.toLowerCase().includes(q)
+      (f.name || "").toLowerCase().includes(q)
     );
 
     if (!matched.length) {
@@ -4135,6 +4177,7 @@ document.addEventListener("DOMContentLoaded", () => {
     matched.forEach((f, idx) => {
       const li = document.createElement("li");
 
+      // ✅ SAME LABEL STYLE
       li.textContent =
         f.__web ? "🌐 WEB : " + f.name :
         f.__po  ? "🟡 PO : " + f.name :
@@ -4148,10 +4191,6 @@ document.addEventListener("DOMContentLoaded", () => {
         border-bottom:1px solid #e0e0e0;
       `;
 
-      if (idx === matched.length - 1) {
-        li.style.borderBottom = "none";
-      }
-
       li.onmouseenter = () => {
         li.style.background = "#0d6efd";
         li.style.color = "#fff";
@@ -4162,19 +4201,11 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       li.onclick = () => {
-
-        // 🌐 WEB SHORTCUT
         if (f.__web && f.webUrl) {
           window.open(f.webUrl, "_blank");
-        } 
-        // 📄 DRIVE FILE
-        else if (f.id) {
-          window.open(
-            `https://drive.google.com/file/d/${f.id}/view`,
-            "_blank"
-          );
-        } 
-        else {
+        } else if (f.id) {
+          window.open(`https://drive.google.com/file/d/${f.id}/view`, "_blank");
+        } else {
           alert("File not accessible");
         }
 
@@ -4196,11 +4227,17 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ===== INIT ===== */
-  loadAllData();
   waitForReportAuth();
+
+  window.addEventListener("load", () => {
+    setTimeout(() => {
+      loadAllData();
+    }, 5000);
+  });
+
 });
 
-/* ===== ALT + G SHORTCUT ===== */
+/* ===== ALT + G ===== */
 document.addEventListener("keydown", function (e) {
   if (e.altKey && e.key.toLowerCase() === "g") {
     e.preventDefault();
