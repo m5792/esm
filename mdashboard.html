@@ -1640,6 +1640,7 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
 </div>
 
 <!-- BUTTON -->
+ <button onclick="refershdlrtable()" style=" padding:6px 12px;border-radius:6px; border: none; cursor:pointer; background:#f9fbfc; color:#fff; font-weight:bold; color: rgb(1, 38, 73); ">🔄 Refresh</button>
 <button onclick="print786Report()"style=" padding:6px 12px;border-radius:6px; border: none; cursor:pointer; background:#f9fbfc; color:#fff; font-weight:bold; color: rgb(1, 38, 73); "> 🖨️ Print </button>
 <button id="exportBtn" data-value="exportBtn" data-target="dlrtable" style="border: none; font-weight: bold; cursor: pointer; background-color: #f9fbfc; color: rgb(1, 38, 73);">🏢 Export</button>
 
@@ -2776,6 +2777,44 @@ document.getElementById("globalSearchInput").addEventListener("input", globalDat
 }
 // -------------------- print function stop ---------------------------
 
+// ------------- refresh function ------------
+// ================= REFRESH TABLE =================
+async function refershdlrtable(){
+
+    document.getElementById("table786Body").innerHTML =
+    "<tr><td colspan='11'>⏳ Refreshing...</td></tr>";
+  try{
+
+    const datadUrl=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/DATAD!A:Z?key=${API_KEY}`;
+    const datafUrl=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/DATAF!A:Z?key=${API_KEY}`;
+
+    // 🔄 fresh data load
+    const [dRes,fRes]=await Promise.all([
+      fetch(datadUrl),
+      fetch(datafUrl)
+    ]);
+
+    const dData=await dRes.json();
+    const fData=await fRes.json();
+
+    allData=(dData.values||[]).slice(1);
+    dataF=(fData.values||[]).slice(1);
+
+    // 🔁 UI refresh (same selection ke saath)
+    renderLedgerList();
+    renderReff();
+    renderTable();
+    updateSelectionInfo();
+
+    console.log("✅ Table Refreshed Successfully");
+
+  }catch(err){
+    console.error("❌ Refresh Error:", err);
+    alert("Data refresh failed");
+  }
+
+}
+// -----------------------------------------------
 </script>
 
 
@@ -4106,18 +4145,35 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 <!-- ================ GLOBAL SEARCH BAR SCRIPT START ================ -->
 <script>
-/* ===================================================================
-   🚀 GLOBAL SEARCH BAR (NO AUTH – ALL DATA VISIBLE)
-   =================================================================== */
+/* =================================================================== */
+/* ❌ PERMISSION LOGIC REMOVED */
+/* =================================================================== */
 
 const BASE_URL =
-  "https://script.google.com/macros/s/AKfycbxFrdD0xEry5u8ltJ74muh9NzyIk9ZTPXswVqx03iiTRNhtAMq8pKXE6qXkYyH18-x9/exec";
+  "https://script.google.com/macros/s/AKfycbwRqkoJAhLxzZ9YEXUuw8m5maCHpuAzjOM7cI4tz0qop-Epfbqb_4ZbGhuECVjmhvA6/exec";
+
+/* ================= SAFE FETCH ================= */
+async function safeFetch(url) {
+  try {
+    const res = await fetch(url);
+    const text = await res.text();
+
+    try {
+      return JSON.parse(text);
+    } catch {
+      return [];
+    }
+  } catch {
+    return [];
+  }
+}
 
 document.addEventListener("DOMContentLoaded", () => {
 
   let invoiceFiles = [];
   let documentFiles = [];
   let purchaseFiles = [];
+  let webFiles = [];
 
   /* ===== UI CONTAINER ===== */
   const container = document.createElement("div");
@@ -4133,7 +4189,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ===== INPUT ===== */
   const input = document.createElement("input");
-  input.id = "globalSearchInput"; // ✅ for Alt+G
+  input.id = "globalSearchInput";
   input.disabled = true;
   input.placeholder = "⏳ Please Wait ! Loading...";
   input.style = `
@@ -4143,6 +4199,7 @@ document.addEventListener("DOMContentLoaded", () => {
     border-radius:8px;
     border:1px solid #ccc;
     background:#DCF8FA;
+    margin-top:6px;
   `;
   container.appendChild(input);
 
@@ -4150,13 +4207,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const dropdown = document.createElement("ul");
   dropdown.style = `
     list-style:none;
-    margin:0 0 6px 0;
+    margin:0;
     padding:0;
     font-size:14px;
     position:absolute;
-    bottom:100%;
+    bottom:calc(100% + 6px);
     left:0;
-    width:4in;
+    width:100%;
     max-height:420px;
     overflow-y:auto;
     display:none;
@@ -4168,35 +4225,72 @@ document.addEventListener("DOMContentLoaded", () => {
   container.appendChild(dropdown);
 
   /* ===== LOAD DATA ===== */
-  function loadAllData() {
+  async function loadAllData(retry = 0) {
     input.disabled = true;
     input.placeholder = "⏳ Please Wait ! Loading...";
 
-    Promise.all([
-      fetch(`${BASE_URL}?searchType=invoice`).then(r => r.json()),
-      fetch(`${BASE_URL}?searchType=packing`).then(r => r.json()),
-      fetch(`${BASE_URL}?list=1`).then(r => r.json()),
-      fetch(`${BASE_URL}?searchType=po`).then(r => r.json()).catch(() => [])
-    ])
-    .then(([inv, pack, docs, po]) => {
+    const [inv, pack, docs, po, web] = await Promise.all([
+      safeFetch(`${BASE_URL}?searchType=invoice`),
+      safeFetch(`${BASE_URL}?searchType=packing`),
+      safeFetch(`${BASE_URL}?list=1`),
+      safeFetch(`${BASE_URL}?searchType=po`),
+      safeFetch(`${BASE_URL}?web=1`)
+    ]);
 
-      invoiceFiles = [
-        ...(inv || []).map(i => ({ ...i, __inv: true })),
-        ...(pack || []).map(p => ({ ...p, __pl: true }))
-      ];
+    invoiceFiles = [
+      ...(inv || []).map(i => ({
+        ...i,
+        name: i.name || i.invoiceNo || i.fileName || "INV File",
+        __inv: true
+      })),
+      ...(pack || []).map(p => ({
+        ...p,
+        name: p.name || p.packingNo || p.fileName || "Packing List",
+        __pl: true
+      }))
+    ];
 
-      documentFiles = (docs || []).map(d => ({ ...d, __doc: true }));
-      purchaseFiles = (po || []).map(p => ({ ...p, __po: true }));
+    documentFiles = (docs || []).map(d => ({
+      ...d,
+      name: d.name || d.fileName || "Document",
+      __doc: true
+    }));
 
-      input.disabled = false;
-      input.placeholder = "🔍 Search Inv, PL, PO, Documents (Alt+G)";
-    })
-    .catch(() => {
+    purchaseFiles = (po || []).map(p => ({
+      ...p,
+      name: p.name || p.poNo || p.fileName || "PO File",
+      __po: true
+    }));
+
+    webFiles = (web || []).map(w => ({
+      ...w,
+      name: w.name || w.title || "Web Link",
+      __web: true
+    }));
+
+    const total =
+      invoiceFiles.length +
+      documentFiles.length +
+      purchaseFiles.length +
+      webFiles.length;
+
+    if (total === 0 && retry < 3) {
+      input.placeholder = "⚠️ Retrying...";
+      setTimeout(() => loadAllData(retry + 1), 3000);
+      return;
+    }
+
+    if (total === 0) {
       input.placeholder = "❌ Data load failed";
-    });
+      input.disabled = false;
+      return;
+    }
+
+    input.disabled = false;
+    input.placeholder = "🔍 Search Inv, PL, PO, Documents (Alt+G)";
   }
 
-  /* ===== SEARCH LOGIC ===== */
+  /* ===== SEARCH ===== */
   input.addEventListener("input", () => {
     const q = input.value.toLowerCase().trim();
     dropdown.innerHTML = "";
@@ -4206,14 +4300,16 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const filesToSearch = [
+    // ✅ ALL DATA WITHOUT CONDITION
+    let filesToSearch = [
       ...invoiceFiles,
       ...documentFiles,
-      ...purchaseFiles
+      ...purchaseFiles,
+      ...webFiles
     ];
 
     const matched = filesToSearch.filter(f =>
-      f.name.toLowerCase().includes(q)
+      (f.name || "").toLowerCase().includes(q)
     );
 
     if (!matched.length) {
@@ -4221,14 +4317,15 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    matched.forEach((f, idx) => {
+    matched.forEach((f) => {
       const li = document.createElement("li");
 
       li.textContent =
+        f.__web ? "🌐 WEB : " + f.name :
         f.__po  ? "🟡 PO : " + f.name :
         f.__doc ? "📄 DOC : " + f.name :
         f.__pl  ? "📦 PList : " + f.name :
-                  "📘 INV : " + f.name;
+        "📘 INV : " + f.name;
 
       li.style = `
         padding:8px;
@@ -4236,30 +4333,23 @@ document.addEventListener("DOMContentLoaded", () => {
         border-bottom:1px solid #e0e0e0;
       `;
 
-      if (idx === matched.length - 1) {
-        li.style.borderBottom = "none";
-      }
-
       li.onmouseenter = () => {
         li.style.background = "#0d6efd";
         li.style.color = "#fff";
       };
-
       li.onmouseleave = () => {
         li.style.background = "";
         li.style.color = "#000";
       };
 
       li.onclick = () => {
-        if (!f.id) {
-          alert("File ID not found");
-          return;
+        if (f.__web && f.webUrl) {
+          window.open(f.webUrl, "_blank");
+        } else if (f.id) {
+          window.open(`https://drive.google.com/file/d/${f.id}/view`, "_blank");
+        } else {
+          alert("File not accessible");
         }
-
-        window.open(
-          `https://drive.google.com/file/d/${f.id}/view`,
-          "_blank"
-        );
 
         input.value = f.name;
         dropdown.style.display = "none";
@@ -4278,14 +4368,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  loadAllData();
+  /* ===== INIT ===== */
+  window.addEventListener("load", () => {
+    setTimeout(() => {
+      loadAllData();
+    }, 5000);
+  });
+
 });
 
-/* ===== ALT + G SHORTCUT (FIXED) ===== */
+/* ===== ALT + G ===== */
 document.addEventListener("keydown", function (e) {
   if (e.altKey && e.key.toLowerCase() === "g") {
     e.preventDefault();
+
     const input = document.getElementById("globalSearchInput");
+
     if (input && !input.disabled) {
       input.focus();
       input.select();
@@ -5740,8 +5838,4 @@ function toggleNote(num){
 
 </script>
 <!-- ========= Buttan Configure Details List stop Hare  ---------- ============ -->
-
-
-
-
 
