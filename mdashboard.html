@@ -1863,7 +1863,7 @@ Multitech Infracon Pvt. Ltd.
 <button class="report-btn" onclick="showReport('2')">&#128176 Cash Ledger Report</button>
 <button class="report-btn" onclick="showReport('3')">&#128197 Address | Attendance | ID/Password</button>
 <button class="report-btn" onclick="showReport('4')">Daybook Summary</button>
-<button class="report-btn" onclick="showReport('5')">EMI / Loan Calculator</button>
+<button class="report-btn" onclick="showReport('5')">EMI / Loan /  Gold Calculator</button>
 <button class="report-btn" onclick="showReport('bsamarksheet')">BSA Marksheet</button>
 </div>
 
@@ -2041,6 +2041,80 @@ button { padding: 5px 10px; cursor: pointer; }
 </table>
 </div>
   <!-- ===== toggleNote BUTTON 10  stop xxx ===== -->
+
+  <!-- ===== toggleNote BUTTON 12 Gold Price Calculator  start===== -->
+<button class="noteBtn" onclick="toggleNote(12)">📑 Gold Price Calculator</button>
+
+<div id="noteContent12" class="noteContent">
+  
+  <div style="
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+align-items:center;
+border:2px solid #333;
+padding:12px;
+margin-bottom:20px;
+border-radius:10px;
+background:#f9fbfc;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+">
+<label>Select Gold Carat:</label>
+<select id="carat" onchange="showDetails()" style="padding:6px; border-radius:6px; border:1px solid #ccc;">
+    <option value="">--Select--</option>
+    <option value="24">24K</option>
+    <option value="22">22K</option>
+    <option value="18">18K</option>
+</select>
+
+
+
+<br>
+
+<label>Weight (grams):</label>
+<input type="number" id="grams" oninput="calculateGoldRate()" style="padding:6px; border-radius:6px; border:1px solid #ccc;">
+<label>Rate (per gram):</label>
+<input type="number" id="rate" oninput="calculateGoldRate()" style="padding:6px; border-radius:6px; border:1px solid #ccc;">
+<label>Making Charge (%):</label>
+<input type="number" id="making" oninput="calculateGoldRate()" style="padding:6px; border-radius:6px; border:1px solid #ccc;">
+
+
+
+</div>
+
+<div class="box">
+    <p>Gold Value: ₹ <span id="goldValue">0</span> |  GST on Gold (3%): ₹ <span id="gstGold">0</span> |
+    Making Charge: ₹ <span id="makingValue">0</span> | GST on Making (5%): ₹ <span id="gstMaking">0</span> 
+   </p>
+    <h3>Total Amount: ₹ <span id="total">0</span></h3>
+</div>
+
+<script>
+
+function calculateGoldRate() {
+    let grams = parseFloat(document.getElementById("grams").value) || 0;
+    let rate = parseFloat(document.getElementById("rate").value) || 0;
+    let makingPercent = parseFloat(document.getElementById("making").value) || 0;
+
+    let goldValue = grams * rate;
+
+    let makingValue = (goldValue * makingPercent) / 100;
+
+    let gstGold = (goldValue * 3) / 100;
+    let gstMaking = (makingValue * 5) / 100;
+
+    let total = goldValue + makingValue + gstGold + gstMaking;
+
+    document.getElementById("goldValue").innerText = goldValue.toFixed(2);
+    document.getElementById("makingValue").innerText = makingValue.toFixed(2);
+    document.getElementById("gstGold").innerText = gstGold.toFixed(2);
+    document.getElementById("gstMaking").innerText = gstMaking.toFixed(2);
+    document.getElementById("total").innerText = total.toFixed(2);
+}
+</script>
+
+</div>
+  <!-- ===== toggleNote BUTTON 12 - Gold Rtae Calculater  stop xxx ===== -->
 
 
 <h3>EMI Calculator</h3>
@@ -5838,4 +5912,37 @@ function toggleNote(num){
 
 </script>
 <!-- ========= Buttan Configure Details List stop Hare  ---------- ============ -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
