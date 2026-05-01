@@ -480,7 +480,7 @@ th {
     <button onclick="showSection(6)" mfvbtn="3">Imprest Voucher Report</button>
     <button onclick="showSection(7)" mfvbtn="4">Tools</button>
     <button onclick="showSection(8)" id="f6" style="color: rgb(2, 79, 245);"  mfvbtn="51">Rabbit Game &nbsp;<span style="color:  red;font-weight: bold;">(F6)</span></button>
-    <button onclick="showSection(10)" mfvbtn="9" >📊Job/Reff Summry</button>
+    <button onclick="showSection(10)" mfvbtn="10" >📊Job/Reff Summry</button>
       <!-- <button onclick="window.open('https://m5792.github.io/esm/DAYBOOK.html','_blank')" >Job/Reff Summry </span></button> -->
       <!-- <button onclick="loadReffSummaryWidgetFixed()" >Job/Reff Summry</button>  -->
     <!-- TOOLS BUTTON (REPLACE ARROW DIV) -->
@@ -877,7 +877,7 @@ background:#f9fbfc;
 box-shadow:0 2px 8px rgba(0,0,0,0.1);
 ">
 
-<button onclick="showSection(2)" style="text-align:center;border: none; background-color: #f9fbfc; color: #011738; font-weight: bold; font-size: 16px;cursor: pointer;" id="f2">Cash Data Voucher &nbsp;<span style="color: rgb(247, 149, 149); font-weight: bold;">(F2)</button>
+<button onclick="showSection(2)" style="text-align:center;border: none; background-color: #f9fbfc; color: #011738; font-weight: bold; font-size: 16px;cursor: pointer;" id="f2" mfvbtn="80">Cash Data Voucher &nbsp;<span style="color: rgb(247, 149, 149); font-weight: bold;">(F2)</button>
 <span style="color: #848585; font-weight: bold; font-size: 22px;">|</span>
 <button onclick="showSection(3)" style="text-align:center;border: none; background-color: #f9fbfc; color: #011738; font-weight: bold; font-size: 16px;cursor: pointer;" id="f3">Accounting Voucher &nbsp;<span style="color: rgb(247, 149, 149); font-weight: bold;">(F3)</button>
 <span style="color: #848585; font-weight: bold; font-size: 22px;">|</span>
@@ -1144,363 +1144,137 @@ fetch("https://api.ipify.org?format=json")
 <!-- ----------------- home-container - Section 1 Stop ------------------------- -->
 
  </div>
-<!-- -----------------======================  SECTION2 START HERE (SECTION MIPL502) ==================== 20112011------------------------- -->
+<!-- -----------------======================  SECTION2 START HERE (SECTION MIPL502) ==================== 20112011 ------------------------- -->
   <div id="section2" class="section hidden" style="border-radius: 10px;"> 
 
-    <style>
-      .container {display: flex; flex-direction: row; height: 83vh;  }
-      .left {flex: 2; /* 70% */background-color: #dddedf; border: 7px solid #004d80; padding: 10px; z-index: 99;overflow-y: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.2);border-radius: 8px;}
-      .right {flex: 8; /* 30% */background-color: #eaeaea; padding: 20px;overflow: auto; }
-    /* Form Styling Scoped to .form-container */
-.form-container input,
-.form-container select {
-    width: 100%;
-    padding: 6px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 16px;
-    box-sizing: border-box;
+   
+<style>
+
+
+/* BOX */
+.box {
+  margin-bottom: 12px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
 }
 
-.form-container input[type="text"],
-.form-container input[type="number"],
-.form-container input[type="date"],
-.form-container select {
-    background-color: #f9f9f9;
+/* HEADER */
+.headerBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 4px solid #024369;
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  background: #f9fbfc;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-.form-container input[type="submit"],
-.form-container button {
-    background-color: #080808;
-    color: #f6f6f8;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
+/* BUTTON */
+button {border: none; padding: 6px 10px; cursor: pointer; font-weight: bold; background: #027175; color: #fff; border-radius: 4px;}
+/* FORM */
+.AFICM-form {display: flex; flex-direction: column; gap: 15px;}
+.rowcms { display:flex; gap:var(--gap); align-items:center; flex-wrap:wrap;  align-items:center; flex-wrap:wrap; justify-content: center;background: #eef0f0; padding: 8px; border-radius: 6px;}
+.rowcms input, .rowcms select {padding: 6px; border-radius: 6px; border: 1px solid #ccc;}
+/* USER LIST */
+#userList button {width: 100%; margin: 4px 0; padding: 6px; background: #e1e2e2; color: #000;font-size: 16px;}
+</style>
 
-.form-container input[type="submit"]:hover,
-.form-container button:hover {
-    background-color: #575555;
-    transform: translateY(-2px);
-}
-   </style>
+<div style="text-align:center;border-bottom: 5px solid #cbcbcb;  background-color: #eeeff1; color: #070707; font-weight: bold;"> <strong>Cash Managment System</strong>  </div>
 
+<div class="DALDiv">
 
-    <div class="container">  <div class="left" style="background-color: rgb(247, 249, 249);color:#004d80;font-weight: bold;">   <!-- यह एक नोट है, vertical Two Part Div (30-70) left content start ((CODE501)) -->
+  <!-- ================= LEFT ================= -->
+  <div class="leftDivBox">
 
+    <div class="box headerBar">
 
-        
-    <div class="form-container">
-<h3 style="margin-top:0;color:#00282e;text-align:center;">MIPL Cash Data Entry</h3>
+        <select id="civvcr"  style="padding:6px 10px; border: none; width:350px; text-align: center;font-size: 16px; background-color:#fffefe;">
+            <option value="">Select Voucher</option>
+            <option value="CMVCR">Cash User Voucher</option>
+            <option value="IVVCR" >Imprest User Voucher</option>
+        </select>
 
-<!-- MAIN FORM -->
-<form id="mainAFICMForm">
+    </div>
 
-<input type="hidden" name="SNo" id="sNo">
-<input type="hidden" name="Timestamp" id="TimestampAFICM">
+<div style="text-align:center;border-bottom: 5px solid #cbcbcb;  background-color: #eeeff1; color: #003160; font-weight: bold;"> <strong>Select User Name</strong>  </div>
+<div id="userList"></div>
 
-  <label">Voucher Name:</label>
-<select id="vtype" name="vtype" style="background-color: #f8efed;" required></select>
-
-  <label">User Name</label>
-<select id="afi01" name="Type" style="background-color: #f8efed;" required></select>
-
-  <label">Select Transection Type*:</label>
-<select id="afi02" name="esmC" required style="background-color: #f0f6ed;">
-  <option value="PAYMENT">Payment</option>
-  <option value="RECEIPT" >Receipt</option>
-</select>
-
-  <label">Enter Date*:</label>
-<input type="date" id="afi03" name="esmD" style="background-color: #f0f6ed;" required>
+  </div>   <!-- === LEFT xxx == -->
 
 
-<!-- Searchable Ledger Dropdown -->
-  <div class="dropdownWrapper">
-    <label">Search & Select Ledger*:</label>
-    <input type="text" id="afi04" name="esmE" class="dropdownCLSearch" required style="background-color: #f0f6ed;" placeholder="🔍 Search Ledger..." />
-    <ul id="ledgerDropdown" class="dropdownList"></ul>
-  </div>
+  <!-- ================= RIGHT ================= -->
+  <div class="rightDivBox">
 
-  <label">Enter Amount*:</label>
-<input type="number" id="afi05" name="esmF" style="background-color: #f0f6ed;" placeholder="Amount" required>
+    <!-- ===== HEADER ===== -->
+    <div class="box headerBar">
+  <span id="finalDisplay" style="font-weight:bold; font-size: 20px; color:#0066a1; background-color: #f7f7f7;"></span>
+  <button onclick="refreshcmstTableBtn()">🔄Refresh</button>
+    </div>
 
-  <label">Enter Narration if any:</label>
-<input type="text" id="afi06" name="esmG"  style="background-color: #f0f6ed;" placeholder="Narration">
-<input type="submit" id="submitAFICMButton" value="Submit">
-<button type="button" id="openMODIFYBtn" style=" background:#dcfaf5;color:#022b5a; border: none; cursor: pointer; width: 2in; font-weight: bold;">🏢 Click to Modify</button>
-<br/><br/><br/>
-Fetched SR:
-<span id="fetchedSRNo"></span>
+
+   <style>#cmst {overflow-x: auto; display: block;height: 570px;}</style>  
+    <!-- ===== FORM ===== -->
+    <div class="box" id="cmst"> 
+    <table id="cmsTable" border="1" style="width:100%; border-collapse:collapse; max-height:530px;"> <thead id="cmsHead"></thead> <tbody id="cmsBody"></tbody> </table>  
+    </div>
+  
+
+<!-- ===== FORM ===== -->
+<div class="box" style="border-top: 5px solid #024369;">
+
+<form id="mainAFICMForm" class="AFICM-form">
+
+        <input type="hidden" name="SNo" id="sNo">
+        <input type="hidden" name="Timestamp" id="TimestampAFICM">
+
+       
+        <label">Voucher Name:</label>    <select id="vtype" class="CMVCR" name="vtype" style="background-color: #fbfafa; border: none;" required></select>
+        <label">User Name</label> <select id="afi01" name="Type" style="background-color: #f8efed;border: none;" required></select>
+        <br/><br/>
+      
+
+        <!-- ROW 2 -->
+        <div class="rowcms">
+        <label style="font-size: 14px; font-weight: bold;">Vcr Type*:</label>
+        <select id="afi02" name="esmC" required style="background-color: #ffffff;">
+            <option value="PAYMENT">Payment</option>
+            <option value="RECEIPT" >Receipt</option>
+        </select>
+
+        <label">Enter Date*:</label>  <input type="date" id="afi03" name="esmD" style="background-color: #ffffff;" required>
+        <label style="font-size: 14px; font-weight: bold;">Ledger*: </label>  <input type="text"  id="afi04" name="esmE" style="width: 3in;" placeholder="🔍 Search Ledger">
+        <label style="font-size: 14px; font-weight: bold;">Enter Amount*: </label>    <input type="number" id="afi05" name="esmF" style="background-color: #ffffff;" placeholder="Amount" required>
+        <label style="font-size: 14px; font-weight: bold;">Narration:</label> <input type="text" id="afi06" name="esmG"  style="background-color: #ffffff; width: 4in;" placeholder="Narration">
+
+        </div>
+
 <br/>
-
-<input type="button" id="deleteAFICMButton" value=" Delete" style="display:none; background:#dcfaf5;color:#5a0202; border: none; cursor: pointer; width: 2in; font-weight: bold;">
-<input type="button" id="newEntryAFICMButton"  value=" New Entry"  style="display:none; background:#dcfaf5; color:#004d12; border: none; cursor: pointer; width: 2in;font-weight: bold;">
-
-<!--  <strong id="waitAFIMessage" style="display:none;"></strong> -->
-
-<br/><br/>
-<span style="color:rgb(129, 1, 1);font-size:130%;font-family:Magneto;">eS |</span> 
-        <span style="color:#004d80;font-size:130%;font-family:Magneto;">MTally</span>
-
-</form>
+  <!-- form hendling div -->
+<div class="rowcms" style="background-color: #1b1b1b; padding: 5px 10px; ">         
+        <!-- ACTION -->
+        <input type="submit" id="submitAFICMButton" style="background-color: blue; border: 2px rgb(150, 207, 250); color: white;width: 3in; cursor: pointer;" value="Submit">
+        <button type="button" id="openMODIFYBtn" style=" background:#1b1b1b;color:white; border: none; cursor: pointer; width: 2in; font-weight: bold;">🏢 Click to Modify</button>
+        <span style="background-color: #1b1b1b; color: white;">Fetched Sr No:</span> <span id="fetchedSRNo"style="background-color: #1b1b1b; color: #c9dafa;">NA</span>
+        <input type="button" id="deleteAFICMButton" value=" Delete" style="display:none; background:#dcfaf5;color:#5a0202; border: none; cursor: pointer; width: 2in; font-weight: bold;">
+        <input type="button" id="newEntryAFICMButton"  value=" New Entry"  style="display:none; background:#dcfaf5; color:#004d12; border: none; cursor: pointer; width: 2in;font-weight: bold;">
 </div>
-</div> <!-- यह एक नोट है, vertical Two Part Div (30-70) left content stop -->
-<div class="right"> <!-- यह एक नोट है, vertical Two Part Div (30-70) right content start -->
+</form>
 
-<div id="mytoolsbar" >
-
- <!-- MASTER CONTROLS two salection bar -->
-  <strong style="color: white;"> Select Voucher:</strong>
-   <select id="vcridcmid"  required style="border-radius: 4px; cursor: pointer;"></select>
-
-    <strong style="color: white;"> Select User:</strong>
-<select id="useridcmiv"  required style="border-radius: 4px; cursor: pointer;"></select>
-
-  <button id="refreshcmivTableBtn" style="border: none; color: rgb(252, 198, 196); font-weight: bold;  cursor: pointer; background: #027175;">🔄 Refresh</button>
-<button onclick="printCUSERTable()" style="border: none; color: rgb(228, 252, 196); font-weight: bold;  cursor: pointer; background: #027175;">🖨️ Print Table</button>
- 
- <input type="text" id="searchCLedger" style="width: 4in; border: #000 5px; cursor: pointer; border-radius: 4px;" placeholder="🔍 Search in Table..." />
-
-  </div>
+    </div>
 
 
- <!-- =================        user authrised by creat voucher ledger scrip start hare ============== -->
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-
-  /* =====================================================
-     1️⃣ BASE LISTS
-     ===================================================== */
-
-  // Voucher list
-  const vcrVoucherUsers = [
-    { value: "", text: "Select Voucher" }, // 0
-    { value: "CMVCR", text: "Cash User Voucher" }, // 1
-    { value: "IVVCR", text: "Imprest Voucher (IV) Voucher" }    // 2
-  ];
-
-  // Cash voucher users
-  const cashVoucherUsers = [
-    { value: "", text: "Select a User" }, // 0
-    { value: "MA", text: "MUKHTAR" },      // 1
-    { value: "TA", text: "TUSHAR" },       // 2
-    { value: "JLN", text: "JOURNAL" },     // 3
-    { value: "BANK", text: "BANK" },       // 4
-    { value: "DB", text: "DAYBOOK" },       // 5
-    { value: "GK", text: "GURPREET (SCU)" }      // 6
-  ];
-
-  // IV voucher users
-  const ivVoucherUsers = [
-    { value: "", text: "Select a User" },       // 0
-    { value: "IV01", text: "Amarbhadur" },      // 1
-    { value: "IV02", text: "Vijender Sharma" }, // 2
-    { value: "IV03", text: "Rahul Kumar" },   // 3
-    { value: "IV04", text: "Raju - IV04" }, //4
-    { value: "IV05", text: "Mannu - IV05 " }, //5
-    { value: "IV06", text: "Aakash - IV06" }, //6
-    { value: "IV07", text: "Manjeet - IV07" }, //7
-    { value: "IV08", text: "Nitin Kumar - IV08" },  //8 
-    { value: "IV09", text: "Sunil Yadav - IV09" },   //9
-    { value: "IV10", text: "Ajay Kumar - IV10" },   //10
-    { value: "IV11", text: "Ravinder Kumar - IV11" },  //11
-    { value: "IV12", text: "Mahender - IV12" },  // 12
-    { value: "IV13", text: "Suresh - IV13" }, //13
-     { value: "IV14", text: "LESHANT IM - IV14" },  // 14
-     { value: "IV15", text: "Dharmpal - IV15" }  // 14
-  ];
-
-  /* =====================================================
-     2️⃣ USER BASED PERMISSION MAP
-     ===================================================== */
-
-  const userOptionsMap = {
-
-    "Rahul Kumar": {
-      VOUCHER: [0, 2],     // Select + IV Voucher
-      IVVCR: [0, 3]       // Select + Rahul
-    },
-
-     "NITIN": {
-      VOUCHER: [0, 2],     // Select + IV Voucher
-      IVVCR: [0, 8]       // Select + Rahul
-    },
-
-    "Ravinder Kumar": {
-      VOUCHER: [0, 2],     // Select + IV Voucher
-      IVVCR: [0,11]       // Select + Rahul
-    },
-
-    "Gurpreet": {
-      VOUCHER: [0, 1, 2],
-      CMVCR: [0, 2,3,4,6],
-      IVVCR: [0,4,5,6,7,9,10,12,13,15]
-    },
-
-    "Mukhtar (Admin)": {
-      VOUCHER: [0, 1, 2],
-      CMVCR: [0, 1, 2, 3, 4, 5,6],
-      IVVCR: [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15]
-    }
-
-  };
-
-  /* =====================================================
-     3️⃣ ELEMENT REFERENCES
-     ===================================================== */
-
-  const voucherSelect = document.getElementById("vcridcmid");
-  const userSelect    = document.getElementById("useridcmiv");
-  const usernameEl    = document.getElementById("username");
-
-  /* =====================================================
-     4️⃣ POPULATE VOUCHER DROPDOWN
-     ===================================================== */
-
-  function populateVouchers(username) {
-
-    const allowedIndexes =
-      userOptionsMap[username]?.VOUCHER || [];
-
-    voucherSelect.innerHTML = "";
-
-    allowedIndexes.forEach(i => {
-      if (vcrVoucherUsers[i]) {
-        const opt = document.createElement("option");
-        opt.value = vcrVoucherUsers[i].value;
-        opt.textContent = vcrVoucherUsers[i].text;
-        voucherSelect.appendChild(opt);
-      }
-    });
-
-    // clear users on voucher change
-    userSelect.innerHTML = "";
-  }
-
-  /* =====================================================
-     5️⃣ POPULATE USER DROPDOWN
-     ===================================================== */
-
-  function populateUsers(username, voucher) {
-
-    let baseList = [];
-    if (voucher === "CMVCR") baseList = cashVoucherUsers;
-    if (voucher === "IVVCR") baseList = ivVoucherUsers;
-
-    const allowedIndexes =
-      userOptionsMap[username]?.[voucher] || [];
-
-    userSelect.innerHTML = "";
-
-    allowedIndexes.forEach(i => {
-      if (baseList[i]) {
-        const opt = document.createElement("option");
-        opt.value = baseList[i].value;
-        opt.textContent = baseList[i].text;
-        userSelect.appendChild(opt);
-      }
-    });
-  }
-
-  /* =====================================================
-     6️⃣ EVENT HANDLERS
-     ===================================================== */
-
-  // When voucher changes → load users
-  voucherSelect.addEventListener("change", () => {
-    const username = usernameEl?.innerText.trim();
-    if (!username) return;
-
-    populateUsers(username, voucherSelect.value);
-  });
-
-  /* =====================================================
-     7️⃣ INIT WHEN USERNAME IS AVAILABLE
-     ===================================================== */
-
-  function initWhenUsernameReady() {
-    const username = usernameEl?.innerText.trim();
-    if (!username) return false;
-
-    populateVouchers(username);
-    return true;
-  }
-
-  // Observer for late-loaded username
-  if (usernameEl) {
-    const observer = new MutationObserver(() => {
-      if (initWhenUsernameReady()) observer.disconnect();
-    });
-
-    observer.observe(usernameEl, { childList: true, subtree: true });
-  }
-
-  // Fallback
-  const interval = setInterval(() => {
-    if (initWhenUsernameReady()) clearInterval(interval);
-  }, 300);
-
-});
+</div>  </div>
 
 
-/* =====================================================
-   🔹 JOURNAL MODE EXTRA OPTIONS HANDLER (REMOVABLE)
-===================================================== */
-
-function enableJournalExtraOptions() {
-  const userSelect   = document.getElementById("useridcmiv"); // user dropdown
-  const afiSelect    = document.getElementById("afi02");      // payment/receipt dropdown
-
-  if (!userSelect || !afiSelect) return;
-
-  function updateAFIOptions() {
-    const selectedUser = userSelect.value;
-
-    // Agar JOURNAL (JLN) select ho
-    if (selectedUser === "JLN") {
-
-      // Already added hai ya nahi (duplicate avoid)
-      if (!afiSelect.querySelector('option[value="BILLDR"]')) {
-
-        afiSelect.insertAdjacentHTML("beforeend", `
-          <option value="BILLDR">Bills Payable</option>
-          <option value="BILLCR">Bills Receivable</option>
-          <option value="SALARY">Salary</option>
-        `);
-      }
-
-    } else {
-      // Agar JOURNAL nahi hai → extra options hata do
-      ["BILLDR", "BILLCR", "SALARY"].forEach(val => {
-        const opt = afiSelect.querySelector(`option[value="${val}"]`);
-        if (opt) opt.remove();
-      });
-    }
-  }
-
-  // User change par check
-  userSelect.addEventListener("change", updateAFIOptions);
-
-  // Initial load check
-  updateAFIOptions();
-}
-
-/* Auto init (safe) */
-document.addEventListener("DOMContentLoaded", enableJournalExtraOptions);
-</script>
- <!-- =================        user authrised by creat voucher ledger scrip stop hare ============== -->
-
-<!-- Table Output -->
-  <div id="tableContainer" style="background-color: #fef8f6; "></div>
-</div> </div>  <!-- यह एक नोट है, vertical Two Part Div (30-70) container content stop  Heare ((CODE501)) -->
-
- 
+ </div> <!-- ---- ==============  SECTION2 Start HERE (SECTION MIPL502) ========= xxx =========== 20112011 -------- -->
 
 
- </div>
 <!-- -----------------======================  SECTION3 START HERE (SECTION MIPL503) ==================== ------------------------- -->
   <div id="section3" class="section hidden" style="border-radius: 10px;"> 
   
@@ -4296,6 +4070,10 @@ async function loaddaybookData(){
   const table = document.getElementById("daybookTable");
   table.innerHTML = "<tr><td>Loading Daybook...</td></tr>";
 
+  // 🔥 SHOW LOADING SUMMARY
+  document.getElementById("monthlyTotals").innerHTML =
+  "<span style='color:white;'>Monthly Summary:- Loading...</span>";
+
   try{
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetdbookId}/values/${rangedbook}?key=${apidbookKey}`;
     const res = await fetch(url);
@@ -4336,12 +4114,24 @@ async function loaddaybookData(){
       }
     });
 
-    populateMonthDropdown(Object.keys(monthlyTotals));
+    const months = Object.keys(monthlyTotals);
 
-    const currentMonth = getMonthKey(new Date());
-    if(monthlyTotals[currentMonth]){
-      updateTotals(currentMonth);
-      document.getElementById("monthDropdown").value = currentMonth;
+    populateMonthDropdown(months);
+
+    // 🔥 FIXED AUTO SELECT LOGIC
+    if(months.length){
+
+      const currentMonth = getMonthKey(new Date());
+      let selectedMonth = "";
+
+      if(monthlyTotals[currentMonth]){
+        selectedMonth = currentMonth;
+      }else{
+        selectedMonth = months[0];
+      }
+
+      updateTotals(selectedMonth);
+      document.getElementById("monthDropdown").value = selectedMonth;
     }
 
     showTop10();
@@ -4382,6 +4172,12 @@ function populateMonthDropdown(months){
 function updateTotals(month){
   const t = monthlyTotals[month];
 
+  if(!t){
+    document.getElementById("monthlyTotals").innerHTML =
+    "<span style='color:red;'>No Data</span>";
+    return;
+  }
+
   document.getElementById("monthlyTotals").innerHTML =
   `<span style="color:white;">Monthly Summary:-</span> 
    <span style="color:#DCFCE7;">SALE : ₹${t.sale.toFixed()}</span>
@@ -4410,7 +4206,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderdaybookTable(filtered,value);
   });
 
-  /* 🔥 REFRESH BUTTON FIX */
+  /* 🔥 REFRESH BUTTON */
   document.getElementById("daybookRefresh").addEventListener("click", daybookRefresh);
 
   loaddaybookData();
@@ -4450,7 +4246,6 @@ function renderdaybookTable(data,highlight=""){
 
     // 🔥 BANK ROW RED COLOR
     if(type === "BANK"){
-     // tr.style.backgroundColor = "#2b0000";
       tr.style.color = "red";
     }
 
@@ -7616,897 +7411,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 
-<!-- ledger dropdown with USER SELECTION ENTRY (cash user) code stop hare -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Ledger Table with Running Balance</title>
-  <style>
-    body {
-      font-family: Arial;
-    }
-
-    .dropdownWrapper {
-      position: relative;
-      width: 300px;
-    
-    }
-
-    .dropdownSearch {
-      width: 100%;
-      padding: 8px;
-      font-size: 14px;
-      border: 1px solid #a3a1a1;
-      border-radius: 4px;
-    }
-
-    .dropdownList {
-      list-style: none;
-      border: 1px solid #ccc;
-      max-height: 5000px;
-      width: 3in;
-      overflow-y: auto;
-      margin: 0;
-      padding: 0;
-      display: none;
-      background: white;
-      position: absolute;
-      width: 100%;
-      z-index: 1000;
-      border-radius: 0 0 4px 4px;
-    }
-/* Style for the entire dropdown container */
-  #ledgerDropdown.dropdownList {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    position: absolute;
-    z-index: 999;
-    width: 3.7in;
-    max-height: 4in;
-    overflow-y: auto;
-    border: 1px solid #ccc;
-    background-color: rgb(244, 242, 242);
-    color: #000;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
-    font-size: 14px;
-    border-radius: 4px;
-  }
-
-  /* Style for each dropdown item */
-  #ledgerDropdown.dropdownList li {
-    padding: 10px 15px;
-    cursor: pointer;
-    border-bottom: 1px solid #eee;
-    transition: background-color 0.2s ease-in-out;
-  }
-
-  /* Highlight on hover */
-  #ledgerDropdown.dropdownList li:hover {
-    background-color: #007BFF;
-    color: white;
-   
-  }
-
-  /* Optional: remove border from last item */
-  #ledgerDropdown.dropdownList li:last-child {
-    border-bottom: none;
-  }
-
-    .positive {
-      color: RED;
-      font-weight: bold;
-      
-    }
-  </style>
-</head>
-<body>
-
-
-  <!-- ===== Note: ========== Cash Ledger Voucher IV AND CASH USER CUYSER TABLE CODE Script  START  --- START ----------- SECTION2 (MIPL502) & SECTION5 (MIPL505)================ 20112011 -->
-<script>
-
-function parseIVDate(d) {
-  if (!d) return new Date(0);
-
-  const [day, mon, year] = d.split("-");
-  const months = {
-    Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5,
-    Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11
-  };
-
-  return new Date(
-    Number(year),
-    months[mon],
-    Number(day)
-  );
-}
-
-
-/* =====================================================
-   🔑 GOOGLE SHEET CONFIG
-   ===================================================== */
-const apiCLKey  = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-const sheetCLId = "1vjkI_bpHNR6Tna17FISridqXSvCUnELA5oMgnAqzbO0";
-
-/* =====================================================
-   🔄 GLOBAL STATE
-   ===================================================== */
-let fullData = [];
-// 745  let currentSheet = "";
-let dataLoaded = false;
-let lastRenderedData = [];
-
-/* =====================================================
-   🎯 ELEMENTS
-   ===================================================== */
-const voucherSel = document.getElementById("vcridcmid");
-const userSel    = document.getElementById("useridcmiv");
-const tableBox   = document.getElementById("tableContainer");
-
-/* =====================================================
-   📌 SELECTION CHANGE
-   ===================================================== */
-voucherSel.addEventListener("change", handleSelection);
-userSel.addEventListener("change", handleSelection);
-
-
-/* =====================================================
-   📌 SHEET CONFIG
-===================================================== */
-function getSheetConfig() {
-  if (voucherSel.value === "CMVCR") {
-    return { sheet: "CMDATA", range: "A:G", mode: "CMDATA" };
-  }
-  if (voucherSel.value === "IVVCR") {
-    return { sheet: "IVCALC", range: "N:T", mode: "IV" };
-  }
-  return null;
-}
-
-
-/* =====================================================
-   🔄 SELECTION
-===================================================== */
-async function handleSelection() {
-  tableBox.innerHTML = "";
-  lastRenderedData = [];
-  dataLoaded = false;
-
-  if (!voucherSel.value || !userSel.value) return;
-
-  await loadSheetData();
-}
-
-/* =====================================================
-
-/* =====================================================
-   📥 FETCH
-===================================================== */
-async function fetchSheetData(sheet, range) {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetCLId}/values/${sheet}!${range}?key=${apiCLKey}`;
-  const res = await fetch(url);
-  const json = await res.json();
-  return json.values || [];
-}
-/* =====================================================
-   🔄 PROCESS
-===================================================== */
-function processRawData(rows, mode) {
-
-  if (mode === "IV") {
-    return rows
-      .slice(1)
-
-      // 🚫 IGNORE JNP & JNR (Column index 4)
-      .filter(r => {
-        const ledger = (r[4] || "").toString().trim().toUpperCase();
-        return ledger !== "JNP" && ledger !== "JNR";
-      })
-
-      .map(r => ({
-        tno: r[0] || "",
-        type: r[1] || "",
-        drcr: r[2] || "",
-        dateStr: r[3] || "-",            // display date
-        dateObj: parseIVDate(r[3]),      // real Date object
-        ledger: r[4] || "",
-        amount: Number(r[5]) || 0,
-        narration: r[6] || "-"
-      }));
-  }
-
-  // ✅ FORMA — unchanged
-  return rows.slice(1).map(r => ({
-    tno: r[0] || "",
-    type: r[1] || "",
-    drcr: r[2] || "",
-    date: r[3] || "-",
-    ledger: r[4] || "",
-    amount: Number(r[5]) || 0,
-    narration: r[6] || "-"
-  }));
-}
-
-/* =====================================================
-   🚀 LOAD
-===================================================== */
-async function loadSheetData() {
-  tableBox.innerHTML = "<p style='padding:10px'>⏳ Please Wait ! Loading...</p>";
-
-  const cfg = getSheetConfig();
-  if (!cfg) return;
-
-  const raw = await fetchSheetData(cfg.sheet, cfg.range);
-  fullData = processRawData(raw, cfg.mode);
-
-  dataLoaded = true;
-  setupLedgerSearch();
-  applycuserFilter();
-}
-
-/* =====================================================
-   🔍 USER FILTER
-===================================================== */
-function applycuserFilter() {
-  if (!dataLoaded) return;
-
-  let data = [...fullData];
-  const user = userSel.value;
-
-  if (user === "MA") {
-    data = data.filter(r => r.type === "MA" || r.type === "JNP");
-  } else {
-    data = data.filter(r => r.type === user);
-  }
-
-  lastRenderedData = [...data];
-  rendercuserTable(data);
-}
-
-/* =====================================================
-   🧾 RENDER
-===================================================== */
-function rendercuserTable(data) {
-
-  /* =========================
-     🔥 GK SPECIAL DATA FIX
-     ========================= */
-  const selectedUser = userSel.value;
-  const isIV = voucherSel.value === "IVVCR";
-
-  if (!isIV && selectedUser === "GK") {
-    data = fullData.filter(r =>
-      (r.type || "").trim() === "GK" ||
-      (r.ledger || "").trim() === "GURPREET - IM"
-    );
-  }
-
-  /* =========================
-     NO DATA
-     ========================= */
-  if (!data.length) {
-    tableBox.innerHTML = "<p style='padding:10px'>No data found</p>";
-    return;
-  }
-
-  let rows = [];
-
-  /* =========================================
-     IVCALC — NO CHANGE
-     ========================================= */
-  if (isIV) {
-
-    let bal = 0;
-
-    const asc = [...data].sort((a, b) => {
-      if (a.dateObj.getTime() !== b.dateObj.getTime()) {
-        return a.dateObj - b.dateObj;
-      }
-      return (+a.tno || 0) - (+b.tno || 0);
-    });
-
-    rows = asc.map(r => {
-      const dc = (r.drcr || "").toUpperCase();
-      bal += (dc === "RECEIPT" ? r.amount : -r.amount);
-      return { ...r, finalDrcr: dc, bal };
-    }).reverse();
-  }
-
-  /* =========================================
-     FORMA — GK FLIP + BALANCE
-     ========================================= */
-  else {
-
-    let bal = 0;
-
-    rows = [...data]
-      .sort((a, b) => (+a.tno || 0) - (+b.tno || 0))
-      .map(r => {
-
-        let finalDrcr = r.drcr.toUpperCase();
-
-        // 🔁 GK SPECIAL FLIP (GK row untouched)
-        if (selectedUser === "GK" && r.type !== "GK") {
-          if (finalDrcr === "PAYMENT") finalDrcr = "RECEIPT";
-          else if (finalDrcr === "RECEIPT") finalDrcr = "PAYMENT";
-        }
-
-        // 💰 RUNNING BALANCE (FINAL VALUE BASED)
-        bal += (finalDrcr === "RECEIPT" ? r.amount : -r.amount);
-
-        return { ...r, finalDrcr, bal };
-      })
-      .reverse();
-  }
-
-  /* =========================================
-     TABLE RENDER
-     ========================================= */
-  tableBox.innerHTML = `
-  <table border="1" width="100%" cellpadding="6">
-    <thead>
-      <tr style="background:#ffe9e3">
-        <th>T.No</th>
-        <th>User</th>
-        <th>Type</th>
-        <th>Date</th>
-        <th>Ledger</th>
-        <th>Narration</th>
-        <th>Amount</th>
-        <th>Balance</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${rows.map(r => {
-
-        let style = "";
-        const dc = r.finalDrcr;
-
-        // 🎨 COLOUR BASED ON FINAL VALUE
-        if (dc === "RECEIPT") style = "color:red;font-weight:600;";
-     //   else if (dc === "PAYMENT") style = "color:blue;font-weight:600;";
-        else if (dc === "BILLDR") style = "color:green;font-weight:700;";
-        else if (dc === "BILLCR") style = "color:red;font-weight:700;";
-        else if (dc === "SALARY") style = "color:blue;font-weight:700;";
-
-        return `
-        <tr style="${style}">
-          <td>${r.tno}</td>
-          <td>${r.type}</td>
-          <td>${dc}</td>
-          <td>${isIV ? r.dateStr : r.date}</td>
-          <td>${r.ledger}</td>
-          <td>${r.narration || "-"}</td>
-          <td>${r.amount}</td>
-          <td>${r.bal}</td>
-        </tr>`;
-      }).join("")}
-    </tbody>
-  </table>`;
-}
-
-
-
-/* =====================================================
-   🔎 GLOBAL SEARCH (FIXED)
-   ===================================================== */
-function setupGlobalSearch() {
-  const input = document.getElementById("searchCLedger");
-  if (!input) return;
-
-  input.addEventListener("input", () => {
-    const q = input.value.trim().toLowerCase();
-
-    if (!q) {
-      rendercuserTable(lastRenderedData);
-      return;
-    }
-
-    const filtered = lastRenderedData.filter(row =>
-      Object.values(row).some(v =>
-        String(v).toLowerCase().includes(q)
-      )
-    );
-
-    rendercuserTable(filtered);
-  });
-}
-
-
-/* =====================================================
-   🔍 LEDGER SEARCH DROPDOWN
-   ===================================================== */
-let selectedcmivLedger = "";   // ✅ only valid ledger stored
-
-function setupLedgerSearch() {
-  const input = document.getElementById("afi04");
-  const drop  = document.getElementById("ledgerDropdown");
-  if (!input || !drop) return;
-
-  const ledgers = [...new Set(fullData.map(r => r.ledger).filter(Boolean))];
-  const lower   = ledgers.map(l => l.toLowerCase());
-
-  input.addEventListener("input", () => {
-    drop.innerHTML = "";
-
-    const v = input.value.trim().toLowerCase();
-
-    // ❌ typing breaks validity
-    selectedcmivLedger = "";
-
-    if (!v) {
-      drop.style.display = "none";
-      return;
-    }
-
-    // 🔍 Filter ledgers
-    ledgers
-      .filter(l => l.toLowerCase().includes(v))
-      .forEach(l => {
-        const li = document.createElement("li");
-        li.textContent = l;
-        li.onclick = () => {
-          selectedcmivLedger = l;   // ✅ valid value
-          input.value = l;
-          drop.style.display = "none";
-        };
-        drop.appendChild(li);
-      });
-
-    // ➕ Create new ledger
-    const create = document.createElement("li");
-    create.textContent = "➕ Create New";
-    create.style.fontWeight = "bold";
-    create.onclick = () => {
-      const val = prompt("Enter new ledger");
-      if (!val) return;
-
-      if (lower.includes(val.toLowerCase())) {
-        alert("❌ Ledger already exists");
-        return;
-      }
-
-      selectedcmivLedger = val;   // ✅ valid value
-      input.value = val;
-      drop.style.display = "none";
-    };
-
-    drop.appendChild(create);
-    drop.style.display = "block";
-  });
-
-  // 🖱️ Outside click — FINAL RULE
-  document.addEventListener("click", e => {
-    if (!input.contains(e.target) && !drop.contains(e.target)) {
-      drop.style.display = "none";
-
-      if (selectedcmivLedger) {
-        // ✅ keep only approved value
-        input.value = selectedcmivLedger;
-      } else {
-        // ❌ random typed text rejected
-        input.value = "";
-      }
-    }
-  });
-}
-/* =====================================================
-   🔄 REFRESH
-   ===================================================== */
-async function refreshcmivTableBtn() {
-  if (!voucherSel.value || !userSel.value) return;
-  await loadSheetData();
-}
-
-document.getElementById("refreshcmivTableBtn")
-  ?.addEventListener("click", refreshcmivTableBtn);
-
-
-
-
-  /* ===========================================
-  PRINT FUNCTION
-  ===============================*/
-
-  function printCUSERTable() {
-  const table = document.querySelector("#tableContainer table");
-  if (!table) {
-    alert("❌ No table to print");
-    return;
-  }
-
-  const voucherOption = voucherSel.options[voucherSel.selectedIndex];
-  const voucherText = voucherOption ? voucherOption.text.trim() : "";
-
-  const userOption = userSel.options[userSel.selectedIndex];
-  const userText = userOption ? userOption.text.trim() : "";
-
-  const sheetName =
-    voucherSel.value === "CMVCR"
-      ? "FORMA"
-      : voucherSel.value === "IVVCR"
-      ? "IVCALC"
-      : "";
-
-  const now = new Date().toLocaleString();
-
-  const printWindow = window.open("", "", "width=1000,height=700");
-
-  printWindow.document.write(`
-    <html>
-    <head>
-      <title>Account Ledger</title>
-      <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        h2 { text-align: center; margin-bottom: 5px; }
-        .meta { text-align: center; font-size: 14px; margin-bottom: 20px; }
-        .meta span { display: inline-block; margin: 0 10px; font-weight: bold; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th, td { border: 1px solid #000; padding: 6px; text-align: left; }
-        th { background: #f0f0f0; }
-        @media print { button { display: none; } }
-      </style>
-    </head>
-    <body>
-
-      <h2>Account Ledger</h2>
-
-      <div class="meta">
-        <span>Voucher: ${voucherText}</span>
-        <span>User: ${userText}</span>
-        <span>Sheet: ${sheetName}</span>
-      </div>
-
-      <div class="meta">
-        Printed On: ${now}
-      </div>
-
-      ${table.outerHTML}
-
-    </body>
-    </html>
-  `);
-
-  printWindow.document.close();
-  printWindow.focus();
-  printWindow.print();
-  printWindow.close();
-}
-
-
-/* =====================================================
-   🚀 INIT
-   ===================================================== */
-document.addEventListener("DOMContentLoaded", () => {
-  setupGlobalSearch();
-});
-</script>
-
-<!-- ===== Note: ========== Cash Ledger Voucher IV AND CASH USER CUYSER TABLE CODE Script  XXX  --- STOP ----------- SECTION2 (MIPL502) & SECTION5 (MIPL505)================ 20112011 -->
-
-<!-- ===== Note: ========== Cash Ledger Voucher IV AND CASH USER SUBMIT CODE Script  START  --- START ----------- SECTION2 (MIPL502) & SECTION5 (MIPL505)================ 20112011 -->
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-
-  /* =====================================================
-     🔔 POPUP UI (REMOVE THIS BLOCK TO DISABLE POPUP)
-  ===================================================== */
-  const popupHTML = `
-    <div id="waitOverlay" style="
-      display:none;
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,0.35);
-      z-index:9999;
-      align-items:center;
-      justify-content:center;
-    ">
-      <div style="
-        background:#fff;
-        padding:18px 26px;
-        border-radius:10px;
-        min-width:240px;
-        text-align:center;
-        box-shadow:0 10px 30px rgba(0,0,0,.25);
-        font-size:16px;
-        font-weight:600;
-      ">
-        ⏳ <span id="waitAFIMessage">Please wait...</span>
-      </div>
-    </div>
-  `;
-  document.body.insertAdjacentHTML("beforeend", popupHTML);
-
-  const waitOverlay = document.getElementById("waitOverlay");
-  const waitMsg = document.getElementById("waitAFIMessage");
-
-  const showWait = msg => {
-    waitMsg.textContent = msg || "Please wait...";
-    waitOverlay.style.display = "flex";
-  };
-  const hideWait = () => waitOverlay.style.display = "none";
-
-  /* =====================================================
-     🔗 GOOGLE APPS SCRIPT URL
-  ===================================================== */
-  const scriptAFICMURL =
-    "https://script.google.com/macros/s/AKfycbwm0zp9iFhv-e9iuEbg4xG_fUY-gsgHNjs9Sff1J3npIj3C52XvmHtBWyEKtE7Frcmr/exec";
-
-  /* =====================================================
-     🎯 MASTER DROPDOWNS
-  ===================================================== */
-  const masterUser = document.getElementById("useridcmiv");
-  const masterVcr  = document.getElementById("vcridcmid");
-
-  /* =====================================================
-     📝 FORM ELEMENTS
-  ===================================================== */
-  const mainForm = document.getElementById("mainAFICMForm");
-
-  const formUser  = document.getElementById("afi01");   // USER
-  const formVtype = document.getElementById("vtype");   // VOUCHER
-
-  const submitBtn = document.getElementById("submitAFICMButton");
-  const deleteBtn = document.getElementById("deleteAFICMButton");
-  const newEntryBtn = document.getElementById("newEntryAFICMButton");
-
-  const sNo = document.getElementById("sNo");
-  const fetchedSRNo = document.getElementById("fetchedSRNo");
-  const TimestampAFICM = document.getElementById("TimestampAFICM");
-
-  /* =====================================================
-     🔧 UTILITY
-  ===================================================== */
-  function setSingleOption(sel, val, text) {
-    sel.innerHTML = "";
-    if (!val) return;
-    const o = document.createElement("option");
-    o.value = val;
-    o.textContent = text;
-    o.selected = true;
-    sel.appendChild(o);
-  }
-
-  function syncUser() {
-    const o = masterUser?.selectedOptions?.[0];
-    if (o) setSingleOption(formUser, o.value, o.text);
-  }
-
-  function syncVcr() {
-    const o = masterVcr?.selectedOptions?.[0];
-    if (o) setSingleOption(formVtype, o.value, o.text);
-  }
-
-  masterUser.onchange = () => {
-    syncUser();
-    if (typeof refreshcmivTableBtn === "function") refreshcmivTableBtn();
-  };
-
-  masterVcr.onchange = () => {
-    syncVcr();
-    if (typeof refreshcmivTableBtn === "function") refreshcmivTableBtn();
-  };
-
-  /* =====================================================
-     ✏️ MODIFY / FETCH (SR + USER MATCH)
-  ===================================================== */
-  document.getElementById("openMODIFYBtn").onclick = async () => {
-
-    if (!formUser.value || !formVtype.value) {
-      alert("❌ Please select USER and VOUCHER first");
-      return;
-    }
-
-    const sr = prompt("Enter SR No");
-    if (!sr) return;
-
-    showWait("Fetching data...");
-
-    try {
-      const res = await fetch(
-        `${scriptAFICMURL}?sNo=${sr}&vtype=${formVtype.value}`
-      );
-      const d = await res.json();
-
-      if (d.result === "error") {
-        alert("❌ SR No not found");
-        return;
-      }
-
-      const selectedUser = formUser.value.trim().toUpperCase();
-      const fetchedUser  = (d.Type || "").trim().toUpperCase();
-
-      if (selectedUser !== fetchedUser) {
-        alert(`❌ SR No USER mismatch\nSelected: ${selectedUser}\nFound: ${fetchedUser}`);
-        return;
-      }
-
-      fillForm(d);
-
-      sNo.value = d.SNo;
-      fetchedSRNo.textContent = d.SNo;
-
-      deleteBtn.style.display = "inline-block";
-      newEntryBtn.style.display = "inline-block";
-
-      if (typeof refreshcmivTableBtn === "function") refreshcmivTableBtn();
-
-    } catch (e) {
-      alert("❌ Fetch error");
-    } finally {
-      hideWait();
-    }
-  };
-
-
-     /* ============================================
-   🔠 FORCE ALL TEXT INPUTS TO CAPITAL LETTER
-   ============================================ */
-function forceUppercase(form) {
-  form.querySelectorAll("input[type='text'], textarea").forEach(el => {
-    if (el.value) {
-      el.value = el.value.toUpperCase().trim();
-    }
-  });
-}
-
-
-  /* =====================================================
-     🧾 FILL FORM
-  ===================================================== */
-  function fillForm(d) {
-    afi02.value = d.esmC || "";
-    afi03.value = d.esmD || "";
-    afi04.value = d.esmE || "";
-    afi05.value = d.esmF || "";
-    afi06.value = d.esmG || "";
-  }
-
-  /* =====================================================
-     🗑 DELETE
-  ===================================================== */
-  deleteBtn.onclick = async () => {
-
-    if (!sNo.value) {
-      alert("❌ No record selected");
-      return;
-    }
-
-    if (!confirm("You want to delete it?")) return;
-
-    showWait("Deleting...");
-
-    try {
-      const res = await fetch(
-        `${scriptAFICMURL}?action=delete&sNo=${sNo.value}&vtype=${formVtype.value}`
-      );
-      const r = await res.json();
-
-      if (r.result === "success") {
-        alert("✅ Deleted successfully");
-        resetForm();
-      } else {
-        alert("❌ Delete failed");
-      }
-
-    } catch {
-      alert("❌ Delete error");
-    } finally {
-      hideWait();
-    }
-  };
-
-
-
-    /* =====================================================
-     🚀 DATE FORMAT - 13-Feb-2026
-  ===================================================== */
-function formatDateToDDMMMYYYY(dateStr) {
-  const months = ["Jan","Feb","Mar","Apr","May","Jun",
-                  "Jul","Aug","Sep","Oct","Nov","Dec"];
-
-  const d = new Date(dateStr);
-
-  const day = String(d.getDate()).padStart(2, "0");
-  const month = months[d.getMonth()];
-  const year = d.getFullYear();
-
-  return `${day}-${month}-${year}`;
-}
-
-  /* =====================================================
-     🚀 SUBMIT (NEW / MODIFY) – FIXED
-  ===================================================== */
-  mainForm.onsubmit = async e => {
-  e.preventDefault();
-
-  forceUppercase(mainForm);
-  submitBtn.disabled = true;
-  submitBtn.value = "Please wait...";
-
-  TimestampAFICM.value = new Date().toLocaleString();
-
-  const fd = new FormData(mainForm);
-
-  // 🔥 DATE FORMAT FIX – ADD HERE
-  mainForm.querySelectorAll("input[type='date']").forEach(dateInput => {
-    if (dateInput.value) {
-      fd.set(dateInput.name, formatDateToDDMMMYYYY(dateInput.value));
-    }
-  });
-
-  if (sNo.value) {
-    fd.append("action", "modify");
-    fd.append("sNo", sNo.value);
-  } else {
-    fd.append("action", "submit");
-  }
-
-  showWait(sNo.value ? "Updating..." : "Saving...");
-
-  try {
-    const res = await fetch(scriptAFICMURL, {
-      method: "POST",
-      body: fd
-    });
-
-    const r = await res.json();
-
-    if (r.result === "success") {
-      alert("✅ Saved successfully");
-      resetForm();
-    } else {
-      alert("❌ Save failed");
-    }
-
-  } catch {
-    alert("❌ Submit error");
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.value = "Submit";
-    hideWait();
-  }
-};
-
-
-  /* =====================================================
-     🆕 NEW ENTRY
-  ===================================================== */
-  newEntryBtn.onclick = () => resetForm();
-
-  function resetForm() {
-    mainForm.reset();
-    sNo.value = "";
-    fetchedSRNo.textContent = "";
-    deleteBtn.style.display = "none";
-    newEntryBtn.style.display = "none";
-
-    syncUser();
-    syncVcr();
-
-    if (typeof refreshcmivTableBtn === "function") refreshcmivTableBtn();
-  }
-
-  /* =====================================================
-     🚀 INIT
-  ===================================================== */
-  deleteBtn.style.display = "none";
-  newEntryBtn.style.display = "none";
-
-  syncUser();
-  syncVcr();
-
-  if (typeof refreshcmivTableBtn === "function") refreshcmivTableBtn();
-
-});
-</script>
-<!-- ===== Note: ========== Cash Ledger Voucher IV AND CASH USER SUBMIT CODE Script  stop  --- xxx ----------- SECTION2 (MIPL502) & SECTION5 (MIPL505)================ 20112011 -->
-
-<!-- ===== Note: ========== Cash Ledger Voucher Code and Script  stop  --- xxx -------------------------- SECTION2 (MIPL502) & SECTION5 (MIPL505)================================ 20112011-->
-
-
 
 
 <!-- ===== Note: ========== Imprest Ledger Report  --- start -------------------------- SECTION6 (MIPL506)================================ -->
@@ -8583,7 +7487,7 @@ function formatDateToDDMMMYYYY(dateStr) {
 <script>
 const api5793Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheet5793Id = "1vjkI_bpHNR6Tna17FISridqXSvCUnELA5oMgnAqzbO0";
-const range5793 = "IVCALC!N:T";
+const range5793 = "IVCALC!O:U";
 
 let all5793Data = [];
 let filtered5793Data = [];
@@ -10532,14 +9436,16 @@ function closeSchedule(){
 <p onclick="showSection(5)" style="cursor:pointer;color:#0026ff;">2- Cash Ledger Report</p>
 <p onclick="showSection(6)" style="cursor:pointer;color:#0026ff;">3- Imprest Voucher Report</p>
 <p onclick="showSection(7)" style="cursor:pointer;color:#0026ff;">4- Tools</p>
-
+<p onclick="showSection(8)" style="cursor:pointer;color:#0026ff;">8- Rabbit Game (shortcuts-F6)</p>
+<p onclick="showSection(9)" style="cursor:pointer;color:#0026ff;">9- Pay Slip</p>
+<p onclick="showSection(10)" style="cursor:pointer;color:#0026ff;">10- Job/Reff Summary</p>
+<p onclick="window.open('https://docs.google.com/spreadsheets/d/1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4/edit?gid=2081509697#gid=2081509697','_blank')" style="cursor:pointer;color:#0026ff;">11- Packing List</p>
 <p>4- Attendance | 5- ID/Password</p>
 <p>11- Packing List | 12- Url & Link Dropdown</p>
-  <p style="color: red;">--- 🔎 Global Serch --- </p>
- <p> 15- Document View  | 16- PO/Reff View </p>
-  <p> 20- Footer Serch Input </p>
-<p onclick="showSection(8)" style="cursor:pointer;color:#0026ff;">51- Rabbit Game (shortcuts-F6)</p>
-<p onclick="openPOMaster()" style="cursor:pointer;color:#0026ff;">📊 Job/Reff Summary</p>
+
+<p style="color: red;">--- 🔎 Global Serch --- </p>
+<p> 15- Document View  | 16- PO/Reff View </p>
+<p onclick="showSection(2)" style="cursor:pointer;color:#0026ff;">80- Cash Data Voucher </p>
 </div>
 
 
@@ -11324,7 +10230,7 @@ function getempCode() {
 }
 
 // FETCH DATA
-async function fetchData() {
+async function fetchslyData() {
 
     let urlPayslip = `https://sheets.googleapis.com/v4/spreadsheets/${payslipId}/values/${paysliprange}?key=${payslipKey}`;
     let res1 = await fetch(urlPayslip);
@@ -11600,7 +10506,1087 @@ function numberToWords(num) {
 }
 
 // INIT
-fetchData();
+fetchslyData();
 
 </script>
    <!-- XXX -----------------======================  SALARY SHEET (PAY SLIP) SCRIPT  STOP HERE (SECTION9 MIPL509) ==================== ------------------------- -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <!-- start ---------==============  Cash User Submit, Cash Management System script (3) start Here ==================== 202112011 ---------- -->
+
+   <script>
+(function(){   // 🔒 IIFE START (ISOLATION)
+
+// =====================================================
+// 🔹 DEFAULT TEXT
+// =====================================================
+const cmsAuth_DEFAULT_TEXT = "Select Voucher and User Name First";
+
+// =====================================================
+// 🔹 STORAGE
+// =====================================================
+const cmsAuth_STORAGE_VTYPE = "cms_saved_vtype";
+const cmsAuth_STORAGE_USER  = "cms_saved_user";
+const cmsAuth_STORAGE_TEXT  = "cms_saved_text";
+
+// =====================================================
+// 🔹 ELEMENTS
+// =====================================================
+const cmsAuth_userList     = document.getElementById("userList");
+const cmsAuth_vtype        = document.getElementById("vtype");
+const cmsAuth_afi01        = document.getElementById("afi01");
+const cmsAuth_finalDisplay = document.getElementById("finalDisplay");
+const cmsAuth_civvcr       = document.getElementById("civvcr");
+
+// safety check
+if(!cmsAuth_userList || !cmsAuth_vtype || !cmsAuth_afi01 || !cmsAuth_finalDisplay || !cmsAuth_civvcr){
+  console.warn("cmsAuth: Required elements missing");
+  return;
+}
+
+// =====================================================
+// 🔹 LAST MEMORY
+// =====================================================
+let cmsAuth_lastVText = "";
+let cmsAuth_lastUText = "";
+let cmsAuth_lastVVal  = "";
+let cmsAuth_lastUVal  = "";
+
+// =====================================================
+// 🔹 AUTH
+// =====================================================
+function cmsAuth_getAllowedCodes() {
+  return (document.getElementById("reportauth")?.innerText || "")
+    .split(",").map(x => x.trim());
+}
+
+// =====================================================
+// 🔹 CASH USERS
+// =====================================================
+const cmsAuth_cashUsers = [
+  { code: "80", value: "", text: "Select a User" },
+  { code: "81", value: "MA", text: "MUKHTAR" },
+  { code: "82", value: "TA", text: "TUSHAR" },
+  { code: "83", value: "JLN", text: "JOURNAL" },
+  { code: "84", value: "BANK", text: "BANK" },
+  { code: "85", value: "DB", text: "DAYBOOK" },
+  { code: "86", value: "GK", text: "GURPREET (SCU)" },
+  { code: "87", value: "SY", text: "Sunil Kumar Yadav (SCU)" },
+  { code: "88", value: "LK", text: "LESHANT (SCU)" },
+];
+
+// =====================================================
+// 🔹 API CONFIG
+// =====================================================
+const cmsAuth_apiKey  = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const cmsAuth_sheetId = "1vjkI_bpHNR6Tna17FISridqXSvCUnELA5oMgnAqzbO0";
+const cmsAuth_range   = "IVCALC!A:D";
+
+// =====================================================
+// 🔹 SHOW
+// =====================================================
+function cmsAuth_show(vVal, vText, uVal, uText) {
+  cmsAuth_lastVVal  = vVal;
+  cmsAuth_lastVText = vText;
+  cmsAuth_lastUVal  = uVal;
+  cmsAuth_lastUText = uText;
+
+  cmsAuth_finalDisplay.textContent = vText + " :- " + uText;
+}
+
+// =====================================================
+// 🔹 SAVE
+// =====================================================
+function cmsAuth_save() {
+  if (!cmsAuth_lastVVal || !cmsAuth_lastUVal) return;
+
+  const txt = cmsAuth_lastVText + " :- " + cmsAuth_lastUText;
+
+  localStorage.setItem(cmsAuth_STORAGE_VTYPE, cmsAuth_lastVVal);
+  localStorage.setItem(cmsAuth_STORAGE_USER, cmsAuth_lastUVal);
+  localStorage.setItem(cmsAuth_STORAGE_TEXT, txt);
+}
+
+// =====================================================
+// 🔹 SET
+// =====================================================
+function cmsAuth_setVoucher(val, text) {
+  cmsAuth_vtype.innerHTML = `<option value="${val}">${text}</option>`;
+}
+
+function cmsAuth_setUser(val, text) {
+  cmsAuth_afi01.innerHTML = `<option value="${val}">${text}</option>`;
+
+  const vText = cmsAuth_vtype.options[0]?.textContent || "";
+  const vVal  = cmsAuth_vtype.options[0]?.value || "";
+
+  cmsAuth_show(vVal, vText, val, text);
+}
+
+// =====================================================
+// 🔹 RENDER
+// =====================================================
+function cmsAuth_render(list) {
+  cmsAuth_userList.innerHTML = "";
+
+  list.forEach(item => {
+    const btn = document.createElement("button");
+
+    btn.textContent = item.text;
+    btn.style.cssText = "display:block;width:100%;margin:5px 0;";
+
+    btn.onclick = () => cmsAuth_setUser(item.value, item.text);
+
+    cmsAuth_userList.appendChild(btn);
+  });
+}
+
+// =====================================================
+// 🔹 MAIN
+// =====================================================
+cmsAuth_civvcr.addEventListener("change", async () => {
+
+  const type = cmsAuth_civvcr.value;
+  const allowed = cmsAuth_getAllowedCodes();
+
+  if (!allowed.length) {
+    cmsAuth_userList.innerHTML = "Auth not loaded...";
+    return;
+  }
+
+  if (type === "CMVCR") {
+
+    cmsAuth_setVoucher("CMVCR", "Cash User Voucher");
+
+    const filtered = cmsAuth_cashUsers.filter(u =>
+      allowed.includes(u.code) && u.value !== ""
+    );
+
+    cmsAuth_render(filtered);
+  }
+
+  else if (type === "IVVCR") {
+
+    cmsAuth_setVoucher("IVVCR", "Imprest User Voucher");
+    cmsAuth_userList.innerHTML = "Loading...";
+
+    try {
+      const res = await fetch(
+        `https://sheets.googleapis.com/v4/spreadsheets/${cmsAuth_sheetId}/values/${cmsAuth_range}?key=${cmsAuth_apiKey}`
+      );
+
+      const data = await res.json();
+      const list = [];
+
+      data.values.slice(1).forEach(row => {
+        if (allowed.includes(row[0])) {
+          list.push({ value: row[1], text: row[2] });
+        }
+      });
+
+      cmsAuth_render(list);
+
+    } catch {
+      cmsAuth_userList.innerHTML = "Error loading data";
+    }
+  }
+});
+
+// =====================================================
+// 🔹 WAIT AUTH
+// =====================================================
+function cmsAuth_waitAuth(){
+
+  const el = document.getElementById("reportauth");
+  if(!el) return;
+
+  if(el.innerText.trim()){
+    cmsAuth_init();
+    return;
+  }
+
+  const obs = new MutationObserver(()=>{
+    if(el.innerText.trim()){
+      obs.disconnect();
+      cmsAuth_init();
+    }
+  });
+
+  obs.observe(el,{childList:true,subtree:true});
+}
+
+// =====================================================
+// 🔹 INIT
+// =====================================================
+function cmsAuth_init(){
+  if(cmsAuth_civvcr.value){
+    cmsAuth_civvcr.dispatchEvent(new Event("change"));
+  }
+}
+
+// =====================================================
+// 🔹 DOM READY
+// =====================================================
+document.addEventListener("DOMContentLoaded", () => {
+  cmsAuth_vtype.innerHTML = "";
+  cmsAuth_afi01.innerHTML = "";
+  cmsAuth_finalDisplay.textContent = cmsAuth_DEFAULT_TEXT;
+
+  cmsAuth_waitAuth();
+});
+
+// =====================================================
+// 🔹 FORM
+// =====================================================
+document.getElementById("mainAFICMForm")?.addEventListener("submit", cmsAuth_save);
+
+// =====================================================
+// 🔹 RESET
+// =====================================================
+document.addEventListener("reset", () => {
+  setTimeout(() => {
+    if (cmsAuth_lastVVal && cmsAuth_lastUVal) {
+      cmsAuth_vtype.innerHTML = `<option value="${cmsAuth_lastVVal}">${cmsAuth_lastVText}</option>`;
+      cmsAuth_afi01.innerHTML = `<option value="${cmsAuth_lastUVal}">${cmsAuth_lastUText}</option>`;
+      cmsAuth_finalDisplay.textContent = cmsAuth_lastVText + " :- " + cmsAuth_lastUText;
+    }
+  }, 50);
+});
+
+})(); // 🔒 IIFE END
+</script>
+
+
+
+
+
+<!-- ===== Note: ========== Cash Ledger Voucher IV AND CASH USER SUBMIT CODE Script  START  --- START ----------- SECTION2 (MIPL502) & SECTION5 (MIPL505)================ 20112011 -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  /* =====================================================
+     🔔 POPUP UI (REMOVE THIS BLOCK TO DISABLE POPUP)
+  ===================================================== */
+  const popupHTML = `
+    <div id="waitOverlay" style="
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.35);
+      z-index:9999;
+      align-items:center;
+      justify-content:center;
+    ">
+      <div style="
+        background:#fff;
+        padding:18px 26px;
+        border-radius:10px;
+        min-width:240px;
+        text-align:center;
+        box-shadow:0 10px 30px rgba(0,0,0,.25);
+        font-size:16px;
+        font-weight:600;
+      ">
+        ⏳ <span id="waitAFIMessage">Please wait...</span>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML("beforeend", popupHTML);
+
+  const waitOverlay = document.getElementById("waitOverlay");
+  const waitMsg = document.getElementById("waitAFIMessage");
+
+  const showWait = msg => {
+    waitMsg.textContent = msg || "Please wait...";
+    waitOverlay.style.display = "flex";
+  };
+  const hideWait = () => waitOverlay.style.display = "none";
+
+  /* =====================================================
+     🔗 GOOGLE APPS SCRIPT URL
+  ===================================================== */
+  const scriptAFICMURL =
+    "https://script.google.com/macros/s/AKfycbwm0zp9iFhv-e9iuEbg4xG_fUY-gsgHNjs9Sff1J3npIj3C52XvmHtBWyEKtE7Frcmr/exec";
+
+  /* =====================================================
+     🎯 MASTER DROPDOWNS
+  ===================================================== */
+ const masterUser = document.getElementById("afi01"); // same use
+const masterVcr  = document.getElementById("vtype");
+
+  /* =====================================================
+     📝 FORM ELEMENTS
+  ===================================================== */
+  const mainForm = document.getElementById("mainAFICMForm");
+
+  const formUser  = document.getElementById("afi01");   // USER
+  const formVtype = document.getElementById("vtype");   // VOUCHER
+
+  const submitBtn = document.getElementById("submitAFICMButton");
+  const deleteBtn = document.getElementById("deleteAFICMButton");
+  const newEntryBtn = document.getElementById("newEntryAFICMButton");
+
+  const sNo = document.getElementById("sNo");
+  const fetchedSRNo = document.getElementById("fetchedSRNo");
+  const TimestampAFICM = document.getElementById("TimestampAFICM");
+
+  /* =====================================================
+     🔧 UTILITY
+  ===================================================== */
+  function setSingleOption(sel, val, text) {
+    sel.innerHTML = "";
+    if (!val) return;
+    const o = document.createElement("option");
+    o.value = val;
+    o.textContent = text;
+    o.selected = true;
+    sel.appendChild(o);
+  }
+
+  function syncUser() {
+    const o = masterUser?.selectedOptions?.[0];
+    if (o) setSingleOption(formUser, o.value, o.text);
+  }
+
+  function syncVcr() {
+    const o = masterVcr?.selectedOptions?.[0];
+    if (o) setSingleOption(formVtype, o.value, o.text);
+  }
+
+  masterUser.onchange = () => {
+    syncUser();
+    if (typeof refreshcmstTableBtn === "function") refreshcmstTableBtn();
+  };
+
+  masterVcr.onchange = () => {
+    syncVcr();
+    if (typeof refreshcmstTableBtn === "function") refreshcmstTableBtn();
+  };
+
+  /* =====================================================
+     ✏️ MODIFY / FETCH (SR + USER MATCH)
+  ===================================================== */
+  document.getElementById("openMODIFYBtn").onclick = async () => {
+
+    if (!formUser.value || !formVtype.value) {
+      alert("❌ Please select USER and VOUCHER first");
+      return;
+    }
+
+    const sr = prompt("Enter SR No");
+    if (!sr) return;
+
+    showWait("Fetching data...");
+
+    try {
+      const res = await fetch(
+        `${scriptAFICMURL}?sNo=${sr}&vtype=${formVtype.value}`
+      );
+      const d = await res.json();
+
+      if (d.result === "error") {
+        alert("❌ SR No not found");
+        return;
+      }
+
+      const selectedUser = formUser.value.trim().toUpperCase();
+      const fetchedUser  = (d.Type || "").trim().toUpperCase();
+
+      if (selectedUser !== fetchedUser) {
+        alert(`❌ SR No USER mismatch\nSelected: ${selectedUser}\nFound: ${fetchedUser}`);
+        return;
+      }
+
+      fillForm(d);
+
+      sNo.value = d.SNo;
+      fetchedSRNo.textContent = d.SNo;
+
+      deleteBtn.style.display = "inline-block";
+      newEntryBtn.style.display = "inline-block";
+
+      if (typeof refreshcmstTableBtn === "function") refreshcmstTableBtn();
+
+    } catch (e) {
+      alert("❌ Fetch error");
+    } finally {
+      hideWait();
+    }
+  };
+
+
+     /* ============================================
+   🔠 FORCE ALL TEXT INPUTS TO CAPITAL LETTER
+   ============================================ */
+function forceUppercase(form) {
+  form.querySelectorAll("input[type='text'], textarea").forEach(el => {
+    if (el.value) {
+      el.value = el.value.toUpperCase().trim();
+    }
+  });
+}
+
+
+  /* =====================================================
+     🧾 FILL FORM
+  ===================================================== */
+  function fillForm(d) {
+    afi02.value = d.esmC || "";
+    afi03.value = d.esmD || "";
+    afi04.value = d.esmE || "";
+    afi05.value = d.esmF || "";
+    afi06.value = d.esmG || "";
+  }
+
+  /* =====================================================
+     🗑 DELETE
+  ===================================================== */
+  deleteBtn.onclick = async () => {
+
+    if (!sNo.value) {
+      alert("❌ No record selected");
+      return;
+    }
+
+    if (!confirm("You want to delete it?")) return;
+
+    showWait("Deleting...");
+
+    try {
+      const res = await fetch(
+        `${scriptAFICMURL}?action=delete&sNo=${sNo.value}&vtype=${formVtype.value}`
+      );
+      const r = await res.json();
+
+      if (r.result === "success") {
+        alert("✅ Deleted successfully");
+        resetForm();
+      } else {
+        alert("❌ Delete failed");
+      }
+
+    } catch {
+      alert("❌ Delete error");
+    } finally {
+      hideWait();
+    }
+  };
+
+
+
+    /* =====================================================
+     🚀 DATE FORMAT - 13-Feb-2026
+  ===================================================== */
+function formatDateToDDMMMYYYY(dateStr) {
+  const months = ["Jan","Feb","Mar","Apr","May","Jun",
+                  "Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  const d = new Date(dateStr);
+
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = months[d.getMonth()];
+  const year = d.getFullYear();
+
+  return `${day}-${month}-${year}`;
+}
+
+  /* =====================================================
+     🚀 SUBMIT (NEW / MODIFY) – FIXED
+  ===================================================== */
+  mainForm.onsubmit = async e => {
+  e.preventDefault();
+
+  forceUppercase(mainForm);
+  submitBtn.disabled = true;
+  submitBtn.value = "Please wait...";
+
+  TimestampAFICM.value = new Date().toLocaleString();
+
+  const fd = new FormData(mainForm);
+
+  // 🔥 DATE FORMAT FIX – ADD HERE
+  mainForm.querySelectorAll("input[type='date']").forEach(dateInput => {
+    if (dateInput.value) {
+      fd.set(dateInput.name, formatDateToDDMMMYYYY(dateInput.value));
+    }
+  });
+
+  if (sNo.value) {
+    fd.append("action", "modify");
+    fd.append("sNo", sNo.value);
+  } else {
+    fd.append("action", "submit");
+  }
+
+  showWait(sNo.value ? "Updating..." : "Saving...");
+
+  try {
+    const res = await fetch(scriptAFICMURL, {
+      method: "POST",
+      body: fd
+    });
+
+    const r = await res.json();
+
+    if (r.result === "success") {
+      alert("✅ Saved successfully");
+      resetForm();
+    } else {
+      alert("❌ Save failed");
+    }
+
+  } catch {
+    alert("❌ Submit error");
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.value = "Submit";
+    hideWait();
+  }
+};
+
+
+  /* =====================================================
+     🆕 NEW ENTRY
+  ===================================================== */
+  newEntryBtn.onclick = () => resetForm();
+
+  function resetForm() {
+    mainForm.reset();
+    sNo.value = "";
+    fetchedSRNo.textContent = "";
+    deleteBtn.style.display = "none";
+    newEntryBtn.style.display = "none";
+
+    syncUser();
+    syncVcr();
+
+    if (typeof refreshcmstTableBtn === "function") refreshcmstTableBtn();
+  }
+
+  /* =====================================================
+     🚀 INIT
+  ===================================================== */
+  deleteBtn.style.display = "none";
+  newEntryBtn.style.display = "none";
+
+  syncUser();
+  syncVcr();
+
+  if (typeof refreshcmstTableBtn === "function") refreshcmstTableBtn();
+
+});
+</script>
+<!-- ===== Note: ========== Cash Ledger Voucher IV AND CASH USER SUBMIT CODE Script  stop  --- xxx ----------- SECTION2 (MIPL502) & SECTION5 (MIPL505)================ 20112011 -->
+
+
+
+
+
+
+
+
+
+
+
+<script>
+(function(){
+
+// ==============================
+// 🔹 CONFIG
+// ==============================
+const apiCMSTKey  = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheetCMSTId = "1vjkI_bpHNR6Tna17FISridqXSvCUnELA5oMgnAqzbO0";
+
+const rangeCMSCU  = "CMDATA!A:G";   // Cash
+const rangeCMSIV  = "IVCALC!O:U";   // Imprest
+
+// ==============================
+// 🔹 ELEMENTS
+// ==============================
+const civvcr = document.getElementById("civvcr");
+const afi01  = document.getElementById("afi01");
+const table  = document.getElementById("cmsTable");
+
+if(!civvcr || !afi01 || !table){
+  console.error("Required elements missing");
+  return;
+}
+
+let thead = table.querySelector("thead") || table.createTHead();
+let tbody = table.querySelector("tbody") || table.createTBody();
+
+// ==============================
+// 🔹 CACHE
+// ==============================
+let rawData = [];
+
+// ==============================
+// 🔹 DATE PARSER
+// ==============================
+function parseDate(str){
+  if(!str) return new Date(0);
+
+  str = str.replace(",", "").trim();
+
+  let parts = str.split("-");
+  if(parts.length < 3) return new Date(str);
+
+  let d = parseInt(parts[0]);
+  let m = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+          .indexOf(parts[1]);
+  let y = parts[2].length === 2 ? "20"+parts[2] : parts[2];
+
+  return new Date(y, m, d);
+}
+
+// ==============================
+// 🔹 FETCH
+// ==============================
+async function fetchData(){
+
+  const type = civvcr.value;
+  if(!type) return;
+
+  tbody.innerHTML = `<tr><td>Please Select User Name! Loading...</td></tr>`;
+  thead.innerHTML = "";
+
+  const range = type === "CMVCR" ? rangeCMSCU : rangeCMSIV;
+
+  try{
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetCMSTId}/values/${range}?key=${apiCMSTKey}`;
+    const res = await fetch(url);
+
+    if(!res.ok) throw new Error("Network");
+
+    const data = await res.json();
+    rawData = data.values || [];
+
+    applyFilter();
+
+  }catch(e){
+    console.error(e);
+    tbody.innerHTML = `<tr><td>Error loading</td></tr>`;
+  }
+}
+
+// ==============================
+// 🔹 FILTER + PROCESS
+// ==============================
+function applyFilter(){
+
+  if(!rawData.length) return;
+
+  const user = afi01.value;
+  const type = civvcr.value;
+
+  if(!user) return;
+
+  let data = rawData.slice(1);
+
+  // ==============================
+  // 🔥 IVCALC CLEAN (JNP / JNR REMOVE)
+  // ==============================
+  if(type === "IVVCR"){
+    data = data.filter(r => {
+      const ledger = (r[4] || "").toUpperCase().trim();
+      return ledger !== "JNP" && ledger !== "JNR";
+    });
+  }
+
+  // ==============================
+  // 🔥 USER FILTER (MA + GK SPECIAL)
+  // ==============================
+  if(user === "MA"){
+    data = data.filter(r => r[1] === "MA" || r[1] === "JNP");
+  }
+  else if(user === "GK" && type === "CMVCR"){
+    data = data.filter(r =>
+      (r[1] || "").trim() === "GK" ||
+      (r[4] || "").trim() === "GURPREET - IM"
+    );
+  }
+  //--------------
+   else if(user === "SY" && type === "CMVCR"){
+    data = data.filter(r =>
+      (r[1] || "").trim() === "SY" ||
+      (r[4] || "").trim() === "SUNIL KUMAR - IM"
+    );
+  }
+  //--------------------------
+
+    //--------------
+   else if(user === "LK" && type === "CMVCR"){
+    data = data.filter(r =>
+      (r[1] || "").trim() === "LK" ||
+      (r[4] || "").trim() === "LESHANT IM"
+    );
+  }
+  //--------------------------
+  else{
+    data = data.filter(r => (r[1] || "").trim() === user);
+  }
+
+  // ==============================
+  // 🔹 SORT
+  // ==============================
+  if(type === "CMVCR"){
+    data.sort((a,b)=> (+a[0]||0) - (+b[0]||0)); // SNo ASC
+  }else{
+    data.sort((a,b)=> parseDate(a[3]) - parseDate(b[3])); // Date ASC
+  }
+
+  // ==============================
+  // 🔹 RUNNING BALANCE + GK FLIP
+  // ==============================
+  let bal = 0;
+
+  let rows = data.map(r => {
+
+    let drcr = (r[2] || "").toUpperCase();
+    let amt  = Number(r[5]) || 0;
+
+    // 🔥 GK FLIP
+    if(user === "GK" && r[1] !== "GK"){
+      if(drcr === "PAYMENT") drcr = "RECEIPT";
+      else if(drcr === "RECEIPT") drcr = "PAYMENT";
+    }
+
+    // 🔥 SY FLIP
+        if(user === "SY" && r[1] !== "SY"){
+      if(drcr === "PAYMENT") drcr = "RECEIPT";
+      else if(drcr === "RECEIPT") drcr = "PAYMENT";
+    }
+    //-------------------
+     // 🔥 LESHANT FLIP
+        if(user === "LK" && r[1] !== "LK"){
+      if(drcr === "PAYMENT") drcr = "RECEIPT";
+      else if(drcr === "RECEIPT") drcr = "PAYMENT";
+    }
+    //-------------------
+    bal += (drcr === "RECEIPT" ? amt : -amt);
+
+    return {
+      sno: r[0],
+      user: r[1],
+      type: drcr,
+      date: r[3],
+      ledger: r[4],
+      amount: amt,
+      narration: r[6] || "-",
+      bal: bal
+    };
+  });
+
+  // 🔥 FINAL DESC
+  rows.reverse();
+
+  renderTable(rows);
+}
+
+// ==============================
+// 🔹 RENDER
+// ==============================
+function renderTable(data){
+
+  thead.innerHTML = `
+  <tr style="background:#ffe9e3">
+    <th>SNo</th>
+    <th>User</th>
+    <th>Tr. Type</th>
+    <th>Date</th>
+    <th>Ledger</th>
+    <th>Amount</th>
+    <th>Narration</th>
+    <th>Balance</th>
+  </tr>`;
+
+  tbody.innerHTML = "";
+
+  if(!data.length){
+    tbody.innerHTML = `<tr><td colspan="8">No Data Found</td></tr>`;
+    return;
+  }
+
+  data.forEach(r => {
+
+    let style = "";
+
+    if (r.type === "RECEIPT") style = "color:red;font-weight:600;";
+    else if (r.type === "BILLDR") style = "color:green;font-weight:700;";
+    else if (r.type === "BILLCR") style = "color:red;font-weight:700;";
+    else if (r.type === "SALARY") style = "color:blue;font-weight:700;";
+
+    const tr = document.createElement("tr");
+    tr.style = style;
+
+    tr.innerHTML = `
+      <td>${r.sno}</td>
+      <td>${r.user}</td>
+      <td>${r.type}</td>
+      <td>${r.date}</td>
+      <td>${r.ledger}</td>
+      <td>${r.amount}</td>
+      <td>${r.narration}</td>
+      <td>${r.bal}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
+// ==============================
+// 🔹 EVENTS
+// ==============================
+civvcr.addEventListener("change", fetchData);
+afi01.addEventListener("change", applyFilter);
+
+// ==============================
+// 🔹 OBSERVER (dynamic user load)
+// ==============================
+const observer = new MutationObserver(() => {
+  if(afi01.options.length){
+    setTimeout(applyFilter,100);
+  }
+});
+observer.observe(afi01, { childList:true });
+
+// ==============================
+// 🔹 INIT
+// ==============================
+window.addEventListener("load", () => {
+  setTimeout(fetchData,200);
+});
+
+
+//-------------------- TABLE Refresh code -------
+// ==============================
+// 🔄 MANUAL REFRESH BUTTON
+// ==============================
+async function refreshcmstTableBtn(){
+
+  const type = civvcr.value;
+    if(!type){
+    tbody.innerHTML = `<tr><td colspan="8">Please select a Voucher and User Name first</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = `<tr><td colspan="8">Refreshing...</td></tr>`;
+
+  const range = type === "CMVCR" ? rangeCMSCU : rangeCMSIV;
+
+  try{
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetCMSTId}/values/${range}?key=${apiCMSTKey}`;
+    const res = await fetch(url);
+
+    if(!res.ok) throw new Error("Network");
+
+    const data = await res.json();
+    rawData = data.values || [];
+
+    applyFilter();
+
+  }catch(e){
+    console.error(e);
+    tbody.innerHTML = `<tr><td colspan="8">Refresh Failed</td></tr>`;
+  }
+}
+window.refreshcmstTableBtn = refreshcmstTableBtn;
+//----------------------REFRESH BUTTAN CLOSE ------------------
+})();
+
+
+</script>
+
+
+
+
+
+<script>
+(function(){
+
+// ==============================
+const apiCMSTKey  = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheetCMSTId = "1vjkI_bpHNR6Tna17FISridqXSvCUnELA5oMgnAqzbO0";
+
+const rangeCMSCU  = "CMDATA!A:G";
+const rangeCMSIV  = "IVCALC!O:U";
+
+// ==============================
+const input = document.getElementById("afi04");
+const typeSel = document.getElementById("civvcr");
+
+if(!input || !typeSel) return;
+
+// dropdown
+const listDiv = document.createElement("div");
+listDiv.style = `
+  position:fixed;
+  right:10px;
+  top:0.6in;
+  background:#eff9f9;
+  border:1px solid #ccc;
+  height:85vh;
+  width:350px;
+  overflow-y:auto;
+  display:none;
+  z-index:9999;
+  border-bottom: 5px solid #0252e6;
+  border-top: 5px solid #0252e6;
+`;
+document.body.appendChild(listDiv);
+
+// ==============================
+let ledgerList = [];
+let selectedValue = ""; // 🔥 only valid value
+
+// ==============================
+async function loadLedger(){
+
+  const type = typeSel.value;
+  if(!type) return;
+
+  const range = type === "CMVCR" ? rangeCMSCU : rangeCMSIV;
+
+  try{
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetCMSTId}/values/${range}?key=${apiCMSTKey}`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    let set = new Set();
+
+    (data.values || []).slice(1).forEach(r=>{
+      if(r[4]) set.add(r[4].trim());
+    });
+
+    ledgerList = [...set];
+
+  }catch(e){
+    console.error(e);
+  }
+}
+
+// ==============================
+function showList(filter=""){
+
+  const rect = input.getBoundingClientRect();
+ // listDiv.style.left = rect.left + "px";    list dropdown posstion ke lye use
+ // listDiv.style.top  = rect.bottom + "px";
+  listDiv.style.display = "block";
+
+  let filtered = ledgerList.filter(l =>
+    l.toLowerCase().includes(filter.toLowerCase())
+  );
+
+  listDiv.innerHTML = "";
+
+  filtered.forEach(item=>{
+    const div = document.createElement("div");
+    div.textContent = item;
+    div.style = "padding:6px; cursor:pointer;";
+
+    div.onclick = ()=>{
+      input.value = item;
+      selectedValue = item;   // ✅ VALID
+      listDiv.style.display = "none";
+    };
+
+  div.style = `
+  padding:8px;
+  cursor:pointer;
+  transition:0.2s;
+`;
+
+div.onmouseover = ()=> div.style.background = "#fff176"; // soft yellow
+div.onmouseout  = ()=> div.style.background = "transparent";
+
+    listDiv.appendChild(div);
+  });
+
+  // CREATE NEW
+  const createDiv = document.createElement("div");
+  createDiv.innerHTML = "<b>+ Create New</b>";
+  createDiv.style = `
+    padding:8px;
+    background:#f1f1f1;
+    position:sticky;
+    bottom:0;
+    cursor:pointer;
+    border-top:1px solid #ccc;
+  `;
+
+  createDiv.onclick = ()=>{
+    const val = prompt("Enter new Ledger name:");
+    if(val){
+      input.value = val;
+      selectedValue = val;  // ✅ VALID
+      listDiv.style.display = "none";
+    }
+  };
+
+  listDiv.appendChild(createDiv);
+}
+
+// ==============================
+// 🔥 STRICT CONTROL
+// ==============================
+
+// typing allowed but not accepted
+input.addEventListener("input", ()=>{
+  showList(input.value);
+});
+
+// focus
+input.addEventListener("focus", ()=>{
+  showList(input.value);
+});
+
+// 🔥 blur → validate
+input.addEventListener("blur", ()=>{
+  setTimeout(()=>{
+    if(input.value !== selectedValue){
+      input.value = selectedValue; // ❌ reset invalid
+    }
+  },150);
+});
+
+// ❌ prevent manual typing overwrite (optional strict)
+input.addEventListener("keydown", (e)=>{
+  if(e.key === "Enter"){
+    e.preventDefault();
+  }
+});
+
+// click outside
+document.addEventListener("click", (e)=>{
+  if(!listDiv.contains(e.target) && e.target !== input){
+    listDiv.style.display = "none";
+  }
+});
+
+// ==============================
+typeSel.addEventListener("change", ()=>{
+  selectedValue = "";
+  input.value = "";
+  loadLedger();
+});
+
+})();
+</script>
