@@ -877,7 +877,7 @@ background:#f9fbfc;
 box-shadow:0 2px 8px rgba(0,0,0,0.1);
 ">
 
-<button onclick="showSection(2)" style="text-align:center;border: none; background-color: #f9fbfc; color: #011738; font-weight: bold; font-size: 16px;cursor: pointer;" id="f2" mfvbtn="80">Cash Data Voucher &nbsp;<span style="color: rgb(247, 149, 149); font-weight: bold;">(F2)</button>
+<button onclick="showSection(2)" style="text-align:center;border: none; background-color: #f9fbfc; color: #011738; font-weight: bold; font-size: 16px;cursor: pointer;" id="f2" mfvbtn="80">Cash Managment Voucher &nbsp;<span style="color: rgb(247, 149, 149); font-weight: bold;">(F2)</button>
 <span style="color: #848585; font-weight: bold; font-size: 22px;">|</span>
 <button onclick="showSection(3)" style="text-align:center;border: none; background-color: #f9fbfc; color: #011738; font-weight: bold; font-size: 16px;cursor: pointer;" id="f3">Accounting Voucher &nbsp;<span style="color: rgb(247, 149, 149); font-weight: bold;">(F3)</button>
 <span style="color: #848585; font-weight: bold; font-size: 22px;">|</span>
@@ -1162,37 +1162,36 @@ fetch("https://api.ipify.org?format=json")
 
 /* HEADER */
 .headerBar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  border-bottom: 4px solid #024369;
-  padding: 8px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  background: #f9fbfc;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+ display:flex;
+flex-wrap:wrap;
+gap:15px;
+align-items:center;
+justify-content:center; /* ✅ center alignment */
+border-bottom: 5px solid #024369;
+padding:5px;
+margin-bottom:20px;
+border-radius:10px;
+background:#f9fbfc;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
 }
 
-/* BUTTON */
-button {border: none; padding: 6px 10px; cursor: pointer; font-weight: bold; background: #027175; color: #fff; border-radius: 4px;}
+
 /* FORM */
 .AFICM-form {display: flex; flex-direction: column; gap: 15px;}
 .rowcms { display:flex; gap:var(--gap); align-items:center; flex-wrap:wrap;  align-items:center; flex-wrap:wrap; justify-content: center;background: #eef0f0; padding: 8px; border-radius: 6px;}
-.rowcms input, .rowcms select {padding: 6px; border-radius: 6px; border: 1px solid #ccc;}
+.rowcms input, .rowcms select {padding: 6px; border-radius: 6px; border: 1px solid #ccc; height: 35px;}
 /* USER LIST */
-#userList button {width: 100%; margin: 4px 0; padding: 6px; background: #e1e2e2; color: #000;font-size: 16px;}
+#userList button {width: 100%; margin: 4px 0; padding: 6px; background: #e1e2e2; color: #000;font-size: 16px; border: none; cursor: pointer;}
 </style>
 
 <div style="text-align:center;border-bottom: 5px solid #cbcbcb;  background-color: #eeeff1; color: #070707; font-weight: bold;"> <strong>Cash Managment System</strong>  </div>
 
-<div class="DALDiv">
+<div class="DALDiv" style=" border-bottom: 5px solid #012f63;">
 
   <!-- ================= LEFT ================= -->
   <div class="leftDivBox">
 
-    <div class="box headerBar">
+    <div class="headerBar">
 
         <select id="civvcr"  style="padding:6px 10px; border: none; width:350px; text-align: center;font-size: 16px; background-color:#fffefe;">
             <option value="">Select Voucher</option>
@@ -1205,6 +1204,7 @@ button {border: none; padding: 6px 10px; cursor: pointer; font-weight: bold; bac
 <div style="text-align:center;border-bottom: 5px solid #cbcbcb;  background-color: #eeeff1; color: #003160; font-weight: bold;"> <strong>Select User Name</strong>  </div>
 <div id="userList"></div>
 
+
   </div>   <!-- === LEFT xxx == -->
 
 
@@ -1212,16 +1212,20 @@ button {border: none; padding: 6px 10px; cursor: pointer; font-weight: bold; bac
   <div class="rightDivBox">
 
     <!-- ===== HEADER ===== -->
-    <div class="box headerBar">
-  <span id="finalDisplay" style="font-weight:bold; font-size: 20px; color:#0066a1; background-color: #f7f7f7;"></span>
-  <button onclick="refreshcmstTableBtn()">🔄Refresh</button>
+    <div class="headerBar">
+  <span id="finalDisplay" style="font-weight:bold; font-size: 18px; color:#003c5f; background-color: #f7f7f7;"></span>
+  <span style="color: #848585; font-weight: bold; font-size: 22px;">|</span>
+  <p onclick="refreshcmstTableBtn()" style="cursor:pointer;color:#000f30; font-weight: bold;">🔄Refresh</p>
+  <span style="color: #848585; font-weight: bold; font-size: 22px;">|</span>
+  <p onclick="showSection(5); setTimeout(()=>document.getElementById('search5792Input').focus(),100)" style="cursor:pointer;color:#000f30; font-weight: bold;">Cash Ledger Report</p>
+
     </div>
 
 
  
 
 <!-- ===== FORM ===== -->
-<div class="box" style="border-top: 5px solid #024369; border-bottom: 5px solid #870101; background-color: #efefef;">
+<div class="box" style="border-top: 5px solid #870101; border-bottom: 5px solid #870101; background-color: #fdeeee;">
 
 <form id="mainAFICMForm" class="AFICM-form">
 
@@ -2813,6 +2817,9 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
 
   <button onclick="print5792Table()" style="border: none; font-weight: bold; cursor: pointer; background-color: #f9fbfc; color: rgb(1, 38, 73);">🖨️ Print Table</button>
   <button id="export5792" data-value="export5792" data-target="table5792Container" style="border: none; font-weight: bold; cursor: pointer; background-color: #f9fbfc; color: rgb(1, 38, 73);">🏢 Export</button>
+  
+<button onclick="showSection(2)" style="text-align:center;border: none; background-color: #f9fbfc; color: #011738; font-weight: bold; font-size: 16px;cursor: pointer;" id="f2" mfvbtn="80">Cash Managment Voucher &nbsp;<span style="color: rgb(247, 149, 149); font-weight: bold;">(F2)</button>
+
 
   </div>
      
@@ -9446,7 +9453,7 @@ function closeSchedule(){
 
 <p style="color: red;">--- 🔎 Global Serch --- </p>
 <p> 15- Document View  | 16- PO/Reff View </p>
-<p onclick="showSection(2)" style="cursor:pointer;color:#0026ff;">80- Cash Data Voucher </p>
+<p onclick="showSection(2)" style="cursor:pointer;color:#0026ff;">80- Cash Managment Voucher </p>
 </div>
 
 
@@ -10531,8 +10538,9 @@ fetchslyData();
 
 
 
- <!-- start ---------==============  Cash User Submit, Cash Management System script (3) start Here ==================== 202112011 ---------- -->
+<!-- ===== Note: ========== Cash Managment System IV AND CASH USER SUBMIT CODE Script  START  --- START ----------- SECTION2 (MIPL502) & SECTION5 (MIPL505)================ 20112011 -->
 
+<!-- ===== Note: ========== Cash Managment System User Selection, Auth, and User & Ledger Namme Mapping Script --- Start ----------- SECTION2 (MIPL502)--  ================ 20112011 -->
    <script>
 (function(){   // 🔒 IIFE START (ISOLATION)
 
@@ -10775,11 +10783,11 @@ document.addEventListener("reset", () => {
 })(); // 🔒 IIFE END
 </script>
 
+<!-- ===== Note: ========== Cash Managment System User Selection, Auth, and User & Ledger Namme Mapping Script --- Stop ----------- SECTION2 (MIPL502)-- XXX ================ 20112011 -->
 
 
 
-
-<!-- ===== Note: ========== Cash Ledger Voucher IV AND CASH USER SUBMIT CODE Script  START  --- START ----------- SECTION2 (MIPL502) & SECTION5 (MIPL505)================ 20112011 -->
+<!-- ===== Note: Script 1 ========== Form Submit, Modify, Delete Script Start Here ================ 20112011 -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -10991,8 +10999,6 @@ function forceUppercase(form) {
     }
   };
 
-
-
     /* =====================================================
      🚀 DATE FORMAT - 13-Feb-2026
   ===================================================== */
@@ -11095,18 +11101,10 @@ function formatDateToDDMMMYYYY(dateStr) {
 
 });
 </script>
-<!-- ===== Note: ========== Cash Ledger Voucher IV AND CASH USER SUBMIT CODE Script  stop  --- xxx ----------- SECTION2 (MIPL502) & SECTION5 (MIPL505)================ 20112011 -->
+<!-- ===== Note: Script 1 ========== Form Submit, Modify, Delete Script Stop Here ======== XXX ======== 20112011 -->
 
 
-
-
-
-
-
-
-
-
-
+<!-- ===== Note: Script 2 ========== Cash Managment System Table Script Start Here ================ 20112011 -->
 <script>
 (function(){
 
@@ -11413,13 +11411,12 @@ window.refreshcmstTableBtn = refreshcmstTableBtn;
 //----------------------REFRESH BUTTAN CLOSE ------------------
 })();
 
-
 </script>
+<!-- ===== Note: Script 2 ========== Cash Managment System Table Script Stop Here ======== XXX ======== 20112011 -->
 
 
 
-
-
+<!-- ===== Note: Script 3 ========== Ledegr Search list Dropdown in Form Ledger Input Script Start Here ================ 20112011 -->
 <script>
 (function(){
 
@@ -11591,3 +11588,7 @@ typeSel.addEventListener("change", ()=>{
 
 })();
 </script>
+<!-- ===== Note: Script 3 ========== Ledegr Search list Dropdown in Form Ledger Input Script Stop Here ======= XXX ========= 20112011 -->
+
+
+<!-- ===== Note: ========== Cash Managment System IV AND CASH USER SUBMIT CODE Script  Stop  --- Stop ----------- SECTION2 (MIPL502) & SECTION5 (MIPL505)======= XXX ========= 20112011 -->
