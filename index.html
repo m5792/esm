@@ -1167,7 +1167,7 @@ flex-wrap:wrap;
 gap:15px;
 align-items:center;
 justify-content:center; /* ✅ center alignment */
-border-bottom: 5px solid #024369;
+border-bottom: 5px solid #cdcdcd;
 padding:5px;
 margin-bottom:20px;
 border-radius:10px;
@@ -1186,10 +1186,10 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
 
 <div style="text-align:center;border-bottom: 5px solid #cbcbcb;  background-color: #eeeff1; color: #070707; font-weight: bold;"> <strong>Cash Managment System</strong>  </div>
 
-<div class="DALDiv" style=" border-bottom: 5px solid #012f63;">
+<div class="DALDiv" style=" border-bottom: 5px solid #014565; height: 80vh;">
 
   <!-- ================= LEFT ================= -->
-  <div class="leftDivBox">
+  <div class="leftDivBox" style=" border-RIGHT: 5px solid #014565;">
 
     <div class="headerBar">
 
@@ -1225,7 +1225,7 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
  
 
 <!-- ===== FORM ===== -->
-<div class="box" style="border-top: 5px solid #870101; border-bottom: 5px solid #870101; background-color: #fdeeee;">
+<div class="box" style="border-top: 5px solid #005085; border-bottom: 5px solid #0070ba; background-color: #e9f3fa;">
 
 <form id="mainAFICMForm" class="AFICM-form">
 
@@ -1233,20 +1233,20 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
         <input type="hidden" name="Timestamp" id="TimestampAFICM">
 
        
-        <label">Voucher Name:</label>    <select id="vtype" class="CMVCR" name="vtype" style="background-color: #fbfafa; border: none;" required></select>
-        <label">User Name</label> <select id="afi01" name="Type" style="background-color: #f8efed;border: none;" required></select>
+        <label">Voucher Name:</label>    <select id="vtype" class="CMVCR" name="vtype" style="background-color: #e9f3fa; border: none;" required></select>
+        <label">User Name</label> <select id="afi01" name="Type" style="background-color: #e9f3fa;border: none;" required></select>
         <br/><br/>
       
 
         <!-- ROW 2 -->
-        <div class="rowcms" style="background-color: #f1fafb;">
+        <div class="rowcms" style="background-color: #faf7e7;">
         <label style="font-size: 14px; font-weight: bold;">Vcr Type*:</label>
         <select id="afi02" name="esmC" required style="background-color: #ffffff;">
             <option value="PAYMENT">Payment</option>
             <option value="RECEIPT" >Receipt</option>
         </select>
 
-        <label">Enter Date*:</label>  <input type="date" id="afi03" name="esmD" style="background-color: #ffffff;" required>
+        <label style="font-size: 14px; font-weight: bold;">Enter Date*:</label>  <input type="date" id="afi03" name="esmD" style="background-color: #ffffff;" required>
         <label style="font-size: 14px; font-weight: bold;">Ledger*: </label>  <input type="text"  id="afi04" name="esmE" style="width: 3in;" placeholder="🔍 Search Ledger">
         <label style="font-size: 14px; font-weight: bold;">Enter Amount*: </label>    <input type="number" id="afi05" name="esmF" style="background-color: #ffffff;" placeholder="Amount" required>
         <label style="font-size: 14px; font-weight: bold;">Narration:</label> <input type="text" id="afi06" name="esmG"  style="background-color: #ffffff; width: 4in;" placeholder="Narration">
@@ -1267,7 +1267,7 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
 
 </div>
 
-  <style>#cmst {overflow-x: auto; display: block;height: 570px;}</style>  
+  <style>#cmst {overflow-x: auto; display: block;height: 560px;}</style>  
     <!-- ===== FORM ===== -->
     <div class="box" id="cmst"> 
     <table id="cmsTable" border="1" style="width:100%; border-collapse:collapse; max-height:530px;"> <thead id="cmsHead"></thead> <tbody id="cmsBody"></tbody> </table>  
@@ -11441,7 +11441,7 @@ listDiv.style = `
   top:0.6in;
   background:#eff9f9;
   border:1px solid #ccc;
-  height:85vh;
+  height:82vh;
   width:350px;
   overflow-y:auto;
   display:none;
