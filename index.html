@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>MIPL e|SmTally</title>
+  <title>MIPL e|SmTally V-6.1</title>
  <style>
     * {
       box-sizing: border-box;
@@ -179,8 +179,8 @@
   left: 0;
   right: 0;
   z-index: 999;
-   border: 4px solid #7e7d7d;
-   border-radius: 8px;
+   border-bottom: 5px solid #fcfcfc;
+   border-radius: 4px;
 }
 
 .button-div {
@@ -796,15 +796,25 @@ function showUserDetails() {
   const reportauth = document.getElementById("reportauth").innerText;
   const vcrauth = document.getElementById("vcrauth").innerText;
 
-  alert(
+  // Last Modified
+  let d = new Date(document.lastModified);
+  let day = String(d.getDate()).padStart(2,'0');
+  let month = String(d.getMonth()+1).padStart(2,'0');
+  let year = d.getFullYear();
+  let hours = d.getHours()%12 || 12;
+  let minutes = String(d.getMinutes()).padStart(2,'0');
+  let ampm = d.getHours() < 12 ? 'AM' : 'PM';
 
-    "USER DETAILS\n\n" +
-    "User ID : " + userid + "\n" +
-    "User Name : " + username + "\n" +
-    "Report Auth : " + reportauth + "\n" +
-    "User Code : " + vcrauth
+  let lastModified = `${day}-${month}-${year} ${hours}:${minutes} ${ampm}`;
 
-  );
+  alert(`USER DETAILS
+
+Last Modified : ${lastModified}
+
+User ID : ${userid}
+User Name : ${username}
+Report Auth : ${reportauth}
+User Code : ${vcrauth}`);
 
 }
 
@@ -1167,7 +1177,7 @@ flex-wrap:wrap;
 gap:15px;
 align-items:center;
 justify-content:center; /* ✅ center alignment */
-border-bottom: 5px solid #cdcdcd;
+border-bottom: 5px solid #262525;
 padding:5px;
 margin-bottom:20px;
 border-radius:10px;
@@ -1184,12 +1194,12 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
 #userList button {width: 100%; margin: 4px 0; padding: 6px; background: #e1e2e2; color: #000;font-size: 16px; border: none; cursor: pointer;}
 </style>
 
-<div style="text-align:center;border-bottom: 5px solid #cbcbcb;  background-color: #eeeff1; color: #070707; font-weight: bold;"> <strong>Cash Managment System</strong>  </div>
+<div style="text-align:center;border-bottom: 5px solid #e7e9ea;  background-color: #f5f6f6; color: #001d3a; font-weight: bold;"> <strong>Cash Managment System</strong>  </div>
 
-<div class="DALDiv" style=" border-bottom: 5px solid #014565; height: 80vh;">
+<div class="DALDiv" style=" height: 80vh;border-bottom: 8px solid #007599; border-top: 8px solid #00526b; border-radius:10px;">
 
   <!-- ================= LEFT ================= -->
-  <div class="leftDivBox" style=" border-RIGHT: 5px solid #014565;">
+  <div class="leftDivBox" style=" border-RIGHT: 8px solid #e9eaeb;border-left: 8px solid #e9eaeb; border-radius:10px;">
 
     <div class="headerBar">
 
@@ -1211,18 +1221,29 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
   <!-- ================= RIGHT ================= -->
   <div class="rightDivBox">
 
-    <!-- ===== HEADER ===== -->
-    <div class="headerBar">
-  <span id="finalDisplay" style="font-weight:bold; font-size: 18px; color:#003c5f; background-color: #f7f7f7;"></span>
+  
+  <!-- ===== Date Filter and Print Buttans ===== -->
+  <div 
+style=" display:flex;
+flex-wrap:wrap;
+gap:15px;
+align-items:center;
+justify-content:center; /* ✅ center alignment */
+border-left: 8px solid #afafad;border-right: 8px solid #afafad;
+padding:5px;
+margin-bottom:20px;
+border-radius:10px;
+background:#e6e7e7;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+  <button onclick="refreshcmstTableBtn()" style="cursor:pointer; background-color: #e6e7e7; color:#000f30; font-weight: bold; border: none; font-size: 16px;">🔄Refresh</button>
   <span style="color: #848585; font-weight: bold; font-size: 22px;">|</span>
-  <p onclick="refreshcmstTableBtn()" style="cursor:pointer;color:#000f30; font-weight: bold;">🔄Refresh</p>
-  <span style="color: #848585; font-weight: bold; font-size: 22px;">|</span>
-  <p onclick="showSection(5); setTimeout(()=>document.getElementById('search5792Input').focus(),100)" style="cursor:pointer;color:#000f30; font-weight: bold;">Cash Ledger Report</p>
+  <label style="font-size: 14px; font-weight: bold; color: #b3004e;">From:</label> <input type="date" id="fromCMUDate" style="cursor:pointer;color:#000f30; font-weight: bold; border-bottom: 3px solid #0070ba;">
+  <label style="font-size: 14px; font-weight: bold; color: #b3004e;">To:</label> <input type="date" id="toCMUDate" style="cursor:pointer;color:#000f30; font-weight: bold;border-bottom: 3px solid #0070ba;">
+   <button onclick="printCMSTable()" style="cursor:pointer; background-color: #e6e7e7; color:#000f30; font-weight: bold; border: none; font-size: 16px;">🖨️ Print</button>
+   <span style="color: #848585; font-weight: bold; font-size: 22px;">|</span>
+  <button onclick="showSection(5); setTimeout(()=>document.getElementById('search5792Input').focus(),100)" style="cursor:pointer; background-color: #e6e7e7; color:#000f30; font-weight: bold; border: none; font-size: 16px;">Cash Ledger Report</button>
 
     </div>
-
-
- 
 
 <!-- ===== FORM ===== -->
 <div class="box" style="border-top: 5px solid #005085; border-bottom: 5px solid #0070ba; background-color: #e9f3fa;">
@@ -1232,14 +1253,11 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
         <input type="hidden" name="SNo" id="sNo">
         <input type="hidden" name="Timestamp" id="TimestampAFICM">
 
-       
         <label">Voucher Name:</label>    <select id="vtype" class="CMVCR" name="vtype" style="background-color: #e9f3fa; border: none;" required></select>
         <label">User Name</label> <select id="afi01" name="Type" style="background-color: #e9f3fa;border: none;" required></select>
-        <br/><br/>
-      
-
+     
         <!-- ROW 2 -->
-        <div class="rowcms" style="background-color: #faf7e7;">
+        <div class="rowcms" style="background-color: #faf7e7; border-left: 8px solid #dfbe00;border-right: 8px solid #dfbe00;">
         <label style="font-size: 14px; font-weight: bold;">Vcr Type*:</label>
         <select id="afi02" name="esmC" required style="background-color: #ffffff;">
             <option value="PAYMENT">Payment</option>
@@ -1255,24 +1273,25 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
 
 <br/>
   <!-- form hendling div -->
-<div class="rowcms" style="background-color: #1b1b1b; padding: 5px 10px; ">         
+<div class="rowcms" style="background-color: #f3f2f2; padding: 5px 10px;  border-bottom: 5px solid #c0bfbf; border-top: 5px solid #c0bfbf;">         
         <!-- ACTION -->
-        <input type="submit" id="submitAFICMButton" style="background-color: blue; border: 2px rgb(150, 207, 250); color: white;width: 3in; cursor: pointer;" value="Submit">
-        <button type="button" id="openMODIFYBtn" style=" background:#1b1b1b;color:white; border: none; cursor: pointer; width: 2in; font-weight: bold;">🏢 Click to Modify</button>
-        <span style="background-color: #1b1b1b; color: white;">Fetched Sr No:</span> <span id="fetchedSRNo"style="background-color: #1b1b1b; color: #c9dafa;">NA</span>
-        <input type="button" id="deleteAFICMButton" value=" Delete" style="display:none; background:#dcfaf5;color:#5a0202; border: none; cursor: pointer; width: 2in; font-weight: bold;">
-        <input type="button" id="newEntryAFICMButton"  value=" New Entry"  style="display:none; background:#dcfaf5; color:#004d12; border: none; cursor: pointer; width: 2in;font-weight: bold;">
+        <input type="submit" id="submitAFICMButton" style="background-color: black; border: 2px rgb(150, 207, 250); color: rgb(206, 243, 232);width: 3in; cursor: pointer;" value="Submit">
+        <button type="button" id="openMODIFYBtn" style=" background:#f3f2f2;color:rgb(0, 24, 43); border: none; cursor: pointer; width: 2in; font-weight: bold;">🏢 Click to Modify</button>
+        <input type="button" id="deleteAFICMButton" value=" Delete" style="display:none; background:#5a0202;color:white; border: none; cursor: pointer; width: 2in; font-weight: bold;">
+        <input type="button" id="newEntryAFICMButton"  value=" New Entry"  style="display:none; background:#004d12; color:white; border: none; cursor: pointer; width: 2in;font-weight: bold;">
+        <span style="background-color: #f3f2f2; color: rgb(0, 24, 43);">Fetched Sr No:</span> <span id="fetchedSRNo"style="background-color: #f3f2f2; color: #5a0202;">NA</span>
 </div>
 </form>
 
 </div>
 
-  <style>#cmst {overflow-x: auto; display: block;height: 560px;}</style>  
+  <style>#cmst {overflow-x: auto; display: block;height: 460px;}</style>  
     <!-- ===== FORM ===== -->
     <div class="box" id="cmst"> 
-    <table id="cmsTable" border="1" style="width:100%; border-collapse:collapse; max-height:530px;"> <thead id="cmsHead"></thead> <tbody id="cmsBody"></tbody> </table>  
+    <table id="cmsTable" border="1" style="width:100%; border-collapse:collapse; max-height:430px;"> <thead id="cmsHead"></thead> <tbody id="cmsBody"></tbody> </table>  
     </div>
   
+ <div style="text-align:center; color: #00253b; font-weight: bold; border-top: 5px solid #740000; border-radius:10px; background-color: #fcf4f4;"> <strong id="finalDisplay"></strong>  </div>   
 
 </div> </div>
 
@@ -3551,6 +3570,17 @@ setInterval(displayCurrentDateTime, 1000);
 <script>
 // ✅ Keyboard shortcuts
 document.addEventListener("keydown", function(event) {
+
+   // 🟢 ALT + C → focus afi04
+  if (event.altKey && event.key.toLowerCase() === "c") {
+    event.preventDefault();
+    const el = document.getElementById("afi04");
+    if (el) {
+      el.focus();
+      el.select(); // optional: pura text select ho jaye
+    }
+  }
+  
   // 🟢 F1
   if (event.key === "F1") {
     event.preventDefault();
@@ -9833,90 +9863,6 @@ if (e.parameter.web == "1") {
 </script>
 
 
-<!-- ====================  ````````````````````````````FLOTTING Alexa neon line CODE  STOP HARE``````````````````````````` ==================== -->
-<script>
-window.addEventListener("DOMContentLoaded", function() {
-
-  const style = document.createElement("style");
-  style.innerHTML = `
-  .neon-line-clean {
-    position: fixed;
-    bottom: 2.5cm;
-    left: 0;
-    width: 100%;
-    height: 3px; /* 👈 thin line */
-    border-radius: 50px;
-    z-index: 9999;
-
-    /* Transparent base */
-    background: linear-gradient(270deg, #00f0ff, #ffffff, #00ff88);
-    background-size: 300% 300%;
-    animation: gradientShift 5s linear infinite;
-
-    /* Light glow (reduced) */
-    box-shadow:
-      0 0 3px #00f0ff,
-      0 0 6px #00f0ff;
-  }
-
-  /* Moving shine */
-  .neon-line-clean::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -40%;
-    width: 40%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, #ffffff, transparent);
-    animation: move 3s linear infinite;
-  }
-
-  @keyframes gradientShift {
-    0% { background-position: 0% }
-    100% { background-position: 200% }
-  }
-
-  @keyframes move {
-    0% { left: -40%; }
-    100% { left: 100%; }
-  }
-
-  /* Hover (light red glow) */
-  .neon-line-clean:hover {
-    background: linear-gradient(270deg, #ffffff, #ff0000);
-    box-shadow:
-      0 0 4px #ff0000,
-      0 0 8px #ff0000;
-  }
-  `;
-  document.head.appendChild(style);
-
-  const line = document.createElement("div");
-  line.className = "neon-line-clean";
-
-  document.body.appendChild(line);
-
-});
-</script>
-
-<!-- ====================  ````````````````````````````FLOTTING Alexa neon line CODE  STOP HARE``````````````````````````` ==================== -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -10593,7 +10539,7 @@ function cmsAuth_getAllowedCodes() {
 const cmsAuth_cashUsers = [
   { code: "80", value: "", text: "Select a User" },
   { code: "81", value: "MA", text: "MUKHTAR" },
-  { code: "82", value: "TA", text: "TUSHAR" },
+  { code: "82", value: "TA", text: "TUSHAR AGARWAL" },
   { code: "83", value: "JLN", text: "JOURNAL" },
   { code: "84", value: "BANK", text: "BANK" },
   { code: "85", value: "DB", text: "DAYBOOK" },
@@ -11114,8 +11060,8 @@ function formatDateToDDMMMYYYY(dateStr) {
 const apiCMSTKey  = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheetCMSTId = "1vjkI_bpHNR6Tna17FISridqXSvCUnELA5oMgnAqzbO0";
 
-const rangeCMSCU  = "CMDATA!A:G";   // Cash
-const rangeCMSIV  = "IVCALC!O:U";   // Imprest
+const rangeCMSCU  = "CMDATA!A:G";
+const rangeCMSIV  = "IVCALC!O:U";
 
 // ==============================
 // 🔹 ELEMENTS
@@ -11123,6 +11069,9 @@ const rangeCMSIV  = "IVCALC!O:U";   // Imprest
 const civvcr = document.getElementById("civvcr");
 const afi01  = document.getElementById("afi01");
 const table  = document.getElementById("cmsTable");
+
+const fromInput = document.getElementById("fromCMUDate");
+const toInput   = document.getElementById("toCMUDate");
 
 if(!civvcr || !afi01 || !table){
   console.error("Required elements missing");
@@ -11200,19 +11149,13 @@ function applyFilter(){
 
   let data = rawData.slice(1);
 
-  // ==============================
-  // 🔥 IVCALC CLEAN (JNP / JNR REMOVE)
-  // ==============================
   if(type === "IVVCR"){
     data = data.filter(r => {
       const ledger = (r[4] || "").toUpperCase().trim();
       return ledger !== "JNP" && ledger !== "JNR";
     });
   }
-
-  // ==============================
-  // 🔥 USER FILTER (MA + GK SPECIAL)
-  // ==============================
+ //--------------- User Flip Vcr Type Option ---------------------
   if(user === "MA"){
     data = data.filter(r => r[1] === "MA" || r[1] === "JNP");
   }
@@ -11222,64 +11165,52 @@ function applyFilter(){
       (r[4] || "").trim() === "GURPREET - IM"
     );
   }
-  //--------------
-   else if(user === "SY" && type === "CMVCR"){
+  else if(user === "SY" && type === "CMVCR"){
     data = data.filter(r =>
       (r[1] || "").trim() === "SY" ||
       (r[4] || "").trim() === "SUNIL KUMAR - IM"
     );
   }
-  //--------------------------
-
-    //--------------
-   else if(user === "LK" && type === "CMVCR"){
+  else if(user === "LK" && type === "CMVCR"){
     data = data.filter(r =>
       (r[1] || "").trim() === "LK" ||
       (r[4] || "").trim() === "LESHANT IM"
     );
   }
-  //--------------------------
   else{
     data = data.filter(r => (r[1] || "").trim() === user);
   }
-
-  // ==============================
-  // 🔹 SORT
-  // ==============================
+ //--------------- User Flip Vcr Type Option ------ xxx ----------
   if(type === "CMVCR"){
-    data.sort((a,b)=> (+a[0]||0) - (+b[0]||0)); // SNo ASC
+    data.sort((a,b)=> (+a[0]||0) - (+b[0]||0));
   }else{
-    data.sort((a,b)=> parseDate(a[3]) - parseDate(b[3])); // Date ASC
+    data.sort((a,b)=> parseDate(a[3]) - parseDate(b[3]));
   }
 
-  // ==============================
-  // 🔹 RUNNING BALANCE + GK FLIP
-  // ==============================
   let bal = 0;
+  let openingBal = 0;
 
   let rows = data.map(r => {
 
     let drcr = (r[2] || "").toUpperCase();
     let amt  = Number(r[5]) || 0;
 
-    // 🔥 GK FLIP
+ //--------------- User Flip Vcr Type Option ----------------   
     if(user === "GK" && r[1] !== "GK"){
       if(drcr === "PAYMENT") drcr = "RECEIPT";
       else if(drcr === "RECEIPT") drcr = "PAYMENT";
     }
 
-    // 🔥 SY FLIP
-        if(user === "SY" && r[1] !== "SY"){
+    if(user === "SY" && r[1] !== "SY"){
       if(drcr === "PAYMENT") drcr = "RECEIPT";
       else if(drcr === "RECEIPT") drcr = "PAYMENT";
     }
-    //-------------------
-     // 🔥 LESHANT FLIP
-        if(user === "LK" && r[1] !== "LK"){
+
+    if(user === "LK" && r[1] !== "LK"){
       if(drcr === "PAYMENT") drcr = "RECEIPT";
       else if(drcr === "RECEIPT") drcr = "PAYMENT";
     }
-    //-------------------
+ //--------------- User Flip Vcr Type Option ------- xxx ---------
     bal += (drcr === "RECEIPT" ? amt : -amt);
 
     return {
@@ -11290,20 +11221,43 @@ function applyFilter(){
       ledger: r[4],
       amount: amt,
       narration: r[6] || "-",
-      bal: bal
+      bal: bal,
+      dObj: parseDate(r[3])
     };
   });
 
-  // 🔥 FINAL DESC
-  rows.reverse();
+  // ==============================
+  // 🔥 ADD: OPENING BALANCE
+  // ==============================
+  const fromVal = fromInput?.value;
+  const toVal   = toInput?.value;
 
-  renderTable(rows);
+  if(fromVal && toVal){
+
+    let fromDate = new Date(fromVal);
+    let toDate   = new Date(toVal);
+
+    fromDate.setHours(0,0,0,0);
+    toDate.setHours(23,59,59,999);
+
+    // Opening balance calculation
+    openingBal = rows
+      .filter(r => r.dObj < fromDate)
+      .reduce((sum,r)=> sum + (r.type==="RECEIPT"?r.amount:-r.amount), 0);
+
+    rows = rows.filter(r => {
+      return r.dObj && r.dObj >= fromDate && r.dObj <= toDate;
+    });
+  }
+
+  rows.reverse();
+  renderTable(rows, openingBal);
 }
 
 // ==============================
 // 🔹 RENDER
 // ==============================
-function renderTable(data){
+function renderTable(data, openingBal=0){
 
   thead.innerHTML = `
   <tr style="background:#ffe9e3">
@@ -11318,9 +11272,21 @@ function renderTable(data){
   </tr>`;
 
   tbody.innerHTML = "";
+/*-----------------------Openning Balance Table ke top me show hoga -----------------------------------------------
+  // 🔥 ADD: Opening Row
+  if(openingBal !== 0){
+    const tr = document.createElement("tr");
+    tr.style = "background:#dff0d8;font-weight:700;";
+    tr.innerHTML = `
+      <td colspan="7" style="text-align:right;">Opening Balance</td>
+      <td>${openingBal}</td>
+    `;
+    tbody.appendChild(tr);
+  }
+----------------------------------------------------------------------------*/
 
   if(!data.length){
-    tbody.innerHTML = `<tr><td colspan="8">No Data Found</td></tr>`;
+    tbody.innerHTML += `<tr><td colspan="8">No Data Found</td></tr>`;
     return;
   }
 
@@ -11349,16 +11315,116 @@ function renderTable(data){
 
     tbody.appendChild(tr);
   });
+  // 🔥 Opening Balance (BOTTOM) me show hoga --------------------------
+if(openingBal !== 0){
+  const tr = document.createElement("tr");
+  tr.style = "background:#dff0d8;font-weight:700;";
+
+  tr.innerHTML = `
+    <td colspan="7" style="text-align:right;">Opening Balance</td>
+    <td>${openingBal}</td>
+  `;
+
+  tbody.appendChild(tr);
+}
+//-------------------------- xxx---------------------------------------
 }
 
+// ==============================
+// 🔹 PRINT FUNCTION
+// ==============================
+
+function formatDateCustom(d){
+  if(!d) return "";
+  const m = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return d.getDate()+"-"+m[d.getMonth()]+"-"+d.getFullYear();
+}
+
+function formatTimeCustom(d){
+  let h = d.getHours()%12 || 12;
+  let min = d.getMinutes().toString().padStart(2,"0");
+  let ampm = d.getHours() >= 12 ? "pm" : "am";
+  return h + ":" + min + " " + ampm;
+}
+
+// ==============================
+window.printCMSTable = function(){
+
+  const userText = document.getElementById("finalDisplay")?.innerText || "";
+  const tableHTML = document.getElementById("cmsTable").outerHTML;
+
+  const win = window.open("", "", "width=900,height=700");
+
+  const now = new Date();
+
+  // 🔥 NEW TIMESTAMP FORMAT
+  const timestamp = formatDateCustom(now) + " / " + formatTimeCustom(now);
+
+  // 🔥 NEW DATE FILTER FORMAT
+  let dateText = "";
+  if(fromInput.value && toInput.value){
+    dateText =
+      formatDateCustom(new Date(fromInput.value)) +
+      " to " +
+      formatDateCustom(new Date(toInput.value));
+  }
+
+  win.document.write(`
+    <html>
+    <head>
+      <style>
+        body{font-family:Arial;padding:20px;}
+        h2{text-align:center;margin:0;}
+        .top{display:flex;justify-content:space-between;margin-top:10px;}
+        table{width:100%;border-collapse:collapse;margin-top:10px;}
+        th,td{border:1px solid #000;padding:6px;text-align:center;}
+      </style>
+    </head>
+    <body>
+
+      <h4>Cash Managment System</h4>
+      <div style="text-align:center;">${userText}</div>
+
+      <div class="top">
+        <div><span>Statement Period: </span>${dateText}</div>
+        <div><span>Printed on: </span>${timestamp}</div>
+      </div>
+
+      ${tableHTML}
+
+    </body>
+    </html>
+  `);
+
+  win.document.close();
+
+  // 🔥 delay fix (blank print avoid)
+  setTimeout(()=>{
+    win.print();
+  },300);
+};
 // ==============================
 // 🔹 EVENTS
 // ==============================
 civvcr.addEventListener("change", fetchData);
 afi01.addEventListener("change", applyFilter);
 
-// ==============================
-// 🔹 OBSERVER (dynamic user load)
+fromInput && fromInput.addEventListener("change", applyFilter);
+toInput && toInput.addEventListener("change", applyFilter);
+
+// 🔥 finalDisplay change → date clear
+const finalDisplay = document.getElementById("finalDisplay");
+
+if(finalDisplay){
+  const obs = new MutationObserver(() => {
+    if(fromInput) fromInput.value = "";
+    if(toInput) toInput.value = "";
+    applyFilter();
+  });
+
+  obs.observe(finalDisplay, { childList: true, subtree: true });
+}
+
 // ==============================
 const observer = new MutationObserver(() => {
   if(afi01.options.length){
@@ -11368,12 +11434,9 @@ const observer = new MutationObserver(() => {
 observer.observe(afi01, { childList:true });
 
 // ==============================
-// 🔹 INIT
-// ==============================
 window.addEventListener("load", () => {
   setTimeout(fetchData,200);
 });
-
 
 //-------------------- TABLE Refresh code -------
 // ==============================
@@ -11409,8 +11472,8 @@ async function refreshcmstTableBtn(){
 }
 window.refreshcmstTableBtn = refreshcmstTableBtn;
 //----------------------REFRESH BUTTAN CLOSE ------------------
-})();
 
+})();
 </script>
 <!-- ===== Note: Script 2 ========== Cash Managment System Table Script Stop Here ======== XXX ======== 20112011 -->
 
@@ -11418,6 +11481,7 @@ window.refreshcmstTableBtn = refreshcmstTableBtn;
 
 <!-- ===== Note: Script 3 ========== Ledegr Search list Dropdown in Form Ledger Input Script Start Here ================ 20112011 -->
 <script>
+  /*-----------
 (function(){
 
 // ==============================
@@ -11587,8 +11651,234 @@ typeSel.addEventListener("change", ()=>{
 });
 
 })();
+-------*/
+</script>
+
+
+<script>
+(function(){
+
+// ==============================
+const apiCMSTKey  = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheetCMSTId = "1vjkI_bpHNR6Tna17FISridqXSvCUnELA5oMgnAqzbO0";
+
+const rangeCMSCU  = "CMDATA!A:G";
+const rangeCMSIV  = "IVCALC!O:U";
+
+// ==============================
+const input = document.getElementById("afi04");
+const typeSel = document.getElementById("civvcr");
+
+if(!input || !typeSel) return;
+
+// dropdown
+const listDiv = document.createElement("div");
+listDiv.style = `
+  position:fixed;
+  right:10px;
+  top:0.6in;
+  background:rgb(243, 249, 255);
+  height:82vh;
+  width:350px;
+  overflow-y:auto;
+  display:none;
+  z-index:9999;
+  border-left: 4px solid rgb(202, 202, 202);
+  border-bottom: 8px solid rgb(0, 58, 109);
+  border-top: 8px solid rgb(0, 58, 109);
+`;
+document.body.appendChild(listDiv);
+
+// ==============================
+let ledgerList = [];
+let selectedValue = "";
+let activeIndex = -1;
+
+// ==============================
+async function loadLedger(){
+
+  const type = typeSel.value;
+  if(!type) return;
+
+  const range = type === "CMVCR" ? rangeCMSCU : rangeCMSIV;
+
+  try{
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetCMSTId}/values/${range}?key=${apiCMSTKey}`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    let set = new Set();
+
+    (data.values || []).slice(1).forEach(r=>{
+      if(r[4]) set.add(r[4].trim());
+    });
+
+    ledgerList = [...set];
+
+  }catch(e){
+    console.error(e);
+  }
+}
+
+// ==============================
+function updateHighlight(){
+
+  const items = listDiv.querySelectorAll(".item");
+
+  items.forEach(el => el.style.background = "transparent");
+
+  if(items[activeIndex]){
+    items[activeIndex].style.background = "#f0ec06";  // curser background
+    items[activeIndex].scrollIntoView({block:"nearest"});
+  }
+}
+
+// ==============================
+function showList(filter=""){
+
+  listDiv.style.display = "block";
+
+  let filtered = ledgerList.filter(l =>
+    l.toLowerCase().includes(filter.toLowerCase())
+  );
+
+  listDiv.innerHTML = "";
+
+  filtered.forEach((item, index)=>{
+
+    const div = document.createElement("div");
+    div.textContent = item;
+    div.className = "item";
+
+    div.style = `
+    padding:8px;
+    cursor:pointer;
+    transition:0.2s;
+    border:none;
+    outline:none;
+    `;
+
+    div.onclick = ()=>{
+      input.value = item;
+      selectedValue = item;
+      listDiv.style.display = "none";
+    };
+
+    div.onmouseover = ()=>{
+      activeIndex = index;
+      updateHighlight();
+    };
+
+    listDiv.appendChild(div);
+  });
+
+  // Create New
+  const createDiv = document.createElement("div");
+  createDiv.innerHTML = "<b>+ Create New</b>";
+  createDiv.className = "create";
+
+  createDiv.style = `
+    padding:8px;
+    background:#f1f1f1;
+    position:sticky;
+    bottom:0;
+    cursor:pointer;
+    border-top:1px solid #ccc;
+  `;
+
+  createDiv.onclick = ()=>{
+    const val = prompt("Enter new Ledger name:");
+    if(val){
+      input.value = val;
+      selectedValue = val;
+      listDiv.style.display = "none";
+    }
+  };
+
+  listDiv.appendChild(createDiv);
+
+  // 🔥 auto highlight first
+  activeIndex = filtered.length > 0 ? 0 : -1;
+  updateHighlight();
+}
+
+// ==============================
+// INPUT EVENTS
+// ==============================
+
+input.addEventListener("input", ()=>{
+  showList(input.value);
+});
+
+input.addEventListener("focus", ()=>{
+  showList(input.value);
+});
+
+// blur validation
+input.addEventListener("blur", ()=>{
+  setTimeout(()=>{
+    if(input.value !== selectedValue){
+      input.value = selectedValue;
+    }
+  },150);
+});
+
+// ==============================
+// KEYBOARD CONTROL
+// ==============================
+
+input.addEventListener("keydown", (e)=>{
+
+  const items = listDiv.querySelectorAll(".item");
+
+  if(e.key === "ArrowDown"){
+    e.preventDefault();
+    if(activeIndex < items.length - 1){
+      activeIndex++;
+      updateHighlight();
+    }
+  }
+
+  else if(e.key === "ArrowUp"){
+    e.preventDefault();
+    if(activeIndex > 0){
+      activeIndex--;
+      updateHighlight();
+    }
+  }
+
+  else if(e.key === "Enter"){
+    e.preventDefault();
+
+    if(items[activeIndex]){
+      items[activeIndex].click();
+    }
+  }
+});
+
+// ==============================
+// CLICK OUTSIDE
+// ==============================
+
+document.addEventListener("click", (e)=>{
+  if(!listDiv.contains(e.target) && e.target !== input){
+    listDiv.style.display = "none";
+  }
+});
+
+// ==============================
+typeSel.addEventListener("change", ()=>{
+  selectedValue = "";
+  input.value = "";
+  loadLedger();
+});
+
+})();
 </script>
 <!-- ===== Note: Script 3 ========== Ledegr Search list Dropdown in Form Ledger Input Script Stop Here ======= XXX ========= 20112011 -->
 
 
 <!-- ===== Note: ========== Cash Managment System IV AND CASH USER SUBMIT CODE Script  Stop  --- Stop ----------- SECTION2 (MIPL502) & SECTION5 (MIPL505)======= XXX ========= 20112011 -->
+
+
+
