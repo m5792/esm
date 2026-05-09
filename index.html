@@ -2579,6 +2579,7 @@ input{
 </style>
 
 <div style="text-align:center;border-bottom: 5px solid #cbcbcb;  background-color: #eeeff1; color: #070707; font-weight: bold;"> <strong>Dishplay Ledger Report</strong> </div> 
+
 <!-- leftDiv -->
 <div class="DALDiv">
 <div class="leftDivBox">
@@ -2660,7 +2661,7 @@ align-items:center;
 padding:2px;
 margin-bottom:20px;
 border-radius:10px;
-border-bottom: 3px solid #690202;
+border-left: 8px solid #690202; border-right: 8px solid #690202;
 background:#f9fbfc;
 box-shadow:0 2px 8px rgba(0,0,0,0.1);
 ">
@@ -2680,12 +2681,14 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
 
 </div>   
 
-<span id="selectionInfo"></span><br/>
+
+ <div style="text-align:center; color: #00253b; font-weight: bold; border-left: 8px solid black; border-right: 8px solid black; border-radius:10px; background-color: #fcf4f4;"> <strong id="selectionInfo"></strong>  </div>   
+
 <!-- TOTAL -->
 <div id="totalsBox" style="
 margin-top:10px;
 padding:10px;
-background:#eaf2f3;
+background:#eaf2f5;
 display:none;
 border-bottom:3px solid #a60404;
 display:flex;
@@ -8074,15 +8077,19 @@ async function loadNoticeBoard(){
 
     const li=document.createElement("li");
 
-    li.innerHTML=`
-      <strong>${row[2]||""}</strong> (${row[0]||""})<br>
-      🚚 Vehicle: ${row[3]||"-"} |
-      📄 Job: ${row[4]||"-"} |
-      🧾 Inv: ${row[6]||"-"}<br>
-      📅 Date: ${row[1]||"-"} |
-      <span class="${statusClass}">${status}</span>
-      ${remark ? `<div class="remarkBox">${remark}</div>` : ""}
-    `;
+  const bgColor = status === "LOAD" ? "green" : status === "PROCESSED" ? "green" :  status === "UNLOAD" ? "red" : "blue";
+
+li.innerHTML = `
+  <strong>${row[2] || ""}</strong> (${row[0] || ""})<br>
+  🚚 Vehicle: ${row[3] || "-"} |
+  📄 Job: ${row[4] || "-"} |
+  🧾 Inv: ${row[6] || "-"}<br>
+  📅 Date: ${row[1] || "-"} |
+  
+  <span class="${statusClass}" style="background-color:${bgColor}; color:white; padding:2px 6px; border-radius:4px; display:inline-block;">${status}</span>
+
+  ${remark ? `<div class="remarkBox">${remark}</div>` : ""}
+`;
 
     // ===== Separate UL =====
     const type=(row[0]||"").toUpperCase();
