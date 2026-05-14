@@ -4218,6 +4218,96 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 <!-- ================ GLOBAL SEARCH BAR SCRIPT START ================ -->
+<style>
+/* ================= AI RING INPUT ================= */
+
+.plR5qb{
+  position:relative;
+  width:100%;
+  height:38px;
+  padding:5px;
+  border-radius:999px;
+  overflow:hidden;
+  background:#000;
+  box-sizing:border-box;
+}
+
+/* SINGLE ROUND GLOW RING */
+.plR5qb::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:999px;
+
+  background:linear-gradient(
+    90deg,
+    #4285f4,
+    #34a853,
+    #fbbc05,
+    #ea4335,
+    #4285f4
+  );
+
+  background-size:300% 100%;
+  animation:ringGlow 5s linear infinite;
+  z-index:0;
+}
+
+/* INNER BLACK AREA */
+.plR5qb::after{
+  content:"";
+  position:absolute;
+  top:5px;
+  left:5px;
+  right:5px;
+  bottom:5px;
+  background:#000;
+  border-radius:999px;
+  z-index:1;
+}
+
+/* INPUT */
+.plR5qb input{
+  position:relative;
+  z-index:2;
+  width:100%;
+  height:100%;
+  border:none !important;
+  outline:none !important;
+  background:transparent !important;
+  color:#fff !important;
+  padding:0 14px !important;
+  font-size:15px;
+  border-radius:999px;
+  box-sizing:border-box;
+  margin:0 !important;
+}
+
+/* PLACEHOLDER */
+.plR5qb input::placeholder{
+  color:#fff;
+  opacity:1;
+}
+
+/* GLOW */
+.plR5qb:hover{
+  box-shadow:
+    0 0 5px rgba(66,133,244,.8),
+    0 0 10px rgba(52,168,83,.5),
+    0 0 15px rgba(251,188,5,.4);
+}
+
+/* SMOOTH MOVING COLOR */
+@keyframes ringGlow{
+  0%{
+    background-position:0% 50%;
+  }
+  100%{
+    background-position:300% 50%;
+  }
+}
+</style>
+
 <script>
 /* =================================================================== */
 /* ❌ PERMISSION LOGIC REMOVED */
@@ -4251,6 +4341,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ===== UI CONTAINER ===== */
   const container = document.createElement("div");
+
   container.style = `
     position:fixed;
     bottom:1.5in;
@@ -4259,26 +4350,37 @@ document.addEventListener("DOMContentLoaded", () => {
     z-index:999999;
     font-family:Arial;
   `;
+
   document.body.appendChild(container);
 
   /* ===== INPUT ===== */
   const input = document.createElement("input");
+
   input.id = "globalSearchInput";
   input.disabled = true;
   input.placeholder = "⏳ Please Wait ! Loading...";
-  input.style = `
+
+  /* ===== RING WRAPPER ===== */
+  const ringWrap = document.createElement("div");
+
+  ringWrap.className = "plR5qb";
+
+  ringWrap.style = `
     width:100%;
-    padding:6px;
-    font-size:15px;
-    border-radius:8px;
-    border:1px solid #ccc;
-    background:#DCF8FA;
-    margin-top:6px;
+    height:38px;
+    padding:2px;
+    border-radius:999px;
+    box-sizing:border-box;
   `;
-  container.appendChild(input);
+
+  container.appendChild(ringWrap);
+
+  /* ===== INPUT INSIDE RING ===== */
+  ringWrap.appendChild(input);
 
   /* ===== DROPDOWN ===== */
   const dropdown = document.createElement("ul");
+
   dropdown.style = `
     list-style:none;
     margin:0;
@@ -4293,13 +4395,15 @@ document.addEventListener("DOMContentLoaded", () => {
     display:none;
     background:#fff;
     border-radius:8px;
-    border:3px solid blue;
+    border:3px solid black;
     box-shadow:0 6px 20px rgba(0,0,0,.35);
   `;
+
   container.appendChild(dropdown);
 
   /* ===== LOAD DATA ===== */
   async function loadAllData(retry = 0) {
+
     input.disabled = true;
     input.placeholder = "⏳ Please Wait ! Loading...";
 
@@ -4366,7 +4470,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ===== SEARCH ===== */
   input.addEventListener("input", () => {
+
     const q = input.value.toLowerCase().trim();
+
     dropdown.innerHTML = "";
 
     if (!q) {
@@ -4374,7 +4480,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // ✅ ALL DATA WITHOUT CONDITION
     let filesToSearch = [
       ...invoiceFiles,
       ...documentFiles,
@@ -4392,6 +4497,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     matched.forEach((f) => {
+
       const li = document.createElement("li");
 
       li.textContent =
@@ -4411,17 +4517,24 @@ document.addEventListener("DOMContentLoaded", () => {
         li.style.background = "#0d6efd";
         li.style.color = "#fff";
       };
+
       li.onmouseleave = () => {
         li.style.background = "";
         li.style.color = "#000";
       };
 
       li.onclick = () => {
+
         if (f.__web && f.webUrl) {
           window.open(f.webUrl, "_blank");
-        } else if (f.id) {
-          window.open(`https://drive.google.com/file/d/${f.id}/view`, "_blank");
-        } else {
+        }
+        else if (f.id) {
+          window.open(
+            `https://drive.google.com/file/d/${f.id}/view`,
+            "_blank"
+          );
+        }
+        else {
           alert("File not accessible");
         }
 
@@ -4430,39 +4543,51 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       dropdown.appendChild(li);
+
     });
 
     dropdown.style.display = "block";
+
   });
 
+  /* ===== CLOSE DROPDOWN ===== */
   document.addEventListener("click", e => {
+
     if (!container.contains(e.target)) {
       dropdown.style.display = "none";
       input.value = "";
     }
+
   });
 
   /* ===== INIT ===== */
   window.addEventListener("load", () => {
+
     setTimeout(() => {
       loadAllData();
     }, 5000);
+
   });
 
 });
 
 /* ===== ALT + G ===== */
 document.addEventListener("keydown", function (e) {
+
   if (e.altKey && e.key.toLowerCase() === "g") {
+
     e.preventDefault();
 
-    const input = document.getElementById("globalSearchInput");
+    const input =
+      document.getElementById("globalSearchInput");
 
     if (input && !input.disabled) {
       input.focus();
       input.select();
     }
+
   }
+
 });
 </script>
 <!-- ================ -------------------------   GLOBAL SERCH BAR SCRIPT AND CODE STOP HERE --------------- ===============================-->
