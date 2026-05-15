@@ -1080,6 +1080,117 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
 
 
 <br><br>
+<!-- ============ ------------- natwork script and code  and div start ---------- start  ====================== -->
+<div id="natworkBar">
+<div id="statusBox"> Online </div>
+<div id="infoBox"> <span id="ipText">Your Network IP: Loading...</span>
+<span id="divider"> | </span> <span id="officeText"> Checking Office Network...</span>
+</div>
+</div>
+
+<script>
+  const natworkBar = document.getElementById("natworkBar");
+  const statusBox = document.getElementById("statusBox");
+  const ipText = document.getElementById("ipText");
+  const officeText = document.getElementById("officeText");
+
+  const divider = document.getElementById("divider");
+  divider.style.margin = "0 15px";
+
+  // BODY STYLE
+  document.body.style.margin = "0";
+  document.body.style.padding = "20px";
+  document.body.style.fontFamily = "Arial";
+  document.body.style.background = "#f2f2f2";
+
+  // MAIN BAR
+  natworkBar.style.width = "720px";
+  natworkBar.style.height = "40px";
+  natworkBar.style.display = "flex";
+  natworkBar.style.border =  "3px solid #222";
+  natworkBar.style.background =  "#ffffff";
+  // STATUS BOX
+  statusBox.style.width = "150px";
+  statusBox.style.background = "#6aa84f";
+  statusBox.style.color = "white";
+  statusBox.style.display = "flex"
+  statusBox.style.justifyContent = "center";
+  statusBox.style.alignItems = "center";
+  statusBox.style.fontSize = "20px";
+
+  // INFO BOX
+  infoBox.style.flex = "1";
+  infoBox.style.display = "flex";
+  infoBox.style.alignItems = "center";
+  infoBox.style.paddingLeft = "8px";
+  infoBox.style.fontSize = "16px";
+
+  // OFFICE NETWORK LIST
+  const officeList = [
+    "152.59",
+    "152.58",
+    "49.36",
+    "106.205",
+    "103.93",
+    "117.99"
+  ];
+
+  // GET IP
+  async function getIP() {
+
+    try {
+      const res =
+        await fetch("https://api.ipify.org?format=json");
+      const data = await res.json();
+      const ip = data.ip;
+
+      // SHOW IP
+      ipText.innerText = "Your Network IP: " + ip;
+      // FIRST 2 PARTS
+      const ipStart = ip.split(".")[0] + "." +
+        ip.split(".")[1];
+
+      // CHECK OFFICE NETWORK
+      if (officeList.includes(ipStart)) { officeText.innerHTML = "<span style='color:red;'>You Are Not Connected Office Network</span>";
+      } else {
+        officeText.innerHTML =  "<span style='color:#6aa84f;'>You Are Connected Office Network</span>";
+      }
+
+    } catch (err) {
+      ipText.innerText = "Your Network IP: Not Found"; officeText.innerHTML = "<span style='color:orange;'>Network Check Failed</span>";
+    }
+  }
+
+  // UPDATE STATUS
+  function updateStatus() {
+
+    if (navigator.onLine) {
+      statusBox.style.background ="green";
+      statusBox.innerText = "Online";
+       getIP();
+    } else {
+      statusBox.style.background = "red";
+      statusBox.innerText =
+        "Offline";
+      ipText.innerText =
+        "Your Network IP: No Internet";
+      officeText.innerHTML =
+        "<span style='color:red;'>Disconnected</span>";
+    }
+  }
+
+  // EVENTS
+  window.addEventListener(  "online", updateStatus );
+  window.addEventListener( "offline", updateStatus );
+
+  // INITIAL
+  updateStatus();
+
+</script>
+<!-- ============ ------------- natwork script and code  and div stop ---------- xxx  ====================== -->
+ <br>
+
+
 <div id="section1b" class="section hidden" style="background-color: rgb(211, 212, 212);border: none;"></div> 
 <span id="globalMessage" style="color: rgb(16, 15, 15); font-size: 16px;"></span>
 
@@ -1090,40 +1201,6 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
      font-weight:bold; color:green; padding:10px;">
 </div>
 -->
-
-<span id="statusText" style="font-weight:bold;"></span><br>
-<span style="color: blue;">Your Network ID:- </span>
-<span id="ipBox" style="color: rgb(78, 78, 243);"></span>
-
-  
-<script>
-// Allowed Office Network Starting Values
-const officeList = ["152.59", "152.58", "49.36", "106.205", "103.93", "117.99"];
-
-// Fetch IP
-fetch("https://api.ipify.org?format=json")
-  .then(response => response.json())
-  .then(data => {
-    const ip = data.ip;
-    document.getElementById("ipBox").innerText = ip;
-
-    // First two segments of IP -> (e.g. 203.81)
-    const ipStart = ip.split(".")[0] + "." + ip.split(".")[1];
-
-    // Check match
-    const statusSpan = document.getElementById("statusText");
-
-    if (officeList.includes(ipStart)) {
-      statusSpan.innerHTML = `<span style="color:red;">Office Network Not Connected</span>`;
-    } else {
-      statusSpan.innerHTML = `<span style="color:green;">Office Network Connected</span>`;
-    }
-  })
-  .catch(() => {
-    document.getElementById("ipBox").innerText = "Error fetching IP";
-  });
-</script>
-
 
   </div>
   <!-- ============  Left Side Section stop ====================== -->
@@ -3787,7 +3864,7 @@ loadTodayEvent();
   position:relative;
   width:100%;
   height:38px;
-  padding:2px;
+  padding:5px;   /*  yaha par aur .plR5qb::after isme top reft right ke px ko bhadhor ring ke thiknes ke liye */
   border-radius:999px;
   overflow:hidden;
   background:#000;
@@ -3811,8 +3888,7 @@ loadTodayEvent();
   );
 
   background-size:300% 100%;
-  animation:ringGlow 5s linear infinite;
-
+  animation:ringGlow 10s linear infinite;
   z-index:0;
 }
 
@@ -3820,12 +3896,12 @@ loadTodayEvent();
 .plR5qb::after{
   content:"";
   position:absolute;
-  top:2px;
-  left:2px;
-  right:2px;
-  bottom:2px;
+  top:5px;
+  left:5px;
+  right:5px;
+  bottom:5px;
   background:#000;
-  border-radius:99px;
+  border-radius:999px;
   z-index:1;
 }
 
@@ -3835,14 +3911,15 @@ loadTodayEvent();
   z-index:2;
   width:100%;
   height:100%;
-  border:none;
-  outline:none;
-  background:transparent;
-  color:#fff;
-  padding:0 14px;
+  border:none !important;
+  outline:none !important;
+  background:transparent !important;
+  color:#fff !important;
+  padding:0 14px !important;
   font-size:15px;
-  border-radius:99px;
+  border-radius:999px;
   box-sizing:border-box;
+  margin:0 !important;
 }
 
 /* PLACEHOLDER */
