@@ -448,8 +448,6 @@ th {
 <span style="color:#f8e1e1;font-size: 100%;">(mail:-multitechsolutions@yahoo.com)</span>
 </h1>
 
-
-
 <br/>
 <h3>
         <span style="color:rgb(250, 218, 218);font-size:130%;font-family:Magneto;">eS | <span style="color:#e0f5f5;font-size:130%;font-family:Magneto;">MTally</span></span> 
@@ -8215,7 +8213,7 @@ const rangeNB = "DATABASE!K:S";
 const css = `
 .status-loading    { background:#ff4d4d; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
 .status-processing { background:#fd2222; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
-.status-processed  { background:#28a745; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
+.status-done  { background:#28a745; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
 .status-complete   { background:#28a745; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
 .status-unloading  { background:#39b3d8; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
 
@@ -8290,7 +8288,7 @@ async function loadNoticeBoard(){
 
     if(status==="LOADING") statusClass="status-loading";
     else if(status==="PROCESSING") statusClass="status-processing";
-    else if(status==="PROCESSED") statusClass="status-processed";
+    else if(status==="Done") statusClass="status-done";
     else if(status==="UNLOADING") statusClass="status-unloading";
     else if(status==="COMPLETE") statusClass="status-complete";
 
@@ -8298,7 +8296,7 @@ async function loadNoticeBoard(){
 
     const li=document.createElement("li");
 
-  const bgColor = status === "LOAD" ? "green" : status === "PROCESSED" ? "green" :  status === "UNLOAD" ? "red" : "blue";
+  const bgColor = status === "LOAD" ? "green" : status === "DONE" ? "green" :  status === "UNLOAD" ? "red" : "blue";
 
 li.innerHTML = `
   <strong>${row[2] || ""}</strong> (${row[0] || ""})<br>
@@ -8317,7 +8315,7 @@ li.innerHTML = `
 
     if(type==="STORE"){
       storeUL.appendChild(li);
-    }else if(["PL1","PL2","PL3"].includes(type)){
+    }else if(["PL1","PL2","PL3","CHALLAN","STOCK TRANSFER"].includes(type)){
       plantUL.appendChild(li);
     }
 
