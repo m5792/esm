@@ -891,7 +891,7 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
 <span style="color: #848585; font-weight: bold; font-size: 22px;">|</span>
 <button onclick="window.open('https://docs.google.com/spreadsheets/d/1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4/edit?gid=2081509697#gid=2081509697','_blank')" mfvbtn="11" style="text-align:center;border: none; background-color: #f9fbfc; color: #011738; font-weight: bold; font-size: 16px;cursor: pointer;">Packing List </span></button>
 <span style="color: #848585; font-weight: bold; font-size: 22px;">|</span>
- <select onchange="if(this.value) window.open(this.value, '_blank'); this.selectedIndex = 0;" mfvbtn="2" style="text-align:center;border: none; background-color: #f9fbfc; color: #011738; font-weight: bold; font-size: 16px;cursor: pointer;">
+ <select onchange="if(this.value) window.open(this.value, '_blank'); this.selectedIndex = 0;" mfvbtn="6" style="text-align:center;border: none; background-color: #f9fbfc; color: #011738; font-weight: bold; font-size: 16px;cursor: pointer;">
 <option value="">📂 Select Google Sheet to Open</option>
 <option value="https://docs.google.com/spreadsheets/d/1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4/edit?gid=2081509697#gid=2081509697">Packing List</option>
 <option value="https://docs.google.com/spreadsheets/d/1bT0GHM6VHMyw9zZq8M2FDaVMS-dOcPGaChWF2Ywyn14/edit?gid=0#gid=0">Running Project Balance Sheet </option>
@@ -3416,12 +3416,13 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
 </div>
  
 <style>
-  .ticker-wrap {
+.ticker-wrap {
   width: 100%;
   overflow: hidden;
   background: #f1f1f1;
   border-top: 1px solid #ccc;
   border-bottom: 1px solid #ccc;
+  transition: background 0.3s ease;
 }
 
 .ticker {
@@ -3432,6 +3433,15 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
   font-weight: bold;
   color: rgb(0, 65, 69);
   font-size: 14px;
+}
+
+/* Mouse hover par */
+.ticker-wrap:hover {
+  background: yellow;
+}
+
+.ticker-wrap:hover .ticker {
+  animation-play-state: paused;
 }
 
 @keyframes tickerMove {
@@ -9700,6 +9710,7 @@ function closeSchedule(){
 <p onclick="showSection(5)" style="cursor:pointer;color:#0026ff;">2- Cash Ledger Report</p>
 <p onclick="showSection(6)" style="cursor:pointer;color:#0026ff;">3- Imprest Voucher Report</p>
 <p onclick="showSection(7)" style="cursor:pointer;color:#0026ff;">4- Tools</p>
+<p>6- Packing List Dropdown</p>
 <p onclick="showSection(8)" style="cursor:pointer;color:#0026ff;">8- Rabbit Game (shortcuts-F6)</p>
 <p onclick="showSection(9)" style="cursor:pointer;color:#0026ff;">9- Pay Slip</p>
 <p onclick="showSection(10)" style="cursor:pointer;color:#0026ff;">10- Job/Reff Summary</p>
@@ -9750,6 +9761,7 @@ function closeSchedule(){
 <p onclick="window.open('https://docs.google.com/spreadsheets/d/1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU/edit?gid=1462163867#gid=1462163867','_blank')" style="cursor:pointer;color:#0026ff;">Master Data Google Sheet</p>
 <p onclick="window.open('https://docs.google.com/spreadsheets/d/1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4/edit?gid=2007779252#gid=2007779252','_blank')" style="cursor:pointer;color:#0026ff;">Address, Event Other Google Sheet</p>
 <p onclick="showSection(8)" style="cursor:pointer;color:#0026ff;">Rabbit Game</p>
+<p onclick="window.open('https://m5792.github.io/esmTally/BSPLCLC.html','_blank')" style="cursor:pointer;color:#0026ff;">Bussinus Income Calculater</p>
 
 
 
@@ -11378,79 +11390,93 @@ function applyFilter(){
   if(type === "IVVCR"){
     data = data.filter(r => {
       const ledger = (r[4] || "").toUpperCase().trim();
-      return ledger !== "JNP" && ledger !== "JNR";
+      return ledger !== "JNP" && ledger !== "JNR";   //  JNP AUR JNR RW KO REMOVE KREGA "IVCALC" SHEET SE
     });
   }
  //--------------- User Flip Vcr Type Option ---------------------
-  if(user === "MA"){
-    data = data.filter(r => r[1] === "MA" || r[1] === "JNP");
+if(user === "MA"){
+  data = data.filter(r => r[1] === "MA" || r[1] === "JNP");  // AGAR USER "MA" HAI TO MA+JNP WALE SARE ROW SHOW KREGA
+}
+else if(user === "GK" && type === "CMVCR"){
+  data = data.filter(r =>
+    (r[1] || "").trim() === "GK" ||
+    (r[4] || "").trim() === "GURPREET - IM"
+  );
+}
+else if(user === "SY" && type === "CMVCR"){
+  data = data.filter(r =>
+    (r[1] || "").trim() === "SY" ||
+    (r[4] || "").trim() === "SUNIL KUMAR - IM"
+  );
+}
+else if(user === "LK" && type === "CMVCR"){
+  data = data.filter(r =>
+    (r[1] || "").trim() === "LK" ||
+    (r[4] || "").trim() === "LESHANT IM"
+  );
+}
+else{
+  data = data.filter(r => (r[1] || "").trim() === user);
+}
+
+//--------------- User Flip Vcr Type Option ------ xxx ----------
+if(type === "CMVCR"){
+  data.sort((a,b)=> (+a[0]||0) - (+b[0]||0));
+}else{
+  data.sort((a,b)=> parseDate(a[3]) - parseDate(b[3]));
+}
+
+let bal = 0;
+let openingBal = 0;
+
+let rows = data.map(r => {
+
+  // JNP ko MA me show HOGA
+  if(user === "MA" && r[1] === "JNP"){    // MA USER KE LYE JITNE BHO ROW "JNP" WALE HAI USE "MA" ME CONVERT HOGA
+    r[1] = "MA";
   }
-  else if(user === "GK" && type === "CMVCR"){
-    data = data.filter(r =>
-      (r[1] || "").trim() === "GK" ||
-      (r[4] || "").trim() === "GURPREET - IM"
-    );
-  }
-  else if(user === "SY" && type === "CMVCR"){
-    data = data.filter(r =>
-      (r[1] || "").trim() === "SY" ||
-      (r[4] || "").trim() === "SUNIL KUMAR - IM"
-    );
-  }
-  else if(user === "LK" && type === "CMVCR"){
-    data = data.filter(r =>
-      (r[1] || "").trim() === "LK" ||
-      (r[4] || "").trim() === "LESHANT IM"
-    );
-  }
-  else{
-    data = data.filter(r => (r[1] || "").trim() === user);
-  }
- //--------------- User Flip Vcr Type Option ------ xxx ----------
-  if(type === "CMVCR"){
-    data.sort((a,b)=> (+a[0]||0) - (+b[0]||0));
-  }else{
-    data.sort((a,b)=> parseDate(a[3]) - parseDate(b[3]));
+//--------------------------------------
+  let drcr = (r[2] || "").toUpperCase();
+  let amt  = Number(r[5]) || 0;
+
+ //--------------- User Flip Vcr Type Option ----------------
+
+  // GK FLIP
+  if(user === "GK" && r[1] !== "GK"){
+    if(drcr === "PAYMENT") drcr = "RECEIPT";
+    else if(drcr === "RECEIPT") drcr = "PAYMENT";
   }
 
-  let bal = 0;
-  let openingBal = 0;
+  // SY FLIP
+  if(user === "SY" && r[1] !== "SY"){
+    if(drcr === "PAYMENT") drcr = "RECEIPT";
+    else if(drcr === "RECEIPT") drcr = "PAYMENT";
+  }
 
-  let rows = data.map(r => {
+  // LK FLIP
+  if(user === "LK" && r[1] !== "LK"){
+    if(drcr === "PAYMENT") drcr = "RECEIPT";
+    else if(drcr === "RECEIPT") drcr = "PAYMENT";
+  }
 
-    let drcr = (r[2] || "").toUpperCase();
-    let amt  = Number(r[5]) || 0;
+  
 
- //--------------- User Flip Vcr Type Option ----------------   
-    if(user === "GK" && r[1] !== "GK"){
-      if(drcr === "PAYMENT") drcr = "RECEIPT";
-      else if(drcr === "RECEIPT") drcr = "PAYMENT";
-    }
-
-    if(user === "SY" && r[1] !== "SY"){
-      if(drcr === "PAYMENT") drcr = "RECEIPT";
-      else if(drcr === "RECEIPT") drcr = "PAYMENT";
-    }
-
-    if(user === "LK" && r[1] !== "LK"){
-      if(drcr === "PAYMENT") drcr = "RECEIPT";
-      else if(drcr === "RECEIPT") drcr = "PAYMENT";
-    }
  //--------------- User Flip Vcr Type Option ------- xxx ---------
-    bal += (drcr === "RECEIPT" ? amt : -amt);
 
-    return {
-      sno: r[0],
-      user: r[1],
-      type: drcr,
-      date: r[3],
-      ledger: r[4],
-      amount: amt,
-      narration: r[6] || "-",
-      bal: bal,
-      dObj: parseDate(r[3])
-    };
-  });
+  bal += (drcr === "RECEIPT" ? amt : -amt);
+
+  return {
+    sno: r[0],
+    user: r[1],
+    type: drcr,
+    date: r[3],
+    ledger: r[4],
+    amount: amt,
+    narration: r[6] || "-",
+    bal: bal,
+    dObj: parseDate(r[3])
+  };
+});
 
   // ==============================
   // 🔥 ADD: OPENING BALANCE
