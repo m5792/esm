@@ -10379,7 +10379,7 @@ rabbitgameImg.onload=gameLoop;
 
 
 
-   <!-- -----------------======================  SALARU SHEET (PAY SLIP) SCRIPT  START HERE (SECTION9 MIPL509) ==================== ------------------------- -->
+   <!-- -----------------======================  SALARY SHEET (PAY SLIP) SCRIPT  START HERE (SECTION9 MIPL509) ==================== ------------------------- -->
 <style>
 
 .SalarySheetContainer {
@@ -10407,7 +10407,7 @@ const payslipKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const payslipId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
 
 const paysliprange = "PAYSLIP!A:N";
-const employeerange = "EMPLOYEE!A:N";
+const employeerange = "EMPLOYEE!A:O";
 
 let payData = [];
 let employeeData = [];
@@ -10446,14 +10446,14 @@ function loadEmployees(empCode) {
 
     let employees;
 
-    if (empCode === "MA") {
-        employees = employeeData.slice(1).map(r => r[1]);
-    } else {
-        employees = employeeData
-            .slice(1)
-            .filter(r => r[0] === empCode)
-            .map(r => r[1]);
-    }
+    if (empCode === "MA" || empCode === "GUR06" || empCode === "SUR10") {
+    employees = employeeData.slice(1).map(r => r[1]);
+} else {
+    employees = employeeData
+        .slice(1)
+        .filter(r => r[0] === empCode)
+        .map(r => r[1]);
+}
 
     employees = [...new Set(employees)].sort((a,b)=>a.localeCompare(b));
 
@@ -10530,7 +10530,7 @@ function renderPayslip() {
             <tr><td><b>Employee Name</b></td><td>${val(emp[1])}</td>          <td><b>Date of Joining</b></td><td>${val(emp[8])}</td>  </tr>
             <tr><td><b>Employee Number</b></td><td>${val(emp[2])}</td>       <td><b>Adhar No. (UDIN)</b></td><td>${val(emp[9])}</td>   </tr>
             <tr><td><b>Father Name</b></td><td>${val(emp[3])}</td>           <td><b>Universal Account Number (UAN)</b></td><td>${val(emp[10])}</td>  </tr>
-            <tr><td><b>Designation</b></td><td>${val(emp[4])}</td>           <td><b>ESI Number</b></td><td>${val(emp[11])}</td>   </tr>
+            <tr><td><b>Designation</b></td><td>${val(emp[4])}</td>           <td><b>ESI Number</b></td><td> <a href="${val(emp[14])}" target="_blank"> ${val(emp[11])}</td>   </tr>
             <tr><td><b>Address</b></td><td>${val(emp[13])}</td>                  <td><b>Mobail No.</b></td><td>${val(emp[12])}</td>    </tr>
                 </table>
 
