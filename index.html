@@ -1061,7 +1061,7 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
 
 
 <!-- 🔍 DAYBOOK SEARCH INPUT -->
-<input type="text" id="daybookSearch" placeholder="Click Here to Search Daybook..." style="padding:6px 10px;  border: 4px solid #ffffff; width:230px;  background-color:rgb(250, 243, 204);">
+<input type="text" id="daybookSearch" mfvbtn="10" placeholder="Click Here to Search Daybook..." style="padding:6px 10px;  border: 4px solid #ffffff; width:230px;  background-color:rgb(250, 243, 204);">
 </div>
 
 <style> #daybookTable {overflow-x: auto; display: block; max-height: 530px; /*heder alwayas fix on top and table scrolling  */} </style>
@@ -2614,7 +2614,7 @@ input{
   <button class="filter-btn"  divclas="A" data-sheet="DATAD" id="ctr1">📘 Dishplay Ledger Report</button>
 
   <strong style="color: rgb(252, 254, 255); font-size: 25px; font-weight: bold;">|</strong>
-  <button class="filter-btn"  divclas="B" data-value="address">🏢 Address</button>
+  <button class="filter-btn"  divclas="B" data-value="address" mfvbtn="10" >🏢 Address</button>
   <button class="filter-btn"  divclas="B" id="openULUBtn" data-value="atn" mfvbtn="4">🏢 Attendance</button>
   <button class="filter-btn"  divclas="B" data-value="psw" id="ctr2" mfvbtn="5">🏢 ID/Password</button>
 
@@ -2921,7 +2921,7 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
   </style>
    <div id="table5792Container"></div> 
   </div> 
-      </div>  <!-- section4 content stop hare *********************************************************************************************************-->
+      </div>  
        
 
 </div>  <!-- section4 content stop hare *********************************************************************************************************-->
@@ -6165,7 +6165,7 @@ else{
   data = allData.filter(r=>r[6]==selectedReff);
 }
 
-// ===- By username update script ============== 🔥 USER LOCK (YAHI ADD KARO) USERNAME BY LIST DROPDOWN KE LYE === - is part remove kro jab second script ko remove kro==============
+// ===- By username update script ============== 🔥 USER LOCK (YAHI ADD KARO) USERNAME BY LIST DROPDOWN KE LYE === - is part remove kro jab second script ( 25860 ) ko remove kro==============
 let username = getCurrentUser();
 
 if(["LESHANT","TUSHAAR"].includes(username)){
@@ -6690,7 +6690,7 @@ async function refershdlrtable(){
 }
 </script>
 
-<!--   ====-- By username update script ========= -----   mipl786Table Second script by username update ledger list removal script (  <table id="dlrtable">) ------ =============== start  -->
+<!--   ====-- By username update script 25860 ========= -----   mipl786Table Second script by username update ledger list removal script (  <table id="dlrtable">) ------ =============== start  -->
 <script>
 // ================= USER NAME GET =================
 function getCurrentUser(){
@@ -6719,16 +6719,16 @@ function applyUserFilter(){
 
     // ===== USER FILTER =====
     let userRows = dataF.filter(r => 
-      (r[9] || "").toUpperCase() === username
+      (r[9] || "").toUpperCase() === username    // 9 is user colum in reff/po table
     );
 
-    window.userReffList = [...new Set(userRows.map(r => r[6] || ""))];
+    window.userReffList = [...new Set(userRows.map(r => r[6] || ""))];    // 6 is reff/ po colum in reff/po table
 
     let filteredData = allData.filter(r =>
       window.userReffList.includes(r[6])
     );
 
-    window.userLedgerList = [...new Set(filteredData.map(r => r[4] || ""))];
+    window.userLedgerList = [...new Set(filteredData.map(r => r[4] || ""))];  // 4 is ledger colum in reff/po table
 
     renderLedgerListCustom(window.userLedgerList);
 
@@ -9720,7 +9720,11 @@ function closeSchedule(){
 
 <p style="color: red;">--- 🔎 Global Serch --- </p>
 <p> 15- Document View  | 16- PO/Reff View </p>
+
+<p style="color: red;">---  Cash Managment --- </p>
 <p onclick="showSection(2)" style="cursor:pointer;color:#0026ff;">80- Cash Managment Voucher </p>
+<p> 81-89- Cash User (SCU)</p>
+<p> 90-110 - Imprest Voucher User (IV) </p>
 </div>
 
 
