@@ -7499,10 +7499,22 @@ function setupLedger5792List() {
   function renderList(filter = "") {
     listBox.innerHTML = "";
 
-    const filtered = ledgers.filter(l =>
+ /*   const filtered = ledgers.filter(l =>
       l.toLowerCase().includes(filter.toLowerCase())
     );
+*/
 
+  const filtered = ledgers.filter(l => {
+    const name = l.toLowerCase().trim();
+
+    if (name === "exp" || name === "haydra" || name === "shakher - c") {    //  add ledger name jo hide krna hai ledger list me cash ledger report me
+      return false;
+    }
+
+    return name.includes(filter.toLowerCase());
+  });
+
+// -------------------------------------------------------------
     filtered.forEach(item => {
       const div = document.createElement("div");
       div.textContent = item;
@@ -10842,6 +10854,7 @@ function cmsAuth_setUser(val, text) {
 // 🔹 RENDER
 // =====================================================
 function cmsAuth_render(list) {
+  
   cmsAuth_userList.innerHTML = "";
 
   list.forEach(item => {
@@ -11994,10 +12007,16 @@ function showList(filter=""){
 
   listDiv.style.display = "block";
 
-  let filtered = ledgerList.filter(l =>
-    l.toLowerCase().includes(filter.toLowerCase())
-  );
+ /* let filtered = ledgerList.filter(l => l.toLowerCase().includes(filter.toLowerCase()) ); */
 
+  let filtered = ledgerList.filter(l => {
+  const name = l.toLowerCase().trim();
+  // Hide these ledger names
+  if ( name === "exp" || name === "haydra" || name === "shakher - c") { return false;}
+  return name.includes(filter.toLowerCase());
+});
+
+// --------------------------------------
   listDiv.innerHTML = "";
 
   filtered.forEach((item, index)=>{
