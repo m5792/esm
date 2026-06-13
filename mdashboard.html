@@ -1122,6 +1122,31 @@ Calculate
 </div>   <!--   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ rationcardPage DIV Stop ------ =============== XXX  -->
 
 
+<div id="poreffPage" class="page">  <!--   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ POREFFPage DIV start ------ =============== Start  -->
+
+  <div style="text-align:center; background-color: #dcdddd; color: #002630; font-weight: bold;"> <strong>PO/Reff View</strong></div> <br/>
+
+  <!-- SEARCH -->
+<div style="margin-bottom:10px">
+    <input
+        type="text"
+        id="poSearch"
+        placeholder="Search PO / Project / Client..."
+        style="
+            width:100%;
+            padding:10px;
+            border:1px solid #ccc;
+            border-radius:6px;
+            box-sizing:border-box;
+        ">
+</div>
+
+<!-- MAIN CONTAINER -->
+<div id="poTableContainer"></div>
+
+</div>   <!--   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ POREFFPage DIV Stop ------ =============== XXX  -->
+
+
 </div>  
 <!-- ========= --- xxx --- ============ ----------------        Div Content  stop HARE -------------------------  ================  ---------- ============ -->
 
@@ -1145,6 +1170,7 @@ Calculate
 <button class="nav-btn" id="toggleDrawer">🔰 Menu</button>
 <button class="nav-btn"onclick="showPage('reportPage')">📒 Dishplay Ledger Report</button>
 <button class="nav-btn" onclick="togglesidebarNotes()" style="cursor: pointer;">☄️ Shortcuts Menu</button>
+<button class="nav-btn" onclick="showPage('poreffPage')" style="cursor: pointer;">☄️ PO/Reff View</button>
 </div>
 
 <!--   ============= -----   Bottam Drawer buttan & Swipe hide  and unhide in mobaile scripe Start  ------ =============== Start  -->
@@ -4601,6 +4627,245 @@ document.addEventListener("reset", function(e) {
 //----------------  stop --------------------
 </script>
 <!-- ~~~~~~~~~~~~~~~~ ============================ Stock Quary and Summary Script  Stop Hare ~~~~~~~~~~~~~~~~ Script Stop ============================ -->
+
+
+
+<!-- ~~~~~~~~~~~~~~~~ ============================ PO/REFF View Script  Start Hare ~~~~~~~~~~~~~~~~ Script Start ============================ -->
+<script>
+
+const POMasterKEY="AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const POMasterID="1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU";
+
+const PO_SCRIPT_URL="https://script.google.com/macros/s/AKfycbwOHYec5NXGIbTO1SOMjnz1TrZKBh7QacaXDb2E_AUT0StNVA61PafvML9IRA-j_ufH/exec";
+
+let MASTER_ROWS=[];
+
+// =========================
+// LOAD DATA
+// =========================
+async function loadPOMaster(){
+
+try{
+
+const datafUrl=`https://sheets.googleapis.com/v4/spreadsheets/${POMasterID}/values/DATAF!A:Z?key=${POMasterKEY}`;
+const datadUrl=`https://sheets.googleapis.com/v4/spreadsheets/${POMasterID}/values/DATAD!A:Z?key=${POMasterKEY}`;
+
+const [fRes,dRes]=await Promise.all([
+fetch(datafUrl),
+fetch(datadUrl)
+]);
+
+const dataf=(await fRes.json()).values?.slice(1)||[];
+const datad=(await dRes.json()).values?.slice(1)||[];
+
+MASTER_ROWS=[];
+
+dataf.forEach((r,i)=>{
+
+let deghinby = r[1] || "";
+let status   = r[2] || "";
+let client   = r[3] || "";
+let project  = r[4] || "";
+let po       = r[6] || "";
+let poAmt    = parseFloat(r[7]) || 0;
+let poWt     = parseFloat(r[8]) || 0;
+let orderby  = r[9] || "";
+let desc     = r[11] || "";
+
+let saleAmt=0;
+let saleWt=0;
+
+datad.forEach(d=>{
+
+if((d[6]||"")===po){
+
+saleAmt += parseFloat(d[7]) || 0;
+saleWt  += parseFloat(d[8]) || 0;
+
+}
+
+});
+
+let balAmt=poAmt-saleAmt;
+let balWt=poWt-saleWt;
+let progress=poAmt
+? (saleAmt/poAmt)*100: 0;
+
+MASTER_ROWS.push({index:i,deghinby,orderby,status,client,project,desc,po, poAmt,saleAmt, poWt,saleWt,balAmt,balWt,progress});
+});
+
+MASTER_ROWS.sort((a,b)=>b.index-a.index);
+renderPOList(MASTER_ROWS);
+document
+.getElementById("poSearch")
+.addEventListener("input",filterTable);
+}
+catch(err){console.error(err);
+document.getElementById("poTableContainer").innerHTML="<h3>Data Load Error</h3>";}
+}
+// =========================
+// LIST RENDER
+// =========================
+function renderPOList(rows){
+
+let html=`
+<div style="display:flex; gap:10px; height:650px;">
+
+<!-- LEFT LIST -->
+<div style="width:300px; overflow:auto; border:1px solid #ccc; padding:8px; background:#fafafa;">
+
+`;
+
+rows.forEach(r=>{
+html+=`
+<div
+onclick="showPOSummary('${r.po}')"
+style="
+padding:8px;
+margin-bottom:6px;
+cursor:pointer;
+background:white;
+border:1px solid #ddd;
+border-radius:6px;
+">
+
+<div style="font-weight:bold;color:#010E59;">${r.po}</div>
+<div style="font-size:12px;color:#555;">${r.project}</div>
+</div>
+
+`;
+});
+
+html+=`
+</div>
+
+<!-- RIGHT DETAILS -->
+
+<div id="poSummary" style="flex:1;overflow:auto;border:1px solid #ccc;padding:15px; background:white;"> Select PO </div>
+</div>
+
+`;
+
+document.getElementById("poTableContainer").innerHTML=html;
+if(rows.length){showPOSummary(rows[0].po);}}
+
+// =========================
+// SHOW DETAILS
+// =========================
+function showPOSummary(po){
+const r=MASTER_ROWS.find(x=>x.po===po);
+if(!r) return;
+document.getElementById("poSummary").innerHTML=`
+<div style="padding:10px; line-height:1.8; font-size:14px;
+">
+
+<h2 style="margin-top:0; color:#010E59;">PO/Reff No:-${r.po} | Clint Name:- ${r.project}</h2>
+<hr>
+<b>Design By :</b> ${r.deghinby}<br>
+<b>Order By :</b> ${r.orderby}<br>
+<b>Client :</b> ${r.client}<br>
+<hr>
+<b>Project :</b> ${r.project}<br>
+<b>Status :</b>
+<span style="color:${r.status==="RUNNING"?"green":"red"};font-weight:bold;">${r.status}</span>
+<br>
+<b>Description :</b>${r.desc}
+<hr>
+<b>PO No :</b> ${r.po}
+<br>
+
+<b>PO Amount :</b> ${r.poAmt.toFixed(0)}
+<br>
+<b>Sales Amount :</b>
+<span style="color:#015944">${r.saleAmt.toFixed(0)}</span>
+<br>
+<b>PO Weight :</b>${r.poWt.toFixed(0)}
+<br>
+<b>Sales Weight :</b>
+<span style="color:#015944">${r.saleWt.toFixed(0)}
+</span>
+<br>
+<b>Balance Amount :</b>
+<span style="color:${r.balAmt<0?'red':'#007FA6'};font-weight:bold;">${r.balAmt.toFixed(0)}</span>
+<br>
+<b>Balance Weight :</b>
+<span style="color:${r.balWt<0?'red':'#99035B'};font-weight:bold;">${r.balWt.toFixed(0)}</span>
+<hr>
+<b>Progress :</b>${r.progress.toFixed(1)}%
+
+<div style="margin-top:5px;height:12px;background:#ddd;border-radius:20px;overflow:hidden;">
+
+<div style="width:${Math.min(r.progress,100)}%;height:12px;background:${r.progress>=100?'limegreen':'orange'};"></div>
+</div>
+<br>
+<button onclick="openPOFile('${r.po}')" style="padding:10px 15px;background:#010E59;color:white;border:none;border-radius:5px;cursor:pointer;">Open PO File</button>
+
+</div>
+
+`;
+
+}
+
+// =========================
+// SEARCH
+// =========================
+function filterTable(){
+
+let val=document
+.getElementById("poSearch")
+.value
+.toLowerCase();
+
+let filtered=MASTER_ROWS.filter(r=>
+
+(r.deghinby||"").toLowerCase().includes(val) ||
+(r.orderby||"").toLowerCase().includes(val) ||
+(r.status||"").toLowerCase().includes(val) ||
+(r.client||"").toLowerCase().includes(val) ||
+(r.project||"").toLowerCase().includes(val) ||
+(r.desc||"").toLowerCase().includes(val) ||
+(r.po||"").toLowerCase().includes(val)
+
+);
+
+renderPOList(filtered);
+
+}
+
+// =========================
+// OPEN FILE
+// =========================
+async function openPOFile(po){
+
+try{
+
+const url= PO_SCRIPT_URL+"?po="+ encodeURIComponent(po);
+const res=await fetch(url);
+const fileUrl=await res.text();
+
+if(fileUrl && fileUrl!=="NOT_FOUND"){
+window.open(fileUrl,"_blank");
+}
+else{
+alert("PO File Not Found");
+}
+
+}
+catch(err){console.error(err);
+alert("Unable to open file");
+}
+}
+
+// =========================
+// AUTO LOAD
+// =========================
+loadPOMaster();
+
+</script>
+<!-- ~~~~~~~~~~~~~~~~ ============================ PO/REFF View Script  Stop Hare ~~~~~~~~~~~~~~~~ Script Stop ============================ -->
+
+
+
 
 
 
