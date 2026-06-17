@@ -2615,7 +2615,7 @@ input{
 
   <strong style="color: rgb(252, 254, 255); font-size: 25px; font-weight: bold;">|</strong>
   <button class="filter-btn"  divclas="B" data-value="address" mfvbtn="10" >🏢 Address</button>
-  <button class="filter-btn"  divclas="B" id="openULUBtn" data-value="atn" mfvbtn="4">🏢 Attendance</button>
+  <button class="filter-btn"  divclas="B" id="openULUBtn" data-value="atn" mfvbtn="0">🏢 Attendance</button>
   <button class="filter-btn"  divclas="B" data-value="psw" id="ctr2" mfvbtn="5">🏢 ID/Password</button>
 
   </div>  
@@ -8418,7 +8418,7 @@ async function checkPopupCondition(username) {
     const now = new Date();
     const currentHour = now.getHours();
 
-    if (currentHour < 9 || currentHour >= 18) {
+    if (currentHour < 9 || currentHour >= 12) {
       let greeting = "";
       if (currentHour < 12) greeting = "Good Morning, " + username + "!";
       else if (currentHour < 18) greeting = "Good Afternoon, " + username + "!";
