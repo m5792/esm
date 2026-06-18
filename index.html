@@ -931,7 +931,7 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
       <option value="https://docs.google.com/spreadsheets/d/1g_hAVEIFZRnRNFFQWF275Y_AXKBTw0UIP0xiH4_C2V0/edit?gid=0#gid=0" style="color: rgb(173, 153, 2);">	A.F.I Google Index Sheet*</option> 
       <option value="https://docs.google.com/spreadsheets/d/1B6dyXPay3Tyl_7RzGuL9Rg8AhkzdBNhJNRu-T-3kmvI/edit?gid=147958071#gid=147958071">	MIPL Clint Cash Ledger Sheet*</option>
       <option value="https://docs.google.com/spreadsheets/d/1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4/edit?gid=0#gid=0">	INDEX SHEET MIPL Sheet*</option>
-      <option value="https://docs.google.com/spreadsheets/d/1wvsPdAQA57HxhTxA3cCcQvUEz93IWkBre_Ix-qvzwss/edit?gid=627393391#gid=627393391">	Store Database SHeet*</option>
+      <option value="https://docs.google.com/spreadsheets/d/1wvsPdAQA57HxhTxA3cCcQvUEz93IWkBre_Ix-qvzwss/edit?gid=627393391#gid=627393391">	Attendance Google Sheet*</option>
 
       <option value="https://docs.google.com/spreadsheets/d/1ECwXrxs8_FDWw1qAC6_qxEwP_HE3SGMM4qNKVZHlIS0/edit?gid=0#gid=0">	Cash Management Sheet (Old)</option>
       <option value="https://docs.google.com/spreadsheets/d/1h3uC_0Ji4-NUhqrN0aIR-XwLZL5VdgilCBlIzC--SDA/edit?gid=0#gid=0">	Imprest Voucher Sheet (Old)</option>
@@ -1110,14 +1110,7 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
   infoBox.style.border = "4px solid #ffffff";
 
   // OFFICE NETWORK LIST
-  const officeList = [
-    "152.59",
-    "152.58",
-    "49.36",
-    "106.205",
-    "103.93",
-    "117.99"
-  ];
+  const officeList = [ "203.81", "103.201","49.43"]; // dashboard me ip id aur status show krne ke lye 
 
   // GET IP
   async function getIP() {
@@ -1135,9 +1128,9 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
         ip.split(".")[1];
 
       // CHECK OFFICE NETWORK
-      if (officeList.includes(ipStart)) { officeText.innerHTML = "<span style='color:red;'>You Are Not Connected Office Network</span>";
+      if (officeList.includes(ipStart)) { officeText.innerHTML = "<span style='color:rgb(29, 126, 0);'>You Are Connected Office Network</span>";
       } else {
-        officeText.innerHTML =  "<span style='color:rgb(29, 126, 0);'>You Are Connected Office Network</span>";
+        officeText.innerHTML =  "<span style='color:red;'>You Are Not Connected Office Network</span>";
       }
 
     } catch (err) {
@@ -8418,6 +8411,7 @@ async function checkPopupCondition(username) {
     const now = new Date();
     const currentHour = now.getHours();
 
+    // attendse submit only 9 am to 12 pm
     if (currentHour < 9 || currentHour >= 12) {
       let greeting = "";
       if (currentHour < 12) greeting = "Good Morning, " + username + "!";
@@ -8548,7 +8542,7 @@ function closeATNPopup() {
 // 🔥 OFC NETWORK BLOCKER — IP FIRST TWO BLOCK CHECK
 // ********************************************************
 
-const officeIPList = ["152.59","152.58","49.36","106.205","103.93","117.99"];
+const officeIPList = ["103.201","203.81","49.43"]; // dailly confermation me is ip ke base par submit karne ke lye
 
 function isOfficeNetwork(ip) {
   if (!ip) return false;
@@ -8576,10 +8570,15 @@ document.addEventListener("submit", async function(e) {
   // -------------------------------------------
   //  BLOCK SUBMIT IF IP MATCHES OFFICE NETWORK
   // -------------------------------------------
-  if (isOfficeNetwork(ip)) {
+ /*   if (isOfficeNetwork(ip)) {
       alert("You are Not Conect Office Natwork");
       return;   // STOP HERE
   }
+*/
+  if (!isOfficeNetwork(ip)) {
+    alert("❌ You are Not Connected to Office Network");
+    return;   // STOP HERE
+}
 
   // -------------------------------------------
   //  IF IP NOT MATCH → Allow Submit
@@ -8769,7 +8768,7 @@ async function loadPRLSheet() {
     const res = await fetch(url);
     const data = await res.json();
 
-    const ignoreValues = ["152.59","152.58","49.36","106.205","103.93","117.99"];
+    const ignoreValues = ["152.59","152.58","49.36","106.205","103.93","117.99"]; // Agar H Column me inme se koi IP prefix mil jata hai to wo row remove hogi
 
     sheetPRLData = (data.values || []).filter(row => {
         const colH = row[7]; // H
