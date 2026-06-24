@@ -8222,7 +8222,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 // ================= CONFIG =================
 const apiNBKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheetNBId = "1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4";
-const rangeNB = "DATABASE!K:S";
+const rangeNB = "DATABASE!K:T";
 
 // ================= CSS =================
 const css = `
@@ -8320,7 +8320,9 @@ li.innerHTML = `
   🧾 Inv: ${row[6] || "-"}<br>
   📅 Date: ${row[1] || "-"} |
   
-  <span class="${statusClass}" style="background-color:${bgColor}; color:white; padding:2px 6px; border-radius:4px; display:inline-block;">${status}</span>
+  <span class="${statusClass}" style="background-color:${bgColor}; color:white; padding:2px 6px; border-radius:4px; display:inline-block;">${status}</span> |
+
+  <strong>💸 Balance As Per PO:</strong> Rs. ${row[9] || "-"} 
 
   ${remark ? `<div class="remarkBox">${remark}</div>` : ""}
 `;
