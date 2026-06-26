@@ -396,123 +396,484 @@ th {
 // ================= CONFIG =================
 const apiNBKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheetNBId = "1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4";
-const rangeNB = "DATABASE!K:S";
+const rangeNB = "DATABASE!K:T";
 
-// ================= CSS =================
+// ================= CSS (STYLISH & MODERN UI) =================
 const css = `
-.status-loading    { background:#ff4d4d; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
-.status-processing { background:#fd2222; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
-.status-done  { background:#28a745; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
-.status-complete   { background:#28a745; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
-.status-unloading  { background:#39b3d8; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
+/* Status Badges */
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.status-loading { background: #e74c3c; color: #fff; }
+.status-processing { background: #e67e22; color: #fff; }
+.status-done { background: #2ecc71; color: #fff; }
+.status-complete { background: #27ae60; color: #fff; }
+.status-unloading { background: #3498db; color: #fff; }
 
-.remarkBox{
-  background:#000;
-  color:#fff;
-  padding:6px;
-  margin-top:6px;
-  border-radius:5px;
-  font-size:13px;
+/* Flex Container for Status and Button Alignment */
+.status-action-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 5px;
+  vertical-align: middle;
 }
 
-ul li{
-  list-style:none;
-  margin-bottom:10px;
-  padding:10px;
-  border-left:5px solid #8b0202;
-  background:#f4f4f4;
-  font-size:14px;
-  border-radius:6px;
+/* Modern List Design */
+ul { padding: 0; margin: 0; }
+ul li {
+  list-style: none;
+  margin-bottom: 15px;
+  padding: 16px;
+  border-left: 6px solid #0056b3;
+  background: #ffffff;
+  font-size: 14px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  transition: transform 0.2s ease;
+}
+ul li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+.remarkBox {
+  background: #2c3e50;
+  color: #fff;
+  padding: 8px 12px;
+  margin-top: 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* Stylish PI Button */
+.piBtn {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: #fff;
+  border: none;
+  padding: 5px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 3px 6px rgba(0,123,255,0.3);
+  transition: all 0.2s ease;
+}
+.piBtn:hover {
+  background: linear-gradient(135deg, #0056b3, #004085);
+  box-shadow: 0 4px 10px rgba(0,123,255,0.4);
+  transform: scale(1.05);
+}
+
+/* Modal Popup Styles */
+.piModal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  z-index: 999999;
+  animation: fadeIn 0.3s ease;
+}
+.piBox {
+  background: #fff;
+  width: 90%;
+  max-width: 850px;
+  max-height: 85vh;
+  overflow: auto;
+  margin: 5vh auto;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  position: relative;
+}
+.piTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 13px;
+}
+.piTable td, .piTable th {
+  border: 1px solid #e2e8f0;
+  padding: 10px 12px;
+  text-align: left;
+}
+.piHead {
+  background: #1e293b;
+  color: #fff;
+}
+.piTable tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+/* Sky Blue Dynamic Highlighter Definition matching 'OV' cell specs */
+.row-highlight-ov {
+  background-color: #e0f2fe !important;
+}
+
+.closePI {
+  float: right;
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  transition: background 0.2s;
+}
+.closePI:hover { background: #dc2626; }
+
+@keyframes fadeIn {
+  from { opacity: 0; } to { opacity: 1; }
 }
 `;
-document.head.appendChild(Object.assign(document.createElement("style"),{innerText:css}));
 
-// ================= DATE =================
-function formatDateToYYYYMMDD(dateObj) {
+document.head.appendChild(
+  Object.assign(document.createElement("style"), { innerText: css })
+);
+
+// ================= POPUP HTML =================
+document.body.insertAdjacentHTML(
+"beforeend",
+`
+<div id="piModal" class="piModal">
+  <div class="piBox">
+    <button class="closePI" onclick="document.getElementById('piModal').style.display='none'"> ✖ Close </button>
+    <div id="piContent"></div> <br>
+    <button class="printPI" onclick="printPIContent()" style="border: none; color: balck; font-weight: bold; font-size: 16px;cursor: pointer;align-items: right;">🖨️ Print</button>
+  </div>
+</div>
+`
+);
+
+// ================= DATE HELPERS =================
+function formatDateToYYYYMMDD(dateObj){
   return dateObj.toISOString().split("T")[0];
 }
 
-function formatCustomDate(dateStr) {
-  const m = {Jan:"01",Feb:"02",Mar:"03",Apr:"04",May:"05",Jun:"06",Jul:"07",Aug:"08",Sep:"09",Oct:"10",Nov:"11",Dec:"12"};
-  const p = dateStr.split("-");
+function formatCustomDate(dateStr){
+  const m={
+    Jan:"01",Feb:"02",Mar:"03",Apr:"04",May:"05",Jun:"06",
+    Jul:"07",Aug:"08",Sep:"09",Oct:"10",Nov:"11",Dec:"12"
+  };
+  const p=dateStr.split("-");
   return (p.length===3) ? `${p[2]}-${m[p[1]]}-${p[0].padStart(2,"0")}` : "";
 }
 
-// ================= LOAD =================
+// ================= LOAD NOTICE BOARD =================
 async function loadNoticeBoard(){
+  try {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetNBId}/values/${rangeNB}?key=${apiNBKey}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    const rows = data.values;
 
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetNBId}/values/${rangeNB}?key=${apiNBKey}`;
-  const response = await fetch(url);
-  const data = await response.json();
+    const plantUL = document.getElementById("plantList");
+    const storeUL = document.getElementById("storeList");
 
-  const rows = data.values;
-  const plantUL = document.getElementById("plantList");
-  const storeUL = document.getElementById("storeList");
+    if(plantUL) plantUL.innerHTML = "";
+    if(storeUL) storeUL.innerHTML = "";
 
-  plantUL.innerHTML = "";
-  storeUL.innerHTML = "";
-
-  if(!rows || rows.length<=1){
-    plantUL.innerHTML="<li>No Data</li>";
-    return;
-  }
-
-  // last 3 days
-  const today = new Date();
-  let allowedDates=[];
-  for(let i=0;i<3;i++){
-    let d=new Date();
-    d.setDate(today.getDate()-i);
-    allowedDates.push(formatDateToYYYYMMDD(d));
-  }
-
-  rows.forEach((row,index)=>{
-    if(index===0) return;
-
-    const formattedDate = row[1] ? formatCustomDate(row[1]) : "";
-    if(!allowedDates.includes(formattedDate)) return;
-
-    let statusClass="";
-    const status=(row[5]||"").toUpperCase();
-
-    if(status==="LOADING") statusClass="status-loading";
-    else if(status==="PROCESSING") statusClass="status-processing";
-    else if(status==="Done") statusClass="status-done";
-    else if(status==="UNLOADING") statusClass="status-unloading";
-    else if(status==="COMPLETE") statusClass="status-complete";
-
-    const remark=row[8]||"";
-
-    const li=document.createElement("li");
-
-  const bgColor = status === "LOAD" ? "green" : status === "DONE" ? "green" :  status === "UNLOAD" ? "red" : "blue";
-
-li.innerHTML = `
-  <strong>${row[2] || ""}</strong> (${row[0] || ""})<br>
-  🚚 Vehicle: ${row[3] || "-"} |
-  📄 Job: ${row[4] || "-"} |
-  🧾 Inv: ${row[6] || "-"}<br>
-  📅 Date: ${row[1] || "-"} |
-  
-  <span class="${statusClass}" style="background-color:${bgColor}; color:white; padding:2px 6px; border-radius:4px; display:inline-block;">${status}</span>
-
-  ${remark ? `<div class="remarkBox">${remark}</div>` : ""}
-`;
-
-    // ===== Separate UL =====
-    const type=(row[0]||"").toUpperCase();
-
-    if(type==="STORE"){
-      storeUL.appendChild(li);
-    }else if(["PL1","PL2","PL3","CHALLAN","STOCK TRANSFER"].includes(type)){
-      plantUL.appendChild(li);
+    if(!rows || rows.length <= 1){
+      if(plantUL) plantUL.innerHTML = "<li>No Data Available</li>";
+      return;
     }
 
-  });
+    const today = new Date();
+    let allowedDates = [];
+    for(let i=0; i<3; i++){
+      let d = new Date();
+      d.setDate(today.getDate() - i);
+      allowedDates.push(formatDateToYYYYMMDD(d));
+    }
+
+    rows.forEach((row, index) => {
+      if(index === 0) return;
+
+      const formattedDate = row[1] ? formatCustomDate(row[1]) : "";
+      if(!allowedDates.includes(formattedDate)) return;
+
+      let statusClass = "status-badge ";
+      const status = (row[5] || "").toUpperCase().trim();
+
+      if(status==="LOADING") statusClass += "status-loading";
+      else if(status==="PROCESSING") statusClass += "status-processing";
+      else if(status==="DONE") statusClass += "status-done";
+      else if(status==="UNLOADING") statusClass += "status-unloading";
+      else if(status==="COMPLETE") statusClass += "status-complete";
+      else statusClass += "status-processing"; 
+
+      const remark = row[8] || "";
+      const type = (row[0] || "").toUpperCase().trim();
+      
+      // Dynamic Parser Applied to handle formatted string balance arrays seamlessly across PL3 modules too
+      const parsedBalanceStr = (row[9] || "0").toString().replace(/[^0-9.-]/g, "");
+      const balance = parsedBalanceStr ? Number(parsedBalanceStr) : 0;
+
+      const li = document.createElement("li");
+
+      li.innerHTML = `
+      <div class="status-action-container">
+          <strong>${row[2] || ""}</strong> (${row[0] || ""})
+          <span class="${statusClass}">${status || "UNKNOWN"}</span>
+          ${
+            ["PL1", "PL2", "PL3"].includes(type)
+              ? `<button class="piBtn" onclick="showPI('${type}')">📄 PI Details</button>`
+              : ""
+          }
+        </div>
+
+        <br>
+        📅 Date: ${row[1] || "-"} | 
+        🚚 Vehicle: <b>${row[3] || "-"}</b> | 
+        📄 Job: <b>${row[4] || "-"}</b> | 
+        🧾 Inv: <b>${row[6] || "-"}</b>
+        <br>
+
+        ${
+          type !== "STORE" && balance > 0
+            ? `<span style="color: rgb(0, 36, 70); font-weight:600; font-size: 14px; display:inline-block; margin-top:8px;">💸 Balance As Per PO: Rs. ${balance.toLocaleString('en-IN')}</span>`
+            : ""
+        }
+
+        ${remark ? `<div class="remarkBox">⚠️ Remark: ${remark}</div>` : ""}
+      `;
+
+      if(type === "STORE" && storeUL){
+        storeUL.appendChild(li);
+      } else if(["PL1", "PL2", "PL3", "CHALLAN", "STOCK TRANSFER"].includes(type) && plantUL){
+        plantUL.appendChild(li);
+      }
+    });
+  } catch (error) {
+    console.error("Error loading board:", error);
+  }
 }
 
 loadNoticeBoard();
 
+// ================= PI POPUP FUNCTION =================
+async function showPI(type){
+  let range = "";
+  if(type === "PL1") range = "BALANCE!J1:M20";
+  else if(type === "PL2") range = "BALANCE!J22:M40";
+  // Expanded safe indexing depth arrays boundaries to ensure structural parsing safely across PL3 units
+  else if(type === "PL3") range = "BALANCE!J41:M62";
+  else return;
+
+  try {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetNBId}/values/${range}?key=${apiNBKey}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    const v = data.values || [];
+
+    if(v.length === 0) {
+      document.getElementById("piContent").innerHTML = "<h3>No data found for this Plant.</h3>";
+      document.getElementById("piModal").style.display = "block";
+      return;
+    }
+
+    // Dynamic scanner architecture: Automatically extracts elements based on keyword match signatures
+    let plant = type;
+    let company = "-";
+    let po = "-";
+    let piAmount = "-";
+    let receipt = "-";
+
+    if(v[0] && v[0].length > 0) {
+      plant = v[0][0] || type;
+      company = v[0][1] || "-";
+      po = v[0][2] || "-";
+      piAmount = v[0][3] || "-";
+    }
+    if(v[2] && v[2].length > 1) {
+      receipt = v[2][1] || "-";
+      recamt = v[2][3] || "-";
+    }
+
+    // Secondary fallback matching rule set to prevent empty layout maps
+    v.forEach((r) => {
+      if(!r || r.length === 0) return;
+      const chk0 = (r[0] || "").toString().trim().toUpperCase();
+      const chk1 = (r[1] || "").toString().trim().toUpperCase();
+      if(chk0.includes("TOTAL RECEIPT")) {
+        receipt = r[1] || receipt;
+      } else if(chk1.includes("TOTAL RECEIPT")) {
+        receipt = r[2] || receipt;
+      }
+    });
+
+    let html = `
+      <h2 style="margin-top:0; color:#1e293b; font-family:sans-serif;">🏢 ${plant} Performa Invoice</h2>
+      
+      <span style="color: rgb(0, 36, 70); font-weight:600; font-size: 14px; display:inline-block; margin-top:8px;">Party:-  ${company}</span> |
+      <span style="color: rgb(0, 36, 70); font-weight:600; font-size: 14px; display:inline-block; margin-top:8px;">PO/Reff No:-  ${po}</span>
+
+      <table class="piTable" style="font-size: 14px;">
+       
+        <tr>
+          <td><b>Total Receivables Amt</b></td>
+          <td style="color: blue;font-weight: bold; font-size: 16px;"">${recamt}</td>
+          <td><b>Total Receipt</b></td>
+          <td style="color: rgb(134, 5, 0);font-weight: bold; font-size: 16px;"">${receipt}</td>
+          <td><b>Total Due Amount</b></td>
+          <td style="color: rgb(0, 70, 41); font-weight: bold; font-size: 16px;">${piAmount}</td>
+        </tr>
+      </table>
+      <br>
+      <table class="piTable" style="font-size: 14px;">
+        <tr class="piHead">
+          <th>R-CODE</th>
+          <th>DESCRIPTION</th>
+          <th>ORDER DETAILS</th>
+          <th>AMOUNT</th>
+        </tr>
+        
+    `;
+
+    // Loop shifts dynamically down handling processing safe structural mappings
+    for(let i = 3; i < v.length; i++){
+      const r = v[i];
+      if(!r || r.length === 0) continue;
+      
+      const rcode = (r[0] || "").toString().trim();
+      const rdesc = (r[1] || "").toString().trim();
+      
+      // Headers check
+      if(rcode === type || rcode.toUpperCase().includes("R-CODE") || rcode.toUpperCase().includes("TOTAL") || rdesc.toUpperCase().includes("TOTAL RECEIPT")) continue;
+
+      // Sky Blue Highlighter Engine Conditional matching signature exact values
+      const isOV = rcode.toUpperCase() === "OV";
+      const highlightClass = isOV ? 'class="row-highlight-ov"' : '';
+
+      html += `
+        <tr ${highlightClass}>
+          <td><b>${rcode}</b></td>
+          <td>${r[1] || ""}</td>
+          <td>${r[2] || "-"}</td>
+          <td>${r[3] || "-"}</td>
+        </tr>
+      `;
+    }
+
+    html += `</table>`;
+
+    document.getElementById("piContent").innerHTML = html;
+    document.getElementById("piModal").style.display = "block";
+
+  } catch (error) {
+    console.error("Error loading PI:", error);
+    // Graceful presentation layer fallback pipeline
+    document.getElementById("piModal").style.display = "block";
+  }
+}
+
+// ================= PRINT FUNCTION WITH COMPANY HEADER =================
+function printPIContent() {
+  const content = document.getElementById("piContent").innerHTML;
+  if (!content || content.trim() === "") {
+    alert("Print karne ke liye koi data nahi hai!");
+    return;
+  }
+
+  // Current Date ko DD-MM-YYYY format me nikalne ke liye
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, '0');
+  const month = String(today.getMonth() + 1).padStart(2, '0'); // January 0 hota hai
+  const year = today.getFullYear();
+  const currentDateStr = `${day}-${month}-${year}`;
+
+  // Ek temporary naya window open karenge sirf print content ke liye
+  const printWindow = window.open("", "_blank", "width=900,height=650");
+  
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print PI Details</title>
+        <style>
+          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; color: #333; }
+          
+          /* Header Layout styling */
+          .print-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid #1e293b;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+          }
+          .company-details {
+            text-align: left;
+          }
+          .date-details {
+            text-align: right;
+            font-size: 14px;
+            color: black;
+            font-weight: 500;
+          }
+
+          /* Table styling */
+          .piTable { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
+          .piTable td, .piTable th { border: 1px solid #e2e8f0; padding: 10px 12px; text-align: left; }
+          .piHead { background: #1e293b !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .piTable tr:nth-child(even) { background-color: #f8fafc; }
+          .row-highlight-ov { background-color: #e0f2fe !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          
+          @media print {
+            .piHead { background: #1e293b !important; color: #fff !important; }
+            .row-highlight-ov { background-color: #e0f2fe !important; }
+            .print-header { display: flex !important; } /* Ensure flex layout works perfectly in print */
+          }
+        </style>
+      </head>
+      <body>
+        
+        <div class="print-header">
+          <div class="company-details">
+            <div style="font-size: 16px; color: black; font-weight: bold;">Multitech Infracon Pvt. Ltd.</div>
+            <div style="font-size: 14px; color: black;">N.H.74, 12th Km. Stone, Way to Suraj Stone Crusher</div>
+            <div style="font-size: 14px; color: black;">Vill. Dabhora Mustakam, Bazpur Road Kashipur</div>
+            <div style="font-size: 14px; color: black;">CIN: U45200UR2019PT</div>
+          </div>
+          <div class="date-details">
+            <b>Date:</b> ${currentDateStr}
+          </div>
+        </div>
+
+        ${content}
+        
+        <script>
+          window.onload = function() {
+            window.print();
+            window.close();
+          };
+        <\/script>
+      </body>
+    </html>
+  `);
+  
+  printWindow.document.close();
+}
 </script>
 
 <!---- =========== LODING NOTICE BOARD SCRIPT STOP =====================----------- -->
