@@ -8471,14 +8471,13 @@ async function loadNoticeBoard(){
 
         <br>
         📅 Date: ${row[1] || "-"} | 
-        🚚 Vehicle: <b>${row[3] || "-"}</b> | 
-        📄 Job: <b>${row[4] || "-"}</b> | 
+        🚚 Vehicle: <b>${row[3] || "-"}</b> |  
         🧾 Inv: <b>${row[6] || "-"}</b>
         <br>
-
+        📄 Job: <b>${row[4] || "-"}</b> | 
         ${
           type !== "STORE" && balance > 0
-            ? `<span style="color: rgb(0, 36, 70); font-weight:600; font-size: 14px; display:inline-block; margin-top:8px;">💸 Balance As Per PO: Rs. ${balance.toLocaleString('en-IN')}</span>`
+            ? `<span style="color: rgb(0, 36, 70); font-weight:600; font-size: 14px; display:inline-block; margin-top:8px;">💸 Closing Balance: Rs. ${balance.toLocaleString('en-IN')}</span>`
             : ""
         }
 
@@ -8501,10 +8500,10 @@ loadNoticeBoard();
 // ================= PI POPUP FUNCTION =================
 async function showPI(type){
   let range = "";
-  if(type === "PL1") range = "BALANCE!J1:M20";
-  else if(type === "PL2") range = "BALANCE!J22:M40";
+  if(type === "PL1") range = "BALANCE!J1:M30";
+  else if(type === "PL2") range = "BALANCE!P1:S30";
   // Expanded safe indexing depth arrays boundaries to ensure structural parsing safely across PL3 units
-  else if(type === "PL3") range = "BALANCE!J41:M62";
+  else if(type === "PL3") range = "BALANCE!V1:Y30";
   else return;
 
   try {
