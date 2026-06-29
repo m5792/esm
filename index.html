@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>MIPL e|SmTally V-6.1</title>
+  <title>MIPL e|SmTally V-6.2</title>
  <style>
     * {
       box-sizing: border-box;
@@ -891,6 +891,9 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
 <span style="color: #848585; font-weight: bold; font-size: 22px;">|</span>
 <button onclick="window.open('https://docs.google.com/spreadsheets/d/1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4/edit?gid=2081509697#gid=2081509697','_blank')" mfvbtn="11" style="text-align:center;border: none; background-color: #f9fbfc; color: #011738; font-weight: bold; font-size: 16px;cursor: pointer;">Packing List </span></button>
 <span style="color: #848585; font-weight: bold; font-size: 22px;">|</span>
+
+<button id="mffUnique_triggerModalBtn" style="text-align:center;border: none; background-color: #f9fbfc; color: #011738; font-weight: bold; font-size: 16px;cursor: pointer;">🏢 Performa Invoice</button>
+<span style="color: #848585; font-weight: bold; font-size: 22px;">|</span>
  <select onchange="if(this.value) window.open(this.value, '_blank'); this.selectedIndex = 0;" mfvbtn="6" style="text-align:center;border: none; background-color: #f9fbfc; color: #011738; font-weight: bold; font-size: 16px;cursor: pointer;">
 <option value="">📂 Select Google Sheet to Open</option>
 <option value="https://docs.google.com/spreadsheets/d/1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4/edit?gid=2081509697#gid=2081509697">Packing List</option>
@@ -1206,6 +1209,7 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
       <ul id="pendingList"></ul>
       </div>
 
+       
   </div>
 <!-- ============  Right Side Section stop ====================== -->
 
@@ -8220,547 +8224,129 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 <script>
 // ================= CONFIG =================
-// ================= CONFIG =================
 const apiNBKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const sheetNBId = "1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4";
 const rangeNB = "DATABASE!K:T";
 
-// ================= CSS (STYLISH & MODERN UI) =================
+// ================= CSS =================
 const css = `
-/* Status Badges */
-.status-badge {
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-weight: 600;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-.status-loading { background: #e74c3c; color: #fff; }
-.status-processing { background: #e67e22; color: #fff; }
-.status-done { background: #2ecc71; color: #fff; }
-.status-complete { background: #27ae60; color: #fff; }
-.status-unloading { background: #3498db; color: #fff; }
+.status-loading    { background:#ff4d4d; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
+.status-processing { background:#fd2222; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
+.status-done  { background:#28a745; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
+.status-complete   { background:#28a745; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
+.status-unloading  { background:#39b3d8; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
 
-/* Flex Container for Status and Button Alignment */
-.status-action-container {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-left: 5px;
-  vertical-align: middle;
+.remarkBox{
+  background:#000;
+  color:#fff;
+  padding:6px;
+  margin-top:6px;
+  border-radius:5px;
+  font-size:13px;
 }
 
-/* Modern List Design */
-ul { padding: 0; margin: 0; }
-ul li {
-  list-style: none;
-  margin-bottom: 15px;
-  padding: 16px;
-  border-left: 6px solid #0056b3;
-  background: #ffffff;
-  font-size: 14px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
-  transition: transform 0.2s ease;
-}
-ul li:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-}
-
-.remarkBox {
-  background: #2c3e50;
-  color: #fff;
-  padding: 8px 12px;
-  margin-top: 10px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-style: italic;
-}
-
-/* Stylish PI Button */
-.piBtn {
-  background: linear-gradient(135deg, #007bff, #0056b3);
-  color: #fff;
-  border: none;
-  padding: 5px 14px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  box-shadow: 0 3px 6px rgba(0,123,255,0.3);
-  transition: all 0.2s ease;
-}
-.piBtn:hover {
-  background: linear-gradient(135deg, #0056b3, #004085);
-  box-shadow: 0 4px 10px rgba(0,123,255,0.4);
-  transform: scale(1.05);
-}
-
-/* Modal Popup Styles */
-.piModal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(5px);
-  z-index: 999999;
-  animation: fadeIn 0.3s ease;
-}
-.piBox {
-  background: #fff;
-  width: 100%;
-  max-width: 1200px;
-  max-height: 85vh;
-  overflow: auto;
-  margin: 5vh auto;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-  position: relative;
-}
-.piTable {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-  font-size: 13px;
-}
-.piTable td, .piTable th {
-  border: 1px solid #e2e8f0;
-  padding: 10px 12px;
-  text-align: left;
-}
-.piHead {
-  background: #1e293b !important;
-  color: #fff !important;
-  -webkit-print-color-adjust: exact; 
-  print-color-adjust: exact;
-}
-.piTable tr:nth-child(even) {
-  background-color: #f8fafc;
-}
-
-/* Sky Blue Dynamic Highlighter Definition matching 'OV' cell specs */
-.row-highlight-ov {
-  background-color: #e0f2fe !important;
-  -webkit-print-color-adjust: exact; 
-  print-color-adjust: exact;
-}
-
-/* LINK LEDGER */
-.row-highlight-link {
-  background: #000000 !important;
-  color: #ffffff !important;
-  font-weight: bold;
-  -webkit-print-color-adjust: exact; 
-  print-color-adjust: exact;
-}
-.row-highlight-link td {
-  color: #ffffff !important;
-  font-weight: bold;
-}
-
-/* TOTAL */
-.row-highlight-total {
-  background: #e6e6e6 !important;
-  font-weight: bold;
-  -webkit-print-color-adjust: exact; 
-  print-color-adjust: exact;
-}
-.row-highlight-total td {
-  font-weight: bold;
-}
-
-.closePI {
-  float: right;
-  background: #ef4444;
-  color: #fff;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 12px;
-  transition: background 0.2s;
-}
-.closePI:hover { background: #dc2626; }
-
-@keyframes fadeIn {
-  from { opacity: 0; } to { opacity: 1; }
+ul li{
+  list-style:none;
+  margin-bottom:10px;
+  padding:10px;
+  border-left:5px solid #8b0202;
+  background:#f4f4f4;
+  font-size:14px;
+  border-radius:6px;
 }
 `;
+document.head.appendChild(Object.assign(document.createElement("style"),{innerText:css}));
 
-document.head.appendChild(
-  Object.assign(document.createElement("style"), { innerText: css })
-);
-
-// ================= POPUP HTML =================
-document.body.insertAdjacentHTML(
-"beforeend",
-`
-<div id="piModal" class="piModal">
-  <div class="piBox">
-    <button class="closePI" onclick="document.getElementById('piModal').style.display='none'"> ✖ Close </button>
-    <div id="piContent"></div> <br>
-    <button class="printPI" onclick="printPIContent()" style="border: none; color: black; font-weight: bold; font-size: 16px; cursor: pointer; float: right; margin-right: 10px;">🖨️ Print</button>
-  </div>
-</div>
-`
-);
-
-// ================= DATE HELPERS =================
-function formatDateToYYYYMMDD(dateObj){
+// ================= DATE =================
+function formatDateToYYYYMMDD(dateObj) {
   return dateObj.toISOString().split("T")[0];
 }
 
-function formatCustomDate(dateStr){
-  const m={
-    Jan:"01",Feb:"02",Mar:"03",Apr:"04",May:"05",Jun:"06",
-    Jul:"07",Aug:"08",Sep:"09",Oct:"10",Nov:"11",Dec:"12"
-  };
-  const p=dateStr.split("-");
+function formatCustomDate(dateStr) {
+  const m = {Jan:"01",Feb:"02",Mar:"03",Apr:"04",May:"05",Jun:"06",Jul:"07",Aug:"08",Sep:"09",Oct:"10",Nov:"11",Dec:"12"};
+  const p = dateStr.split("-");
   return (p.length===3) ? `${p[2]}-${m[p[1]]}-${p[0].padStart(2,"0")}` : "";
 }
 
-// ================= LOAD NOTICE BOARD =================
+// ================= LOAD =================
 async function loadNoticeBoard(){
-  try {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetNBId}/values/${rangeNB}?key=${apiNBKey}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    const rows = data.values;
 
-    const plantUL = document.getElementById("plantList");
-    const storeUL = document.getElementById("storeList");
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetNBId}/values/${rangeNB}?key=${apiNBKey}`;
+  const response = await fetch(url);
+  const data = await response.json();
 
-    if(plantUL) plantUL.innerHTML = "";
-    if(storeUL) storeUL.innerHTML = "";
+  const rows = data.values;
+  const plantUL = document.getElementById("plantList");
+  const storeUL = document.getElementById("storeList");
 
-    if(!rows || rows.length <= 1){
-      if(plantUL) plantUL.innerHTML = "<li>No Data Available</li>";
-      return;
-    }
+  plantUL.innerHTML = "";
+  storeUL.innerHTML = "";
 
-    const today = new Date();
-    let allowedDates = [];
-    for(let i=0; i<3; i++){
-      let d = new Date();
-      d.setDate(today.getDate() - i);
-      allowedDates.push(formatDateToYYYYMMDD(d));
-    }
-
-    rows.forEach((row, index) => {
-      if(index === 0) return;
-
-      const formattedDate = row[1] ? formatCustomDate(row[1]) : "";
-      if(!allowedDates.includes(formattedDate)) return;
-
-      let statusClass = "status-badge ";
-      const status = (row[5] || "").toUpperCase().trim();
-
-      if(status==="LOADING") statusClass += "status-loading";
-      else if(status==="PROCESSING") statusClass += "status-processing";
-      else if(status==="DONE") statusClass += "status-done";
-      else if(status==="UNLOADING") statusClass += "status-unloading";
-      else if(status==="COMPLETE") statusClass += "status-complete";
-      else statusClass += "status-processing"; 
-
-      const remark = row[8] || "";
-      const type = (row[0] || "").toUpperCase().trim();
-      
-      const parsedBalanceStr = (row[9] || "0").toString().replace(/[^0-9.-]/g, "");
-      const balance = parsedBalanceStr ? Number(parsedBalanceStr) : 0;
-
-      const li = document.createElement("li");
-
-      li.innerHTML = `
-      <div class="status-action-container">
-          <strong>${row[2] || ""}</strong> (${row[0] || ""})
-          <span class="${statusClass}">${status || "UNKNOWN"}</span>
-          ${
-            ["PL1", "PL2", "PL3"].includes(type)
-              ? `<button class="piBtn" onclick="showPI('${type}')">📄 PI Details</button>`
-              : ""
-          }
-        </div>
-
-        <br>
-        📅 Date: ${row[1] || "-"} | 
-        🚚 Vehicle: <b>${row[3] || "-"}</b> |  
-        🧾 Inv: <b>${row[6] || "-"}</b>
-        <br>
-        📄 Job: <b>${row[4] || "-"}</b> | 
-        ${
-          type !== "STORE" && balance > 0
-            ? `<span style="color: rgb(0, 36, 70); font-weight:600; font-size: 14px; display:inline-block; margin-top:8px;">💸 Closing Balance: Rs. ${balance.toLocaleString('en-IN')}</span>`
-            : ""
-        }
-
-        ${remark ? `<div class="remarkBox">⚠️ Remark: ${remark}</div>` : ""}
-      `;
-
-      if(type === "STORE" && storeUL){
-        storeUL.appendChild(li);
-      } else if(["PL1", "PL2", "PL3", "CHALLAN", "STOCK TRANSFER"].includes(type) && plantUL){
-        plantUL.appendChild(li);
-      }
-    });
-  } catch (error) {
-    console.error("Error loading board:", error);
+  if(!rows || rows.length<=1){
+    plantUL.innerHTML="<li>No Data</li>";
+    return;
   }
+
+  // last 3 days
+  const today = new Date();
+  let allowedDates=[];
+  for(let i=0;i<3;i++){
+    let d=new Date();
+    d.setDate(today.getDate()-i);
+    allowedDates.push(formatDateToYYYYMMDD(d));
+  }
+
+  rows.forEach((row,index)=>{
+    if(index===0) return;
+
+    const formattedDate = row[1] ? formatCustomDate(row[1]) : "";
+    if(!allowedDates.includes(formattedDate)) return;
+
+    let statusClass="";
+    const status=(row[5]||"").toUpperCase();
+
+    if(status==="LOADING") statusClass="status-loading";
+    else if(status==="PROCESSING") statusClass="status-processing";
+    else if(status==="Done") statusClass="status-done";
+    else if(status==="UNLOADING") statusClass="status-unloading";
+    else if(status==="COMPLETE") statusClass="status-complete";
+
+    const remark=row[8]||"";
+
+    const li=document.createElement("li");
+
+  const bgColor = status === "LOAD" ? "green" : status === "DONE" ? "green" :  status === "UNLOAD" ? "red" : "blue";
+
+li.innerHTML = `
+  <strong>${row[2] || ""}</strong> (${row[0] || ""})<br>
+  🚚 Vehicle: ${row[3] || "-"} |
+  📄 Job: ${row[4] || "-"} |
+  🧾 Inv: ${row[6] || "-"}<br>
+  📅 Date: ${row[1] || "-"} |
+  
+  <span class="${statusClass}" style="background-color:${bgColor}; color:white; padding:2px 6px; border-radius:4px; display:inline-block;">${status}</span> |
+
+
+
+  ${remark ? `<div class="remarkBox">${remark}</div>` : ""}
+`;
+
+    // ===== Separate UL =====
+    const type=(row[0]||"").toUpperCase();
+
+    if(type==="STORE"){
+      storeUL.appendChild(li);
+    }else if(["PL1","PL2","PL3","CHALLAN","STOCK TRANSFER"].includes(type)){
+      plantUL.appendChild(li);
+    }
+
+  });
 }
 
 loadNoticeBoard();
 
-// ================= PI POPUP FUNCTION =================
-async function showPI(type){
-  let range = "";
-  if(type === "PL1") range = "BALANCE!J1:M40";
-  else if(type === "PL2") range = "BALANCE!P1:S40";
-  else if(type === "PL3") range = "BALANCE!V1:Y40";
-  else return;
-
-  try {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetNBId}/values/${range}?key=${apiNBKey}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    const v = data.values || [];
-
-    if(v.length === 0) {
-      document.getElementById("piContent").innerHTML = "<h3>No data found for this Plant.</h3>";
-      document.getElementById("piModal").style.display = "block";
-      return;
-    }
-
-    let plant = type;
-    let company = "-";
-    let po = "-";
-    let piAmount = "-";
-    let receipt = "-";
-    let recamt = "-";
-
-    if(v[0] && v[0].length > 0) {
-      plant = v[0][0] || type;
-      company = v[0][1] || "-";
-      po = v[0][2] || "-";
-      piAmount = v[0][3] || "-";
-    }
-    if(v[2] && v[2].length > 1) {
-      receipt = v[2][1] || "-";
-      recamt = v[2][3] || "-";
-    }
-
-    v.forEach((r) => {
-      if(!r || r.length === 0) return;
-      const chk0 = (r[0] || "").toString().trim().toUpperCase();
-      const chk1 = (r[1] || "").toString().trim().toUpperCase();
-      if(chk0.includes("TOTAL RECEIPT")) {
-        receipt = r[1] || receipt;
-      } else if(chk1.includes("TOTAL RECEIPT")) {
-        receipt = r[2] || receipt;
-      }
-    });
-
-    let html = `
-      <h2 style="margin-top:0; color:#1e293b; font-family:sans-serif;">🏢 ${plant} Performa Invoice</h2>
-      
-      <span style="color: rgb(0, 36, 70); font-weight:600; font-size: 14px; display:inline-block; margin-top:8px;">Party:-  ${company}</span> |
-      <span style="color: rgb(0, 36, 70); font-weight:600; font-size: 14px; display:inline-block; margin-top:8px;">PO/Reff No:-  ${po}</span>
-
-      <table class="piTable" style="font-size: 14px;">
-        <tr>
-          <td><b>Total Receivables Amt</b></td>
-          <td style="color: blue;font-weight: bold; font-size: 16px;">${recamt}</td>
-          <td><b>Total Receipt</b></td>
-          <td style="color: rgb(134, 5, 0);font-weight: bold; font-size: 16px;">${receipt}</td>
-          <td><b>Total Due Amount</b></td>
-          <td style="color: rgb(0, 70, 41); font-weight: bold; font-size: 16px;">${piAmount}</td>
-        </tr>
-      </table>
-
-      <br>
-      <table class="piTable" style="font-size: 14px;">
-        <tr class="piHead">
-          <th>R-CODE</th>
-          <th>DESCRIPTION</th>
-          <th>ORDER DETAILS</th>
-          <th>AMOUNT</th>
-        </tr>
-    `;
-
-    // Loop Index 3 se valid data start karega
-    for(let i = 3; i < v.length; i++){
-      const r = v[i];
-      if(!r || r.length === 0) continue;
-      
-      const rcode = (r[0] || "").toString().trim();
-      const rdesc = (r[1] || "").toString().trim();
-      const rorder = (r[2] || "").toString().trim();
-      const ramount = (r[3] || "").toString().trim();
-
-      // Clear completely empty rows
-      if (!rcode && !rdesc && !rorder && !ramount) continue;
-
-      // FIX: Agar Google Sheet se duplicate text header row (R-CODE, DESCRIPTION) fetch hoti hai, to use display hone se hide/skip karega
-      if(rcode.toUpperCase().includes("R-CODE") || rdesc.toUpperCase().includes("DESCRIPTION")) continue;
-
-      const upperCode = rcode.toUpperCase();
-      const upperDesc = rdesc.toUpperCase();
-
-      const isOV = upperCode === "OV";
-      const isLinkLedger = upperCode.includes("LINK LEDGER") || upperDesc.includes("LINK LEDGER") || upperCode.includes("LINK LEDEGR") || upperDesc.includes("LINK LEDEGR");
-      const isTotal = upperCode.includes("TOTAL") || upperDesc.includes("TOTAL");
-
-      let highlightClass = "";
-
-      if (isOV) {
-        highlightClass = 'class="row-highlight-ov"';
-      } else if (isLinkLedger) {
-        highlightClass = 'class="row-highlight-link"';
-      } else if (isTotal) {
-        highlightClass = 'class="row-highlight-total"';
-      }
-
-      html += `
-        <tr ${highlightClass}>
-          <td><b>${rcode || "-"}</b></td>
-          <td>${r[1] || "-"}</td>
-          <td>${r[2] || "-"}</td>
-          <td>${r[3] || "-"}</td>
-        </tr>
-      `;
-    }
-
-    html += `</table>`;
-
-    document.getElementById("piContent").innerHTML = html;
-    document.getElementById("piModal").style.display = "block";
-
-  } catch (error) {
-    console.error("Error loading PI:", error);
-    document.getElementById("piModal").style.display = "block";
-  }
-}
-
-// ================= PRINT FUNCTION WITH COMPANY HEADER =================
-function printPIContent() {
-  const content = document.getElementById("piContent").innerHTML;
-  if (!content || content.trim() === "") {
-    alert("Print karne ke liye koi data nahi hai!");
-    return;
-  }
-
-  const today = new Date();
-  const day = String(today.getDate()).padStart(2, '0');
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const year = today.getFullYear();
-  const currentDateStr = `${day}-${month}-${year}`;
-
-  const printWindow = window.open("", "_blank", "width=900,height=650");
-  
-  printWindow.document.write(`
-    <html>
-      <head>
-        <title>Print PI Details</title>
-        <style>
-          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; color: #333; }
-          
-          .print-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            border-bottom: 2px solid #1e293b;
-            padding-bottom: 12px;
-            margin-bottom: 20px;
-          }
-          .company-details { text-align: left; }
-          .date-details { text-align: right; font-size: 14px; color: black; font-weight: 500; }
-
-          .piTable { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
-          .piTable td, .piTable th { border: 1px solid #e2e8f0; padding: 10px 12px; text-align: left; }
-          
-          .piHead { 
-            background: #1e293b !important; 
-            color: #fff !important; 
-            -webkit-print-color-adjust: exact; 
-            print-color-adjust: exact; 
-          }
-          .piTable tr:nth-child(even) { background-color: #f8fafc; }
-          
-          .row-highlight-ov { 
-            background-color: #e0f2fe !important; 
-            -webkit-print-color-adjust: exact; 
-            print-color-adjust: exact; 
-          }
-          
-          .row-highlight-link {
-            background: #000000 !important;
-            color: #ffffff !important;
-            font-weight: bold;
-            -webkit-print-color-adjust: exact; 
-            print-color-adjust: exact;
-          }
-          .row-highlight-link td { color: #ffffff !important; font-weight: bold; }
-
-          .row-highlight-total {
-            background: #e6e6e6 !important;
-            font-weight: bold;
-            -webkit-print-color-adjust: exact; 
-            print-color-adjust: exact;
-          }
-          .row-highlight-total td { font-weight: bold; }
-          
-          @media print {
-            .print-header { display: flex !important; }
-            .piHead { background: #1e293b !important; color: #fff !important; }
-            .row-highlight-ov { background-color: #e0f2fe !important; }
-            .row-highlight-link { background: #000000 !important; color: #ffffff !important; }
-            .row-highlight-link td { color: #ffffff !important; }
-            .row-highlight-total { background: #e6e6e6 !important; }
-          }
-        </style>
-      </head>
-      <body>
-        <div class="print-header">
-          <div class="company-details">
-            <div style="font-size: 16px; color: black; font-weight: bold;">Multitech Infracon Pvt. Ltd.</div>
-            <div style="font-size: 14px; color: black;">N.H.74, 12th Km. Stone, Way to Suraj Stone Crusher</div>
-            <div style="font-size: 14px; color: black;">Vill. Dabhora Mustakam, Bazpur Road Kashipur</div>
-            <div style="font-size: 14px; color: black;">CIN: U45200UR2019PT</div>
-          </div>
-          <div class="date-details"><b>Date:</b> ${currentDateStr}</div>
-        </div>
-
-        ${content}
-        
-        <script>
-          window.onload = function() {
-            window.print();
-            window.close();
-          };
-        <\/script>
-      </body>
-    </html>
-  `);
-  
-  printWindow.document.close();
-}
-
-// ================= PRINT FUNCTION WITH COMPANY HEADER =================
 </script>
+
 <!---- =========== LODING NOTICE BOARD SCRIPT STOP =====================----------- -->
 
 
@@ -12576,3 +12162,522 @@ typeSel.addEventListener("change", ()=>{
 
 
 
+
+<!-- ===== Note:  ========== Performa Invoice Div and Script code Start Here ======= Start ========= -->
+
+<div id="mffUnique_invoiceModalOverlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99999; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 20px 10px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+  <div id="mffUnique_invoiceModalContent" style="background: #f8fafc; width: 100%; max-width: 1050px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); animation: mffUnique_fadeDown 0.3s ease; position: relative; padding: 20px; box-sizing: border-box;">
+    
+    <span id="mffUnique_modalCloseIcon" style="position: absolute; top: 15px; right: 20px; font-size: 28px; font-weight: bold; color: #64748b; cursor: pointer; transition: color 0.2s;">&times;</span>
+    
+    <h2 style="margin-top: 0; margin-bottom: 20px; color: #1e293b; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">🏢 Performa Invoice Manager</h2>
+
+    <form class="mffUnique_mainSRRForm">
+      <input type="hidden" name="datasheetname" id="mffUnique_datasheetname" value="POLDGR">
+      <input type="hidden" id="mffUnique_formModeSRR" name="formModeSRR" value="new">
+      <input type="hidden" name="action" value="submit">
+      <input type="hidden" id="mffUnique_msaf90" name="Usercode" value="PO" readonly>
+      
+      <div class="mffUnique_formWrapper">
+        <div class="mffUnique_formRow">
+          <div class="mffUnique_formGroup">
+            <label>Select Ledger :</label>
+            <div class="mffUnique_inputBox">
+              <input type="text" id="mffUnique_msaf94" name="Voucher" autocomplete="off" required placeholder="Type to search User Name..." style="background:#fde3e3;">
+              <div id="mffUnique_ledgerSuggestionBox"></div>
+            </div>
+          </div>
+          <input type="submit" id="mffUnique_submitSRRButton" value="Fetch">
+           <button class="mffUnique_printPI" onclick="mffUnique_printPIContent()" style="border: none; background: #e2e8f0; padding: 8px 16px; border-radius: 6px; color: black; font-weight: bold; font-size: 15px; cursor: pointer; float: right; margin-right: 10px; display: flex; align-items: center; gap: 5px;"> 🖨️ Print </button>
+    
+        </div>
+      </div>
+    </form>
+
+    <div class="mffUnique_piInlineSection">
+      <div id="mffUnique_piInlineContent">
+        <h3 style="color: #64748b;">Please select a ledger and click "Fetch" to view the records.</h3>
+      </div>
+      <br>
+       <div style="clear:both;"></div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+/* --- MODIFIED CSS FOR LEFT SLIDE-IN (50% WIDTH) PANEL --- */
+
+/* Overlay settings override to position it as a side-panel container */
+#mffUnique_invoiceModalOverlay {
+  align-items: stretch !important; /* Content ko top-to-bottom stretch karne ke liye */
+  justify-content: flex-start !important; /* Hamesha left side mein rakhne ke liye */
+  padding: 0 !important; /* Side panel ke liye background gap hatane ke liye */
+}
+
+/* Modal Content Panel - Adjusted to 50% width and Left Slide-In Animation */
+#mffUnique_invoiceModalContent {
+  width: 50% !important; /* Page ke 50% width tak open hoga */
+  max-width: 50% !important; 
+  height: 100vh !important; /* Full vertical screen height */
+  border-radius: 0 12px 12px 0 !important; /* Sirf right side me corners round rahenge */
+  margin: 0 !important;
+  overflow-y: auto !important; /* Form vertical scroll ho sake */
+  
+  /* Slide-in animation framework */
+  animation: mffUnique_slideFromLeft 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+/* Left Slide-in Keyframe definition */
+@keyframes mffUnique_slideFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* --- REST OF YOUR ORIGINAL CSS (UNTOUCHED) --- */
+.mffUnique_formWrapper{ width:100%; padding:15px; background:#e7e7e4; border:1px solid #ccc; border-radius:8px; box-sizing:border-box;}
+.mffUnique_formRow{display:flex; align-items:center; flex-wrap:nowrap; gap:15px; width:100%;}
+.mffUnique_formGroup{ display:flex; align-items:center; gap:8px; white-space:nowrap;}
+.mffUnique_formGroup label{ font-size:14px; font-family:Arial; font-weight:bold; color: #334155;}
+.mffUnique_formGroup input[type="text"]{ height:36px; width:320px; padding:5px 10px; border:1px solid #ccc; border-radius:4px; box-sizing:border-box; font-size:14px;}
+.mffUnique_inputBox{position:relative; width:320px;}
+.mffUnique_inputBox input{width:100%;}
+#mffUnique_ledgerSuggestionBox{ position:absolute; top:100%; left:0; right:0; display:none; max-height:200px; overflow-y:auto; background:#fff; border:1px solid #ccc; border-top:none; z-index:999999; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 0 0 4px 4px;}
+#mffUnique_submitSRRButton{height:36px; min-width:120px; background:#0066ff; color:#fff; border:none; border-radius:4px; cursor:pointer; padding:0 20px; font-weight: bold; font-size: 14px; transition: background 0.2s;}
+#mffUnique_submitSRRButton:hover { background: #0052cc; }
+#mffUnique_modalCloseIcon:hover { color: #1e293b; }
+
+.mffUnique_piInlineSection {
+  background: #fff;
+  width: 100%; height: 80vh;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  margin-top: 20px;
+  overflow-x: auto; 
+  box-sizing: border-box;
+}
+.mffUnique_piTable {
+  width: auto; 
+  min-width: 100%; 
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 13px;
+}
+.mffUnique_piTable td, .mffUnique_piTable th {
+  border: 1px solid #e2e8f0;
+  padding: 10px 16px; 
+  text-align: left; 
+  white-space: nowrap; 
+}
+.mffUnique_piHead {
+  background: #1e293b !important;
+  color: #fff !important;
+}
+.mffUnique_piTable tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+/* Strictly Defined Highlighting Classes */
+.mffUnique_row-highlight-black-header { 
+  background: rgb(0, 62, 120) !important; 
+  color: #ffffff !important; 
+  font-weight: bold; 
+}
+.mffUnique_row-highlight-black-header td { 
+  color: #ffffff !important; 
+}
+.mffUnique_row-highlight-grey-total { 
+  background: #e6e6e6 !important; 
+  color: #000000 !important; 
+  font-weight: bold; 
+}
+.mffUnique_row-highlight-grey-total td { 
+  color: #000000 !important; 
+}
+.mffUnique_highlight-section td { 
+  color: blue !important; border: none; font-weight: bold;
+}
+.mffUnique_row-highlight-ov { 
+  background-color: #e0f2fe !important; 
+}
+
+@media(max-width:768px){
+  #mffUnique_invoiceModalContent { width: 100% !important; max-width: 100% !important; } /* Mobile par handle karne ke liye */
+  .mffUnique_formRow{ flex-wrap:wrap;}
+  .mffUnique_formGroup, .mffUnique_inputBox{width:100%;}
+  .mffUnique_formGroup input[type="text"]{width:100%;}
+  #mffUnique_submitSRRButton{ width:100%;}
+}
+</style>
+
+<script>
+// Global config scoped safely inside unique variables
+const mffUnique_apiNBKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const mffUnique_sheetNBId = "1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU";
+const mffUnique_mainRange = "POLDGR!A1:J100"; 
+const mffUnique_rangclint = "POLDGR!J2:J"; 
+
+let mffUnique_ledgerList = [];
+
+// ================= DYNAMIC PI SHOW LOGIC =================
+async function mffUnique_showPI(){
+  try {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${mffUnique_sheetNBId}/values/${mffUnique_mainRange}?key=${mffUnique_apiNBKey}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    const v = data.values || [];
+
+    const inlineContentNode = document.getElementById("mffUnique_piInlineContent");
+    if(!inlineContentNode) return;
+
+    if(v.length === 0) {
+      inlineContentNode.innerHTML = "<h3>No data found in POLDGR sheet.</h3>";
+      return;
+    }
+
+    let company = (v[1] && v[1][1]) ? v[1][1] : "-";       
+    let totalReceipt = (v[1] && v[1][3]) ? v[1][3] : "-";  
+    let balanceAmt = (v[2] && v[2][3]) ? v[2][3] : "-";    
+
+    let html = `
+      <h2 style="margin-top:0; color:#1e293b; font-family:sans-serif;">🏢 Performa Invoice</h2>
+      
+      <span style="color: rgb(0, 36, 70); font-weight:600; font-size: 14px; display:inline-block; margin-top:8px;">Party Name:- <b>${company}</b></span>
+
+      <table class="mffUnique_piTable" style="font-size: 14px; width: 100%;">
+        <tr>
+          <td><b>Total Receipt</b></td>
+          <td style="color: rgb(134, 5, 0); font-weight: bold; font-size: 16px;">${totalReceipt}</td>
+          <td><b>Total Balance Amount</b></td>
+          <td style="color: rgb(0, 70, 41); font-weight: bold; font-size: 16px;">${balanceAmt}</td>
+        </tr>
+      </table>
+
+      <br>
+      <table class="mffUnique_piTable" style="font-size: 14px; height: 100%;">
+    `;
+
+    let dataRowsFound = false;
+
+    for(let i = 5; i < v.length; i++){
+      const r = v[i];
+      if(!r || r.length === 0) continue;
+      
+      const rcode = (r[0] || "").toString().trim();
+      const rdesc = (r[1] || "").toString().trim();
+      const rorder = (r[2] || "").toString().trim();
+      const ramount = (r[3] || "").toString().trim();
+
+      if (!rcode && !rdesc && !rorder && !ramount) continue;
+
+      dataRowsFound = true;
+      const upperCode = rcode.toUpperCase();
+      const upperDesc = rdesc.toUpperCase();
+
+      let highlightClass = "";
+
+      if (
+        upperCode.includes("PO/REFF") || 
+        upperCode.includes("R-CODE") || 
+        upperCode.includes("BILLING WEIGHT") || 
+        upperCode.includes("LINK LEDEGR") ||
+        upperDesc.includes("LINK LED Ledger") ||
+        upperDesc.includes("LINK LEDEGR")
+      ) {
+        highlightClass = 'class="mffUnique_row-highlight-black-header"';
+      } 
+      else if (upperCode.includes("TOTAL") || upperDesc.includes("TOTAL")) {
+        highlightClass = 'class="mffUnique_row-highlight-grey-total"';
+      }
+      else if (upperCode.includes("SECTION") || upperDesc.includes("SECTION")) {
+        highlightClass = 'class="mffUnique_highlight-section"';
+      }
+      else if (upperCode === "OV") {
+        highlightClass = 'class="mffUnique_row-highlight-ov"';
+      }
+
+      html += `
+        <tr ${highlightClass}>
+          <td><b>${rcode || "-"}</b></td>
+          <td>${rdesc || "-"}</td>
+          <td>${rorder || "-"}</td>
+          <td>${ramount || "-"}</td>
+        </tr>
+      `;
+    }
+
+    if(!dataRowsFound) {
+      html += `<tr><td colspan="4" style="text-align:center;">No valid records found from row A6 downwards.</td></tr>`;
+    }
+
+    html += `</table>`;
+    inlineContentNode.innerHTML = html;
+
+  } catch (error) {
+    console.error("Error loading PI:", error);
+  }
+}
+
+// ================= PRINT FUNCTION WITH EXACT REPLICATED CSS =================
+function mffUnique_printPIContent() {
+  const content = document.getElementById("mffUnique_piInlineContent").innerHTML;
+  if (!content || content.includes("Submitting data") || content.includes("Please select a ledger")) {
+    alert("Print karne ke liye koi valid data nahi hai!");
+    return;
+  }
+
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, '0');
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const year = today.getFullYear();
+  const currentDateStr = `${day}-${month}-${year}`;
+
+  const printWindow = window.open("", "_blank", "width=950,height=650");
+  
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print PI Details</title>
+        <style>
+          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; color: #333; }
+          .print-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #1e293b; padding-bottom: 12px; margin-bottom: 20px; }
+          .company-details { text-align: left; }
+          .date-details { text-align: right; font-size: 14px; color: black; font-weight: 500; }
+          
+          .mffUnique_piTable { width: auto; min-width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
+          .mffUnique_piTable td, .mffUnique_piTable th { border: 1px solid #e2e8f0; padding: 10px 16px; text-align: left; white-space: nowrap; }
+          
+          .mffUnique_row-highlight-black-header { background: rgb(0, 62, 120) !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .mffUnique_row-highlight-black-header td { color: #ffffff !important; }
+          
+          .mffUnique_row-highlight-grey-total { background: #e6e6e6 !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .mffUnique_row-highlight-grey-total td { color: #000000 !important; }
+          .mffUnique_highlight-section td { color: blue !important; border: none; font-weight: bold; }
+          
+          .mffUnique_row-highlight-ov { background-color: #e0f2fe !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+          @media print {
+            .print-header { display: flex !important; }
+            .mffUnique_row-highlight-black-header { background: rgb(0, 62, 120) !important; color: #ffffff !important; }
+            .mffUnique_row-highlight-grey-total { background: #e6e6e6 !important; color: #000000 !important; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="print-header">
+          <div class="company-details">
+            <div style="font-size: 16px; color: black; font-weight: bold;">Multitech Infracon Pvt. Ltd.</div>
+            <div style="font-size: 14px; color: black;">N.H.74, 12th Km. Stone, Way to Suraj Stone Crusher</div>
+            <div style="font-size: 14px; color: black;">Vill. Dabhora Mustakam, Bazpur Road Kashipur</div>
+            <div style="font-size: 14px; color: black;">CIN: U45200UR2019PT</div>
+          </div>
+          <div class="date-details"><b>Date:</b> ${currentDateStr}</div>
+        </div>
+        ${content}
+        <script>
+          window.onload = function() {
+            window.print();
+            window.close();
+          };
+        <\/script>
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+}
+
+// ================= APPLICATION HANDLERS & MODAL MANAGEMENT =================
+document.addEventListener("DOMContentLoaded", () => {
+  const modalOverlay = document.getElementById("mffUnique_invoiceModalOverlay");
+  const triggerModalBtn = document.getElementById("mffUnique_triggerModalBtn");
+  const closeIcon = document.getElementById("mffUnique_modalCloseIcon");
+
+  const inputField = document.getElementById("mffUnique_msaf94");
+  const suggestionBox = document.getElementById("mffUnique_ledgerSuggestionBox");
+  const submitBtn = document.getElementById("mffUnique_submitSRRButton");
+
+  /* --- MODAL DISPLAY LOGIC --- */
+  if(triggerModalBtn && modalOverlay) {
+    triggerModalBtn.addEventListener("click", () => {
+      modalOverlay.style.display = "flex";
+      mffUnique_showPI(); // Trigger live layout display on load
+    });
+  }
+
+  const hideInvoiceModal = () => {
+    if(modalOverlay) modalOverlay.style.display = "none";
+    if(suggestionBox) suggestionBox.style.display = "none";
+  };
+
+  if(closeIcon) closeIcon.addEventListener("click", hideInvoiceModal);
+  
+  window.addEventListener("click", (e) => {
+    if (e.target === modalOverlay) {
+      hideInvoiceModal();
+    }
+  });
+
+  /* --- LIVE GOOGLE SHEET DATA FETCH --- */
+  async function fetchGoogleSheetData() {
+    try {
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${mffUnique_sheetNBId}/values/${mffUnique_rangclint}?key=${mffUnique_apiNBKey}`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.values && data.values.length > 0) {
+        const rawList = data.values.map(row => row[0]).filter(item => item && item.trim() !== "");
+        mffUnique_ledgerList = [...new Set(rawList)].sort((a, b) => a.localeCompare(b));
+      }
+    } catch (error) {
+      console.error("Error fetching data from Google Sheet:", error);
+    }
+  }
+
+  fetchGoogleSheetData();
+
+  function renderSuggestions() {
+    if (!inputField || !suggestionBox) return;
+    const val = inputField.value.trim().toLowerCase();
+    suggestionBox.innerHTML = "";
+
+    if (mffUnique_ledgerList.length === 0) {
+      suggestionBox.style.display = "none";
+      return;
+    }
+
+    const filtered = val ? mffUnique_ledgerList.filter(item => item.toLowerCase().includes(val)) : mffUnique_ledgerList;
+
+    if (filtered.length > 0) {
+      filtered.forEach(item => {
+        const div = document.createElement("div");
+        div.innerText = item;
+        div.style.padding = "8px 12px";
+        div.style.cursor = "pointer";
+        div.style.borderBottom = "1px solid #f0f0f0";
+        div.style.color = "#333";
+        div.style.fontFamily = "Arial";
+        div.style.fontSize = "14px";
+        div.style.backgroundColor = "#fff";
+
+        div.onmouseenter = () => div.style.backgroundColor = "#e7e7e4";
+        div.onmouseleave = () => div.style.backgroundColor = "#fff";
+
+        div.addEventListener("click", (e) => {
+          e.stopPropagation(); 
+          inputField.value = item;
+          suggestionBox.style.display = "none";
+        });
+
+        suggestionBox.appendChild(div);
+      });
+      suggestionBox.style.display = "block";
+    } else {
+      suggestionBox.style.display = "none";
+    }
+  }
+
+  if (inputField) {
+    inputField.addEventListener("click", (e) => {
+      e.stopPropagation();
+      renderSuggestions();
+    });
+    inputField.addEventListener("input", renderSuggestions);
+  }
+
+  document.addEventListener("click", (e) => {
+    if (suggestionBox && e.target !== inputField && e.target !== suggestionBox) {
+      suggestionBox.style.display = "none";
+    }
+  });
+
+  /* ================= APPS SCRIPT FORM SUBMISSION HANDLING ================= */
+  const scriptURL = "https://script.google.com/macros/s/AKfycbxDE9qiutBDF5nPy-mpmNKioOT9LjGEvzFJ6hSL_HUSTaggNHCvarTgM5OZ3iPrf6WQOQ/exec";
+
+  // Scoped Wait Popup Layout inside modal/app context dynamically
+  const popupHTML = `
+  <div id="mffUnique_waitMFFOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:999999; align-items:center; justify-content:center;">
+    <div style="background:#fff; padding:20px 30px; border-radius:10px; min-width:250px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,.3); font-size:16px; font-weight:600;">
+      ⏳ <span id="mffUnique_waitMsg">Please wait...</span>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML("beforeend", popupHTML);
+
+  const showWait = (msg) => {
+    document.getElementById("mffUnique_waitMsg").innerText = msg;
+    document.getElementById("mffUnique_waitMFFOverlay").style.display = "flex";
+  };
+
+  const hideWait = () => {
+    document.getElementById("mffUnique_waitMFFOverlay").style.display = "none";
+  };
+
+  const form = document.querySelector(".mffUnique_mainSRRForm");
+
+  if(form) {
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+
+      submitBtn.disabled = true;
+      submitBtn.value = "Please wait...";
+      showWait("Please Wait! Loading...");
+
+      try {
+        const fd = new FormData(form);
+
+        form.querySelectorAll("input[type='date']").forEach(input => {
+          if (input.value) {
+            const d = new Date(input.value);
+            const day = String(d.getDate()).padStart(2, "0");
+            const month = d.toLocaleString("en-GB", { month: "short" });
+            const year = d.getFullYear();
+            const formatted = `${day}-${month}-${year}`;
+            fd.set(input.name, formatted);
+          }
+        });
+
+        const res = await fetch(scriptURL, {
+          method: "POST",
+          body: fd
+        });
+
+        const r = await res.json();
+
+        if (r.result === "success") {
+          alert("Loading Successfully");
+          form.reset(); 
+
+          // Table Content Auto Refresh Logic
+          const inlineContentNode = document.getElementById("mffUnique_piInlineContent");
+          if(inlineContentNode) {
+             inlineContentNode.innerHTML = `<h3>⌛ Submitting data... Form refreshing with updated data in 2 seconds.</h3>`;
+          }
+          setTimeout(async () => {
+            await mffUnique_showPI(); 
+          }, 2000);
+
+          if (typeof loadActiveTable === "function") {
+            loadActiveTable();
+          }
+        } else {
+          alert("Save Failed");
+        }
+
+      } catch (err) {
+        alert("Submit error");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.value = "Fetch";
+        hideWait();
+      }
+    };
+  }
+});
+</script>
+<!-- ===== Note:  ========== Performa Invoice Div and Script code Stop Here ======= XXX ========= -->
