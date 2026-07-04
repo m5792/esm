@@ -390,6 +390,6059 @@ th {
   </div></div></div>
 
 
+
+
+
+<!---- =========== LODING NOTICE BOARD SCRIPT START =====================----------- -->
+
+<script>
+// ================= CONFIG =================
+const apiNBKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheetNBId = "1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4";
+const rangeNB = "DATABASE!K:S";
+
+// ================= CSS =================
+const css = `
+.status-loading    { background:#ff4d4d; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
+.status-processing { background:#fd2222; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
+.status-done  { background:#28a745; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
+.status-complete   { background:#28a745; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
+.status-unloading  { background:#39b3d8; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
+
+.remarkBox{
+  background:#000;
+  color:#fff;
+  padding:6px;
+  margin-top:6px;
+  border-radius:5px;
+  font-size:13px;
+}
+
+ul li{
+  list-style:none;
+  margin-bottom:10px;
+  padding:10px;
+  border-left:5px solid #8b0202;
+  background:#f4f4f4;
+  font-size:14px;
+  border-radius:6px;
+}
+`;
+document.head.appendChild(Object.assign(document.createElement("style"),{innerText:css}));
+
+// ================= DATE =================
+function formatDateToYYYYMMDD(dateObj) {
+  return dateObj.toISOString().split("T")[0];
+}
+
+function formatCustomDate(dateStr) {
+  const m = {Jan:"01",Feb:"02",Mar:"03",Apr:"04",May:"05",Jun:"06",Jul:"07",Aug:"08",Sep:"09",Oct:"10",Nov:"11",Dec:"12"};
+  const p = dateStr.split("-");
+  return (p.length===3) ? `${p[2]}-${m[p[1]]}-${p[0].padStart(2,"0")}` : "";
+}
+
+// ================= LOAD =================
+async function loadNoticeBoard(){
+
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetNBId}/values/${rangeNB}?key=${apiNBKey}`;
+  const response = await fetch(url);
+  const data = await response.json();
+
+  const rows = data.values;
+  const plantUL = document.getElementById("plantList");
+  const storeUL = document.getElementById("storeList");
+
+  plantUL.innerHTML = "";
+  storeUL.innerHTML = "";
+
+  if(!rows || rows.length<=1){
+    plantUL.innerHTML="<li>No Data</li>";
+    return;
+  }
+
+  // last 3 days
+  const today = new Date();
+  let allowedDates=[];
+  for(let i=0;i<3;i++){
+    let d=new Date();
+    d.setDate(today.getDate()-i);
+    allowedDates.push(formatDateToYYYYMMDD(d));
+  }
+
+  rows.forEach((row,index)=>{
+    if(index===0) return;
+
+    const formattedDate = row[1] ? formatCustomDate(row[1]) : "";
+    if(!allowedDates.includes(formattedDate)) return;
+
+    let statusClass="";
+    const status=(row[5]||"").toUpperCase();
+
+    if(status==="LOADING") statusClass="status-loading";
+    else if(status==="PROCESSING") statusClass="status-processing";
+    else if(status==="Done") statusClass="status-done";
+    else if(status==="UNLOADING") statusClass="status-unloading";
+    else if(status==="COMPLETE") statusClass="status-complete";
+
+    const remark=row[8]||"";
+
+    const li=document.createElement("li");
+
+  const bgColor = status === "LOAD" ? "green" : status === "DONE" ? "green" :  status === "UNLOAD" ? "red" : "blue";
+
+li.innerHTML = `
+  <strong>${row[2] || ""}</strong> (${row[0] || ""})<br>
+  🚚 Vehicle: ${row[3] || "-"} |
+  📄 Job: ${row[4] || "-"} |
+  🧾 Inv: ${row[6] || "-"}<br>
+  📅 Date: ${row[1] || "-"} |
+  
+  <span class="${statusClass}" style="background-color:${bgColor}; color:white; padding:2px 6px; border-radius:4px; display:inline-block;">${status}</span>
+
+  ${remark ? `<div class="remarkBox">${remark}</div>` : ""}
+`;
+
+    // ===== Separate UL =====
+    const type=(row[0]||"").toUpperCase();
+
+    if(type==="STORE"){
+      storeUL.appendChild(li);
+    }else if(["PL1","PL2","PL3","CHALLAN","STOCK TRANSFER"].includes(type)){
+      plantUL.appendChild(li);
+    }
+
+  });
+}
+
+loadNoticeBoard();
+
+</script>
+
+
+<!---- =========== LODING NOTICE BOARD SCRIPT STOP =====================----------- -->
+
+
+<div id="cashreportPage" class="page">   <!--   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ cashreportPage DIV STAR ------ =============== start  -->
+
+  
+<style>
+#ledger5792List div {padding: 5px; cursor: pointer;}
+/* Even rows */
+#ledger5792List div:nth-child(even) { background: #f5faff;
+    border-top:1px solid #d5d5d3;}
+/* Odd rows */
+#ledger5792List div:nth-child(odd) {background: #ffffff; border-top:1px solid #d5d5d3;}
+/* Hover effect */
+#ledger5792List div:hover { background: #dbeafe;}
+</style>
+
+
+<div style="text-align:center;border-bottom: 5px solid #cbcbcb;  background-color: #eeeff1; color: #070707; font-weight: bold;"> <strong>💵 Cash Ledger Report</strong>  </div>
+
+
+<div class="DALDiv">  <!-- ===== ~~~~~~~~~~~~~ DALDiv in cash report Start ~~~~~~~~~~~~~  ----------------------------- Start --------------- -->
+  
+<!-- ===== ~~~~~~~~~~~~~ topDiv Start ~~~~~~~~~~~~~  ----------------------------- Start --------------- -->
+<div class="topDiv">
+ 
+    <div style="
+display:flex;
+flex-wrap:wrap;
+gap:15px;
+align-items:center;
+justify-content:center; /* ✅ center alignment */
+border-bottom: 5px solid #024369;
+padding:5px;
+margin-bottom:20px;
+border-radius:10px;
+background:#f9fbfc;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+">
+
+
+  <input type="text" id="search5792Input" style="padding:6px 10px; border-radius:6px; border:1px solid #ccc; width:300px;  background-color:#f8f1ea;" placeholder="🔍 Search in Cash Ledger  table...">
+  <label style="color: rgb(4, 88, 127);"> From:</label>
+  <input type="date" id="start5792Date">
+  <label style="color: rgb(4, 88, 127);;"> To:</label>
+  <input type="date" id="end5792Date">
+
+  <button onclick="print5792Table()" style="border: none; font-weight: bold; cursor: pointer; background-color: #f9fbfc; color: rgb(1, 38, 73);">🖨️ Print Table</button>
+  <button id="export5792" data-value="export5792" data-target="table5792Container" style="border: none; font-weight: bold; cursor: pointer; background-color: #f9fbfc; color: rgb(1, 38, 73);">🏢 Export</button>
+  
+
+  </div>
+     
+
+  <style>
+#table5792Container {
+ overflow-x: auto;
+  display: block;
+  max-height: 900px; /* Optional scrolling */
+}
+  </style>
+   <div id="table5792Container"></div> 
+  </div> 
+
+  <!-- ===== ~~~~~~~~~~~~~ bottomDiv strat ~~~~~~~~~~~~~ cash voucher report  ----------------------------- start --------------- -->
+<div class="bottomDiv">
+  
+  <div style="
+display:flex;
+flex-wrap:wrap;
+gap:15px;
+align-items:center;
+justify-content:center; /* ✅ center alignment */
+border-bottom: 5px solid #024369;
+padding:5px;
+margin-bottom:20px;
+border-radius:10px;
+background:#f9fbfc;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+">
+
+<label> Select User</label>
+    <select id="user5792" style="border: none; width:200px; font-size: 16px; font-weight: bold; color: #0066a1; text-align: center; background-color: #f9fbfc;">
+    <option value="">All User</option>
+    <option value="MA">MUKHTIYAR (MA)</option>
+    <option value="TA">TUSHAR (TA)</option>
+    <option value="BANK">BANK</option>
+    <option value="JLN">JOURNAL</option>
+    <option value="DB">DAYBOOK</option>
+  </select>
+
+
+<input type="text" id="ledger5792Input" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:5px; width: 4in; background-color: rgb(236, 241, 212); font-size: 14px;"placeholder="🔍 Type to search ledger...">
+</div> 
+  <!-- 🔥 NEW STATIC LIST -->
+<div style="text-align:center; background-color: #0b0b0b; color: #ffffff; font-weight: bold;">
+ <button onclick="refresh5792Table()" style="text-align:center;border: none; background-color: #0b0b0b; color: #f8e6e6; font-weight: bold; font-size: 16px;cursor: pointer;">🔄 Refresh Table</button>
+</div>
+  <div id="ledger5792List" style=" max-height:20vh; overflow-y:auto; border-top: 5px solid #013d91; border-bottom: 5px solid #013d91; background:#fff; width:100%; display:block;"></div>
+</div>
+<!-- ===== ~~~~~~~~~~~~~ bottomDiv stop ~~~~~~~~~~~~~  cash voucher report ----------------------------- xxx --------------- -->
+
+      </div>  <!-- ===== ~~~~~~~~~~~~~ DALDiv in cash report Stop ~~~~~~~~~~~~~  ----------------------------- xxx --------------- -->
+
+
+
+</div>  <!--   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ cashreportPage DIV STAR ------ =============== Stop  -->
+
+<div id="idpasswordPage" class="page">  <!--   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ idpasswordPage DIV START ------ =============== Start  -->
+
+    <div style="text-align:center; background-color: #dcdddd; color: #002630; font-weight: bold;"> <strong>Address / Attendance / ID/PasswordReport</strong></div> <br/>
+  
+    <style>
+        /* ---------------------*/
+  .filter-btn {
+  background: rgb(0, 56, 88);
+  color: rgb(250, 251, 252);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+ 
+  transition: background 0.2s ease;
+  min-width: 90px;            /* optional: makes buttons uniform width */
+  text-align: center;
+}
+.filter-btn:hover {
+  background: rgb(1, 98, 155);
+}
+.filter-btn.active {
+  background: #a12600;
+  color: rgb(252, 250, 250);
+  font-weight: bold;
+}
+    </style>
+<div  style="display: flex; gap: 8px;  border-bottom:5px solid #822501;  flex-wrap: wrap; justify-content: center; margin-bottom: 10px; background-color: rgb(0, 56, 88); padding: 2px 2px; ">
+  <strong style="color: rgb(1, 64, 95); font-size: 25px; font-weight: bold;">|</strong>
+  <button class="filter-btn"   data-value="address">&#128205 Address</button>
+  <button class="filter-btn"   id="openULUBtn" data-value="atn" mfvbtn="4">&#128197 Attendance</button>
+  <button class="filter-btn"   data-value="psw" id="ctr2" mfvbtn="5">&#128273 ID/Password</button>
+   <strong style="color: rgb(1, 64, 95); font-size: 25px; font-weight: bold;">|</strong>
+</div>
+<br/>
+    <!-- Ledger Filter -->
+  <div id="ledger5792Select" >
+    <span style="color: black;">Seaech Details:</span>
+    <input type="text" id="mipl785serch" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:10px; width: 4in; background-color: rgb(236, 241, 212); font-size: 14px;" placeholder="🔍Type to search in Table...">
+    </div>
+<table id="mipl785Table"> <thead id="table785Head"></thead> <tbody id="table785Body"></tbody> </table>
+
+</div>  <!--   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ idpasswordPage DIV STOP ------ =============== XXX  -->
+
+<div id="pyslipPage" class="page">  <!--   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ pyslipPage DIV Start ------ =============== Start  -->
+
+    <h2>📋 Payslip Generator</h2>
+
+
+<div style="
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+align-items:center;
+border:2px solid #333;
+padding:12px;
+margin-bottom:20px;
+border-radius:10px;
+background:#f9fbfc;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+">
+<label>Select Employee: </label>
+<!-- Employee -->
+<select id="employeeDropdown">
+    <option value="">Select Employee</option>
+</select>
+
+<!-- Month -->
+<select id="monthDp">
+    <option value="">Select Month</option>
+</select>
+
+<!-- Print -->
+<button onclick="printPayslip()">🖨️ Print</button>
+
+  </div>
+
+<!-- Payslip -->
+<div id="payslip" class="SalarySheetContainer"></div>
+
+</div>  <!--   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ pyslipPage DIV STOP ------ =============== XXX  -->
+
+<div id="aficurePage" class="page"> <!--   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ aficurePage DIV START ------ =============== START  -->
+<div style="text-align:center;border-bottom: 5px solid #cbcbcb;  background-color: #eeeff1; color: #070707; font-weight: bold;"> <strong>🚑 A.F.I Cure Medical Store 🫀</strong>  </div>
+  
+<style>
+    #listStockview div { padding: 5px; cursor: pointer;}
+/* Even rows */
+#listStockview div:nth-child(even) { background: #f5faff; border-top:1px solid #d5d5d3;}
+/* Odd rows */
+#listStockview div:nth-child(odd) { background: #ffffff;  border-top:1px solid #d5d5d3;}
+/* Hover effect */
+#listStockview div:hover {background: #dbeafe; }
+#listStockview { height: 15vh; overflow-y: auto; border: 1px solid #ccc; }
+
+    .box { border: 1px solid #ccc; margin-top: 10px; padding: 10px; }
+      #stockQuery table{ border-collapse: collapse; font-size: 15px;font-family: Arial, sans-serif;width: 100%;}
+      #stockQuery th {background: #006772;color: #fff;padding: 6px 8px;text-align: center; font-weight: 600; border: 1px solid #ddd;}
+      #table100 table {width: 100%;border-collapse: collapse; font-size: 15px; font-family: Arial, sans-serif;  width: 100%;}
+      #SaltSmry table {width: 100%;border-collapse: collapse; font-size: 15px; font-family: Arial, sans-serif;  width: 100%;}
+
+      #SaltSmry th, #table100 th {background: #006772; color: #fff; padding: 6px 8px; text-align: center; font-weight: 600; border: 1px solid #ddd;}
+      #SaltSmry td, #stockQuery td, #table100 td { padding: 5px 8px; border: 1px solid #ddd; color: #333;}
+      #SaltSmry tr:nth-child(even) , #stockQuery tr:nth-child(even), #table100 tr:nth-child{ background: #f8f9fa;}
+      #SaltSmry tr:hover, #stockQuery tr:hover, #table100 tr:hover {background: #cfe1fa;}
+
+      /* Extra space remove */
+      #SaltSmry th, #SaltSmry td, #stockQuery th, #stockQuery td { line-height: 1.2; white-space: nowrap;}
+      /* Optional: first column bold */
+      #SaltSmry td:first-child {font-weight: 500;}
+      /* ----------------   title and value css  ----------------*/
+      .info-row{display:flex;border:5px solid #dfdddd; margin-bottom:5px; min-height:30px;}
+.title{background:#eaebec;color:#01133a; font-weight:bold;padding:5px 10px; border-right:1px solid #dfdddd;white-space:nowrap;}
+.value{ flex:1;padding:5px 10px;border-right:1px solid #dfdddd; overflow:hidden;white-space:nowrap;}
+/* Optional Marquee */
+.marquee-value{flex:1; padding:5px 10px; border-right:1px solid #000; overflow:hidden; white-space:nowrap;}
+.marquee-text{ display:inline-block; padding-left:100%; animation:scroll 10s linear infinite;}
+@keyframes scroll{
+    from{transform:translateX(0);}
+    to{transform:translateX(-100%);}
+}
+</style>
+
+
+<div class="topDiv" style="height: 57vh;">
+
+<div id="details" class="box" style="height: 8vh; background-color: #fdfdfd;border-bottom: 5px solid rgb(2, 62, 102);"> </div>
+  <div id="stockQuery" class="box" style="height: 18vh;">
+   <br/> <br/><br/> <br/>  <span style="text-align: center; color: #018080; font-size: 35px; font-weight: bold; font-family: Chiller;"> Welcome</span> <br/> 
+    <sapn style="text-align: center; color: #800101; font-size: 35px;font-family: Colonna MT;">A.F.I Cure Medical Store</sapn> 
+  </div>
+
+<div id="SaltSmry" class="box" style="height:25vh; overflow-y:auto; scroll-behavior:smooth;border-bottom: 5px solid rgb(102, 22, 2);"></div>
+</div>
+
+<div class="bottomDiv">
+  <!-- ----------------   ================ Buttan Div Start Hare =========== Start ============== Start --------------------- -->
+<div style="display: flex; gap: 10px; border-bottom:5px solid #025982; flex-wrap: wrap; justify-content: center; margin-bottom: 5px; background-color: #eaeaeb;  padding: 2px 2px;">
+
+<input type="text" id="search" style="width:6in; padding:8px;border-bottom:5px solid #009797; border-top:5px solid #009797; background-color: #f7f7f7;" placeholder=" 🔍 Search Medicine or Salt... ">
+<button  id="saltBtn" onclick=" sameSalt()" style="color: rgb(154, 0, 0); border: none; background-color: #eaeaeb; font-weight: bold; font-size: 14px; cursor: pointer;">Item of Same Salt</button>
+<button  id="groupBtn" onclick="sameGroup()" style="color: rgb(0, 113, 94); border: none; background-color: #eaeaeb; font-weight: bold; font-size: 14px; cursor: pointer;">Item of Same Group</button>
+</div>  <!-- ----------------   ================ Buttan Div Stop Hare =========== Stop ==============  --------------------- -->
+
+
+   <div style="text-align:center; background-color: #0b0b0b; color: #ffffff; font-weight: bold;">
+ <button onclick="updateQuary()" style="text-align:center;border: none; background-color: #0b0b0b; color: #f8e6e6; font-weight: bold; font-size: 14px;cursor: pointer;">🔄 Refresh Table</button>
+</div>
+  <div id="listStockview"> <span style="color: rgb(117, 0, 0); font-weight: bold; " > <br/> <br/>Please Wait ! Data Loading ...</span></div>
+</div>
+
+</div>  <!--   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ aficurePage DIV STOP ------ =============== XXX  -->
+
+
+
+<div id="reportPage" class="page">  <!--   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ reportPage DIV STAR ------ =============== start  -->
+<!--   ============= -----   mipl786Table CONTENT START (  <table id="dlrtable">) 786786 ------ =============== start  -->
+
+<div style="text-align:center;border-bottom: 5px solid #cbcbcb;  background-color: #eeeff1; color: #070707; font-weight: bold;"> <strong>📊 Dishplay Ledger Report</strong> </div> 
+
+<style>
+#ledgerList div {padding: 5px;cursor: pointer;}
+/* Even rows */
+#ledgerList div:nth-child(even) { background: #f5faff;}
+/* Odd rows */
+#ledgerList div:nth-child(odd) {background: #ffffff;}
+/* Hover effect */
+#ledgerList div:hover { background: white;}
+
+/* ----------- ====================== ========================= ----------------------- */
+
+</style>
+</head>
+
+<body>
+
+<!-- ===== ~~~~~~~~~~~~~ topDiv Start ~~~~~~~~~~~~~  ----------------------------- Start --------------- -->
+<div class="DALDiv">
+    
+<!-- ===== ~~~~~~~~~~~~~ topDiv Start ~~~~~~~~~~~~~  ----------------------------- Start --------------- -->
+<div class="topDiv">
+
+
+<div style="
+display:flex;
+flex-wrap:wrap;
+gap:15px;
+align-items:center;
+justify-content:center; /* ✅ center alignment */
+border-bottom: 5px solid #024369;
+padding:5px;
+margin-bottom:20px;
+border-radius:10px;
+background:#f9fbfc;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+">
+
+  <!-- SEARCH -->
+<input id="globalSearchInput" style="padding:6px 10px; border-radius:6px; border:1px solid #ccc; width:400px;  background-color:#f8f1ea;" placeholder="🔍 Search in MIPL Data Table...">
+
+  <!-- DATE GROUP -->
+<div style="display:flex; align-items:center; gap:8px;">
+<label>From:</label>
+<input type="date" style="padding:6px; border-radius:6px; border:1px solid #ccc;"id="from786Date">
+
+<label>To:</label>
+<input type="date" style="padding:6px; border-radius:6px; border:1px solid #ccc;" id="to786Date">
+</div>
+
+<!-- BUTTON -->
+<button onclick="print786Report()"style=" padding:6px 12px;border-radius:6px; border: none; cursor:pointer; background:#f9fbfc; color:#fff; font-weight:bold; color: rgb(1, 38, 73); "> 🖨️ Print </button>
+
+</div>
+
+
+     <div style="
+display:flex;
+flex-wrap:wrap;
+justify-content:center; /* ✅ center */
+align-items:center;
+padding:2px;
+margin-bottom:20px;
+border-radius:10px;
+border-left: 8px solid #690202; border-right: 8px solid #690202;
+background:#f9fbfc;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+">
+<style>
+  #reffContainer span{
+  padding:4px 10px;
+  background:#f9fbfc; color: #890b00;
+  border-radius:5px;
+  cursor:pointer;
+}
+#reffContainer span:hover{
+  background:#f9fbfc;
+}
+</style>
+<!-- REFF -->
+<div id="reffContainer" style=" display:flex; flex-wrap:wrap; gap:6px; justify-content:center; align-items:center;"></div>
+
+</div>   
+
+
+<div style="text-align:center; color: #00253b; font-weight: bold; border-left: 8px solid black; border-right: 8px solid black; border-radius:10px; background-color: #fcf4f4;"> <strong id="selectionInfo"></strong>  </div>   
+
+<!-- TOTAL -->
+<div id="totalsBox" style="
+margin-top:10px;
+padding:10px;
+background:#eaf2f5;
+display:none;
+border-bottom:3px solid #a60404;
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+align-items:center;
+gap:15px;
+text-align:center; font-weight: bold;
+">
+  <span><span style="color:red;">Total Receipt:</span> <b id="totalReceipt">0</b></span><span>|</span>
+  <span><span style="color:rgb(186, 121, 0);">Total TDS:</span> <b id="totalTds">0</b></span> <span>|</span>
+  <span><span style="color:blue;">Total Bill:</span> <b id="totalBill">0</b></span><span>|</span>
+  <span><span style="color:green;">Total Net Weight:</span> <b id="totalPEBWeight">0</b></span><span>|</span>
+  <span><span style="color:#111;">Balance:</span> <b id="totalDifference">0</b></span><span>|</span>
+  <span><span>Total CN:</span> <b id="totalCn">0</b></span>
+</div>
+
+<style>
+#dlrtable {
+ overflow-x: auto;
+  display: block;
+  max-height: 550px; /* Optional scrolling */
+}
+  </style>
+
+  <div class="dlrtable">
+  <!-- TABLE -->
+  <table id="dlrtable"> 
+    <thead id="table786Head"></thead>
+    <tbody id="table786Body"></tbody>
+  </table>
+</div>
+ <br/>
+<div id="poDetailsBox" style="margin-bottom:5px;padding:5px;background:#f1f1f1; border-bottom:1px solid #0f0f0f; border-top:5px solid #01586e; display:none; font-size:16px; height: 10vh;"></div>
+
+</div>  <!-- ===== ~~~~~~~~~~~~~ topDiv stop ~~~~~~~~~~~~~  ----------------------------- stop --------------- -->
+</div>  <!-- ===== ~~~~~~~~~~~~~ DALDiv stop ~~~~~~~~~~~~~  ----------------------------- stop --------------- -->
+<!-- ===== ~~~~~~~~~~~~~ bottomDiv strat ~~~~~~~~~~~~~  ----------------------------- start --------------- -->
+<div class="bottomDiv">
+ 
+  <div style="
+display:flex;
+flex-wrap:wrap;
+gap:15px;
+align-items:center;
+justify-content:center; /* ✅ center alignment */
+border-bottom: 5px solid #024369;
+padding:5px;
+margin-bottom:20px;
+border-radius:10px;
+background:#f9fbfc;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+">
+<select id="searchType" style="padding:6px 10px; border: none; width:150px; text-align: center; background-color:#fffefe;">
+  <option value="ledger">By Ledger</option>
+  <option value="reff">By PO/Reff</option>
+</select>
+ <input id="ledgerSearch" style="padding:6px 10px; border-radius:6px; border:1px solid #ccc; width:500px;  background-color:#f8f1ea;" placeholder="🔍 Search Ledger" >
+ </div>
+
+ <div style="text-align:center; background-color: #0b0b0b; color: #ffffff; font-weight: bold;">
+ <button onclick="refershdlrtable()" style="text-align:center;border: none; background-color: #0b0b0b; color: #f8e6e6; font-weight: bold; font-size: 16px;cursor: pointer;">🔄 Refresh Table</button>
+</div>
+
+<div id="ledgerList" style="height:15vh; overflow:auto; border-bottom:5px solid #003141;border-top:4px solid #01526d;"></div> 
+
+
+</div>  <!-- ===== ~~~~~~~~~~~~~ bottomDiv stop ~~~~~~~~~~~~~  ----------------------------- stop --------------- -->
+<!--   ============= -----   mipl786Table CONTENT (  <table id="dlrtable">) 786786 ------ =============== STOP  -->
+
+
+
+</div>  <!--   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ reportPage DIV STOP ------ =============== XXX  -->
+
+<div id="clcPage" class="page"> <!--   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ clcPage DIV START ------ =============== START  -->
+
+   <!-- ===== toggleNote BUTTON 10  start===== -->
+<button class="noteBtn" onclick="toggleNote(10)">📑 My Loan - Mukhtar Ahamad</button>
+
+<div id="noteContent10" class="noteContent">
+  
+  <style>
+button { padding: 5px 10px; cursor: pointer; }
+.schedule-row { background-color: #f9f9f9; display: none; }
+/* Closed row red */
+.closed-loan { background-color: #ffcccc; }
+/* Summary box */
+.summary-box {
+    border: 2px solid #333;
+    padding: 10px;
+    margin-bottom: 15px;
+    background: #f5f5f5;
+    font-weight: bold;
+}
+</style>
+
+<h1>Live EMI Summary with Repayment Schedule</h1>
+<div class="summary-box" id="summaryBox">Loading...</div>
+<table><thead><tr>
+<th>Firm Name</th><th>Loan No</th><th>Loan Type</th><th>Start EMI Date</th><th>Loan Amount</th><th>ROI (%)</th><th>EMI</th><th>No of Month</th><th>Status</th><th>Principal Paid</th><th>Interest Paid</th><th>Remaining Principal</th><th>No of EMI Balance</th><th>Total EMI Remaining</th><th>Schedule</th>
+</tr>
+</thead>
+
+<tbody id="loan-table-body"></tbody>
+</table>
+</div>
+  <!-- ===== toggleNote BUTTON 10  stop xxx ===== -->
+
+  <!-- ===== toggleNote BUTTON 12 Gold Price Calculator  start===== -->
+<button class="noteBtn" onclick="toggleNote(12)">📑 Gold Price Calculator</button>
+
+<div id="noteContent12" class="noteContent">
+  
+  <div style="
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+align-items:center;
+border:2px solid #333;
+padding:12px;
+margin-bottom:20px;
+border-radius:10px;
+background:#f9fbfc;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+">
+<label>Select Gold Carat:</label>
+<select id="carat" onchange="showDetails()" style="padding:6px; border-radius:6px; border:1px solid #ccc;">
+    <option value="">--Select--</option>
+    <option value="24">24K</option>
+    <option value="22">22K</option>
+    <option value="18">18K</option>
+</select>
+
+
+
+<br>
+
+<label>Weight (grams):</label>
+<input type="number" id="grams" oninput="calculateGoldRate()" style="padding:6px; border-radius:6px; border:1px solid #ccc;">
+<label>Rate (per gram):</label>
+<input type="number" id="rate" oninput="calculateGoldRate()" style="padding:6px; border-radius:6px; border:1px solid #ccc;">
+<label>Making Charge (%):</label>
+<input type="number" id="making" oninput="calculateGoldRate()" style="padding:6px; border-radius:6px; border:1px solid #ccc;">
+
+
+
+</div>
+
+<div class="box">
+    <p>Gold Value: ₹ <span id="goldValue">0</span> |  GST on Gold (3%): ₹ <span id="gstGold">0</span> |
+    Making Charge: ₹ <span id="makingValue">0</span> | GST on Making (5%): ₹ <span id="gstMaking">0</span> 
+   </p>
+    <h3>Total Amount: ₹ <span id="total">0</span></h3>
+</div>
+
+<script>
+
+function calculateGoldRate() {
+    let grams = parseFloat(document.getElementById("grams").value) || 0;
+    let rate = parseFloat(document.getElementById("rate").value) || 0;
+    let makingPercent = parseFloat(document.getElementById("making").value) || 0;
+
+    let goldValue = grams * rate;
+
+    let makingValue = (goldValue * makingPercent) / 100;
+
+    let gstGold = (goldValue * 3) / 100;
+    let gstMaking = (makingValue * 5) / 100;
+
+    let total = goldValue + makingValue + gstGold + gstMaking;
+
+    document.getElementById("goldValue").innerText = goldValue.toFixed(2);
+    document.getElementById("makingValue").innerText = makingValue.toFixed(2);
+    document.getElementById("gstGold").innerText = gstGold.toFixed(2);
+    document.getElementById("gstMaking").innerText = gstMaking.toFixed(2);
+    document.getElementById("total").innerText = total.toFixed(2);
+}
+</script>
+
+</div>
+  <!-- ===== toggleNote BUTTON 12 - Gold Rtae Calculater  stop xxx ===== -->
+
+
+<h3>EMI Calculator</h3>
+<div style="
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+align-items:center;
+border:2px solid #333;
+padding:12px;
+margin-bottom:20px;
+border-radius:10px;
+background:#f9fbfc;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+">
+<label>Start Date: </label>
+<input type="date" id="calcStartDate" placeholder="Start Date" style="padding:6px; border-radius:6px; border:1px solid #ccc;">
+<label>Loan Amount: </label>
+<input type="number" id="calcLoan" placeholder="Loan Amount" style="padding:6px; border-radius:6px; border:1px solid #ccc; width:130px;">
+<label>ROI/Yearly: </label>
+<input type="number" id="calcROI" placeholder="ROI %" style="padding:6px; border-radius:6px; border:1px solid #ccc; width:90px;">
+<label>Emi/Monthly: </label>
+<input type="number" id="calcEMI" placeholder="EMI" style="padding:6px; border-radius:6px; border:1px solid #ccc; width:120px;">
+<label>No. Of Month: </label>
+<input type="number" id="calcMonth" placeholder="Months" style="padding:6px; border-radius:6px; border:1px solid #ccc; width:100px;">
+
+<button onclick="calculateDynamic()" style="
+padding:7px 14px;
+background:#007bff;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+font-weight:bold;
+">
+Calculate
+</button>
+
+</div>
+
+<div id="calcResult"></div>
+
+</div>  <!--   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ clcPage DIV STOP ------ =============== XXX  -->
+
+
+
+<div id="rationcardPage" class="page">  <!--   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ rationcardPage DIV start ------ =============== Start  -->
+
+  <div style="text-align:center; background-color: #dcdddd; color: #002630; font-weight: bold;"> <strong>Ration Card</strong></div> <br/>
+  <div  style="display: flex; gap: 8px;  border-bottom:5px solid #00462e;  flex-wrap: wrap; justify-content: center; margin-bottom: 10px; background-color: rgb(8, 125, 161); padding: 1px 1px; ">
+  <input type="text" id="searchInput" placeholder="Search By Ration Card No. Name, Last 4 Digit Adhar & Mobail...." onkeyup="rationcardsearch()" style="font-size:18px; padding:5px; width:750px; background-color: #fefaf6;">
+</div>
+
+<style>
+  #results{
+  overflow-x: auto;
+  display: block;
+  max-height: 550px; /* vertical scrolling */
+  overflow-y: auto;
+}
+</style>
+<div id="results"></div>
+
+</div>   <!--   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ rationcardPage DIV Stop ------ =============== XXX  -->
+
+
+<div id="poreffPage" class="page">  <!--   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ POREFFPage DIV start ------ =============== Start  -->
+
+  <div style="text-align:center; background-color: #dcdddd; color: #002630; font-weight: bold;"> <strong>PO/Reff View</strong></div> <br/>
+
+  <!-- SEARCH -->
+<div style="margin-bottom:10px">
+    <input
+        type="text"
+        id="poSearch"
+        placeholder="Search PO / Project / Client..."
+        style="
+            width:100%;
+            padding:10px;
+            border:1px solid #ccc;
+            border-radius:6px;
+            box-sizing:border-box;
+        ">
+</div>
+
+<!-- MAIN CONTAINER -->
+<div id="poTableContainer"></div>
+
+</div>   <!--   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ POREFFPage DIV Stop ------ =============== XXX  -->
+
+
+</div>  
+<!-- ========= --- xxx --- ============ ----------------        Div Content  stop HARE -------------------------  ================  ---------- ============ -->
+
+
+<!--    -----   DRAWER MENU BUTTAN  00005792  ------    -->
+<div class="drawer" id="drawer">
+<div class="handle"></div>
+<div class="drawer-buttons">
+<button onclick="showPage('cashreportPage')">💵 Cash Ledger Report</button>
+<button onclick="showPage('reportPage')">📒 Dishplay Ledger Report</button>
+<button onclick="showPage('pyslipPage')">📋 Pay Slip</button>
+<button onclick="showPage('idpasswordPage')">🏦 Addr. / Att. / Psw</button>
+<button onclick="showPage('aficurePage')">⚕️ A.F.I Cure</button>
+<button onclick="showPage('clcPage')">📈 EMI Loan Calculator</button>
+</div>
+</div>
+
+<!-- BOTTOM MENU -->
+<div class="bottom-bar">
+<button class="home-btn"onclick="showPage('homePage')">🏠</button>
+<button class="nav-btn" id="toggleDrawer">🔰 Menu</button>
+<button class="nav-btn"onclick="showPage('reportPage')">📒 Dishplay Ledger Report</button>
+<button class="nav-btn" onclick="togglesidebarNotes()" style="cursor: pointer;">☄️ Shortcuts Menu</button>
+<button class="nav-btn" onclick="showPage('poreffPage')" style="cursor: pointer;">☄️ PO/Reff View</button>
+<button class="nav-btn" id="mffUnique_triggerModalBtn" style="cursor: pointer;">☄️ Performa Invoice</button>
+</div>
+
+<!--   ============= -----   Bottam Drawer buttan & Swipe hide  and unhide in mobaile scripe Start  ------ =============== Start  -->
+<script>
+
+function showPage(id){
+
+document.querySelectorAll('.page').forEach(page=>{
+page.classList.remove('active');
+});
+
+document.getElementById(id).classList.add('active');
+
+}
+
+/* Drawer */
+
+const drawer = document.getElementById('drawer');
+
+document.getElementById('toggleDrawer')
+.addEventListener('click',()=>{
+
+drawer.classList.toggle('open');
+
+});
+
+/* Swipe Control */
+
+let startY = 0;
+let startFromBottom = false;
+
+document.addEventListener('touchstart',(e)=>{
+
+startY = e.touches[0].clientY;
+
+const screenHeight = window.innerHeight;
+
+/* Drawer band ho to swipe sirf bottom 100px se */
+if(!drawer.classList.contains('open')){
+
+startFromBottom =
+startY > (screenHeight - 100);
+
+}
+
+/* Drawer open ho to swipe drawer ke andar se */
+else{
+
+startFromBottom =
+e.target.closest('#drawer');
+
+}
+
+});
+
+document.addEventListener('touchend',(e)=>{
+
+if(!startFromBottom) return;
+
+let endY = e.changedTouches[0].clientY;
+
+let diff = startY - endY;
+
+/* Swipe Up = Open */
+if(diff > 50){
+
+drawer.classList.add('open');
+
+}
+
+/* Swipe Down = Close */
+if(diff < -50){
+
+drawer.classList.remove('open');
+
+}
+
+});
+
+</script>
+
+
+</body>
+</html>
+
+<!--   ============= -----   Bottam Drawer buttan & Swipe hide  and unhide in mobaile scripe stop  ------ =============== xxx  -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--   ============= -----   mipl786Table with poref/address/ attandase buttan code script (  <table id="dlrtable">) 786786 ------ =============== start  -->
+<script>
+const API_KEY="AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const SHEET_ID="1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU";
+let allData=[];
+let selectedLedger="";
+let selectedReff="";
+let selectedType=""; // ✅ LEDGER SALECT  (default ALL Entry)
+let searchMode = "ledger"; // 🔥 NOTE: default mode = ledger
+
+let dataF = []; // DATAF storage
+
+  let totalBill = 0;
+let totalCn = 0;
+let totalPEBWeight = 0;
+
+// ================== Dropdown CHANGE event ================================
+document.getElementById("searchType").onchange = function(){
+
+  searchMode = this.value; // 🔥 NOTE: mode change
+
+  selectedLedger = "";
+  selectedReff = "";
+  selectedType = "";
+
+  document.getElementById("ledgerSearch").value = "";
+
+  document.getElementById("ledgerSearch").placeholder =
+    (searchMode === "ledger") ? "🔍 Search Ledger" : "🔍 Search Reff No";
+
+  renderLedgerList();
+  document.getElementById("reffContainer").innerHTML="";
+  document.getElementById("table786Body").innerHTML="";
+};
+
+// ================= LOAD DATA =================
+async function loadData(){
+
+  const datadUrl=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/DATAD!A:Z?key=${API_KEY}`;
+  const datafUrl=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/DATAF!A:Z?key=${API_KEY}`;
+
+  const [dRes,fRes]=await Promise.all([
+    fetch(datadUrl),
+    fetch(datafUrl)
+  ]);
+
+  const dData=await dRes.json();
+  const fData=await fRes.json();
+
+  allData=(dData.values||[]).slice(1);
+  dataF=(fData.values||[]).slice(1);
+
+  renderLedgerList();
+}
+loadData();
+
+// ================= LEDGER LIST =================
+function renderLedgerList(search=""){
+
+  let list=[];
+
+  if(searchMode==="ledger"){
+    list=[...new Set(allData.map(r=>r[4]||""))]; // 🔥 NOTE: ledger list
+  }
+  else{
+    list=[...new Set(allData.map(r=>r[6]||""))]; // 🔥 NOTE: only reff list
+  }
+
+  list = list
+    .filter(v=>v.toLowerCase().includes(search.toLowerCase()))
+    .sort();
+
+  let box=document.getElementById("ledgerList");
+  box.innerHTML="";
+
+  list.forEach(l=>{
+    let div=document.createElement("div");
+    div.textContent=l;
+
+    div.onclick=()=>{
+
+      if(searchMode==="ledger"){
+        selectedLedger=l;
+        selectedReff="";
+      }else{
+        selectedReff=l;
+        selectedLedger=""; // 🔥 NOTE: ledger ignore in reff mode
+        updateSelectionInfo(); // ✅ update ledger and po name
+      }
+
+      selectedType="";
+      resetDateFilter();
+
+      document.getElementById("poDetailsBox").style.display="none";
+
+      renderReff();
+      renderTable();
+      updateSelectionInfo();
+
+      if(searchMode==="reff"){
+        showPODetails(selectedReff); // 🔥 NOTE: auto PO details
+      }
+    };
+
+    box.appendChild(div);
+  });
+}
+
+// SEARCH
+document.getElementById("ledgerSearch").oninput=function(){
+  renderLedgerList(this.value);
+};
+
+// ================= REFF =================
+function renderReff(){
+
+  let data=[];
+
+  // 🔥 CHANGE: mode based data
+  if(searchMode==="ledger"){
+    data = allData.filter(r=>r[4]==selectedLedger); // ledger base
+  }else{
+    data = allData.filter(r=>r[6]==selectedReff); // reff base
+  }
+
+  let list=[...new Set(data.map(r=>r[6]||""))];
+
+  let box=document.getElementById("reffContainer");
+  box.innerHTML="";
+
+  // ===== DEFAULT OPTIONS =====
+  const defaultOptions = [
+    {label:"View All", value:""},
+    {label:"SALE", value:"SALE"},
+    {label:"RECEIPT", value:"RECEIPT"}
+  ];
+
+  defaultOptions.forEach(opt=>{
+    let span=document.createElement("span");
+    span.textContent=opt.label;
+    span.style.background="#f9fbfc";
+    span.style.color = "#1e3a8a";
+
+    span.onclick=()=>{
+      selectedType = opt.value;
+      selectedReff = "";
+      renderTable();
+      showPODetails(selectedReff);
+      updateSelectionInfo(); // ✅ update ledger and po name
+    };
+
+    box.appendChild(span);
+  });
+
+  // ===== LABEL =====
+  let label=document.createElement("span");
+  label.textContent="Select PO/Reff No:";
+  label.style.background="transparent";
+  label.style.fontWeight="bold";
+  label.style.cursor="default";
+
+  box.appendChild(label);
+
+  // ===== REFF LIST =====
+  list.forEach(r=>{
+    let span=document.createElement("span");
+    span.textContent=r;
+
+    span.onclick=()=>{
+      selectedReff=r;
+      selectedType="";
+      renderTable();
+      showPODetails(selectedReff);
+      updateSelectionInfo(); // ✅ update ledger and po name
+    };
+
+    box.appendChild(span);
+  });
+}
+
+// ================= TABLE =================
+function renderTable(){
+
+let data=[];
+
+// 🔥 MODE BASE FILTER
+if(searchMode==="ledger"){
+  data = allData.filter(r=>r[4]==selectedLedger);
+}
+else{
+  data = allData.filter(r=>r[6]==selectedReff);
+}
+
+// ===- By username update script ============== 🔥 USER LOCK (YAHI ADD KARO) USERNAME BY LIST DROPDOWN KE LYE === - is part remove kro jab second script ko remove kro==============
+let username = getCurrentUser();
+
+if(["LESHANT","TUSHAAR"].includes(username)){
+  data = data.filter(r =>
+    (window.userReffList || []).includes(r[6])
+  );
+}
+// ===============================================================
+
+// ✅ SINGLE REFF FILTER
+if(selectedReff){
+  data = data.filter(r=>r[6]==selectedReff);
+}
+
+// ===== DATE FILTER =====
+let from = document.getElementById("from786Date").value;
+let to = document.getElementById("to786Date").value;
+
+let fromDate = from ? new Date(from) : null;
+let toDate = to ? new Date(to) : null;
+
+if(fromDate) fromDate.setHours(0,0,0,0);
+if(toDate) toDate.setHours(23,59,59,999);
+
+// TYPE FILTER
+if(selectedType){
+  data = data.filter(r=>(r[1]||"").toUpperCase()===selectedType);
+}
+
+// DATE FILTER
+if(fromDate || toDate){
+  data = data.filter(r=>{
+    let d = parseCustomDate(r[3]);
+    if(!d) return false;
+
+    if(fromDate && d < fromDate) return false;
+    if(toDate && d > toDate) return false;
+
+    return true;
+  });
+}
+
+// SORT BY DATE
+data.sort((a,b)=>{
+  let d1 = parseCustomDate(a[3]);
+  let d2 = parseCustomDate(b[3]);
+
+  if(!d1) return 1;
+  if(!d2) return -1;
+
+  return d2 - d1;
+});
+
+// ===== HEADER =====
+table786Head.innerHTML=`
+<tr>
+<th>Sr No</th>
+<th>Type</th>
+<th>Date</th>
+<th>Ledger</th>
+<th>Rcpt/Inv</th>
+<th>Reff</th>
+<th>Amount</th>
+<th>Weight</th>
+<th>Rate</th>
+<th>Narration</th>
+<th>V.Type</th>
+</tr>`;
+
+table786Body.innerHTML="";
+
+// ===== RESET GLOBAL TOTALS =====
+let totalTds=0, totalReceipt=0;
+
+totalBill = 0;
+totalCn = 0;
+totalPEBWeight = 0;
+
+// ===== LOOP =====
+data.forEach(r=>{
+
+  let tr=document.createElement("tr");
+
+  let type=(r[2]||"").toUpperCase().trim();
+
+  let receipt=parseFloat(r[5])||0;
+  let amount=parseFloat(r[7])||0;
+  let weight=parseFloat(r[8])||0;
+
+  // TOTAL LOGIC
+  if(type==="TDS") totalTds += receipt;
+  else if(type==="BANK"||type==="CASH") totalReceipt += receipt;
+
+  if(type==="TAX INVOICE"||type==="CHALLAN"){
+    totalBill += amount;
+  }
+
+  if(type==="CREDIT NOTE"){
+    totalCn += amount;
+  }
+
+  if(type==="TAX INVOICE"||type==="CHALLAN"||type==="CREDIT NOTE"){
+    totalPEBWeight += weight;
+  }
+
+  // COLOR
+  if(type==="BANK"||type==="CASH") tr.style.color="red";
+  else if(type==="CREDIT NOTE") tr.style.color="grey";
+  else if(type==="CHALLAN") tr.style.color="green";
+
+  tr.innerHTML=`
+  <td>${r[0]||""}</td>
+  <td>${r[2]||""}</td>
+  <td>${r[3]||""}</td>
+  <td>${r[4]||""}</td>
+  <td>${r[5]||""}</td>
+  <td>${r[6]||""}</td>
+  <td>${r[7]||""}</td>
+  <td>${r[8]||""}</td>
+  <td>${r[9]||""}</td>
+  <td>${r[10]||""}</td>
+  <td>${r[1]||""}</td>
+  `;
+
+  table786Body.appendChild(tr);
+});
+
+// ===== TOTAL ROUND =====
+totalTds = Math.round(totalTds);
+totalReceipt = Math.round(totalReceipt);
+totalBill = Math.round(totalBill);
+totalCn = Math.round(totalCn);
+totalPEBWeight = Math.round(totalPEBWeight);
+
+// ===== DIFF =====
+let diff = totalBill - totalReceipt - totalTds + totalCn;
+
+// ===== UPDATE UI =====
+document.getElementById("totalTds").textContent = totalTds;
+document.getElementById("totalReceipt").textContent = totalReceipt;
+document.getElementById("totalBill").textContent = totalBill;
+document.getElementById("totalCn").textContent = totalCn;
+document.getElementById("totalPEBWeight").textContent = totalPEBWeight;
+
+let diffEl = document.getElementById("totalDifference");
+diffEl.textContent = diff;
+diffEl.style.color = diff<0 ? "red" : "green";
+
+// ===== SEARCH RESET =====
+let input = document.getElementById("globalSearchInput");
+if(input) input.value="";
+updateTotalsFromVisibleRows();
+}
+
+
+document.getElementById("from786Date").addEventListener("change", renderTable);
+document.getElementById("to786Date").addEventListener("change", renderTable);
+
+//--------------- PO/Reff Details div script ---------- start
+function showPODetails(reff){
+
+  let match = dataF.find(r => (r[6]||"") === reff);
+
+  let box = document.getElementById("poDetailsBox");
+
+  if(!match){
+    box.style.display="none";
+    return;
+  }
+
+  // ✅ PO values
+  let poAmt = parseFloat(match[7]) || 0;
+  let poWt = parseFloat(match[8]) || 0;
+
+  // ✅ BALANCE CALCULATION (YAHI ADD KARNA HAI)
+  let balanceAmt = poAmt - totalBill - totalCn;
+  let balanceWt = poWt - totalPEBWeight;
+
+  box.style.display="block";
+  const status = (match[2]||"").toUpperCase();
+
+  box.innerHTML=`
+  <b>📄 PO / Reff Details</b><br><br>
+
+  <b>Order By:</b> ${match[9]||""}
+  <b>Design By:</b> ${match[1]||""} |
+  <b>Client:</b> ${match[3]||""} |
+  <b>Status:</b> <span style="color:${status==="RUNNING" ? "green" : status==="CANCELED" ? "red" : "white"};font-weight:bold;">${status}</span> |
+  <b style="color:blue;">Discription:</b> ${match[11]||""} <br/><br/>
+  <b style="color:#6e0000;">PO Value:</b> Rs. ${poAmt} |
+  <b style="color:#006658;">PO Weight:</b> ${poWt} Kg. | 
+  <b style=" background-color: rgb(216, 248, 248);"> Balance PO Summry:-
+  <span style="color:#b91c1c;font-weight:bold;">Amount: Rs. ${Math.round(balanceAmt)}</span> | <span style="color:#065f46;font-weight:bold;">Weight: ${Math.round(balanceWt)} Kg </span>
+  </b>
+  `;
+}
+//--------------- PO/Reff Details div script ---------- stop
+
+function updateSelectionInfo(){
+
+  let ledgerText = selectedLedger || "All";
+  let reffText = selectedReff || "All";
+
+  document.getElementById("selectionInfo").innerHTML =
+    `Ledger:- <span style="color:#2563eb">${ledgerText}</span> | 
+     PO/Reff No: <span style="color:#16a34a">${reffText}</span>`;
+}
+
+// ======================= global serch input update total fuction =============================
+function updateTotalsFromVisibleRows(){
+
+  let rows = document.querySelectorAll("#table786Body tr");
+
+  let totalTds=0, totalReceipt=0, totalBill=0, totalCn=0, totalWeight=0;
+
+  rows.forEach(row=>{
+    if(row.style.display==="none") return;
+
+    let cells = row.querySelectorAll("td");
+
+    let type = (cells[1]?.innerText || "").toUpperCase().trim();
+    let receipt = parseFloat(cells[4]?.innerText) || 0;
+    let amount = parseFloat(cells[6]?.innerText) || 0;
+    let weight = parseFloat(cells[7]?.innerText) || 0;
+
+    if(type==="TDS") totalTds += receipt;
+    else if(type==="BANK"||type==="CASH") totalReceipt += receipt;
+
+    if(type==="TAX INVOICE"||type==="CHALLAN") totalBill += amount;
+    if(type==="CREDIT NOTE") totalCn += amount;
+
+    if(type==="TAX INVOICE"||type==="CHALLAN"||type==="CREDIT NOTE"){
+      totalWeight += weight;
+    }
+  });
+
+  totalTds = Math.round(totalTds);
+  totalReceipt = Math.round(totalReceipt);
+  totalBill = Math.round(totalBill);
+  totalCn = Math.round(totalCn);
+  totalWeight = Math.round(totalWeight);
+
+  let diff = totalBill - totalReceipt - totalTds + totalCn;
+
+  // ✅ UI UPDATE
+  document.getElementById("totalTds").textContent = totalTds;
+  document.getElementById("totalReceipt").textContent = totalReceipt;
+  document.getElementById("totalBill").textContent = totalBill;
+  document.getElementById("totalCn").textContent = totalCn;
+  document.getElementById("totalPEBWeight").textContent = totalWeight;
+
+  let diffEl = document.getElementById("totalDifference");
+  diffEl.textContent = diff;
+  diffEl.style.color = diff<0 ? "red" : "green";
+}
+// ======================= global serch input update total fuction xxx =============================
+
+// -------------- filter by date script start ----------
+function parseCustomDate(str){
+  if(!str) return null;
+
+  str = str.trim();
+
+  let parts = str.split("-");
+  if(parts.length !== 3) return null;
+
+  let day = parseInt(parts[0]);
+  let mon = parts[1].substring(0,3);
+  let year = parseInt(parts[2]);
+
+  // 2 digit year fix
+  if(year < 100){
+    year += 2000;
+  }
+
+  const months = {
+    Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,
+    Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11
+  };
+
+  if(months[mon] === undefined) return null;
+
+  let d = new Date(year, months[mon], day);
+  d.setHours(0,0,0,0);
+
+  return d;
+}
+
+function resetDateFilter(){
+  document.getElementById("from786Date").value = "";
+  document.getElementById("to786Date").value = "";
+}
+// -------------- filter by date script stop ----------
+// ================= GLOBAL TABLE SEARCH (REMOVABLE) start hare =================
+
+function globalDataSearch(){
+
+  const input = document.getElementById("globalSearchInput");
+  const keyword = input.value.toLowerCase();
+
+  const rows = document.querySelectorAll("#table786Body tr");
+
+  rows.forEach(row=>{
+    let text = row.innerText.toLowerCase();
+
+    // RESET पहले
+    row.style.display = "";
+    row.innerHTML = row.innerHTML.replace(/<mark>/g,"").replace(/<\/mark>/g,"");
+
+    if(keyword){
+      if(text.includes(keyword)){
+
+        // SHOW + HIGHLIGHT
+        row.style.display = "";
+
+        let cells = row.querySelectorAll("td");
+
+        cells.forEach(td=>{
+          let val = td.innerText;
+
+          if(val.toLowerCase().includes(keyword)){
+            let regex = new RegExp(`(${keyword})`,"gi");
+            td.innerHTML = val.replace(regex,"<mark>$1</mark>");
+          }
+        });
+
+      } else {
+        row.style.display = "none";
+      }
+    }
+
+  });
+
+    // ✅ NEW: update totals based on visible rows
+  updateTotalsFromVisibleRows();
+}
+
+// EVENT
+document.getElementById("globalSearchInput").addEventListener("input", globalDataSearch);
+// ================= GLOBAL TABLE SEARCH (REMOVABLE) STop hare =================
+ //----------------------- print function start
+ function print786Report(){
+
+  let printWindow = window.open('', '', 'width=1000,height=700');
+
+  // ===== DATE FORMAT FUNCTION =====
+  function formatDate(input){
+    if(!input) return "-";
+
+    let d = new Date(input);
+
+    let day = d.getDate();
+    let year = d.getFullYear();
+
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    let month = months[d.getMonth()];
+
+    return `${day}-${month}-${year}`;
+  }
+
+  // ===== DATA GET =====
+  let selectionText = document.getElementById("selectionInfo").innerHTML;
+
+  let fromDate = document.getElementById("from786Date").value;
+  let toDate = document.getElementById("to786Date").value;
+
+  let totalsHTML = document.getElementById("totalsBox").innerHTML;
+  let tableHead = document.getElementById("table786Head").innerHTML;
+  let tableBody = document.getElementById("table786Body").innerHTML;
+
+  // ===== TIMESTAMP =====
+  let now = new Date();
+
+  let datePart = formatDate(now);
+
+  let hours = now.getHours();
+  let minutes = now.getMinutes().toString().padStart(2,'0');
+
+  let ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12 || 12;
+
+  let timeStamp = `${datePart} / ${hours}:${minutes} ${ampm}`;
+
+  // ===== PRINT HTML =====
+  printWindow.document.write(`
+  <html>
+  <head>
+    <title>Ledger Report</title>
+
+    <style>
+      body{
+        font-family: Arial;
+        padding: 15px;
+        color:#000;
+      }
+
+      h2{
+        margin:0 0 10px 0;
+      }
+
+      table{
+        width:100%;
+        border-collapse:collapse;
+        font-size:13px;
+      }
+
+      th,td{
+        border:1px solid #000;
+        padding:5px;
+        text-align:left;
+      }
+
+      th{
+        background:#f0f0f0;
+      }
+
+      .topbar{
+        display:flex;
+        justify-content:space-between;
+        margin-bottom:10px;
+        font-size:14px;
+      }
+
+      .row{
+        display:flex;
+        justify-content:space-between;
+        margin-bottom:10px;
+        font-size:14px;
+      }
+
+      .totals{
+        font-size:15px;
+        font-weight:bold;
+        margin-bottom:10px;
+      }
+
+      @media print {
+        body { margin:0; }
+      }
+
+    </style>
+  </head>
+
+  <body>
+
+    <h2>MIPL Report Preview</h2>
+
+    <!-- TOP -->
+    <div class="topbar">
+      <div>${selectionText}</div>
+      <div>${timeStamp}</div>
+    </div>
+
+    <!-- DATE RANGE -->
+    <div class="row">
+      <div>
+        <b>From:</b> ${formatDate(fromDate)} 
+        <b style="margin-left:15px;">To:</b> ${formatDate(toDate)}
+      </div>
+    </div>
+
+    <!-- TOTAL -->
+    <div class="totals">
+      ${totalsHTML}
+    </div>
+
+    <!-- TABLE -->
+    <table>
+      <thead>${tableHead}</thead>
+      <tbody>${tableBody}</tbody>
+    </table>
+
+  </body>
+  </html>
+  `);
+
+  printWindow.document.close();
+
+  // ⏳ Thoda delay for proper render
+  setTimeout(()=>{
+    printWindow.print();
+  },300);
+}
+// -------------------- print function stop ---------------------------
+
+// ------------- refresh function ------------
+// ================= REFRESH TABLE =================
+async function refershdlrtable(){
+
+    document.getElementById("table786Body").innerHTML =
+    "<tr><td colspan='11'>⏳ Refreshing...</td></tr>";
+  try{
+
+    const datadUrl=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/DATAD!A:Z?key=${API_KEY}`;
+    const datafUrl=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/DATAF!A:Z?key=${API_KEY}`;
+
+    // 🔄 fresh data load
+    const [dRes,fRes]=await Promise.all([
+      fetch(datadUrl),
+      fetch(datafUrl)
+    ]);
+
+    const dData=await dRes.json();
+    const fData=await fRes.json();
+
+    allData=(dData.values||[]).slice(1);
+    dataF=(fData.values||[]).slice(1);
+
+    // 🔁 UI refresh (same selection ke saath)
+    renderLedgerList();
+    renderReff();
+    renderTable();
+    updateSelectionInfo();
+
+    console.log("✅ Table Refreshed Successfully");
+
+  }catch(err){
+    console.error("❌ Refresh Error:", err);
+    alert("Data refresh failed");
+  }
+
+}
+</script>
+
+<!--   ====-- By username update script ========= -----   mipl786Table Second script by username update ledger list removal script (  <table id="dlrtable">) ------ =============== start  -->
+<script>
+// ================= USER NAME GET =================
+function getCurrentUser(){
+  let el = document.getElementById("username");
+  return (el?.innerText || "").trim().toUpperCase();
+}
+
+// 🔥 MULTI USER LIST
+const restrictedUsers = ["LESHANT","TUSHAAR"];
+
+// ================= APPLY USER FILTER =================
+function applyUserFilter(){
+
+  let username = getCurrentUser();
+  let searchSelect = document.getElementById("searchType");
+
+  if(restrictedUsers.includes(username)){
+
+    // 🔥 ONLY ledger option show
+    [...searchSelect.options].forEach(opt=>{
+      opt.style.display = (opt.value === "ledger") ? "block" : "none";
+    });
+
+    searchSelect.value = "ledger";
+    searchMode = "ledger";
+
+    // ===== USER FILTER =====
+    let userRows = dataF.filter(r => 
+      (r[9] || "").toUpperCase() === username
+    );
+
+    window.userReffList = [...new Set(userRows.map(r => r[6] || ""))];
+
+    let filteredData = allData.filter(r =>
+      window.userReffList.includes(r[6])
+    );
+
+    window.userLedgerList = [...new Set(filteredData.map(r => r[4] || ""))];
+
+    renderLedgerListCustom(window.userLedgerList);
+
+  } else {
+
+    // 🔥 NORMAL USER
+    [...searchSelect.options].forEach(opt=>{
+      opt.style.display = "block";
+    });
+
+    renderLedgerList();
+  }
+
+  document.getElementById("reffContainer").innerHTML="";
+  document.getElementById("table786Body").innerHTML="";
+}
+
+// ================= SEARCHTYPE EVENT =================
+document.getElementById("searchType").addEventListener("change", function(){
+
+  searchMode = this.value;
+
+  selectedLedger = "";
+  selectedReff = "";
+  selectedType = "";
+
+  document.getElementById("ledgerSearch").value = "";
+
+  document.getElementById("ledgerSearch").placeholder =
+    (searchMode === "ledger") ? "🔍 Search Ledger" : "🔍 Search Reff No";
+
+  applyUserFilter();
+});
+
+// ================= SEARCH INPUT =================
+document.getElementById("ledgerSearch").addEventListener("input", function(){
+
+  let username = getCurrentUser();
+
+  if(restrictedUsers.includes(username)){
+    renderLedgerListCustom(window.userLedgerList || [], this.value);
+  } else {
+    renderLedgerList(this.value);
+  }
+});
+
+// ================= CUSTOM LEDGER =================
+function renderLedgerListCustom(customList=[], search=""){
+
+  let list = customList
+    .filter(v => (v||"").toLowerCase().includes(search.toLowerCase()))
+    .sort();
+
+  let box = document.getElementById("ledgerList");
+  box.innerHTML = "";
+
+  list.forEach(l=>{
+    let div = document.createElement("div");
+    div.textContent = l;
+
+    div.onclick = ()=>{
+
+      selectedLedger = l;
+      selectedReff = "";
+      selectedType = "";
+
+      resetDateFilter();
+
+      document.getElementById("poDetailsBox").style.display="none";
+
+      renderReffCustom();
+      renderTable();
+      updateSelectionInfo();
+    };
+
+    box.appendChild(div);
+  });
+}
+
+// ================= CUSTOM REFF =================
+function renderReffCustom(){
+
+  let data = allData.filter(r =>
+    (window.userReffList || []).includes(r[6]) &&
+    r[4] == selectedLedger
+  );
+
+  let list = [...new Set(data.map(r => r[6] || ""))];
+
+  let box = document.getElementById("reffContainer");
+  box.innerHTML = "";
+
+  list.forEach(r=>{
+    let span = document.createElement("span");
+    span.textContent = r;
+
+    span.onclick = ()=>{
+      selectedReff = r;
+      selectedType = "";
+      renderTable();
+      showPODetails(selectedReff);
+      updateSelectionInfo();
+    };
+
+    box.appendChild(span);
+  });
+}
+
+// ================= AUTO DETECT USERNAME =================
+document.addEventListener("DOMContentLoaded", function(){
+
+  const usernameEl = document.getElementById("username");
+  if(!usernameEl) return;
+
+  const observer = new MutationObserver(() => {
+
+    let username = getCurrentUser();
+
+    if(username && allData.length && dataF.length){
+      applyUserFilter();
+    }
+  });
+
+  observer.observe(usernameEl, { childList: true, subtree: true });
+
+  /*---------
+  // fallback
+  setTimeout(()=>{
+    if(getCurrentUser()){
+      applyUserFilter();
+    }
+  },1500);
+*/
+});
+
+</script>
+<!--   ============= xxx -----   mipl786Table Second script by username update ledger list removal script (  <table id="dlrtable">) ------ xxx =============== stop  -->
+<!--   ============= -----   mipl786Table with poref/address/ attandase buttan code script ------ =============== stop  -->
+
+
+
+
+
+
+
+
+<!-- ===== Note: ========== Cash Ledger Voucher Code and Script  start ------------------------------------ SECTION5 (MIPL502)================================ -->
+<!-- ============== CASH LEDGER REPORT (5792) SCRIPT STOP HARE  Section5 (MIPL505)=====--xxxx--57925792-============ -->
+
+<script>
+const api5792Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheet5792Id = "1vjkI_bpHNR6Tna17FISridqXSvCUnELA5oMgnAqzbO0";
+const range5792 = "CMDATA!A:G";
+
+let all5792Data = [];
+let filtered5792Data = [];
+
+// ✅ Convert "7-Oct-2025" → Date object
+function parseCustomDate(dateStr) {
+  if (!dateStr) return null;
+  const parts = dateStr.split("-");
+  if (parts.length !== 3) return null;
+  const day = parseInt(parts[0]);
+  const monthStr = parts[1].toLowerCase().substring(0, 3);
+  const year = parseInt(parts[2]);
+  const months = {
+    jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+    jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
+  };
+  const month = months[monthStr];
+  if (isNaN(day) || isNaN(year) || month === undefined) return null;
+  return new Date(year, month, day);
+}
+
+// ✅ Fetch Google Sheet Data
+// ✅ Fetch Google Sheet Data (skip rows where column B == "DLT")
+async function fetch5792Data() {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheet5792Id}/values/${range5792}?key=${api5792Key}`;
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    let rows = data.values || [];
+
+    // 🔹 Skip header row (first row)
+    const header = rows[0];
+    const filtered = rows.slice(1).filter(row => (row[1] || "").trim().toUpperCase() !== "DLT");
+
+    // 🔹 Combine header + filtered rows
+    const finalData = [header, ...filtered];
+    return finalData;
+  } catch (err) {
+    console.error("Error fetching data:", err);
+    return [];
+  }
+}
+
+// ✅ Process Rows (convert only JNP → MA)
+function processRows(rows) {
+  if (!rows || rows.length < 2) return [];
+  const headers = rows[0];
+
+  let data = rows.slice(1).map(r => {
+    let obj = {};
+    headers.forEach((h, i) => obj[h] = r[i] || "");
+    obj._serial = parseFloat(r[0]) || 0;
+    obj._user = (r[1] || "").trim().toUpperCase();
+    obj._type = (r[2] || "").trim().toLowerCase();
+    obj._dateStr = r[3] || "";
+    obj._date = parseCustomDate(r[3]);
+    obj._ledger = r[4] || "";
+    obj._amount = parseFloat(r[5]) || 0;
+
+    // ✅ Only JNP → MA (JNR unaffected)
+      if (obj._user === "JNP") obj._user = "MA";
+
+    // ✅ Convert JNP & JNR → MA
+//  if (obj._user === "JNP" || obj._user === "JNR") {
+  //  obj._user = "MA";
+//    }
+
+
+    return obj;
+  });
+
+  data.sort((a, b) => b._serial - a._serial);
+  return data;
+}
+
+// ✅ Render Table + Color Formatting
+function render5792Table(data) {
+  const container = document.getElementById("table5792Container");
+  if (!data.length) {
+    container.innerHTML = "<p>No records found.</p>";
+    return;
+  }
+
+  // ✅ Ensure each record has parsed date before sorting  ---------------
+  data.forEach(r => {
+    if (!r._date && r["Date"]) {
+      const d = r["Date"].trim();
+      const parts = d.split("-");
+      if (parts.length === 3) {
+        const day = parseInt(parts[0]);
+        const mon = parts[1].substring(0, 3).toLowerCase();
+        const yr = parseInt(parts[2]);
+        const months = {
+          jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+          jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
+        };
+        r._date = new Date(yr, months[mon], day);
+      } else {
+        r._date = null;
+      }
+    }
+  });
+
+  // ✅ Sort by date descending (latest → oldest)
+  data.sort((a, b) => {
+    const da = a._date ? a._date.getTime() : 0;
+    const db = b._date ? b._date.getTime() : 0;
+    return db - da;
+  });
+//----- DATE WISE TABLE SHORT ----------------
+
+
+  const headers = Object.keys(data[0]).filter(h => !h.startsWith("_"));
+  const html = `
+    <table id="my5792Table" border="1" style="border-collapse:collapse;width:100%;font-size:14px;">
+      <thead style="background:#004d80;color:white;">
+        <tr>${headers.map(h => `<th>${h}</th>`).join("")}<th>Running Balance</th></tr>
+      </thead>
+      <tbody>
+        ${data.map(r => {
+          let color = "";
+          const type = r._type.toLowerCase();
+          if (type === "receipt") color = "red";
+          else if (type === "salary") color = "blue";
+          else if (type === "billdr") color = "green";
+          
+
+          return `
+            <tr style="color:${color};">
+              ${headers.map(h => `<td>${r[h]}</td>`).join("")}
+              <td class="runningBalance"></td>
+            </tr>`;
+        }).join("")}
+      </tbody>
+    </table>
+  `;
+  container.innerHTML = html;
+
+  // ✅ Ensure "JNP" converted to "MA" even after render
+  const rows = container.querySelectorAll("#my5792Table tbody tr");
+  rows.forEach(row => {
+    const userCell = row.cells[1];
+    if (!userCell) return;
+    const val = userCell.textContent.trim().toUpperCase();
+  //  if (val === "JNP") userCell.textContent = "MA"; // Only JNP → MA
+
+if (val === "JNP" || val === "JNR") {
+    userCell.textContent = "MA";
+}
+
+
+  });
+  //------------------
+  calculate5792RunningBalance();
+}
+
+// ✅ Calculate Running Balance
+function calculate5792RunningBalance() {
+  const rows = Array.from(document.querySelectorAll('#my5792Table tbody tr'));
+  if (rows.length === 0) return;
+
+  const lastRow = rows[rows.length - 1];
+  const lastCells = lastRow.querySelectorAll('td');
+  const lastType = lastCells[2]?.textContent.trim().toLowerCase();
+  const lastAmount = parseFloat(lastCells[5]?.textContent || 0);
+
+  const creditTypes = ["receipt", "salary", "billcr"];
+  let runningBalance = creditTypes.includes(lastType) ? lastAmount : -lastAmount;
+
+  lastRow.querySelector('.runningBalance').textContent = runningBalance.toFixed(2);
+
+  for (let i = rows.length - 2; i >= 0; i--) {
+    const cells = rows[i].querySelectorAll('td');
+    const type = cells[2]?.textContent.trim().toLowerCase();
+    const amount = parseFloat(cells[5]?.textContent || 0);
+
+    if (!isNaN(amount)) {
+      if (creditTypes.includes(type)) {
+        runningBalance += amount;
+      } else if (["payment", "billdr"].includes(type)) {
+        runningBalance -= amount;
+      }
+    }
+    rows[i].querySelector('.runningBalance').textContent = runningBalance.toFixed();
+  }
+}
+
+// ✅ Apply Filters (Search + Ledger + User + Date)
+function apply5792Filters() {
+  const searchVal = document.getElementById("search5792Input")?.value.toLowerCase() || "";
+  const ledgerVal = document.getElementById("ledger5792Input")?.value.toLowerCase() || "";
+  const userVal = document.getElementById("user5792")?.value || "";
+  const startDateStr = document.getElementById("start5792Date")?.value;
+  const endDateStr = document.getElementById("end5792Date")?.value;
+
+  const startDate = startDateStr ? new Date(startDateStr) : null;
+  const endDate = endDateStr ? new Date(endDateStr) : null;
+
+  filtered5792Data = all5792Data.filter(row => {
+    const rowDate = row._date;
+    if (!rowDate) return false;
+
+    const rowTime = rowDate.setHours(0, 0, 0, 0);
+    const startTime = startDate ? startDate.setHours(0, 0, 0, 0) : null;
+    const endTime = endDate ? endDate.setHours(0, 0, 0, 0) : null;
+
+    // ✅ Start date inclusive
+    const inDateRange =
+      (!startTime || rowTime >= startTime) &&
+      (!endTime || rowTime <= endTime);
+
+    const matchesUser = !userVal || row._user === userVal;
+    const matchesLedger = !ledgerVal || (row._ledger || "").toLowerCase() === ledgerVal;
+    const matchesSearch = !searchVal || Object.values(row)
+      .some(v => String(v).toLowerCase().includes(searchVal));
+
+    return inDateRange && matchesUser && matchesLedger && matchesSearch;
+  });
+
+  filtered5792Data.sort((a, b) => b._serial - a._serial);
+  render5792Table(filtered5792Data);
+}
+
+
+
+// ✅ Ledger Dropdown Setup
+
+function setupLedger5792List() {
+  const input = document.getElementById("ledger5792Input");
+  const listBox = document.getElementById("ledger5792List");
+
+  if (!input || !listBox) return;
+
+  // ✅ Alphabetical sorted ledger
+  const ledgers = [...new Set(all5792Data.map(r => r._ledger).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b));
+
+  function renderList(filter = "") {
+    listBox.innerHTML = "";
+
+    const filtered = ledgers.filter(l =>
+      l.toLowerCase().includes(filter.toLowerCase())
+    );
+
+    filtered.forEach(item => {
+      const div = document.createElement("div");
+      div.textContent = item;
+
+      div.onclick = () => {
+        input.value = item;
+         apply5792Filters(); // ✅ table filter
+      };
+
+      listBox.appendChild(div);
+    });
+  }
+
+  // ✅ Initial full list
+  renderList();
+
+  // ✅ Typing filter
+  input.addEventListener("input", () => {
+    renderList(input.value);
+    // apply5792Filters(); // live filter table also
+  });
+}
+//-------------------------------------------------------
+
+
+// ✅ Setup Event Listeners
+function setup5792Events() {
+  document.getElementById("search5792Input")?.addEventListener("input", apply5792Filters);
+  document.getElementById("user5792")?.addEventListener("change", apply5792Filters);
+  document.getElementById("start5792Date")?.addEventListener("change", apply5792Filters);
+  document.getElementById("end5792Date")?.addEventListener("change", apply5792Filters);
+}
+
+// ✅ Refresh Function (Reload All)
+async function refresh5792Table() {
+  document.getElementById("search5792Input").value = "";
+  document.getElementById("ledger5792Input").value = "";
+  document.getElementById("user5792").value = "";
+  document.getElementById("start5792Date").value = "";
+  document.getElementById("end5792Date").value = "";
+  const rows = await fetch5792Data();
+  all5792Data = processRows(rows);
+  filtered5792Data = [...all5792Data];
+  render5792Table(all5792Data);
+setupLedger5792List();
+}
+
+
+// ======== heder difine =============
+function force5792Header() {
+  const table = document.getElementById("my5792Table");
+  if (!table) return;
+
+  const thead = table.querySelector("thead");
+  if (!thead) return;
+
+  thead.innerHTML = `
+    <tr style="background:#ffe9e3">
+      <th>T.No</th>
+      <th>User</th>
+      <th>Type</th>
+      <th>Date</th>
+      <th>Ledger</th>
+      <th>Amount</th>
+      <th>Narration</th>
+      <th>Balance</th>
+    </tr>
+  `;
+}
+
+/* 🔁 Render ke baad header force karo */
+const _oldRender5792Table = render5792Table;
+render5792Table = function (data) {
+  _oldRender5792Table(data);
+  force5792Header();
+};
+
+
+// ✅ Print Function
+// ✅ Print Function (with Ledger Name condition)
+function print5792Table() {
+
+  const table = document.getElementById("my5792Table");
+  if (!table) {
+    alert("No table data to print!");
+    return;
+  }
+
+  const ledgerName = document.getElementById("ledger5792Input")?.value.trim() || "";
+
+  const fromDate = document.getElementById("start5792Date")?.value;
+  const toDate = document.getElementById("end5792Date")?.value;
+
+  const userSelect = document.getElementById("user5792");
+  const userName = userSelect?.options[userSelect.selectedIndex]?.text || "";
+
+  function formatDate(dateStr){
+      if(!dateStr) return "";
+      const d = new Date(dateStr);
+      const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      return `${d.getDate()}-${months[d.getMonth()]}-${d.getFullYear()}`;
+  }
+
+  const fDate = formatDate(fromDate);
+  const tDate = formatDate(toDate);
+
+  const now = new Date();
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const timestamp =
+      `${now.getDate()}-${months[now.getMonth()]}-${now.getFullYear()} / ` +
+      now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+
+  const printWindow = window.open("", "_blank");
+
+  printWindow.document.write(`
+  <html>
+  <head>
+  <title>Print Table</title>
+  <style>
+  body{font-family:Arial;margin:20px;}
+  .topbar{
+      display:flex;
+      justify-content:space-between;
+      margin-bottom:10px;
+      font-size:14px;
+  }
+  .leftinfo div{margin-bottom:4px;}
+  .timestamp{font-weight:bold;}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px;}
+  th,td{border:1px solid #444;padding:6px;text-align:left;}
+  th{background:#004d80;color:white;}
+  h3{text-align:center;margin-bottom:5px;}
+  </style>
+  </head>
+
+  <body>
+
+  <h3>Cash Ledger Report</h3>
+
+  <div class="topbar">
+
+      <div class="leftinfo">
+          <div><strong>From:</strong> ${fDate} / <strong>To:</strong> ${tDate}</div>
+          <div><strong>User:</strong> ${userName}</div>
+          <div><strong>Ledger:</strong> ${ledgerName}</div>
+      </div>
+
+      <div class="timestamp">
+          Printed: ${timestamp}
+      </div>
+
+  </div>
+
+  ${table.outerHTML}
+
+  </body>
+  </html>
+  `);
+
+  printWindow.document.close();
+  printWindow.print();
+}
+
+// ✅ Initialize
+document.addEventListener("DOMContentLoaded", async () => {
+  const rows = await fetch5792Data();
+  all5792Data = processRows(rows);
+  filtered5792Data = [...all5792Data];
+  render5792Table(all5792Data);
+  setupLedger5792List();
+  setup5792Events();
+});
+</script>
+
+<!-- ============== CASH LEDGER REPORT (5792) SCRIPT STOP HARE  Section5 (MIPL505)=====--xxxx---============ -->
+
+
+
+
+
+
+
+<!---------------------------- dayboktable SCRIPT START (SECTION MIPL501)---------------------------------------- -->
+<script>
+const apidbookKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheetdbookId = "1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU";
+const rangedbook = "DATAD!A:L";
+
+let allDBookData = [];
+let fulldaybookData = [];
+let monthlyTotals = {};
+
+const fixedHeader = [
+"SNo","Voucher","V. Type","Date","Ledger",
+"Vcr No/Amt.","Reff/PO","Amount","Weight","Rate",
+"Vehicle/Narration","User"
+];
+
+/* ========= MONTH ========= */
+function getMonthKey(dateStr){
+  const d = new Date(dateStr);
+  if(isNaN(d)) return "";
+  return d.toLocaleString("default",{month:"short"})+"-"+d.getFullYear();
+}
+
+/* ========= LOAD ========= */
+async function loaddaybookData(){
+
+  const table = document.getElementById("daybookTable");
+  table.innerHTML = "<tr><td>Loading Daybook...</td></tr>";
+
+  // 🔥 SHOW LOADING SUMMARY
+  document.getElementById("monthlyTotals").innerHTML =
+  "<span style='color:white;'>Monthly Summary:- Loading...</span>";
+
+  try{
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetdbookId}/values/${rangedbook}?key=${apidbookKey}`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if(!data.values){
+      table.innerHTML = "<tr><td>No Data</td></tr>";
+      return;
+    }
+
+    const rows = data.values.slice(1);
+
+    /* SORT DESC */
+    rows.sort((a,b)=>Number(b[0])-Number(a[0]));
+
+    fulldaybookData = [fixedHeader,...rows];
+
+    const saleRows = rows.filter(r=>r[1]?.toUpperCase().trim()==="SALE");
+    allDBookData = [fixedHeader,...saleRows];
+
+    /* ========= MONTH TOTAL ========= */
+    monthlyTotals = {};
+    rows.forEach(r=>{
+      const month = getMonthKey(r[3]);
+      if(!month) return;
+
+      if(!monthlyTotals[month]){
+        monthlyTotals[month] = {sale:0,receipt:0};
+      }
+
+      const type = r[2]?.toUpperCase().trim();
+
+      if(type==="TAX INVOICE"){
+        monthlyTotals[month].sale += Number(r[7])||0;
+      }
+      if(type==="BANK"){
+        monthlyTotals[month].receipt += Number(r[5])||0;
+      }
+    });
+
+    const months = Object.keys(monthlyTotals);
+
+    populateMonthDropdown(months);
+
+    // 🔥 FIXED AUTO SELECT LOGIC
+    if(months.length){
+
+      const currentMonth = getMonthKey(new Date());
+      let selectedMonth = "";
+
+      if(monthlyTotals[currentMonth]){
+        selectedMonth = currentMonth;
+      }else{
+        selectedMonth = months[0];
+      }
+
+      updateTotals(selectedMonth);
+      document.getElementById("monthDropdown").value = selectedMonth;
+    }
+
+    showTop10();
+
+  }catch(err){
+    console.error(err);
+    table.innerHTML = "<tr><td>Error loading data</td></tr>";
+  }
+}
+
+/* ========= TOP 10 ========= */
+function showTop10(){
+  const data = [fixedHeader,...allDBookData.slice(1,11)];
+  renderdaybookTable(data);
+}
+
+/* ========= DROPDOWN ========= */
+function populateMonthDropdown(months){
+
+  const dropdown = document.getElementById("monthDropdown");
+  dropdown.innerHTML = `<option value="">Select Month</option>`;
+
+  months.forEach(m=>{
+    const opt = document.createElement("option");
+    opt.value = m;
+    opt.textContent = m;
+    dropdown.appendChild(opt);
+  });
+
+  dropdown.onchange = ()=>{
+    const m = dropdown.value;
+    if(!m) return;
+    updateTotals(m);
+  };
+}
+
+/* ========= TOTAL ========= */
+function updateTotals(month){
+  const t = monthlyTotals[month];
+
+  if(!t){
+    document.getElementById("monthlyTotals").innerHTML =
+    "<span style='color:red;'>No Data</span>";
+    return;
+  }
+
+  document.getElementById("monthlyTotals").innerHTML =
+  `
+  <span style="color:#00802d;">Total Sale : ₹${t.sale.toFixed()}</span>
+   | <span style="color:#a30000;">Total Receipt : ₹${t.receipt.toFixed()}</span>`;
+}
+
+/* ========= SEARCH ========= */
+document.addEventListener("DOMContentLoaded", () => {
+
+  document.getElementById("daybookSearch").addEventListener("input", function(){
+
+    const value = this.value.toLowerCase();
+
+    if(!value){
+      showTop10();
+      return;
+    }
+
+    const filtered = [
+      fixedHeader,
+      ...fulldaybookData.slice(1).filter(row=>
+        row.some(cell=> (cell||"").toLowerCase().includes(value))
+      )
+    ];
+
+    renderdaybookTable(filtered,value);
+  });
+
+  /* 🔥 REFRESH BUTTON */
+  document.getElementById("daybookRefresh").addEventListener("click", daybookRefresh);
+
+  loaddaybookData();
+});
+
+/* ========= REFRESH ========= */
+async function daybookRefresh(){
+  const table = document.getElementById("daybookTable");
+  table.innerHTML = "<tr><td>Refreshing...</td></tr>";
+
+  document.getElementById("daybookSearch").value = "";
+
+  await loaddaybookData();
+}
+
+/* ========= RENDER ========= */
+function renderdaybookTable(data,highlight=""){
+
+  const table = document.getElementById("daybookTable");
+  table.innerHTML = "";
+
+  const thead = document.createElement("thead");
+  const tbody = document.createElement("tbody");
+
+  const trh = document.createElement("tr");
+  data[0].forEach(h=>{
+    const th = document.createElement("th");
+    th.textContent = h;
+    trh.appendChild(th);
+  });
+  thead.appendChild(trh);
+
+  data.slice(1).forEach(r=>{
+    const tr = document.createElement("tr");
+
+    const type = r[2]?.toUpperCase().trim();
+
+    // 🔥 BANK ROW RED COLOR
+    if(type === "BANK"){
+      tr.style.color = "red";
+    }
+
+    for(let i=0;i<fixedHeader.length;i++){
+      const td = document.createElement("td");
+      let text = r[i] || "";
+
+      if(highlight){
+        const regex = new RegExp(`(${highlight})`,"gi");
+        text = text.replace(regex,`<mark>$1</mark>`);
+        td.innerHTML = text;
+      }else{
+        td.textContent = text;
+      }
+
+      tr.appendChild(td);
+    }
+
+    tbody.appendChild(tr);
+  });
+
+  table.append(thead,tbody);
+}
+</script>
+
+<!---------------------------- daybooktable SCRIPT END ---------------------------------------- -->
+
+
+<!--   ============= -----   mipl785Table with poref/address/ attandase buttan code script ------ =============== start  -->
+<script>
+const api785Key = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheet785Id = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
+
+const addressrange785 = "ADDRESS!A:M";
+const pswrange785 = "M1000!A:F";
+const atnrange785 = "ATN!A:M";
+
+let addressData = [];
+let pswData = [];
+let atnData = [];
+let currentFilterType = "";
+let currentData = [];
+
+// ===== TABLE CONFIG =====
+const table785Config = {
+  address: { 
+    headers:["Clint","Address","State","Type","GSTIN","Contect Details"], 
+    cols:[0,1,2,3,4,5]
+  },
+  atn: { 
+    headers:["Sr No","Type","Date","Employee","P/A","Login Time","IP Details"], 
+    cols:[0,1,2,3,4,5,6]
+  },
+  psw: { 
+    headers:["Sr No","Type","Firm","User ID/ Password","Account Details","Other"], 
+    cols:[0,1,2,3,4,5]
+  }
+};
+
+// ================= LOAD DATA =================
+async function load785Data() {
+  const resAddr = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheet785Id}/values/${addressrange785}?key=${api785Key}`);
+  addressData = (await resAddr.json()).values || [];
+
+  const respsw = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheet785Id}/values/${pswrange785}?key=${api785Key}`);
+  pswData = (await respsw.json()).values || [];
+
+  const resAtn = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheet785Id}/values/${atnrange785}?key=${api785Key}`);
+  atnData = (await resAtn.json()).values || [];
+}
+
+// ================= RENDER TABLE =================
+function render785Table(rows, searchText="") {
+
+  const table785Head = document.getElementById("table785Head");
+  const table785Body = document.getElementById("table785Body");
+
+  table785Head.innerHTML = "";
+  table785Body.innerHTML = "";
+
+  if (!rows || rows.length <= 1) return;
+
+  const config = table785Config[currentFilterType];
+  if (!config) return;
+
+  // ===== HEADER =====
+  const headerRow = document.createElement("tr");
+  config.headers.forEach(h => {
+    const th = document.createElement("th");
+    th.textContent = h;
+    headerRow.appendChild(th);
+  });
+  table785Head.appendChild(headerRow);
+
+
+  // ===== DATA COPY =====
+  let filteredData = rows.slice(1);
+
+
+  // ===== SORTING =====
+  filteredData.sort((a, b) => {
+
+    const parseDate = (str) => {
+      if (!str) return null;
+
+      const parts = str.trim().split("-");
+      if (parts.length !== 3) return null;
+
+      const day = parseInt(parts[0], 10);
+      const mon = parts[1].substring(0, 3);
+      const year = parseInt(parts[2], 10);
+
+      const months = {
+        Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,
+        Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11
+      };
+
+      if (months[mon] === undefined) return null;
+
+      return new Date(year, months[mon], day);
+    };
+
+    const dateA = parseDate(a[2]); 
+    const dateB = parseDate(b[2]);
+
+    if (dateA && dateB) {
+      return dateB - dateA;
+    }
+
+    return Number(b[0]) - Number(a[0]);
+
+  });
+
+
+  // ===== RENDER ROWS =====
+  filteredData.forEach(r => {
+
+    const rowText = r.join(" ").toLowerCase();
+    if (searchText && !rowText.includes(searchText.toLowerCase())) return;
+
+    const tr = document.createElement("tr");
+
+    config.cols.forEach(colIndex => {
+
+      const td = document.createElement("td");
+      let cellText = r[colIndex] || "";
+
+      if (searchText) {
+        const regex = new RegExp(`(${searchText})`, "gi");
+        cellText = cellText.replace(regex, `<span class="highlight">$1</span>`);
+        td.innerHTML = cellText;
+      } else {
+        td.textContent = cellText;
+      }
+
+      tr.appendChild(td);
+    });
+
+    table785Body.appendChild(tr);
+
+  });
+
+}
+// ================= APPLY FILTER =================
+function apply785Filter() {
+
+  if (currentFilterType === "address") {
+    currentData = addressData;
+  } else if (currentFilterType === "psw") {
+    currentData = pswData;
+  } else if (currentFilterType === "atn") {
+    currentData = atnData;
+  }
+
+  render785Table(currentData);
+}
+
+// ================= BUTTON CLICK =================
+document.querySelectorAll(".filter-btn").forEach(btn => {
+  btn.addEventListener("click", function () {
+    currentFilterType = this.dataset.value;
+    apply785Filter();
+  });
+});
+
+// ================= GLOBAL SEARCH =================
+document.getElementById("mipl785serch").addEventListener("input", function(){
+  const searchValue = this.value.trim();
+  render785Table(currentData, searchValue);
+});
+
+// ================= START =================
+load785Data();
+</script>
+ <!--   ============= -----   mipl785Table with poref/address/ attandase buttan code script ------ =============== stop  -->
+
+<!-- ================  id unlock by admin (ULU) script and code start hare ===============================-->
+
+<!-- 🔹 Popup Form Container -->
+<div id="ULUPopup" class="popupULU-overlay">
+  <div class="popupULU-content slide-in">
+    <span id="closeULUBtn" class="close-btn">&times;</span>
+
+    <form id="mainULUForm" style="display:flex; align-items:center; gap:10px; flex-wrap:nowrap;">
+      <input type="hidden" name="SNo" id="sNo" />
+      <input type="hidden" name="User" readonly value="ATN">
+
+      <input type="text"  name="cl3" readonly  value="UBU"
+       style="padding:8px; width:100px; border:1px solid #aaa; border-radius:6px;">
+
+      <!-- Date -->
+      <label style="font-size:13px;font-weight:bold;">Date:</label>
+      <input id="popupULU-date" type="date" name="Date" style="padding:4px 6px; border-radius:6px; border:1px solid #ccc;">
+
+      <!-- Ledger -->
+      <label style="font-size:13px;font-weight:bold;">User:</label>
+      <select name="Ledger" required style="padding:4px 6px; border-radius:6px; border:1px solid #ccc;">
+        <option value="">Select</option>
+        <option>Rahul Kumar</option>
+        <option>RAHUL MALIK</option>
+        <option>V.K Giri</option>
+        <option>Harshit</option>
+        <option>Prakhar</option>
+        <option>Suryabhan</option>
+        <option>Mukhtar (Admin)</option>
+        <option>NITIN</option>
+        <option>Divesh</option>
+        <option>Vijender Kumar Sharma</option>
+        <option>Gurpreet</option>
+      </select>
+
+      <!-- Status -->
+      <label style="font-size:13px;font-weight:bold;">Status:</label>
+      <select name="cl1" required style="padding:4px 6px; border-radius:6px; border:1px solid #ccc;">
+        <option value="">Select</option>
+        <option>P</option>
+        <option>A</option>
+        <option>O</option>
+      </select>
+
+      <!-- Hidden inputs -->
+      <input type="hidden" id="timestampULU" name="timestampULU">
+      <input type="hidden" name="cl2" id="cl2">
+
+      <!-- Submit -->
+      <input type="submit" id="submitULUButton" value="Submit"
+        style="padding:6px 14px; background:#035b67; color:white; border:none; border-radius:6px; cursor:pointer;">
+    </form>
+
+  </div>
+</div>
+
+<!-- ✅ CSS -->
+<style>
+
+
+/* Popup Overlay */
+.popupULU-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);  /* 40% transparent background */
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* Popup Box */
+.popupULU-content {
+  background: rgba(255,255,255,0.7); /* light transparent white */
+  padding: 10px 16px;
+  border-radius: 12px;
+  width: 12in;
+  height: 0.3in;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: all 0.4s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+/* Slide-in Animation */
+.popupULU-overlay.active .popupULU-content {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.close-btn {
+  position: absolute;
+  top: 5px;
+  right: 12px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  color: #035b67;
+}
+</style>
+
+<!-- ✅ JavaScript -->
+<script>
+
+  // ------------- note :- jis button se ye open poup ope karna hai usme id="openULUBtn" ye add kro
+const popup = document.getElementById("ULUPopup");
+const openBtn = document.getElementById("openULUBtn");
+const closeBtn = document.getElementById("closeULUBtn");
+const scriptULUURL = 'https://script.google.com/macros/s/AKfycbxNCtOS7UZu2mw_Zuwkx-KHdORL1DATDoSp0Gv2Q5EQw6CKJOSPowawczVE_7uYHQw_/exec';
+
+// 🔹 Open Popup
+openBtn.addEventListener("click", () => {
+  popup.classList.add("active");
+  popup.style.display = "flex";
+
+  // Auto set today's date
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById("popupULU-date").value = today;
+
+  // Set timestamp + cl2
+  const now = new Date();
+  const timestamp = now.toLocaleString("en-GB", { hour12: false });
+  document.getElementById("timestampULU").value = timestamp;
+  document.getElementById("cl2").value = `${timestamp}`; // agar time stamp "UBA-01/11/2025, 13:27:56" is fromat me chaye "UBA" - TYPE KRO
+});
+
+// 🔹 Close Popup Function
+function closeULUPopup() {
+  popup.classList.remove("active");
+  setTimeout(() => popup.style.display = "none", 400);
+}
+
+// 🔹 Close Button
+closeBtn.addEventListener("click", closeULUPopup);
+
+// 🔹 Click outside form closes popup
+popup.addEventListener("click", (e) => {
+  if (e.target.id === "ULUPopup") closeULUPopup();
+});
+
+// 🔹 Submit Form
+document.addEventListener("submit", async function (e) {
+  const form = e.target;
+  if (form.id !== "mainULUForm") return;
+  e.preventDefault();
+
+  const submitBtn = document.getElementById("submitULUButton");
+  // const waitMsg = document.getElementById("waitULUMessage");
+
+  submitBtn.disabled = true;
+  submitBtn.value = "Please wait...";
+ // waitMsg.innerText = "Submitting...";
+// waitMsg.style.display = "block";
+
+  try {
+    const formData = new FormData(form);
+    const response = await fetch(scriptULUURL, { method: 'POST', body: formData });
+    const result = await response.json();
+
+    if (result.result === 'success') {
+      alert('✅ Attendance Submitted Successfully!');
+      form.reset();
+      closeULUPopup(); // Auto close popup
+    } else {
+      alert(`❌ Error: ${result.error || 'Unknown error occurred.'}`);
+    }
+  } catch (err) {
+    alert(`❌ Error submitting form: ${err.message}`);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.value = "Submit";
+   // setTimeout(() => (waitMsg.style.display = 'none'), 2000);
+  }
+});
+</script>
+<!-- ================ ----- id unlock by admin (ULU) script and code stop hare --------------- ===================-->
+
+
+
+
+<!-- ========= Buttan Configure Details List Start Hare  ---------- ============ -->
+
+
+<!-- Sidebar Open Button 
+<button onclick="togglesidebarNotes()" style="padding:6px 12px;">📑 Notes</button> -->
+
+<div class="sidebarnotes">
+
+<div id="notesBox" class="notes" style="font-size:14px;">
+
+<!-- Close Button -->
+<button class="closesidebarBtn" onclick="togglesidebarNotes()">Close</button>
+<br/><br/>
+
+
+<!-- ===== BUTTON 1 ===== -->
+<button class="noteBtn" onclick="toggleNote(1)">Drawer-Buttons</button>
+<div id="noteContent1" class="noteContent">
+
+  <p onclick="showPage('cashreportPage')" style="cursor:pointer;color:#038670;">Cash Ledger Report</p>
+  <p onclick="showPage('reportPage')" style="cursor:pointer;color:#038670;">Dishplay Ledger Report</p>
+  <p onclick="showPage('pyslipPage')" style="cursor:pointer;color:#038670;">Pay Slip</p>
+  <p onclick="showPage('idpasswordPage')" style="cursor:pointer;color:#038670;">Addr. / Att. / Psw</p>
+  <p onclick="showPage('aficurePage')" style="cursor:pointer;color:#038670;">A.F.I Cure</p>
+  <p onclick="showPage('rationcardPage')" style="cursor:pointer;color:#038670;">Ration Card Search</p>
+  <p onclick="showPage('clcPage')" style="cursor:pointer;color:#038670;">EMI Loan Calculator</p>
+
+</div>
+
+
+<!-- ===== BUTTON 2 ===== -->
+<button class="noteBtn" onclick="toggleNote(2)">Voucher Buttan</button>
+
+<div id="noteContent2" class="noteContent">
+
+<p onclick="showSection(3); showVoucher(1);" style="cursor:pointer;color:#0026ff;">21- Store Voucher | 30 (S) </p> 
+<p onclick="showSection(3);showVoucher(2);" style="cursor:pointer;color:#0026ff;">22- Contractor Voucher</p>
+<p onclick="showSection(3);showVoucher(3);" style="cursor:pointer;color:#0026ff;">23- Cash Voucher</p>
+<p onclick="showSection(3);showVoucher(4);" style="cursor:pointer;color:#0026ff;">24- Sales Voucher | 31 (S)</p>
+<p onclick="showSection(3);showVoucher(5);" style="cursor:pointer;color:#0026ff;">25- Banking Voucher</p>
+<p onclick="showSection(3);showVoucher(6);" style="cursor:pointer;color:#0026ff;">26- Payment Demand Voucher | 32 (S) / 33 (M)</p>
+<p onclick="showSection(3);showVoucher(7);" style="cursor:pointer;color:#0026ff;">27- PO/Reff Voucher</p>
+<p onclick="showSection(3);showVoucher(8);" style="cursor:pointer;color:#0026ff;">28- Admin* Voucher</p>
+
+</div>
+
+
+<!-- ===== BUTTON 3 ===== -->
+<button class="noteBtn" onclick="toggleNote(3)">Input Configure</button>
+
+<div id="noteContent3" class="noteContent">
+
+<p style="color:red;">---- Input Configure Code ----</p>
+
+<p>class="username" - For User Name</p>
+<p>class="usercode" - For User Code</p>
+<p>nputfont="font" - For First Letter Uppercase</p>
+<p>fontcapital="capitalletter" - For All Letter Uppercase</p>
+<p>class="usercodedp" - For User Code Dropdown</p>
+<p>class="inputhide" - For Unhide input When User "MA"</p>
+
+</div>
+
+<br/><br/>
+<span> ----- MIPL Google Sheet Link ---- </span><br/>
+<p onclick="window.open('https://docs.google.com/spreadsheets/d/1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU/edit?gid=1462163867#gid=1462163867','_blank')" style="cursor:pointer;color:#0026ff;">Master Data Google Sheet</p>
+<p onclick="window.open('https://docs.google.com/spreadsheets/d/1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4/edit?gid=2007779252#gid=2007779252','_blank')" style="cursor:pointer;color:#0026ff;">Address, Event Other Google Sheet</p>
+<p onclick="window.open('https://m5792.github.io/esm/','_blank')" style="cursor:pointer;color:#0026ff;">MIPL Dashboard</p>
+<br> <br>
+<p onclick="showPage('rationcardPage')" style="cursor:pointer;color:#038670;">Ration Card Search</p>
+<p onclick="window.open('https://m5792.github.io/esmTally/BSPLCLC.html','_blank')" style="cursor:pointer;color:#0026ff;">Bussinus Income Calculater</p>
+
+
+
+<!-- ========= Button Configure Details List Stop Here ---------- ============ -->
+
+
+
+<!-- ===== BUTTON 4 ===== -->
+<button class="noteBtn" onclick="toggleNote(4)">BSA Links</button>
+
+<div id="noteContent4" class="noteContent">
+  
+  <p onclick="window.open('https://docs.google.com/spreadsheets/d/1BiADwSV64zXPz0UyVmYN7BlyW8DiCylgT3-bSrnIk38/edit?gid=435632414#gid=435632414','_blank')" style="cursor:pointer;color:#0026ff;">BSA Master Google Sheet</p>
+<p onclick="window.open('https://docs.google.com/spreadsheets/d/1tbVXCvnuH4eYLQo9WWrmqkvst2MXc5ok6y8ozqXiOv0/edit?gid=1647225676#gid=1647225676','_blank')" style="cursor:pointer;color:#0026ff;">BSA Data Entry Sheet</p>
+<p onclick="window.open('https://m5792.github.io/BSA/','_blank')" style="cursor:pointer;color:#0026ff;">BSA Index Html</p>
+<p onclick="window.open('https://m5792.github.io/BSA/BSA%20Marksheet.html','_blank')" style="cursor:pointer;color:#0026ff;">BSA Marksheet Index Html</p>
+
+</div>
+
+</div>
+<style>
+
+.sidebarnotes{
+  position:relative;
+  display:inline-block;
+}
+
+.notes{
+  position:fixed;
+  top:55px;
+  right:-480px;
+  height:88vh;
+  width:420px;
+  background:white;
+  border-left:5px solid red;
+  padding:20px;
+  box-shadow:-5px 0 10px rgba(0,0,0,0.3);
+  transition:right 0.4s ease;
+  overflow-y:auto;
+}
+
+.notes.show{
+  right:0;
+}
+
+.closesidebarBtn{
+  position:absolute;
+  top:10px;
+  right:10px;
+  background:red;
+  color:white;
+  border:none;
+  font-size:16px;
+  cursor:pointer;
+  padding:4px 8px;
+  border-radius:4px;
+}
+
+/* accordion buttons */
+
+.noteBtn{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border:none;
+  background:#0093A1;
+  color:white;
+  font-weight:bold;
+ /* text-align:left; */
+  cursor:pointer;
+  border-radius:4px;
+}
+
+.noteBtn:hover{
+  background:#001bb3;
+}
+
+/* accordion content */
+
+.noteContent{
+  display:none;
+  padding:10px;
+  border:1px solid #ddd;
+  border-top:none;
+  background:#f9f9f9;
+}
+
+</style>
+
+
+<script>
+
+/* sidebar open close */
+
+function togglesidebarNotes(){
+  var box=document.getElementById("notesBox");
+  box.classList.toggle("show");
+}
+
+
+/* accordion toggle */
+
+function toggleNote(num){
+
+  const content=document.getElementById("noteContent"+num);
+
+  if(content.style.display==="block"){
+    content.style.display="none";
+  }else{
+    content.style.display="block";
+  }
+
+}
+
+</script>
+<!-- ========= Buttan Configure Details List stop Hare  ---------- ============ -->
+
+
+
+ <!-- -----------------======================  SALARY SHEET (PAY SLIP) SCRIPT  START HERE (SECTION9 MIPL509) ==================== ------------------------- -->
+<style>
+
+.SalarySheetContainer {
+    width: 900px;
+    border:1px solid #000;
+    padding:15px;
+    margin-top:20px;
+}
+
+</style>
+</head>
+<body>
+<span ID="vcrauth">MA</span>
+
+
+<script>
+  //--- undefined KI JAGAH "" KE LYE FUNCTION--------------------
+function val(v) {
+    return (v === undefined || v === null || v === "") ? "" : v;
+}
+//------------------------------------------------------
+
+const payslipKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const payslipId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
+
+const paysliprange = "PAYSLIP!A:N";
+const employeerange = "EMPLOYEE!A:O";
+
+let payData = [];
+let employeeData = [];
+
+const employeeDropdown = document.getElementById("employeeDropdown");
+const monthDp = document.getElementById("monthDp");
+const payslipDiv = document.getElementById("payslip");
+
+// ✅ GET USER CODE FROM SPAN
+function getempCode() {
+    return document.getElementById("vcrauth").innerText.trim();
+}
+
+// FETCH DATA
+async function fetchslyData() {
+
+    let urlPayslip = `https://sheets.googleapis.com/v4/spreadsheets/${payslipId}/values/${paysliprange}?key=${payslipKey}`;
+    let res1 = await fetch(urlPayslip);
+    let data1 = await res1.json();
+    payData = data1.values;
+
+    let urlEmployee = `https://sheets.googleapis.com/v4/spreadsheets/${payslipId}/values/${employeerange}?key=${payslipKey}`;
+    let res2 = await fetch(urlEmployee);
+    let data2 = await res2.json();
+    employeeData = data2.values;
+
+    // AUTO LOAD EMPLOYEES
+    let empCode = getempCode();
+    if (empCode) {
+        loadEmployees(empCode);
+    }
+}
+
+// LOAD EMPLOYEES (FROM EMPLOYEE SHEET)
+function loadEmployees(empCode) {
+
+    let employees;
+
+    if (empCode === "MA" || empCode === "GUR06" || empCode === "SUR10") {
+    employees = employeeData.slice(1).map(r => r[1]);
+} else {
+    employees = employeeData
+        .slice(1)
+        .filter(r => r[0] === empCode)
+        .map(r => r[1]);
+}
+
+    employees = [...new Set(employees)].sort((a,b)=>a.localeCompare(b));
+
+    employeeDropdown.innerHTML = `<option value="">Select Employee</option>`;
+    employees.forEach(name=>{
+        employeeDropdown.innerHTML += `<option value="${name}">${name}</option>`;
+    });
+}
+
+// LOAD MONTHS
+function loadMonths(employee) {
+
+    if (!employee) {
+        monthDp.innerHTML = `<option value="">Select Month</option>`;
+        return;
+    }
+
+    // ✅ Only filter by employee (NO empCode)
+    let filtered = payData.slice(1).filter(r => {
+        return r[2] && r[2].trim().toLowerCase() === employee.trim().toLowerCase();
+    });
+
+    // ✅ Extract unique months
+    let months = [...new Set(filtered.map(r => {
+        let d = new Date(r[1]);
+        if (isNaN(d)) return "";
+        return d.toLocaleString('en-US', { month: 'short', year: 'numeric' });
+    }).filter(m => m !== ""))];
+
+    // ✅ Sort latest first (optional but useful 🔥)
+    months.sort((a, b) => new Date(b) - new Date(a));
+
+    // ✅ Fill dropdown
+    monthDp.innerHTML = `<option value="">Select Month</option>`;
+    months.forEach(m => {
+        monthDp.innerHTML += `<option value="${m}">${m}</option>`;
+    });
+}
+
+// RENDER PAYSLIP
+function renderPayslip() {
+
+    let user = getempCode();
+    let employee = employeeDropdown.value;
+    let month = monthDp.value;
+
+    if (!employee || !month) return;
+
+   let pay = payData.slice(1).find(r=>{
+    let d = new Date(r[1]);
+    let m = d.toLocaleString('en-US',{month:'short',year:'numeric'});
+    return r[2].trim().toLowerCase()===employee.trim().toLowerCase() &&
+           m===month;
+});
+
+    if(!pay) return;
+
+    let emp = employeeData.slice(1).find(r =>
+        r[1].trim().toLowerCase() === employee.trim().toLowerCase()
+    );
+
+    let empDetailsHTML = "";
+
+    if(emp){
+        empDetailsHTML = `
+          <div style="font-size: 16px; color: black; font-weight: bold;" >Multitech Infracon Pvt. Ltd.</div>
+    <div style="font-size: 14px; color: black;">N.H.74, 12th Km. Stone, Way to Suraj Stone Crusher</div>
+    <div style="font-size: 14px; color: black;">Vill. Dabhora Mustakam, Bazpur Road Kashipur</div>
+    <div style="font-size: 14px; color: black;">CIN: U45200UR2019PT</div>
+<br>
+ <span style="font-size: 14px; color: black; font-weight: bold;"> Employee Details: </span>
+
+        <table>
+            <tr><td><b>Employee Name</b></td><td>${val(emp[1])}</td>          <td><b>Date of Joining</b></td><td>${val(emp[8])}</td>  </tr>
+            <tr><td><b>Employee Number</b></td><td>${val(emp[2])}</td>       <td><b>Adhar No. (UDIN)</b></td><td>${val(emp[9])}</td>   </tr>
+            <tr><td><b>Father Name</b></td><td>${val(emp[3])}</td>           <td><b>Universal Account Number (UAN)</b></td><td>${val(emp[10])}</td>  </tr>
+            <tr><td><b>Designation</b></td><td>${val(emp[4])}</td>           <td><b>ESI Number</b></td><td> <a href="${val(emp[14])}" target="_blank"> ${val(emp[11])}</td>   </tr>
+            <tr><td><b>Address</b></td><td>${val(emp[13])}</td>                  <td><b>Mobail No.</b></td><td>${val(emp[12])}</td>    </tr>
+                </table>
+
+            <table>
+
+              <span style="font-size: 14px; color: black; font-weight: bold;"> Bank Details: </span>
+        
+             <tr class="bold center">
+                <td style="background-color: rgb(203, 202, 202); color: black; font-weight: bold;">Bank Name</td>
+                <td style="background-color: rgb(203, 202, 202); color: black; font-weight: bold;">Account No</td>
+                <td style="background-color: rgb(203, 202, 202); color: black; font-weight: bold;">IFSC Code</td>
+            </tr>
+
+            <tr>  <td>${val(emp[5])}</td>  <td>${val(emp[6])}</td>   <td>${val(emp[7])}</td> </tr>
+        </table>`;
+    }
+
+    let basic = +pay[3]||0;
+     let con = +pay[4]||0;
+    let hra = +pay[5]||0;
+    let oth = +pay[6]||0;
+    let adv = +pay[8]||0;
+    let esi = +pay[9]||0;
+    let epf = +pay[10]||0;
+
+    let totalEarn = basic+hra+con+oth;
+    let totalDed = esi+epf+adv;
+    let net = totalEarn-totalDed;
+
+    let netInWords = numberToWords(Math.round(net));
+
+    payslipDiv.innerHTML = `
+        <h3 class="center">Pay Slip - ${month}</h3>
+        ${empDetailsHTML}
+
+        <span style="font-size: 14px; color: black; font-weight: bold;"> Salary Details: </span>
+         <table>
+            <tr class="bold center">
+                <td style="background-color: rgb(203, 202, 202); color: black; font-weight: bold;">Earnings</td>
+                <td style="background-color: rgb(203, 202, 202); color: black; font-weight: bold;">Amount</td>
+                <td style="background-color: rgb(203, 202, 202); color: black; font-weight: bold;">Deductions</td>
+                <td style="background-color: rgb(203, 202, 202); color: black; font-weight: bold;">Amount</td>
+            </tr>
+            <tr>
+                <td><b>Basic</b></td><td>${basic}</td>
+                <td><b>EPF</b></td><td>${epf}</td>
+            </tr>
+            <tr>
+                <td><b>HRA</b></td><td>${hra}</td>
+                <td><b>ESI</b></td><td>${esi}</td>
+            </tr>
+            <tr>
+                <td><b>Conveyance</b></td><td>${con}</td>
+                 <td><b>Advance</b></td><td>${adv}</td>
+              
+            </tr>
+             <tr>
+                <td><b>Other</b></td><td>${oth}</td>
+               
+              
+            </tr>
+            <tr class="bold">
+                <td style="background-color: rgb(203, 202, 202); color: black; font-weight: bold;">Total Earnings</td>
+                <td style="background-color: rgb(203, 202, 202); color: black; font-weight: bold;">${totalEarn}</td>
+                <td style="background-color: rgb(203, 202, 202); color: black; font-weight: bold;">Total Deduction</td>
+                <td style="background-color: rgb(203, 202, 202); color: black; font-weight: bold;">${totalDed}</td>
+            </tr>
+            <tr class="bold">
+                <td colspan="2">Net Salary</td>
+                <td colspan="2">₹ ${net}</td>
+            </tr>
+
+             <tr class="bold">
+                
+        </table>
+        <table>
+        <span style="font-size: 14px; color: black;"> <b>Amount in Words:</b> ${netInWords} </span>
+
+          <br><br>
+      <div style="font-weight: bold; text-align: right; font-size: 14px;">for Multitech Infracon Pvt. Ltd.</div>
+    <br><br>
+    <div style= "text-align: right; font-size: 14px;">Authorised Signatory</div>
+    </table>
+    `;
+
+    payslipDiv.style.display="block";
+}
+
+// PRINT
+// Print Payslip
+function printPayslip(){
+    let content = payslipDiv.innerHTML;
+    if(!content){ 
+        alert("Please generate payslip first"); 
+        return; 
+    }
+
+    let employee = employeeDropdown.value;
+    let month = monthDp.value;
+
+    let fileName = `${employee}-${month}`;
+
+    // Timestamp
+    let now = new Date();
+    let options = { 
+        day: '2-digit', 
+        month: 'short', 
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+    };
+    let timestamp = now.toLocaleString('en-GB', options).replace(',', '');
+
+    let win = window.open('', '', 'width=900,height=700');
+
+    win.document.write(`
+        <html>
+        <head>
+            <title>${fileName}</title> <!-- 🔥 THIS IS IMPORTANT -->
+            <style>
+                body { font-family: Arial; padding:10px; }
+                table { width:100%; border-collapse:collapse; margin-top:10px;}
+                td, th { border:1px solid #000; padding:3px; font-size:12px; }
+                .center { text-align:center; }
+                .timestamp { text-align:right; font-size:12px;margin-bottom:5px; }
+            </style>
+        </head>
+        <body>
+            <div class="timestamp">${timestamp}</div>
+            ${content}
+        </body>
+        </html>
+    `);
+
+    win.document.close();
+    win.focus();
+    win.print();
+}
+
+// EVENTS
+employeeDropdown.addEventListener("change", ()=>{
+    loadMonths(employeeDropdown.value);
+});
+
+monthDp.addEventListener("change", renderPayslip);
+
+// NUMBER TO WORDS
+function numberToWords(num) {
+    const a = ["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten",
+    "Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
+    const b = ["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+
+    if (num === 0) return "Zero Only";
+
+    function convert(n){
+        if (n < 20) return a[n];
+        if (n < 100) return b[Math.floor(n/10)] + " " + a[n%10];
+        if (n < 1000) return a[Math.floor(n/100)] + " Hundred " + convert(n%100);
+        if (n < 100000) return convert(Math.floor(n/1000)) + " Thousand " + convert(n%1000);
+        return "";
+    }
+
+    return convert(num) + " Only";
+}
+
+// INIT
+fetchslyData();
+
+</script>
+   <!-- XXX -----------------======================  SALARY SHEET (PAY SLIP) SCRIPT  STOP HERE (SECTION9 MIPL509) ==================== ------------------------- -->
+
+
+
+<!--  Start  ============= ----- ***************************   EMI / Loan buttan code script ************************************* ------ =============== Start  -->
+
+  <!--  Start  ============= -----   My Loan (toggleNote buttan 10 ) buttan code script ------ =============== Start  -->
+
+<script>
+const apiEMIKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheetEMIId = "1EOO0QzwNaPhwIfZN_DCLlhQB9yeC-j-GpmtM_6JMRmw";
+const rangeEMI = "LOAN!A:K";
+
+// Loan Status Calculation (EMI from sheet)
+function calculateLoanStatus(loan){
+
+    const principal = loan.LoanAmount;
+    const roi = loan.ROI;
+    const noOfMonth = loan.NoOfMonth;
+    const startDate = new Date(loan.StartDate);
+
+    const emi = loan.EMI; // ✅ Sheet EMI
+
+    const today = new Date();
+
+    let monthsPassed = (today.getFullYear() - startDate.getFullYear())*12 +
+                       (today.getMonth() - startDate.getMonth());
+
+    monthsPassed = Math.min(monthsPassed, noOfMonth);
+    monthsPassed = Math.max(monthsPassed, 0);
+
+    let remainingPrincipal = principal;
+    let principalPaid = 0;
+    let interestPaid = 0;
+
+    for(let i=0; i<monthsPassed; i++){
+        const interestForMonth = remainingPrincipal * roi / 12 /100;
+        const principalForMonth = emi - interestForMonth;
+
+        remainingPrincipal -= principalForMonth;
+        principalPaid += principalForMonth;
+        interestPaid += interestForMonth;
+    }
+
+    const emiBalance = noOfMonth - monthsPassed;
+    const totalEMIremaining = emi * emiBalance;
+
+    return {emi, principalPaid, interestPaid, remainingPrincipal, totalEMIremaining, emiBalance};
+}
+
+// Schedule (EMI from sheet)
+function generateSchedule(loan){
+
+    const schedule = [];
+    const principal = loan.LoanAmount;
+    const roi = loan.ROI;
+    const noOfMonth = loan.NoOfMonth;
+    const startDate = new Date(loan.StartDate);
+
+    const emi = loan.EMI; // ✅ Sheet EMI
+
+    let remainingPrincipal = principal;
+
+    for(let i=0; i<noOfMonth; i++){
+
+        const interestForMonth = remainingPrincipal * roi /12 /100;
+        const principalForMonth = emi - interestForMonth;
+        remainingPrincipal -= principalForMonth;
+
+        const emiDate = new Date(startDate);
+        emiDate.setMonth(emiDate.getMonth() + i);
+
+        schedule.push({
+            EMI_No: i+1,
+            Date: emiDate.toLocaleDateString(),
+            EMI: emi.toFixed(2),
+            Principal: principalForMonth.toFixed(2),
+            Interest: interestForMonth.toFixed(2),
+            RemainingPrincipal: remainingPrincipal.toFixed(2)
+        });
+    }
+
+    return schedule;
+}
+
+// Load Loans
+async function loadLoans(){
+
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetEMIId}/values/${rangeEMI}?key=${apiEMIKey}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const rows = data.values.slice(1);
+
+    const tbody = document.getElementById('loan-table-body');
+
+    let totalActive = 0, totalClosed = 0;
+    let activeLoanAmount = 0, closedLoanAmount = 0;
+    let activeEmiAmount = 0;
+    let pendingPrincipal = 0;
+
+    rows.forEach((row, index) => {
+
+        const loan = {
+            FirmName: row[0],
+            LoanNo: row[2],
+            LoanType: row[3],
+            StartDate: row[4],
+            LoanAmount: parseFloat(row[5]),
+            ROI: parseFloat(row[6]),
+            EMI: parseFloat(row[7]), // ✅ EMI from sheet
+            NoOfMonth: parseInt(row[8]),
+            Status: row[9],
+        };
+
+        const status = calculateLoanStatus(loan);
+
+        const statusText = loan.Status.toLowerCase().trim();
+
+        if(statusText === "closed" || statusText === "close"){
+            totalClosed++;
+            closedLoanAmount += loan.LoanAmount;
+        } else {
+            totalActive++;
+            activeLoanAmount += loan.LoanAmount;
+            activeEmiAmount += loan.EMI; // ✅ FIXED
+            pendingPrincipal += status.remainingPrincipal;
+        }
+
+        const tr = document.createElement('tr');
+
+        if(statusText === "closed" || statusText === "close"){
+            tr.classList.add('closed-loan');
+        }
+
+        tr.innerHTML = `
+<td>${loan.FirmName}</td>
+<td>${loan.LoanNo}</td>
+<td>${loan.LoanType}</td>
+<td>${loan.StartDate}</td>
+<td>${loan.LoanAmount.toFixed(2)}</td>
+<td>${loan.ROI}</td>
+<td>${loan.EMI.toFixed(2)}</td>
+<td>${loan.NoOfMonth}</td>
+<td>${loan.Status}</td>
+<td>${status.principalPaid.toFixed(2)}</td>
+<td>${status.interestPaid.toFixed(2)}</td>
+<td>${status.remainingPrincipal.toFixed(2)}</td>
+<td>${status.emiBalance}</td>
+<td>${status.totalEMIremaining.toFixed(2)}</td>
+<td><button onclick="toggleSchedule(${index})">Show</button></td>
+        `;
+
+        tbody.appendChild(tr);
+
+        // Schedule row
+        const scheduleRow = document.createElement('tr');
+        scheduleRow.classList.add('schedule-row');
+        scheduleRow.id = `schedule-${index}`;
+
+        const schedule = generateSchedule(loan);
+
+        scheduleRow.innerHTML = `
+<td colspan="15">
+<table style="width:100%">
+<tr>
+<th>EMI No</th>
+<th>Date</th>
+<th>EMI</th>
+<th>Principal</th>
+<th>Interest</th>
+<th>Remaining Principal</th>
+</tr>
+${schedule.map(s => `
+<tr>
+<td>${s.EMI_No}</td>
+<td>${s.Date}</td>
+<td>${s.EMI}</td>
+<td>${s.Principal}</td>
+<td>${s.Interest}</td>
+<td>${s.RemainingPrincipal}</td>
+</tr>
+`).join('')}
+</table>
+</td>
+        `;
+
+        tbody.appendChild(scheduleRow);
+    });
+
+    // Summary
+    document.getElementById("summaryBox").innerHTML = `
+✅ Active Loan: ${totalActive} (₹${activeLoanAmount.toFixed(2)}) |
+💳 Total EMI (Active): ₹${activeEmiAmount.toFixed(2)} <br>
+
+❌ Closed Loan: ${totalClosed} (₹${closedLoanAmount.toFixed(2)}) <br>
+
+💰 Pending Principal (Active): ₹${pendingPrincipal.toFixed(2)}
+    `;
+}
+
+// Toggle Schedule
+function toggleSchedule(index){
+    const row = document.getElementById(`schedule-${index}`);
+    row.style.display = row.style.display === 'table-row' ? 'none' : 'table-row';
+}
+
+loadLoans();
+</script>
+<!--  xxx  ============= -----   My Loan (toggleNote buttan 10 ) buttan code script ------ =============== xxx  -->
+
+
+ <!--  Start ----   EMI / Loan buttan code script ----======= Start  -->
+<script>
+
+// EMI Formula
+function calcEMI(P, r, n){
+    let rate = r / 12 / 100;
+    return P * rate / (1 - Math.pow(1 + rate, -n));
+}
+
+// Find Months
+function calcMonths(P, EMI, r){
+    let rate = r / 12 / 100;
+    return Math.log(EMI / (EMI - P * rate)) / Math.log(1 + rate);
+}
+
+// Find ROI
+function calcROI(P, EMI, n){
+    let r = 0.1;
+    for(let i=0;i<100;i++){
+        let f = P * (r/12) / (1 - Math.pow(1 + r/12, -n)) - EMI;
+        let df = (P/n);
+        r = r - f/df;
+    }
+    return r*12*100;
+}
+
+// Global store
+let scheduleData = null;
+
+function calculateDynamic(){
+
+    let P = parseFloat(document.getElementById("calcLoan").value);
+    let r = parseFloat(document.getElementById("calcROI").value);
+    let EMI = parseFloat(document.getElementById("calcEMI").value);
+    let n = parseFloat(document.getElementById("calcMonth").value);
+    let startDate = document.getElementById("calcStartDate").value;
+
+    if(P && r && n && !EMI){
+        EMI = calcEMI(P, r, n);
+        document.getElementById("calcEMI").value = EMI.toFixed(2);
+    }
+    else if(P && EMI && r && !n){
+        n = calcMonths(P, EMI, r);
+        document.getElementById("calcMonth").value = Math.round(n);
+    }
+    else if(P && EMI && n && !r){
+        r = calcROI(P, EMI, n);
+        document.getElementById("calcROI").value = r.toFixed(2);
+    }
+    else{
+        alert("3 values enter karo (Loan + any 2)");
+        return;
+    }
+
+    scheduleData = {P, r, EMI, n, startDate};
+
+    document.getElementById("calcResult").innerHTML = `
+        <button onclick="showSchedule()" style="
+        padding:8px 15px;
+        background:green;
+        color:white;
+        border:none;
+        border-radius:6px;
+        cursor:pointer;
+        font-weight:bold;
+        ">
+        Show Repayment Schedule
+        </button>
+    `;
+}
+
+// Show Schedule
+function showSchedule(){
+
+    if(!scheduleData) return;
+
+    let {P, r, EMI, n, startDate} = scheduleData;
+
+    let rate = r / 12 / 100;
+    let balance = P;
+
+    let html = `
+    <div style="margin-bottom:10px;">
+        <button onclick="printSchedule()" style="
+        padding:6px 12px;
+        background:#007bff;
+        color:white;
+        border:none;
+        border-radius:5px;
+        cursor:pointer;
+        ">🖨 Print</button>
+
+        <button onclick="closeSchedule()" style="
+        padding:6px 12px;
+        background:red;
+        color:white;
+        border:none;
+        border-radius:5px;
+        cursor:pointer;
+        margin-left:10px;
+        ">❌ Close</button>
+    </div>
+
+    <div id="printArea">
+    <h3>Repayment Schedule</h3>
+    <table border="1" style="width:100%; border-collapse:collapse;">
+    <tr>
+    <th>EMI No</th>
+    <th>Date</th>
+    <th>EMI</th>
+    <th>Principal</th>
+    <th>Interest</th>
+    <th>Balance</th>
+    </tr>
+    `;
+
+    for(let i=0;i<n;i++){
+        let interest = balance * rate;
+        let principal = EMI - interest;
+        balance -= principal;
+
+        let d = new Date(startDate);
+        d.setMonth(d.getMonth()+i);
+
+        html += `
+        <tr>
+        <td>${i+1}</td>
+        <td>${d.toLocaleDateString()}</td>
+        <td>${EMI.toFixed(2)}</td>
+        <td>${principal.toFixed(2)}</td>
+        <td>${interest.toFixed(2)}</td>
+        <td>${balance.toFixed(2)}</td>
+        </tr>
+        `;
+    }
+
+    html += `</table></div>`;
+
+    document.getElementById("calcResult").innerHTML = html;
+}
+
+// Print Function (only table)
+function printSchedule(){
+
+    // 👉 Input values लो
+    let startDate = document.getElementById("calcStartDate").value;
+    let loan = document.getElementById("calcLoan").value;
+    let roi = document.getElementById("calcROI").value;
+    let emi = document.getElementById("calcEMI").value;
+    let month = document.getElementById("calcMonth").value;
+
+    // 👉 Table content
+    let tableContent = document.getElementById("printArea").innerHTML;
+
+    let win = window.open('', '', 'width=900,height=700');
+
+    win.document.write(`
+        <html>
+        <head>
+        <title>Repayment Schedule</title>
+        <style>
+        body { font-family: Arial; padding:20px; }
+        h2 { text-align:center; }
+        table { border-collapse: collapse; width:100%; }
+        th, td { border:1px solid #000; padding:6px; text-align:center; }
+        .info { margin-bottom:15px; font-size:14px; }
+        .info span { display:inline-block; margin-right:20px; }
+        </style>
+        </head>
+
+        <body>
+
+        <h2>Repayment Schedule</h2>
+
+        <div class="info">
+            <span><b>Start Date:</b> ${startDate}</span>
+            <span><b>Loan Amount:</b> ₹${loan}</span>
+            <span><b>ROI:</b> ${roi}%</span>
+            <span><b>EMI:</b> ₹${emi}</span>
+            <span><b>Months:</b> ${month}</span>
+        </div>
+
+        ${tableContent}
+
+        </body>
+        </html>
+    `);
+
+    win.document.close();
+    win.print();
+}
+
+// Close Function
+function closeSchedule(){
+    document.getElementById("calcResult").innerHTML = `
+        <button onclick="showSchedule()" style="
+        padding:8px 15px;
+        background:green;
+        color:white;
+        border:none;
+        border-radius:6px;
+        cursor:pointer;
+        font-weight:bold;
+        ">
+        Show Repayment Schedule
+        </button>
+    `;
+}
+
+</script>
+
+  <!--  xxx  ============= -----   EMI / Loan buttan code script ------ =============== xxx  -->
+
+
+<!-- ------------------  ration card script and code start -------------------------------------- -->
+<script>
+const apiRCKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheetRCId = "1E9bwBJjHRo1DhUSNayuJ2j62ilqILvMzBvf3TrQGA9s";
+
+let allRCData = [];  // { sheet, header, row }
+
+// ✅ Step 1: Get all sheet names
+async function rationcardsheets() {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetRCId}?key=${apiRCKey}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    return data.sheets.map(s => s.properties.title);
+}
+
+// ✅ Step 2: Load all sheets data (header + rows)
+async function loadRationCardData() {
+    const sheetNames = await rationcardsheets();
+    for (let name of sheetNames) {
+        // Get header (Row 1)
+        const headerUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetRCId}/values/${encodeURIComponent(name + "!A1:Z1")}?key=${apiRCKey}`;
+        const headerRes = await fetch(headerUrl);
+        const headerData = await headerRes.json();
+        const headerRow = headerData.values ? headerData.values[0] : [];
+
+        // Get data rows (From A2)
+        const range = `${name}!A2:Z`;
+        const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetRCId}/values/${encodeURIComponent(range)}?key=${apiRCKey}`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.values) {
+            data.values.forEach(row => {
+                allRCData.push({ sheet: name, header: headerRow, row });
+            });
+        }
+    }
+    console.log("All data loaded:", allRCData);
+}
+
+// ✅ Step 3: Search with Highlight + Show Header Once
+function rationcardsearch() {
+    const query = document.getElementById("searchInput").value.toLowerCase();
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "";
+
+    if (query.trim() === "") return;
+
+    const filtered = allRCData.filter(item =>
+        item.row.some(cell => cell.toLowerCase().includes(query))
+    );
+
+    if (filtered.length === 0) {
+        resultsDiv.innerHTML = "<p>No results found</p>";
+        return;
+    }
+
+    let lastSheet = "";
+
+    filtered.forEach(item => {
+        // Show header if sheet changes
+      if (lastSheet !== item.sheet) {
+
+    const headerDiv = document.createElement("div");
+    headerDiv.style.backgroundColor = "#f0f0f0";
+    headerDiv.style.fontWeight = "bold";
+    headerDiv.style.padding = "5px";
+
+    const redSeparator = '<span style="color:red;"> | </span>';
+
+    headerDiv.innerHTML = `<b>${item.sheet}</b> → ${item.header.join(redSeparator)}`;
+
+    resultsDiv.appendChild(headerDiv);
+
+    lastSheet = item.sheet;
+}
+
+        // Highlight match
+        const highlightedRow = item.row.map(cell => {
+            if (cell.toLowerCase().includes(query)) {
+                const regex = new RegExp(`(${query})`, "gi");
+                return cell.replace(regex, `<span style="background-color:blue; color:white;">$1</span>`);
+            }
+            return cell;
+        });
+
+        // Add result row
+       const div = document.createElement("div");
+div.style.padding = "5px";
+div.style.borderBottom = "1px solid #ccc";
+
+const redSeparator = '<span style="color:red;"> | </span>';
+
+div.innerHTML = highlightedRow.join(redSeparator);
+
+resultsDiv.appendChild(div);
+    });
+}
+
+// ✅ Start
+loadRationCardData();
+</script>
+<!-- ========= --- XXX --- ============ RATION CARD DIC STOP HARE ================  ---------- ============ -->
+
+
+
+
+
+<!-- ~~~~~~~~~~~~~~~~ ============================ AFI CURE MEDICAL Stock Quary and Summary Script  Start Hare ~~~~~~~~~~~~~~~~ Script Start ============================ -->
+<script>
+const apiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheetId = "1g_hAVEIFZRnRNFFQWF275Y_AXKBTw0UIP0xiH4_C2V0";
+
+let itemData = [];
+let stockData = [];
+let selected = null;
+
+const safe = (val) => (val && val !== "") ? val : "-";
+
+async function fetchData() {
+  try {
+    const itemURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/ITEMLIST!A:M?key=${apiKey}`;
+    const stockURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/STOCKDATA!A:N?key=${apiKey}`;
+
+    const [itemRes, stockRes] = await Promise.all([
+      fetch(itemURL),
+      fetch(stockURL)
+    ]);
+
+    const itemJson = await itemRes.json();
+    const stockJson = await stockRes.json();
+
+    itemData = (itemJson.values || []).slice(1);
+    stockData = (stockJson.values || []).slice(1);
+
+    renderList(itemData);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function renderList(data) {
+  const listStockview = document.getElementById("listStockview");
+  listStockview.innerHTML = "";
+
+  let unique = new Map();
+
+  data.forEach(row => {
+    if (!row[0]) return;
+    let key = row[0] + "|" + row[1];
+    if (!unique.has(key)) unique.set(key, row);
+  });
+
+   // Convert map values to array and sort alphabetically by medicine name
+  let sortedData = Array.from(unique.values()).sort((a, b) => {
+    return a[0].localeCompare(b[0]);
+  });
+
+  sortedData.forEach(row => {
+    const div = document.createElement("div");
+    div.className = "itemStockview";
+    div.innerHTML = `${safe(row[0])} 🧪 <span style="color:rgb(3, 116, 168); font-size: 14px;"> (${safe(row[1])})</span>`;
+    div.onclick = () => selectItem(row);
+    listStockview.appendChild(div);
+  });
+}
+
+function formatDate(dateStr) {
+  return safe(dateStr);
+}
+
+function selectItem(row) {
+  selected = row;
+
+  document.getElementById("details").innerHTML = `
+
+<style>
+.info-row{display:flex;border:5px solid #dfdddd; margin-bottom:5px; min-height:30px;}
+.title{background:#eaebec;color:#01133a; font-weight:bold;padding:5px 10px; border-right:1px solid #dfdddd;white-space:nowrap;}
+.value{ flex:1;padding:5px 10px;border-right:1px solid #dfdddd; overflow:hidden;white-space:nowrap;}
+/* Optional Marquee */
+.marquee-value{flex:1; padding:5px 10px; border-right:1px solid #000; overflow:hidden; white-space:nowrap;}
+.marquee-text{ display:inline-block; padding-left:100%; animation:scroll 10s linear infinite;}
+@keyframes scroll{
+    from{transform:translateX(0);}
+    to{transform:translateX(-100%);}
+}
+</style>
+
+<!-- Normal Value -->
+<div class="info-row">
+    <span class="title" style="background-color: #000408; color: aliceblue; border-right: 5px solid #eeeded; border-left: 5px solid #eeeded;"><b>${safe(row[0])}</b></span>
+    <span class="title" style="background-color: #db0000; color: aliceblue; border-right: 5px solid #eeeded; border-left: 5px solid #eeeded;">Pur. Rate:</span>           <span class="value">Rs. ${safe(row[4])}</span>
+    <span class="title" style="background-color: #029909; color: aliceblue; border-right: 5px solid #eeeded; border-left: 5px solid #eeeded;">Sale. Rate:</span>          <span class="value">Rs. ${safe(row[5])}</span>
+    <span class="title">M.R.P:</span>          <span class="value">Rs. ${safe(row[6])}</span>
+    <span class="title">Qty/Unit:</span>          <span class="value">Rs. ${safe(row[8])}</span>
+</div>
+
+<div class="info-row">
+    <span class="title" style="background-color: #2948f7; color: aliceblue; border-right: 5px solid #eeeded; border-left: 5px solid #eeeded;">${safe(row[1])}</span>           <span class="value">${safe(row[3])}</span>
+</div>
+
+<div class="info-row"> <span class="title">Group:</span>          <span class="value">${safe(row[2])}</span> </div>
+
+  `;
+
+  let filtered = stockData
+    .filter(r => r[2] === row[0])
+    .sort((a,b)=> new Date(b[10]) - new Date(a[10]))
+    .slice(0,5);
+
+  let html = "<b>Top 5 Stock Entries</b>";
+
+  if (filtered.length === 0) {
+    html += "<br>No data found";
+  } else {
+    html += `<table>
+      <tr>
+        <th>T. No.</th>
+        <th>LEDGER NAME</th>
+        <th>Purchase Date</th>
+        <th>Expiry</th>
+        <th>MRP</th>
+        <th>Qty</th>
+        <th>Rate</th>
+         <th>Unit</th>
+          <th>Amt</th>
+           <th>Type</th>
+      </tr>`;
+
+    filtered.forEach(r => {
+      html += `<tr>
+        <td>${safe(r[0])}</td>
+        <td>${safe(r[12])}</td>
+        <td>${formatDate(r[10])}</td>
+        <td>${formatDate(r[11])}</td>
+        <td>${safe(r[8])}</td>
+        <td>${safe(r[4])}</td>
+        <td>${safe(r[5])}</td>
+         <td>${safe(r[7])}</td>
+         <td>${safe(r[6])}</td>
+         <td>${safe(r[13])}</td>
+      </tr>`;
+    });
+
+    html += "</table>";
+  }
+
+  document.getElementById("stockQuery").innerHTML = html;
+
+  // Default same salt auto trigger
+  sameSalt();
+}
+
+function sameSalt() {
+  if (!selected) return;
+
+  let salt = selected[1];
+  let listStockview = itemData.filter(r => r[1] === salt && salt);
+
+  let html = `<b>Same Salt Medicines:- ${safe(salt)}</b>`;
+
+  if (listStockview.length === 0) {
+    html += "<br>No match found";
+  } else {
+    html += `<table>
+      <tr>
+        <th>Medicine Name</th>
+        <th>M.R..P</th>
+        <th>Avg Cost</th>
+        <th>Sale Rate</th>
+        <th>Q/U</th>
+      </tr>`;
+
+    listStockview.forEach(r => {
+      html += `<tr>
+        <td>${safe(r[0])}</td>
+        <td>${safe(r[6])}</td>
+        <td>${safe(r[4])}</td>
+        <td>${safe(r[5])}</td>
+        <td>${safe(r[8])}</td>
+      </tr>`;
+    });
+
+    html += "</table>";
+  }
+
+  document.getElementById("SaltSmry").innerHTML = html;
+}
+
+function sameGroup() {
+  if (!selected) return;
+
+  let group = selected[2];
+  let listStockview = itemData.filter(r => r[2] === group && group);
+
+  let html = `<b>Same Group Medicines:- ${safe(group)}</b>`;
+
+  if (listStockview.length === 0) {
+    html += "<br>No match found";
+  } else {
+    html += `<table>
+      <tr>
+        <th>Medicine Name</th>
+        <th>Avg Cost</th>
+        <th>Sale Rate</th>
+        <th>Salt</th>
+        <th>Description</th>
+      </tr>`;
+
+    listStockview.forEach(r => {
+      html += `<tr>
+        <td>${safe(r[0])}</td>
+        <td>${safe(r[4])}</td>
+        <td>${safe(r[5])}</td>
+         <td>${safe(r[1])}</td>
+        <td style="color:rgb(0, 83, 128);font-size: 14px;">${safe(r[3])}</td>
+      </tr>`;
+    });
+
+    html += "</table>";
+  }
+
+  document.getElementById("SaltSmry").innerHTML = html;
+}
+
+document.getElementById("search").addEventListener("input", function() {
+  let val = this.value.toLowerCase();
+
+  let filtered = itemData.filter(r => 
+    (r[0] && r[0].toLowerCase().includes(val)) ||
+    (r[1] && r[1].toLowerCase().includes(val))
+  );
+
+  renderList(filtered);
+});
+
+fetchData();
+ //---------------------------- updatequary functio optional function ------------------ start
+
+ // ===== UPDATE QUERY FUNCTION =====
+// ===== UPDATE QUERY FUNCTION (FINAL) =====
+async function updateQuary() {
+
+  if (!selected) {
+    console.warn("No item selected");
+    return;
+  }
+
+  // 👉 LOADING MESSAGE PEHLE DIKHAO
+  document.getElementById("stockQuery").innerHTML =
+    "<table><tr><td colspan='11'>⏳ Refreshing...</td></tr></table>";
+
+  try {
+
+    // 👉 fresh data fetch karo
+    await fetchData();
+
+    let row = selected;
+
+    // ===== DETAILS =====
+    document.getElementById("details").innerHTML = `
+      <b>${safe(row[0])}</b><br>
+      <span style="color:red;font-weight:bold">Salt:</span> ${safe(row[1])} |
+      <span style="color:green;font-weight:bold">Group:</span> ${safe(row[2])}<br>
+      Avg. Pur. Rate: ${safe(row[4])} | Avg. Sale Rate: ${safe(row[5])} | Qty/Unit: ${safe(row[8])}<br><br>
+      <span style="color:black;font-weight:bold">Discription:</span> ${safe(row[3])}
+    `;
+
+    // ===== STOCK =====
+    let filtered = stockData
+      .filter(r => r[2] === row[0])
+      .sort((a,b)=> new Date(b[10]) - new Date(a[10]))
+      .slice(0,5);
+
+    let html = "<b>Top 5 Stock Entries</b>";
+
+    if (filtered.length === 0) {
+      html += "<br>No data found";
+    } else {
+      html += `<table>
+        <tr>
+          <th style="background-color: #6d0170; color: white;">R. No.</th>
+          <th style="background-color: #6d0170; color: white;">LEDGER NAME</th>
+          <th style="background-color: #6d0170; color: white;">Purchase Date</th>
+          <th style="background-color: #6d0170; color: white;">Expiry</th>
+          <th style="background-color: #6d0170; color: white;">MRP</th>
+          <th style="background-color: #6d0170; color: white;">Qty</th>
+          <th style="background-color: #6d0170; color: white;">Rate</th>
+          <th style="background-color: #6d0170; color: white;">Unit</th>
+          <th style="background-color: #6d0170; color: white;">Amt</th>
+          <th style="background-color: #016106; color: white;">Type</th>
+        </tr>`;
+
+      filtered.forEach(r => {
+        html += `<tr>
+          <td>${safe(r[0])}</td>
+          <td>${safe(r[12])}</td>
+          <td>${formatDate(r[10])}</td>
+          <td>${formatDate(r[11])}</td>
+          <td>${safe(r[8])}</td>
+          <td>${safe(r[4])}</td>
+          <td>${safe(r[5])}</td>
+          <td>${safe(r[7])}</td>
+          <td>${safe(r[6])}</td>
+          <td>${safe(r[13])}</td>
+        </tr>`;
+      });
+
+      html += "</table>";
+    }
+
+    document.getElementById("stockQuery").innerHTML = html;
+
+    // same salt bhi refresh ho
+    sameSalt();
+
+  } catch (err) {
+    console.error(err);
+
+    // ❌ ERROR MESSAGE
+    document.getElementById("stockQuery").innerHTML =
+      "<div style='color:red'>❌ Error loading data</div>";
+  }
+}
+// -------------- stop 
+
+//----------------- Remove optional code class="salt" & "medicine" for input ke liye --------- Start -----------
+ // -------- AUTO FILL MEDICINE + SALT --------
+
+// function jo sab jagah value fill kare
+function updateMedicineSalt(med, salt, qpu, mType) {
+
+  // Medicine class wale sab me value set
+  document.querySelectorAll(".medicine").forEach(el => {
+    if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+      el.value = med;
+    } else {
+      el.innerText = med;
+    }
+  });
+
+  // Salt class wale sab me value set
+  document.querySelectorAll(".salt").forEach(el => {
+    if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+      el.value = salt;
+    } else {
+      el.innerText = salt;
+    }
+  });
+
+   // QPU class wale sab me value set
+  document.querySelectorAll(".qpu").forEach(el => {
+    if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+      el.value = qpu;
+    } else {
+      el.innerText = qpu;
+    }
+  });
+
+  // Medicine Type class wale sab me value set
+  document.querySelectorAll(".mType").forEach(el => {
+    if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+      el.value = mType;
+    } else {
+      el.innerText = mType;
+    }
+  });
+}
+
+// selectItem ke baad auto call (without modifying original function)
+const oldSelectItem = selectItem;
+selectItem = function(row) {
+  oldSelectItem(row);
+
+  let med = safe(row[0]);
+  let salt = safe(row[1]);
+  let qpu = safe(row[8]);
+   let mType = safe(row[7]);
+
+  updateMedicineSalt(med, salt, qpu, mType);
+};
+
+// -------- FORM RESET HANDLE --------
+
+// jab bhi form reset ho → value wapas set ho
+document.addEventListener("reset", function(e) {
+  setTimeout(() => {
+    if (selected) {
+      updateMedicineSalt(safe(selected[0]), safe(selected[1]));
+    }
+  }, 50);
+});
+//----------------  stop --------------------
+</script>
+<!-- ~~~~~~~~~~~~~~~~ ============================ Stock Quary and Summary Script  Stop Hare ~~~~~~~~~~~~~~~~ Script Stop ============================ -->
+
+
+
+<!-- ~~~~~~~~~~~~~~~~ ============================ PO/REFF View Script  Start Hare ~~~~~~~~~~~~~~~~ Script Start ============================ -->
+<script>
+
+const POMasterKEY="AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const POMasterID="1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU";
+
+const PO_SCRIPT_URL="https://script.google.com/macros/s/AKfycbwOHYec5NXGIbTO1SOMjnz1TrZKBh7QacaXDb2E_AUT0StNVA61PafvML9IRA-j_ufH/exec";
+
+let MASTER_ROWS=[];
+
+// =========================
+// LOAD DATA
+// =========================
+async function loadPOMaster(){
+
+try{
+
+const datafUrl=`https://sheets.googleapis.com/v4/spreadsheets/${POMasterID}/values/DATAF!A:Z?key=${POMasterKEY}`;
+const datadUrl=`https://sheets.googleapis.com/v4/spreadsheets/${POMasterID}/values/DATAD!A:Z?key=${POMasterKEY}`;
+
+const [fRes,dRes]=await Promise.all([
+fetch(datafUrl),
+fetch(datadUrl)
+]);
+
+const dataf=(await fRes.json()).values?.slice(1)||[];
+const datad=(await dRes.json()).values?.slice(1)||[];
+
+MASTER_ROWS=[];
+
+dataf.forEach((r,i)=>{
+
+let deghinby = r[1] || "";
+let status   = r[2] || "";
+let client   = r[3] || "";
+let project  = r[4] || "";
+let po       = r[6] || "";
+let poAmt    = parseFloat(r[7]) || 0;
+let poWt     = parseFloat(r[8]) || 0;
+let orderby  = r[9] || "";
+let desc     = r[11] || "";
+
+let saleAmt=0;
+let saleWt=0;
+
+datad.forEach(d=>{
+
+if((d[6]||"")===po){
+
+saleAmt += parseFloat(d[7]) || 0;
+saleWt  += parseFloat(d[8]) || 0;
+
+}
+
+});
+
+let balAmt=poAmt-saleAmt;
+let balWt=poWt-saleWt;
+let progress=poAmt
+? (saleAmt/poAmt)*100: 0;
+
+MASTER_ROWS.push({index:i,deghinby,orderby,status,client,project,desc,po, poAmt,saleAmt, poWt,saleWt,balAmt,balWt,progress});
+});
+
+MASTER_ROWS.sort((a,b)=>b.index-a.index);
+renderPOList(MASTER_ROWS);
+document
+.getElementById("poSearch")
+.addEventListener("input",filterTable);
+}
+catch(err){console.error(err);
+document.getElementById("poTableContainer").innerHTML="<h3>Data Load Error</h3>";}
+}
+// =========================
+// LIST RENDER
+// =========================
+function renderPOList(rows){
+
+let html=`
+<div style="display:flex; gap:10px; height:650px;">
+
+<!-- LEFT LIST -->
+<div style="width:300px; overflow:auto; border:1px solid #ccc; padding:8px; background:#fafafa;">
+
+`;
+
+rows.forEach(r=>{
+html+=`
+<div
+onclick="showPOSummary('${r.po}')"
+style="
+padding:8px;
+margin-bottom:6px;
+cursor:pointer;
+background:white;
+border:1px solid #ddd;
+border-radius:6px;
+">
+
+<div style="font-weight:bold;color:#010E59;">${r.po}</div>
+<div style="font-size:12px;color:#555;">${r.project}</div>
+</div>
+
+`;
+});
+
+html+=`
+</div>
+
+<!-- RIGHT DETAILS -->
+
+<div id="poSummary" style="flex:1;overflow:auto;border:1px solid #ccc;padding:15px; background:white;"> Select PO </div>
+</div>
+
+`;
+
+document.getElementById("poTableContainer").innerHTML=html;
+if(rows.length){showPOSummary(rows[0].po);}}
+
+// =========================
+// SHOW DETAILS
+// =========================
+function showPOSummary(po){
+const r=MASTER_ROWS.find(x=>x.po===po);
+if(!r) return;
+document.getElementById("poSummary").innerHTML=`
+<div style="padding:10px; line-height:1.8; font-size:14px;
+">
+
+<h2 style="margin-top:0; color:#010E59;">PO/Reff No:-${r.po} | Clint Name:- ${r.project}</h2>
+<hr>
+<b>Design By :</b> ${r.deghinby}<br>
+<b>Order By :</b> ${r.orderby}<br>
+<b>Client :</b> ${r.client}<br>
+<hr>
+<b>Project :</b> ${r.project}<br>
+<b>Status :</b>
+<span style="color:${r.status==="RUNNING"?"green":"red"};font-weight:bold;">${r.status}</span>
+<br>
+<b>Description :</b>${r.desc}
+<hr>
+<b>PO No :</b> ${r.po}
+<br>
+
+<b>PO Amount :</b> ${r.poAmt.toFixed(0)}
+<br>
+<b>Sales Amount :</b>
+<span style="color:#015944">${r.saleAmt.toFixed(0)}</span>
+<br>
+<b>PO Weight :</b>${r.poWt.toFixed(0)}
+<br>
+<b>Sales Weight :</b>
+<span style="color:#015944">${r.saleWt.toFixed(0)}
+</span>
+<br>
+<b>Balance Amount :</b>
+<span style="color:${r.balAmt<0?'red':'#007FA6'};font-weight:bold;">${r.balAmt.toFixed(0)}</span>
+<br>
+<b>Balance Weight :</b>
+<span style="color:${r.balWt<0?'red':'#99035B'};font-weight:bold;">${r.balWt.toFixed(0)}</span>
+<hr>
+<b>Progress :</b>${r.progress.toFixed(1)}%
+
+<div style="margin-top:5px;height:12px;background:#ddd;border-radius:20px;overflow:hidden;">
+
+<div style="width:${Math.min(r.progress,100)}%;height:12px;background:${r.progress>=100?'limegreen':'orange'};"></div>
+</div>
+<br>
+<button onclick="openPOFile('${r.po}')" style="padding:10px 15px;background:#010E59;color:white;border:none;border-radius:5px;cursor:pointer;">Open PO File</button>
+
+</div>
+
+`;
+
+}
+
+// =========================
+// SEARCH
+// =========================
+function filterTable(){
+
+let val=document
+.getElementById("poSearch")
+.value
+.toLowerCase();
+
+let filtered=MASTER_ROWS.filter(r=>
+
+(r.deghinby||"").toLowerCase().includes(val) ||
+(r.orderby||"").toLowerCase().includes(val) ||
+(r.status||"").toLowerCase().includes(val) ||
+(r.client||"").toLowerCase().includes(val) ||
+(r.project||"").toLowerCase().includes(val) ||
+(r.desc||"").toLowerCase().includes(val) ||
+(r.po||"").toLowerCase().includes(val)
+
+);
+
+renderPOList(filtered);
+
+}
+
+// =========================
+// OPEN FILE
+// =========================
+async function openPOFile(po){
+
+try{
+
+const url= PO_SCRIPT_URL+"?po="+ encodeURIComponent(po);
+const res=await fetch(url);
+const fileUrl=await res.text();
+
+if(fileUrl && fileUrl!=="NOT_FOUND"){
+window.open(fileUrl,"_blank");
+}
+else{
+alert("PO File Not Found");
+}
+
+}
+catch(err){console.error(err);
+alert("Unable to open file");
+}
+}
+
+// =========================
+// AUTO LOAD
+// =========================
+loadPOMaster();
+
+</script>
+<!-- ~~~~~~~~~~~~~~~~ ============================ PO/REFF View Script  Stop Hare ~~~~~~~~~~~~~~~~ Script Stop ============================ -->
+
+
+
+
+
+
+
+
+<!-- ==============================================footer start================================================================================ -->
+
+ <style>
+  .footer { position: fixed; bottom: 0; left: 0; width: 100%; background-color: #000000; color: white; text-align: center; padding: 0; /* Remove padding */ font-size: 14px; z-index: 1000; box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.3);}
+  .footer table {margin: 0; padding: 0; border-spacing: 0; border-collapse: collapse; width: 100%; }
+  .footer td {padding: 5px 10px; /* Top-Bottom = 0, Left-Right = 10px gap */}
+</style>
+  <div class="footer" >   <!-- footer div start---- -->
+
+<div style="display: flex; justify-content: center; align-items: center; background-color: #f7f8fa; color: rgb(1, 1, 1); font-size: 12px; font-weight: bold;  border: 5px solid #003444; ">
+  
+  <!-- Current Time -->
+  <div id="currentDateTime" style="padding: 5px 10px; white-space: nowrap; font-size: 16px; background-color: blue; color: white; "></div>
+ 
+   <div class="ticker-wrap"> <div class="ticker"> <span id="todayEvent"></span> </div></div>
+
+</div>
+ 
+<style>
+  .ticker-wrap {
+  width: 100%;
+  overflow: hidden;
+  background: #f1f1f1;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+
+.ticker {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  animation: tickerMove 50s linear infinite;
+  font-weight: bold;
+  color: rgb(0, 65, 69);
+  font-size: 14px;
+}
+
+@keyframes tickerMove {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+</style>
+
+<!-- ✅ Fixed Positioned Refresh Button -->
+ 
+
+
+
+<!-- ============ website open navgation buttan code start start  ========= -->  
+<style>
+  /* FOOTER ROW */
+
+.footer-row{
+display:flex;
+align-items:center;
+justify-content:center;
+flex-wrap:wrap;
+gap:10px;
+width:100%;
+padding:5px;
+}
+
+
+/* COMMON DIV STYLE */
+
+.footer-box{
+padding:6px 10px;
+border:3px solid #ffffff;
+background:#e9e7e7;
+border-radius:8px;
+white-space:nowrap;
+font-size:14px;
+font-weight:bold;
+}
+
+
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+.footer-box{
+font-size:12px;
+padding:5px 8px;
+}
+
+}
+  </style>
+
+ <div class="footer-row">        <!-- == --------- .......... Footer Row .......  Start ......... ---------- === -->
+
+<div class="footer-box" style="display:flex; align-items:center; gap:8px; text-decoration:none; color: black; font-weight:bold; background-color: #e3f3f5; border:3px solid #013769; border-radius:10px;">
+<a href="https://www.google.com/" target="_blank" style="display:flex; align-items:center; gap:8px; text-decoration:none; color: black; font-weight:bold;">
+<img src="https://cdn.dribbble.com/users/1717214/screenshots/4124610/g-logo.gif"alt="Google"width="20"height="20"style="border-radius:8px;">
+<span class="name" style="color: #01225f;">Google</span>
+</a>
+<strong style="border: none; font-size: 16px; font-weight: bold;"> | </strong>
+<a href="https://web.whatsapp.com/" target="_blank" style="display:flex; align-items:center; gap:8px; text-decoration:none; color: black; font-weight:bold;">
+<img src="https://cliply.co/wp-content/uploads/2021/08/372108180_WHATSAPP_ICON_400.gif"alt="Google"width="20"height="20"style="border-radius:8px;">
+<span class="name" style="color: #00361d;">Whatsapp</span>
+</a>
+<strong style="border: none; font-size: 16px; font-weight: bold;"> | </strong>
+<a href="https://www.incometax.gov.in/iec/foportal/" target="_blank" style="display:flex; align-items:center; gap:8px; text-decoration:none; color: black; font-weight:bold;">
+<img src="https://upload.wikimedia.org/wikipedia/commons/1/13/Logo_of_Income_Tax_Department_India.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original"alt="Google"width="20"height="20"style="border-radius:8px;">
+<span class="name" style="color: #00361d;">ITR Login</span>
+</a>
+<strong style="border: none; font-size: 16px; font-weight: bold;"> | </strong>
+<a href="https://chatgpt.com/" target="_blank" style="display:flex; align-items:center; gap:8px; text-decoration:none; color: black; font-weight:bold;">
+<img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMDIzNGhlOTZ3aG81OWMyeTA3b3N4c3lpaGMzMDQ3aGU2cjdsZnZ5aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/f0VbswUmSY6X1cBz4C/giphy.gif"alt="Google"width="20"height="20"style="border-radius:8px;">
+<span class="name" style="color: #00361d;">Chat GPT</span>
+</a>
+<strong style="border: none; font-size: 16px; font-weight: bold;"> | </strong>
+<a href="https://www.youtube.com/" target="_blank" style="display:flex; align-items:center; gap:8px; text-decoration:none; color: rgb(109, 1, 1); font-weight:bold;">
+<img src="https://cliply.co/wp-content/uploads/2019/07/371907120_YOUTUBE_ICON_TRANSPARENT_400.gif"alt="Google"width="20"height="20"style="border-radius:8px;">
+<span class="name" style="color: #830000;">You Tube</span>
+</a>
+</div>
+
+<div class="footer-box" style="display:flex; align-items:center; gap:8px; text-decoration:none; color: black; font-weight:bold; background-color: #c4f8d8; border:3px solid #013769; border-radius:10px;">
+<a href="https://m5792.github.io/esmTally/AFI.html" target="_blank" style="display:flex; align-items:center; gap:8px; text-decoration:none; color: black; font-weight:bold;">
+<img src="https://static.vecteezy.com/system/resources/thumbnails/008/509/019/small/3d-file-format-icon-illustration-png.png"alt="Google"width="20"height="20"style="border-radius:8px;">
+<span class="name" style="color: #01225f;">A.F.I Dashboard</span>
+</a>
+<strong style="border: none; font-size: 16px; font-weight: bold;"> | </strong>
+<a href="https://m5792.github.io/esm/" target="_blank" style="display:flex; align-items:center; gap:8px; text-decoration:none; color: black; font-weight:bold;">
+<img src="https://static.vecteezy.com/system/resources/thumbnails/008/509/019/small/3d-file-format-icon-illustration-png.png"alt="Google"width="20"height="20"style="border-radius:8px;">
+<span class="name" style="color: #01225f;">MIPL Dashboard</span>
+</a>
+</div>
+<!-- ============ website open navgation buttan code start stop  ========= -->
+
+
+
+</div>  <!-- == --------- .......... Footer Row .......  xxx ......... ---------- === -->
+
+   <!-- Current date and time will be displayed here -->
+            
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+             
+<script>
+function displayCurrentDateTime() {
+const now = new Date();
+
+// Formatting options
+const options = { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric', 
+    hour: '2-digit', 
+    minute: '2-digit', 
+    second: '2-digit' 
+};
+
+// Formatting date and time
+const formattedDateTime = now.toLocaleString('en-US', options);
+
+// Displaying in the div
+document.getElementById("currentDateTime").textContent = `Today: ${formattedDateTime}`;
+}
+
+// Call the function on page load to show the current date and time
+displayCurrentDateTime();
+
+// Update the date and time every second
+setInterval(displayCurrentDateTime, 1000);
+</script>
+<!-- Current date and time will be displayed Stop -->
+
+
+
+
+
+<!-- =============== today events script start ===================== -->
+
+<script>
+const apiEVENTKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheetEVENTId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
+const rangeEVENT = "HOLIDAY!A:D"; // A=Type, B=Name, C=Date, D=Optional Notes
+
+function convertToDate(str) {
+    const [d, m, y] = str.split("-");
+
+    const mon = {
+        Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5,
+        Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11
+    }[m];
+
+    if (mon === undefined) return null;
+
+    let year = Number(y);
+
+    // allow "yy" and "yyyy"
+    if (year < 100) year = 2000 + year;
+
+    return new Date(year, mon, Number(d));
+}
+
+async function loadTodayEvent() {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetEVENTId}/values/${rangeEVENT}?key=${apiEVENTKey}`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const rows = data.values || [];
+
+        let todayEvents = [];
+        let yearlyRemaining = [];
+        let monthlyRemaining = [];
+
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const today_dd = today.getDate();
+        const today_mm = today.getMonth();
+        const today_yy = today.getFullYear();
+
+        rows.forEach(row => {
+            const type = row[0]; 
+            const name = row[1];
+            const dateStr = row[2];
+
+            if (!dateStr || !name) return;
+
+            let eventDate = convertToDate(dateStr);
+            if (!eventDate) return;
+
+            eventDate.setHours(0,0,0,0);
+
+            // --- YEARLY EVENTS ---
+            if (type === "Yearly") {
+                eventDate.setFullYear(today_yy);
+                const diffDays = Math.floor((eventDate - today) / (1000*60*60*24));
+
+                if (diffDays === 0) todayEvents.push(name);
+                if (diffDays === 1 || diffDays === 2) {
+                    yearlyRemaining.push(
+                        `<span style="color:grey"> ✨ <span style="color:red">${diffDays} Days Left –</span> ${name}</span>`
+                    );
+                }
+            }
+
+            // --- MONTHLY EVENTS ---
+            if (type === "Monthly") {
+                const eventDay = eventDate.getDate();
+                let diffDays = eventDay - today_dd;
+
+                if (diffDays < 0)
+                    diffDays += new Date(today_yy, today_mm + 1, 0).getDate();
+
+                if (diffDays === 0) todayEvents.push(name);
+                if (diffDays === 1 || diffDays === 2) {
+                    monthlyRemaining.push(
+                        `<span style="color:#026c96"> ✦ <span style="color:red">${diffDays} Days Left –</span> ${name}</span>`
+                    );
+                }
+            }
+
+            // --- SINGLE EVENT (Exact Date: dd-mm-yyyy) ---
+            if (type === "Event") {
+                if (
+                    eventDate.getDate() === today_dd &&
+                    eventDate.getMonth() === today_mm &&
+                    eventDate.getFullYear() === today_yy     // FIX Added
+                ) {
+                    todayEvents.push(name);
+                }
+            }
+        });
+
+        let finalOutput = [];
+        if (todayEvents.length > 0) {
+            finalOutput.push(
+                `<span>✭ <strong>Today: </strong> ${todayEvents.join(" ✨ ")} ✭</span>`
+            );
+        }
+        if (yearlyRemaining.length > 0) 
+            finalOutput = finalOutput.concat(yearlyRemaining);
+        if (monthlyRemaining.length > 0) 
+            finalOutput = finalOutput.concat(monthlyRemaining);
+        document.getElementById("todayEvent").innerHTML =
+            finalOutput.length > 0 ? finalOutput.join(" | ") : "";
+    } catch (err) {
+        console.error(err);
+        document.getElementById("todayEvent").innerHTML = "Error loading events";
+    }
+}
+
+loadTodayEvent();
+</script>
+<!-- =============== today events script stop ===================== -->
+
+  </div>    
+  <!-- =======================  footer div stop ===================================================---- -->
+
+
+
+
+  
+
+<!-- ================ -------------------------   GLOBAL SERCH BAR SCRIPT AND CODE START HERE --------------- ===============================-->
+
+<!-- ================ GLOBAL SEARCH BAR SCRIPT START ================ -->
+<style>
+/* ================= AI RING INPUT ================= */
+
+.plR5qb{
+  position:relative;
+  width:100%;
+  height:38px;
+  padding:5px;
+  border-radius:999px;
+  overflow:hidden;
+  background:#000;
+  box-sizing:border-box;
+}
+
+/* SINGLE ROUND GLOW RING */
+.plR5qb::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:999px;
+
+  background:linear-gradient(
+    90deg,
+    #4285f4,
+    #34a853,
+    #fbbc05,
+    #ea4335,
+    #4285f4
+  );
+
+  background-size:300% 100%;
+  animation:ringGlow 5s linear infinite;
+  z-index:0;
+}
+
+/* INNER BLACK AREA */
+.plR5qb::after{
+  content:"";
+  position:absolute;
+  top:5px;
+  left:5px;
+  right:5px;
+  bottom:5px;
+  background:#000;
+  border-radius:999px;
+  z-index:1;
+}
+
+/* INPUT */
+.plR5qb input{
+  position:relative;
+  z-index:2;
+  width:100%;
+  height:100%;
+  border:none !important;
+  outline:none !important;
+  background:transparent !important;
+  color:#fff !important;
+  padding:0 14px !important;
+  font-size:15px;
+  border-radius:999px;
+  box-sizing:border-box;
+  margin:0 !important;
+}
+
+/* PLACEHOLDER */
+.plR5qb input::placeholder{
+  color:#fff;
+  opacity:1;
+}
+
+/* GLOW */
+.plR5qb:hover{
+  box-shadow:
+    0 0 5px rgba(66,133,244,.8),
+    0 0 10px rgba(52,168,83,.5),
+    0 0 15px rgba(251,188,5,.4);
+}
+
+/* SMOOTH MOVING COLOR */
+@keyframes ringGlow{
+  0%{
+    background-position:0% 50%;
+  }
+  100%{
+    background-position:300% 50%;
+  }
+}
+</style>
+
+<script>
+/* =================================================================== */
+/* ❌ PERMISSION LOGIC REMOVED */
+/* =================================================================== */
+
+const BASE_URL =
+  "https://script.google.com/macros/s/AKfycbwRqkoJAhLxzZ9YEXUuw8m5maCHpuAzjOM7cI4tz0qop-Epfbqb_4ZbGhuECVjmhvA6/exec";
+
+/* ================= SAFE FETCH ================= */
+async function safeFetch(url) {
+  try {
+    const res = await fetch(url);
+    const text = await res.text();
+
+    try {
+      return JSON.parse(text);
+    } catch {
+      return [];
+    }
+  } catch {
+    return [];
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  let invoiceFiles = [];
+  let documentFiles = [];
+  let purchaseFiles = [];
+  let webFiles = [];
+
+  /* ===== UI CONTAINER ===== */
+  const container = document.createElement("div");
+
+  container.style = `
+    position:fixed;
+    top:14px;
+    right:0.2in;
+    width:4in;
+    z-index:999999;
+    font-family:Arial;
+  `;
+
+  document.body.appendChild(container);
+
+  /* ===== INPUT ===== */
+  const input = document.createElement("input");
+
+  input.id = "globalSearchInput";
+  input.disabled = true;
+  input.placeholder = "⏳ Please Wait ! Loading...";
+
+  /* ===== RING WRAPPER ===== */
+  const ringWrap = document.createElement("div");
+
+  ringWrap.className = "plR5qb";
+
+  ringWrap.style = `
+    width:100%;
+    height:38px;
+    padding:2px;
+    border-radius:999px;
+    box-sizing:border-box;
+  `;
+
+  container.appendChild(ringWrap);
+
+  /* ===== INPUT INSIDE RING ===== */
+  ringWrap.appendChild(input);
+
+  /* ===== DROPDOWN ===== */
+  const dropdown = document.createElement("ul");
+
+  dropdown.style = `
+    list-style:none;
+    margin:0;
+    padding:0;
+    font-size:14px;
+    position:absolute;
+    top:calc(100% + 6px); /* dropdown posstion ko uper karne ke liye top ki jagah bottam kro */
+    left:0;
+    width:100%;
+    max-height:420px;
+    overflow-y:auto;
+    display:none;
+    background:#fff;
+    border-radius:8px;
+    border:3px solid black;
+    box-shadow:0 6px 20px rgba(0,0,0,.35);
+  `;
+
+  container.appendChild(dropdown);
+
+  /* ===== LOAD DATA ===== */
+  async function loadAllData(retry = 0) {
+
+    input.disabled = true;
+    input.placeholder = "⏳ Please Wait ! Loading...";
+
+    const [inv, pack, docs, po, web] = await Promise.all([
+      safeFetch(`${BASE_URL}?searchType=invoice`),
+      safeFetch(`${BASE_URL}?searchType=packing`),
+      safeFetch(`${BASE_URL}?list=1`),
+      safeFetch(`${BASE_URL}?searchType=po`),
+      safeFetch(`${BASE_URL}?web=1`)
+    ]);
+
+    invoiceFiles = [
+      ...(inv || []).map(i => ({
+        ...i,
+        name: i.name || i.invoiceNo || i.fileName || "INV File",
+        __inv: true
+      })),
+      ...(pack || []).map(p => ({
+        ...p,
+        name: p.name || p.packingNo || p.fileName || "Packing List",
+        __pl: true
+      }))
+    ];
+
+    documentFiles = (docs || []).map(d => ({
+      ...d,
+      name: d.name || d.fileName || "Document",
+      __doc: true
+    }));
+
+    purchaseFiles = (po || []).map(p => ({
+      ...p,
+      name: p.name || p.poNo || p.fileName || "PO File",
+      __po: true
+    }));
+
+    webFiles = (web || []).map(w => ({
+      ...w,
+      name: w.name || w.title || "Web Link",
+      __web: true
+    }));
+
+    const total =
+      invoiceFiles.length +
+      documentFiles.length +
+      purchaseFiles.length +
+      webFiles.length;
+
+    if (total === 0 && retry < 3) {
+      input.placeholder = "⚠️ Retrying...";
+      setTimeout(() => loadAllData(retry + 1), 3000);
+      return;
+    }
+
+    if (total === 0) {
+      input.placeholder = "❌ Data load failed";
+      input.disabled = false;
+      return;
+    }
+
+    input.disabled = false;
+    input.placeholder = "🔍 Search Inv, PL, PO, Documents (Alt+G)";
+  }
+
+  /* ===== SEARCH ===== */
+  input.addEventListener("input", () => {
+
+    const q = input.value.toLowerCase().trim();
+
+    dropdown.innerHTML = "";
+
+    if (!q) {
+      dropdown.style.display = "none";
+      return;
+    }
+
+    let filesToSearch = [
+      ...invoiceFiles,
+      ...documentFiles,
+      ...purchaseFiles,
+      ...webFiles
+    ];
+
+    const matched = filesToSearch.filter(f =>
+      (f.name || "").toLowerCase().includes(q)
+    );
+
+    if (!matched.length) {
+      dropdown.style.display = "none";
+      return;
+    }
+
+    matched.forEach((f) => {
+
+      const li = document.createElement("li");
+
+      li.textContent =
+        f.__web ? "🌐 WEB : " + f.name :
+        f.__po  ? "🟡 PO : " + f.name :
+        f.__doc ? "📄 DOC : " + f.name :
+        f.__pl  ? "📦 PList : " + f.name :
+        "📘 INV : " + f.name;
+
+      li.style = `
+        padding:8px;
+        cursor:pointer;
+        border-bottom:1px solid #e0e0e0;
+      `;
+
+      li.onmouseenter = () => {
+        li.style.background = "#0d6efd";
+        li.style.color = "#fff";
+      };
+
+      li.onmouseleave = () => {
+        li.style.background = "";
+        li.style.color = "#000";
+      };
+
+      li.onclick = () => {
+
+        if (f.__web && f.webUrl) {
+          window.open(f.webUrl, "_blank");
+        }
+        else if (f.id) {
+          window.open(
+            `https://drive.google.com/file/d/${f.id}/view`,
+            "_blank"
+          );
+        }
+        else {
+          alert("File not accessible");
+        }
+
+        input.value = f.name;
+        dropdown.style.display = "none";
+      };
+
+      dropdown.appendChild(li);
+
+    });
+
+    dropdown.style.display = "block";
+
+  });
+
+  /* ===== CLOSE DROPDOWN ===== */
+  document.addEventListener("click", e => {
+
+    if (!container.contains(e.target)) {
+      dropdown.style.display = "none";
+      input.value = "";
+    }
+
+  });
+
+  /* ===== INIT ===== */
+  window.addEventListener("load", () => {
+
+    setTimeout(() => {
+      loadAllData();
+    }, 5000);
+
+  });
+
+});
+
+/* ===== ALT + G ===== */
+document.addEventListener("keydown", function (e) {
+
+  if (e.altKey && e.key.toLowerCase() === "g") {
+
+    e.preventDefault();
+
+    const input =
+      document.getElementById("globalSearchInput");
+
+    if (input && !input.disabled) {
+      input.focus();
+      input.select();
+    }
+
+  }
+
+});
+</script>
+<!-- ================ -------------------------   GLOBAL SERCH BAR SCRIPT AND CODE STOP HERE --------------- ===============================-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ================ -------------------------   PERFORMA INVOICE CODE AND SCRIPT START HERE --------------- ===============================-->
+<div id="mffUnique_invoiceModalOverlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99999; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 20px 10px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;top: 400px !important; height: calc(100vh - 10px) !important;">
+  <div id="mffUnique_invoiceModalContent" style="background: #f8fafc; width: 100%; max-width: 1050px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); animation: mffUnique_fadeDown 0.3s ease; position: relative; padding: 20px; box-sizing: border-box;">
+    
+    <span id="mffUnique_modalCloseIcon" style="position: absolute; top: 15px; right: 20px; font-size: 28px; font-weight: bold; color: #64748b; cursor: pointer; transition: color 0.2s;">&times;</span>
+    
+    <h2 style="margin-top: 0; margin-bottom: 20px; color: #1e293b; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">🏢 Performa Invoice Manager</h2>
+
+    <form class="mffUnique_mainSRRForm">
+      <input type="hidden" name="datasheetname" id="mffUnique_datasheetname" value="POLDGR">
+      <input type="hidden" id="mffUnique_formModeSRR" name="formModeSRR" value="new">
+      <input type="hidden" name="action" value="submit">
+      <input type="hidden" id="mffUnique_msaf90" name="Usercode" value="PO" readonly>
+      
+      <div class="mffUnique_formWrapper">
+        <div class="mffUnique_formRow">
+          <div class="mffUnique_formGroup">
+            <label>Select Ledger :</label>
+            <div class="mffUnique_inputBox">
+              <input type="text" id="mffUnique_msaf94" name="Voucher" autocomplete="off" required placeholder="Type to search User Name..." style="background:#fde3e3;">
+              <div id="mffUnique_ledgerSuggestionBox"></div>
+            </div>
+          </div>
+          <input type="submit" id="mffUnique_submitSRRButton" value="Fetch">
+           <button class="mffUnique_printPI" onclick="mffUnique_printPIContent()" style="border: none; background: #e2e8f0; padding: 8px 16px; border-radius: 6px; color: black; font-weight: bold; font-size: 15px; cursor: pointer; float: right; margin-right: 10px; display: flex; align-items: center; gap: 5px;"> 🖨️ Print </button>
+    
+        </div>
+      </div>
+    </form>
+
+    <div class="mffUnique_piInlineSection">
+      <div id="mffUnique_piInlineContent">
+        <h3 style="color: #64748b;">Please select a ledger and click "Fetch" to view the records.</h3>
+      </div>
+      <br>
+       <div style="clear:both;"></div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+@keyframes mffUnique_fadeDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.mffUnique_formWrapper{ width:100%; padding:15px; background:#e7e7e4; border:1px solid #ccc; border-radius:8px; box-sizing:border-box;}
+.mffUnique_formRow{display:flex; align-items:center; flex-wrap:nowrap; gap:15px; width:100%;}
+.mffUnique_formGroup{ display:flex; align-items:center; gap:8px; white-space:nowrap;}
+.mffUnique_formGroup label{ font-size:14px; font-family:Arial; font-weight:bold; color: #334155;}
+.mffUnique_formGroup input[type="text"]{ height:36px; width:320px; padding:5px 10px; border:1px solid #ccc; border-radius:4px; box-sizing:border-box; font-size:14px;}
+.mffUnique_inputBox{position:relative; width:320px;}
+.mffUnique_inputBox input{width:100%;}
+#mffUnique_ledgerSuggestionBox{ position:absolute; top:100%; left:0; right:0; display:none; max-height:200px; overflow-y:auto; background:#fff; border:1px solid #ccc; border-top:none; z-index:999999; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 0 0 4px 4px;}
+#mffUnique_submitSRRButton{height:36px; min-width:120px; background:#0066ff; color:#fff; border:none; border-radius:4px; cursor:pointer; padding:0 20px; font-weight: bold; font-size: 14px; transition: background 0.2s;}
+#mffUnique_submitSRRButton:hover { background: #0052cc; }
+#mffUnique_modalCloseIcon:hover { color: #1e293b; }
+
+.mffUnique_piInlineSection {
+  background: #fff;
+  width: 100%;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  margin-top: 20px;
+  overflow-x: auto; 
+  box-sizing: border-box;
+}
+.mffUnique_piTable {
+  width: auto; 
+  min-width: 100%; 
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 13px;
+}
+.mffUnique_piTable td, .mffUnique_piTable th {
+  border: 1px solid #e2e8f0;
+  padding: 10px 16px; 
+  text-align: left; 
+  white-space: nowrap; 
+}
+.mffUnique_piHead {
+  background: #1e293b !important;
+  color: #fff !important;
+}
+.mffUnique_piTable tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+/* Strictly Defined Highlighting Classes */
+.mffUnique_row-highlight-black-header { 
+  background: rgb(0, 62, 120) !important; 
+  color: #ffffff !important; 
+  font-weight: bold; 
+}
+.mffUnique_row-highlight-black-header td { 
+  color: #ffffff !important; 
+}
+.mffUnique_row-highlight-grey-total { 
+  background: #e6e6e6 !important; 
+  color: #000000 !important; 
+  font-weight: bold; 
+}
+.mffUnique_row-highlight-grey-total td { 
+  color: #000000 !important; 
+}
+.mffUnique_highlight-section td { 
+  color: blue !important; border: none; font-weight: bold;
+}
+.mffUnique_row-highlight-ov { 
+  background-color: #e0f2fe !important; 
+}
+
+@media(max-width:768px){
+  .mffUnique_formRow{ flex-wrap:wrap;}
+  .mffUnique_formGroup, .mffUnique_inputBox{width:100%;}
+  .mffUnique_formGroup input[type="text"]{width:100%;}
+  #mffUnique_submitSRRButton{ width:100%;}
+}
+</style>
+
+<script>
+// Global config scoped safely inside unique variables
+const mffUnique_apiNBKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const mffUnique_sheetNBId = "1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU";
+const mffUnique_mainRange = "POLDGR!A1:J100"; 
+const mffUnique_rangclint = "POLDGR!J2:J"; 
+
+let mffUnique_ledgerList = [];
+
+// ================= DYNAMIC PI SHOW LOGIC =================
+async function mffUnique_showPI(){
+  try {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${mffUnique_sheetNBId}/values/${mffUnique_mainRange}?key=${mffUnique_apiNBKey}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    const v = data.values || [];
+
+    const inlineContentNode = document.getElementById("mffUnique_piInlineContent");
+    if(!inlineContentNode) return;
+
+    if(v.length === 0) {
+      inlineContentNode.innerHTML = "<h3>No data found in POLDGR sheet.</h3>";
+      return;
+    }
+
+    let company = (v[1] && v[1][1]) ? v[1][1] : "-";       
+    let totalReceipt = (v[1] && v[1][3]) ? v[1][3] : "-";  
+    let balanceAmt = (v[2] && v[2][3]) ? v[2][3] : "-";    
+
+    let html = `
+      <h2 style="margin-top:0; color:#1e293b; font-family:sans-serif;">🏢 Performa Invoice</h2>
+      
+      <span style="color: rgb(0, 36, 70); font-weight:600; font-size: 14px; display:inline-block; margin-top:8px;">Party Name:- <b>${company}</b></span>
+
+      <table class="mffUnique_piTable" style="font-size: 14px; width: 100%;">
+        <tr>
+          <td><b>Total Receipt</b></td>
+          <td style="color: rgb(134, 5, 0); font-weight: bold; font-size: 16px;">${totalReceipt}</td>
+          <td><b>Total Balance Amount</b></td>
+          <td style="color: rgb(0, 70, 41); font-weight: bold; font-size: 16px;">${balanceAmt}</td>
+        </tr>
+      </table>
+
+      <br>
+      <table class="mffUnique_piTable" style="font-size: 14px;">
+    `;
+
+    let dataRowsFound = false;
+
+    for(let i = 5; i < v.length; i++){
+      const r = v[i];
+      if(!r || r.length === 0) continue;
+      
+      const rcode = (r[0] || "").toString().trim();
+      const rdesc = (r[1] || "").toString().trim();
+      const rorder = (r[2] || "").toString().trim();
+      const ramount = (r[3] || "").toString().trim();
+
+      if (!rcode && !rdesc && !rorder && !ramount) continue;
+
+      dataRowsFound = true;
+      const upperCode = rcode.toUpperCase();
+      const upperDesc = rdesc.toUpperCase();
+
+      let highlightClass = "";
+
+      if (
+        upperCode.includes("PO/REFF") || 
+        upperCode.includes("R-CODE") || 
+        upperCode.includes("BILLING WEIGHT") || 
+        upperCode.includes("LINK LEDEGR") ||
+        upperDesc.includes("LINK LED Ledger") ||
+        upperDesc.includes("LINK LEDEGR")
+      ) {
+        highlightClass = 'class="mffUnique_row-highlight-black-header"';
+      } 
+      else if (upperCode.includes("TOTAL") || upperDesc.includes("TOTAL")) {
+        highlightClass = 'class="mffUnique_row-highlight-grey-total"';
+      }
+      else if (upperCode.includes("SECTION") || upperDesc.includes("SECTION")) {
+        highlightClass = 'class="mffUnique_highlight-section"';
+      }
+      else if (upperCode === "OV") {
+        highlightClass = 'class="mffUnique_row-highlight-ov"';
+      }
+
+      html += `
+        <tr ${highlightClass}>
+          <td><b>${rcode || "-"}</b></td>
+          <td>${rdesc || "-"}</td>
+          <td>${rorder || "-"}</td>
+          <td>${ramount || "-"}</td>
+        </tr>
+      `;
+    }
+
+    if(!dataRowsFound) {
+      html += `<tr><td colspan="4" style="text-align:center;">No valid records found from row A6 downwards.</td></tr>`;
+    }
+
+    html += `</table>`;
+    inlineContentNode.innerHTML = html;
+
+  } catch (error) {
+    console.error("Error loading PI:", error);
+  }
+}
+
+// ================= PRINT FUNCTION WITH EXACT REPLICATED CSS =================
+function mffUnique_printPIContent() {
+  const content = document.getElementById("mffUnique_piInlineContent").innerHTML;
+  if (!content || content.includes("Submitting data") || content.includes("Please select a ledger")) {
+    alert("Print karne ke liye koi valid data nahi hai!");
+    return;
+  }
+
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, '0');
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const year = today.getFullYear();
+  const currentDateStr = `${day}-${month}-${year}`;
+
+  const printWindow = window.open("", "_blank", "width=950,height=650");
+  
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print PI Details</title>
+        <style>
+          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; color: #333; }
+          .print-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #1e293b; padding-bottom: 12px; margin-bottom: 20px; }
+          .company-details { text-align: left; }
+          .date-details { text-align: right; font-size: 14px; color: black; font-weight: 500; }
+          
+          .mffUnique_piTable { width: auto; min-width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
+          .mffUnique_piTable td, .mffUnique_piTable th { border: 1px solid #e2e8f0; padding: 10px 16px; text-align: left; white-space: nowrap; }
+          
+          .mffUnique_row-highlight-black-header { background: rgb(0, 62, 120) !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .mffUnique_row-highlight-black-header td { color: #ffffff !important; }
+          
+          .mffUnique_row-highlight-grey-total { background: #e6e6e6 !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .mffUnique_row-highlight-grey-total td { color: #000000 !important; }
+          .mffUnique_highlight-section td { color: blue !important; border: none; font-weight: bold; }
+          
+          .mffUnique_row-highlight-ov { background-color: #e0f2fe !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+          @media print {
+            .print-header { display: flex !important; }
+            .mffUnique_row-highlight-black-header { background: rgb(0, 62, 120) !important; color: #ffffff !important; }
+            .mffUnique_row-highlight-grey-total { background: #e6e6e6 !important; color: #000000 !important; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="print-header">
+          <div class="company-details">
+            <div style="font-size: 16px; color: black; font-weight: bold;">Multitech Infracon Pvt. Ltd.</div>
+            <div style="font-size: 14px; color: black;">N.H.74, 12th Km. Stone, Way to Suraj Stone Crusher</div>
+            <div style="font-size: 14px; color: black;">Vill. Dabhora Mustakam, Bazpur Road Kashipur</div>
+            <div style="font-size: 14px; color: black;">CIN: U45200UR2019PT</div>
+          </div>
+          <div class="date-details"><b>Date:</b> ${currentDateStr}</div>
+        </div>
+        ${content}
+        <script>
+          window.onload = function() {
+            window.print();
+            window.close();
+          };
+        <\/script>
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+}
+
+// ================= APPLICATION HANDLERS & MODAL MANAGEMENT =================
+document.addEventListener("DOMContentLoaded", () => {
+  const modalOverlay = document.getElementById("mffUnique_invoiceModalOverlay");
+  const triggerModalBtn = document.getElementById("mffUnique_triggerModalBtn");
+  const closeIcon = document.getElementById("mffUnique_modalCloseIcon");
+
+  const inputField = document.getElementById("mffUnique_msaf94");
+  const suggestionBox = document.getElementById("mffUnique_ledgerSuggestionBox");
+  const submitBtn = document.getElementById("mffUnique_submitSRRButton");
+
+  /* --- MODAL DISPLAY LOGIC --- */
+  if(triggerModalBtn && modalOverlay) {
+    triggerModalBtn.addEventListener("click", () => {
+      modalOverlay.style.display = "flex";
+      mffUnique_showPI(); // Trigger live layout display on load
+    });
+  }
+
+  const hideInvoiceModal = () => {
+    if(modalOverlay) modalOverlay.style.display = "none";
+    if(suggestionBox) suggestionBox.style.display = "none";
+  };
+
+  if(closeIcon) closeIcon.addEventListener("click", hideInvoiceModal);
+  
+  window.addEventListener("click", (e) => {
+    if (e.target === modalOverlay) {
+      hideInvoiceModal();
+    }
+  });
+
+  /* --- LIVE GOOGLE SHEET DATA FETCH --- */
+  async function fetchGoogleSheetData() {
+    try {
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${mffUnique_sheetNBId}/values/${mffUnique_rangclint}?key=${mffUnique_apiNBKey}`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.values && data.values.length > 0) {
+        const rawList = data.values.map(row => row[0]).filter(item => item && item.trim() !== "");
+        mffUnique_ledgerList = [...new Set(rawList)].sort((a, b) => a.localeCompare(b));
+      }
+    } catch (error) {
+      console.error("Error fetching data from Google Sheet:", error);
+    }
+  }
+
+  fetchGoogleSheetData();
+
+  function renderSuggestions() {
+    if (!inputField || !suggestionBox) return;
+    const val = inputField.value.trim().toLowerCase();
+    suggestionBox.innerHTML = "";
+
+    if (mffUnique_ledgerList.length === 0) {
+      suggestionBox.style.display = "none";
+      return;
+    }
+
+    const filtered = val ? mffUnique_ledgerList.filter(item => item.toLowerCase().includes(val)) : mffUnique_ledgerList;
+
+    if (filtered.length > 0) {
+      filtered.forEach(item => {
+        const div = document.createElement("div");
+        div.innerText = item;
+        div.style.padding = "8px 12px";
+        div.style.cursor = "pointer";
+        div.style.borderBottom = "1px solid #f0f0f0";
+        div.style.color = "#333";
+        div.style.fontFamily = "Arial";
+        div.style.fontSize = "14px";
+        div.style.backgroundColor = "#fff";
+
+        div.onmouseenter = () => div.style.backgroundColor = "#e7e7e4";
+        div.onmouseleave = () => div.style.backgroundColor = "#fff";
+
+        div.addEventListener("click", (e) => {
+          e.stopPropagation(); 
+          inputField.value = item;
+          suggestionBox.style.display = "none";
+        });
+
+        suggestionBox.appendChild(div);
+      });
+      suggestionBox.style.display = "block";
+    } else {
+      suggestionBox.style.display = "none";
+    }
+  }
+
+  if (inputField) {
+    inputField.addEventListener("click", (e) => {
+      e.stopPropagation();
+      renderSuggestions();
+    });
+    inputField.addEventListener("input", renderSuggestions);
+  }
+
+  document.addEventListener("click", (e) => {
+    if (suggestionBox && e.target !== inputField && e.target !== suggestionBox) {
+      suggestionBox.style.display = "none";
+    }
+  });
+
+  /* ================= APPS SCRIPT FORM SUBMISSION HANDLING ================= */
+  const scriptURL = "https://script.google.com/macros/s/AKfycbxDE9qiutBDF5nPy-mpmNKioOT9LjGEvzFJ6hSL_HUSTaggNHCvarTgM5OZ3iPrf6WQOQ/exec";
+
+  // Scoped Wait Popup Layout inside modal/app context dynamically
+  const popupHTML = `
+  <div id="mffUnique_waitMFFOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:999999; align-items:center; justify-content:center;">
+    <div style="background:#fff; padding:20px 30px; border-radius:10px; min-width:250px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,.3); font-size:16px; font-weight:600;">
+      ⏳ <span id="mffUnique_waitMsg">Please wait...</span>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML("beforeend", popupHTML);
+
+  const showWait = (msg) => {
+    document.getElementById("mffUnique_waitMsg").innerText = msg;
+    document.getElementById("mffUnique_waitMFFOverlay").style.display = "flex";
+  };
+
+  const hideWait = () => {
+    document.getElementById("mffUnique_waitMFFOverlay").style.display = "none";
+  };
+
+  const form = document.querySelector(".mffUnique_mainSRRForm");
+
+  if(form) {
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+
+      submitBtn.disabled = true;
+      submitBtn.value = "Please wait...";
+      showWait("Please Wait! Loading...");
+
+      try {
+        const fd = new FormData(form);
+
+        form.querySelectorAll("input[type='date']").forEach(input => {
+          if (input.value) {
+            const d = new Date(input.value);
+            const day = String(d.getDate()).padStart(2, "0");
+            const month = d.toLocaleString("en-GB", { month: "short" });
+            const year = d.getFullYear();
+            const formatted = `${day}-${month}-${year}`;
+            fd.set(input.name, formatted);
+          }
+        });
+
+        const res = await fetch(scriptURL, {
+          method: "POST",
+          body: fd
+        });
+
+        const r = await res.json();
+
+        if (r.result === "success") {
+          alert("Loading Successfully");
+          form.reset(); 
+
+          // Table Content Auto Refresh Logic
+          const inlineContentNode = document.getElementById("mffUnique_piInlineContent");
+          if(inlineContentNode) {
+             inlineContentNode.innerHTML = `<h3>⌛ Submitting data... Form refreshing with updated data in 2 seconds.</h3>`;
+          }
+          setTimeout(async () => {
+            await mffUnique_showPI(); 
+          }, 2000);
+
+          if (typeof loadActiveTable === "function") {
+            loadActiveTable();
+          }
+        } else {
+          alert("Save Failed");
+        }
+
+      } catch (err) {
+        alert("Submit error");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.value = "Fetch";
+        hideWait();
+      }
+    };
+  }
+});
+</script><meta name="viewport" content="width=device-width, initial-scale=1.0" charset="UTF-8">
+
+<div style="
+position: fixed; top: 0; width: 100%;
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+align-items:center;
+ /* ✅ justify-content:center; */
+border-bottom: 5px solid #024369; border-top: 5px solid #024369;
+padding:13px;
+margin-bottom:10px;
+border-radius:10px;
+background:#010101;
+box-shadow:0 2px 8px rgba(249, 219, 219, 0.1);
+">
+
+
+
+<!-- यह एक नोट है, Dropdown URL  Script Start Heare -->
+
+    <script>
+        // Function to handle dropdown selection
+        function handleDropdownChange() {
+            const dropdown = document.getElementById('linkDropdown');
+            const selectedOption = dropdown.options[dropdown.selectedIndex];
+
+            if (selectedOption.value) {
+                // Open the link in a new tab
+                window.open(selectedOption.value, '_blank');
+            }
+        }
+    </script>
+ 
+
+    <select id="linkDropdown" onchange="handleDropdownChange()"  mfvbtn="12" style="text-align:center;border: none; background-color: #010101; color: #fbfbfc; font-weight: bold; font-size: 16px;cursor: pointer;">
+      <option value="" style="text-align: center; font-weight: bold; ">Url & Link Other </option>
+
+      <option value="https://drive.google.com/drive/folders/1Dc4In3NfpKdFdOLqcgyTFNC2tch7b6q2?usp=sharing"   style="color: rgb(244, 111, 94); font-weight: bold;">AFI Drive</option>
+      <option value="https://taajazone.com/"   style="color: rgb(0, 160, 110); ">TAAZAZONE.COM</option>
+       <option value="https://www.mapchart.net/world.html#"   style="color: rgb(0, 160, 110); ">World Map</option>
+        
+      <option value="https://m5792.github.io/esm/IVVOUCHER.html" >Imprest Voucher (IV) Login</option>
+      <option value="https://m5792.github.io/esm/NOINDEX.html" >Noida Office Dashboard</option>
+      <option value="https://docs.google.com/spreadsheets/d/1vjkI_bpHNR6Tna17FISridqXSvCUnELA5oMgnAqzbO0/edit?gid=0#gid=0">	Cash Ledger (CMIV) Sheet*</option>
+      <option value="https://docs.google.com/spreadsheets/d/1C4EeSbCDaVGmJjU3QY2VNfI_IEZn0tZsqXw0ss3G58k/edit?gid=809921823#gid=809921823" style="color: rgb(103, 188, 242);">	ESS Google Index Sheet*</option>
+      <option value="https://docs.google.com/spreadsheets/d/1EOO0QzwNaPhwIfZN_DCLlhQB9yeC-j-GpmtM_6JMRmw/edit?gid=2031012173#gid=2031012173" style="color: rgb(244, 123, 123);">	Password  Google  Sheet*</option> 
+      <option value="https://docs.google.com/spreadsheets/d/1g_hAVEIFZRnRNFFQWF275Y_AXKBTw0UIP0xiH4_C2V0/edit?gid=0#gid=0" style="color: rgb(173, 153, 2);">	A.F.I Google Index Sheet*</option> 
+      <option value="https://docs.google.com/spreadsheets/d/1B6dyXPay3Tyl_7RzGuL9Rg8AhkzdBNhJNRu-T-3kmvI/edit?gid=147958071#gid=147958071">	MIPL Clint Cash Ledger Sheet*</option>
+      <option value="https://docs.google.com/spreadsheets/d/1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4/edit?gid=0#gid=0">	INDEX SHEET MIPL Sheet*</option>
+      <option value="https://docs.google.com/spreadsheets/d/1wvsPdAQA57HxhTxA3cCcQvUEz93IWkBre_Ix-qvzwss/edit?gid=627393391#gid=627393391">	Store Database SHeet*</option>
+
+      <option value="https://docs.google.com/spreadsheets/d/1ECwXrxs8_FDWw1qAC6_qxEwP_HE3SGMM4qNKVZHlIS0/edit?gid=0#gid=0">	Cash Management Sheet (Old)</option>
+      <option value="https://docs.google.com/spreadsheets/d/1h3uC_0Ji4-NUhqrN0aIR-XwLZL5VdgilCBlIzC--SDA/edit?gid=0#gid=0">	Imprest Voucher Sheet (Old)</option>
+      <option value="MULTITECH V.2023.html">	MIPL DASHBOARD OLD</option>
+      <option value="MULTITECH2023.html">MIPL Old Dashboard</option>
+      <option value="https://github.com/">	github (mukhtarahamadksp@gmail.com)</option>
+      <option value="eTally.html">	eTally Dashboard</option>
+		  <option value="https://m5792.github.io/esmTally/AFI.html"> A.F.I Medical Dashboard </option>
+		  <option value="https://m5792.github.io/esm/mdashboard.html">Daybook Dashboard</option>
+
+      <option value="https://docs.google.com/spreadsheets/d/1FXdbotep3MTk34gUdSF0e0h_hN_Uz66AL0Gnvc-pt_s/edit?gid=475142657#gid=475142657">	Party Weight Sheet</option>
+      <option value="https://docs.google.com/spreadsheets/d/1EMIe8Y50_vMXg7y9zT7lXV0vgLyOZuSKdthf8C5XUXc/edit?gid=1752231070#gid=1752231070">	Mukhtiyar</option>
+      <option value="https://docs.google.com/spreadsheets/d/1F3Wf5V8sLxENPJFtHij-0GDGBXfeYByGx0DSafDucgM/edit?gid=90095763#gid=90095763">	Tushar</option>
+	    <option value="https://www.google.com/android/find/">	Find My Device</option>
+      <option value="https://docs.google.com/spreadsheets/d/1Yx3UVCqNVWeSgWuOpR6kMwyprar7pGXUzou3hTZG7UE/edit?gid=1853545706#gid=1853545706">	Employee Data Sheet</option>
+
+	    <option value="https://docs.google.com/spreadsheets/d/1U_jwvZNtFuP91Gljjrbz_cpmb1OIkeDHnKa7aDe7F20/edit?gid=1511450281#gid=1511450281">	Clint List Sheet*</option>
+	    <option value="https://docs.google.com/spreadsheets/d/17GZv2O6uupdA5r6p7-zqKZ8AQgZozbGQf2aXPlUzhDA/edit?gid=1122888223#gid=1122888223">	Mipl Office</option>
+	    <option value="https://docs.google.com/spreadsheets/d/13N0HBuorZJM-ARnlTh36EUaD1-uQckaC6sLLzMnWAks/edit?gid=696561165#gid=696561165">	Office Noida</option>
+	    <option value="https://docs.google.com/spreadsheets/d/1Rw_6cDYP-ETicn9YhHkdF_Sgmi8ps5JhjhlrkWvtwRQ/edit?gid=2123243236#gid=2123243236">	GUPTA CAMUNICATION Sheet*</option>
+       <option value="https://bouncyballs.org/">	Game-   Bouncy Balls</option>
+        <option value="https://codepen.io/XAuBAH/pen/BadLGaw?utm_source=chatgpt.com">	Live Html Editing- Canvas</option>
+        <option value="https://thisissand.com/">Game - Sand Picture Making</option>
+        <option value="https://mypngd.in/">LPG/PNG IOAG Conetion Details</option>
+      
+    </select>
+
+        <button onclick="location.reload()" style="background-color: #010101; color: #fbfbfc;">🔄 Reload Page</button>   
+
+<!-- यह एक नोट है, Dropdown URL  Script Stop Heare -->
+    </div> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accounting Interface</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f5f7fb;
+height:100vh;
+overflow:hidden;
+}
+
+/* CONTENT AREA */
+#content{
+position:absolute;
+top:50px;
+left:0;
+right:0;
+bottom:70px;
+padding:15px;
+overflow:auto;
+}
+
+.page{
+display:none;
+background:#fff;
+padding:20px;
+border-radius:15px;
+box-shadow:0 2px 10px rgba(0,0,0,.1);
+}
+
+.page.active{
+display:block;
+}
+
+/* BOTTOM NAV */
+.bottom-bar{
+position:fixed; justify-content:center;
+bottom:90px;
+left:0;
+width:100%;
+height:70px;
+background:#e6e5e5; border-top: 5px solid #001110;
+display:flex;
+align-items:center;
+padding:0 10px;
+box-shadow:0 -2px 10px rgba(0,0,0,.15);
+z-index:1000;
+}
+
+/* HOME BUTTON */
+.home-btn{
+width:55px;
+height:55px;
+border-radius:50%;
+border:5px solid white;
+background:#eafafa;
+color:#fff;
+font-size:22px;
+cursor:pointer;
+}
+
+/* MENU BUTTONS */
+.nav-btn{
+margin-left:10px;
+padding:10px 15px;
+border:5px solid white;
+border-radius:10px;
+background:#e8e9e9; color: #000000; font-weight: bold;
+cursor:pointer;
+}
+
+/* SWIPE HANDLE */
+.handle{
+position:absolute;
+top:-18px;
+left:50%;
+transform:translateX(-50%);
+width:80px;
+height:8px;
+background:#fcb3b3;
+border-radius:20px;
+}
+
+/* DRAWER */
+.drawer{
+position:fixed;
+left:0;
+bottom:-280px;
+width:100%;
+height:320px;
+border:5px solid #01433f;
+background:#edfdfc;
+border-radius:20px 20px 0 0;
+box-shadow:0 -5px 15px rgba(0,0,0,.2);
+transition:.3s;
+z-index:999;
+padding:20px;
+}
+
+.drawer.open{
+bottom:70px;
+}
+
+.drawer-buttons{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+margin-top:20px;
+}
+
+.drawer-buttons button{
+padding:15px;
+border-radius:12px;
+background:#e8e9e9;
+color:rgb(0, 43, 54);
+cursor:pointer;
+font-size:22px;
+border:5px solid white;
+}
+
+
+/* Table container ************/
+table{
+    width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  background: #ffffff;
+  border: 1px solid #d0d0d0;
+
+  }
+
+/* Optional heder alwayas fix on top and table scrolling  */
+  table{
+  overflow-x: auto;
+  display: block;
+  max-height: 670px; /* Optional scrolling */
+  }
+
+  /* Table border & cell style */
+th {
+   background: #d5d3d3;
+  color: #000b20;
+  padding: 10px;
+  border: 1px solid #b5b5b5;
+  text-align: left;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  white-space: nowrap;
+  border-bottom:5px solid #0c0c0c;
+  }
+
+
+ td {
+   padding: 8px 10px;
+  border: 1px solid #e0e0e0;
+  vertical-align: top;
+  word-wrap: break-word; /* Wrap long text */
+  white-space: normal;
+  
+  }
+
+  /* Header design */
+
+
+  tr:nth-child(even) {
+    border-top:2px solid #9c9c9c;
+  background-color: #f7f7f7;
+}
+
+  tr:nth-child(odd) {
+    border-top:2px solid #c2c1c1;
+  background-color: #fcfcfc;
+}
+
+  /* Row hover effect */
+  tr:hover td {
+   background: #fccc49;
+ color: rgb(0, 15, 15);
+  transition: background-color 1s ease, color 1s ease;
+  }
+    
+/*----------------------*/
+.DALDiv {display: flex; flex-direction: column; height: 60vh;}
+.topDiv { height: 75%; background: #e3f2fd;}
+.bottomDiv { height: 25%; background: #f8f7f7;border-top: 8px solid #0e0d0d;}
+
+</style>
+</head>
+<body>
+
+<!-- CONTENT -->
+<div id="content">
+
+
+<!---- =========== LODING NOTICE BOARD DIV AND SCRIPT START =====================----------- -->    
+<div id="homePage" class="page active">
+
+    <h2>🚚 Packing List & Store Live Status</h2>
+
+    <style>
+#homeDashboard{
+  display:flex;
+  flex-direction:column;  /* horizontal layout (row; for rowm mood) */ 
+  height:700px;
+  gap:10px; /* boxes ke beech gap */
+  font-family:Arial, sans-serif;
+}
+
+.boxCol1{ flex:4; background:#f7e9e9; border:1px solid #999; padding:10px; }
+.boxCol2{ flex:3; background:#d9edf7; border:1px solid #999; padding:10px; }
+.boxCol3{ flex:3; background:#eaf5ea; border:1px solid #999; padding:10px; }
+.boxCol4{ flex:3; background:#f5f5ea; border:1px solid #999; padding:10px; }
+
+/* ===== Card ===== */
+.card{ padding:15px; border-radius:8px; margin-bottom:10px; box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+
+/* ===== Responsive ===== */
+@media(max-width:768px){
+  #homeDashboard{ flex-direction:column; height:auto;}
+  .boxCol1,.boxCol2,.boxCol3,.boxCol4{width:100%;}}
+</style>
+<div class="boxCol1">
+  <div class="card">
+    <span style="color: rgb(1, 97, 81); font-size: 14px; font-weight: bold; font-style: italic;">Packing List Status..</span>
+    <ul id="plantList" style="padding:0;"></ul>
+  </div>
+</div>
+
+<div class="boxCol2">
+  <div class="card">
+
+      <span style="color: rgb(1, 78, 97); font-size: 14px; font-weight: bold; font-style: italic;">Store Status..</span>
+      <ul id="storeList" style="padding:0;"></ul>
+  </div>
+</div>
+
+<div class="boxCol3">
+  <div class="card">
+    <span style="color: rgb(1, 97, 81); font-size: 14px; font-weight: bold; font-style: italic;">Payment Demand Status..</span>
+      <ul id="pendingList" style="padding:0;"></ul>
+  </div>
+</div>
+
+<div class="boxCol4">
+  <div class="card">
+    
+     <div class="home-title">Dashboard</div>
+
+<div style="height:42vh; overflow-y:auto; overflow-x:auto; border:5px solid #e6e6e6;border-radius: 10px; padding:8px; background-color: #f1faf9;" >
+
+<style> #daybookTable {overflow-x: auto; display: block; max-height: 720px; /*heder alwayas fix on top and table scrolling  */} </style>
+<!-- 🔎 TABLE -->
+<table id="daybookTable" border="1" style="width:100%;margin-top:20px;"></table>
+
+ <div style="display: flex; justify-content: center; align-items: center; background-color: #f7f8fa; color: rgb(1, 1, 1); font-size: 12px; font-weight: bold;  border: 5px solid #01116e; ">
+<div style="border: 4px solid #ffffff; margin: 2px 8px;">
+<select id="monthDropdown" style="padding:2px 8px; border: none; width:100px; text-align: center; background-color: #000000; color: white;"></select>
+
+ <span id="monthlyTotals" ></span>
+ <!-- 🔄 REFRESH BUTTON -->
+  <span style="margin: 7px 5px;"> | </span>
+<button id="daybookRefresh" style="color: #002a46; border: none; font-size: 14px;">Refresh</button>
+</div>
+<!-- 🔍 DAYBOOK SEARCH INPUT -->
+<input type="text" id="daybookSearch" placeholder="Click Here to Search Daybook..." style="padding:6px 10px;  border: 4px solid #ffffff; width:230px;  background-color:rgb(250, 243, 204);">
+</div>
+
+</div>
+
+
+
+  </div></div></div>
+
+
 <!---- =========== LODING NOTICE BOARD SCRIPT START =====================----------- -->
 
 <div id="homePage" class="page active">
