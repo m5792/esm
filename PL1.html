@@ -1,9 +1,254 @@
 <!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+
+ <!-- ============ ------ =============== --------------------- ===========  Footer Area Start ================-------  Start =========================== -->
+<style>
+/* FIXED FOOTER */
+.fixed-footer{
+position:fixed;
+left:0;
+bottom:0;   
+width:100%;
+background:#f1f1f1;
+border:5px solid #00203d; border-radius:10px;
+padding:5px;
+z-index:99999;
+box-shadow:0 -2px 10px rgba(0,0,0,0.2);
+}
+/* FOOTER ROW */
+.footer-row{display:flex;align-items:center;gap:10px;width:100%;overflow-x:auto;justify-content: center;}
+/* COMMON DIV STYLE */
+.footer-box{
+padding:6px 10px;
+border:3px solid #ffffff;
+background:#e9e7e7;
+border-radius:8px;
+white-space:nowrap;
+font-size:14px;
+font-weight:bold;
+}
+/* TIME BOX */
+#currentDateTime{background:#1e3a8a; color:rgb(252, 252, 252); font-size:16px;}
+/* MOBILE */
+@media(max-width:600px){
+.footer-box{font-size:12px; padding:5px 8px;}
+#currentDateTime{font-size:13px;}}
+</style>
+
+<style id="customDropdownStyle">
+    .customDropdown{ position:absolute; background:rgb(240, 238, 238); border:1px solid #ccc; border-radius:8px; width:300px !important; max-height:400px; overflow-y:auto; box-shadow:0 4px 12px rgba(0,0,0,.15); z-index:99999; padding:4px; box-sizing:border-box; }
+    .dropdownItem{ padding:8px 10px; cursor:pointer; border-radius:5px; font-size:14px; user-select:none; }
+    .dropdownItem:hover, .dropdownItem.active{ background:#007bff; color:#fff; }
+    .newHead{ position:sticky; bottom:0; background: rgb(251, 244, 244); font-weight:bold; border: 3px solid white; }
+    </style></head><body>
+
+<!-- ================= ------ Footer Container Start -------  Start =========================== -->     
+<div class="fixed-footer">  
+
+<!-- == --------- .......... Footer Row .......  Start ......... ---------- === -->
+<div class="footer-row">       
+<div id="currentDateTime" class="footer-box"></div>
+
+<div class="footer-box" style="display:flex; align-items:center; gap:8px; text-decoration:none; color: black; font-weight:bold; background-color: #e3f3f5; border:3px solid #013769; border-radius:10px;">
+<a href="https://www.google.com/" target="_blank" style="display:flex; align-items:center; gap:8px; text-decoration:none; color: black; font-weight:bold;">
+<img src="https://cdn.dribbble.com/users/1717214/screenshots/4124610/g-logo.gif" alt="Google" width="20" height="20" style="border-radius:8px;">
+<span class="name" style="color: #01225f;">Google</span>
+</a>
+<strong style="border: none; font-size: 16px; font-weight: bold;"> | </strong>
+<a href="https://web.whatsapp.com/" target="_blank" style="display:flex; align-items:center; gap:8px; text-decoration:none; color: black; font-weight:bold;">
+<img src="https://cliply.co/wp-content/uploads/2021/08/372108180_WHATSAPP_ICON_400.gif" alt="Google" width="20" height="20" style="border-radius:8px;">
+<span class="name" style="color: #00361d;">Whatsapp</span>
+</a>
+<strong style="border: none; font-size: 16px; font-weight: bold;"> | </strong>
+<a href="https://www.incometax.gov.in/iec/foportal/" target="_blank" style="display:flex; align-items:center; gap:8px; text-decoration:none; color: black; font-weight:bold;">
+<img src="https://upload.wikimedia.org/wikipedia/commons/1/13/Logo_of_Income_Tax_Department_India.png?utm_source=commons.wikimedia.org&amp;utm_campaign=index&amp;utm_content=original" alt="Google" width="20" height="20" style="border-radius:8px;">
+<span class="name" style="color: #00361d;">ITR Login</span>
+</a>
+<strong style="border: none; font-size: 16px; font-weight: bold;"> | </strong>
+<a href="https://chatgpt.com/" target="_blank" style="display:flex; align-items:center; gap:8px; text-decoration:none; color: black; font-weight:bold;">
+<img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMDIzNGhlOTZ3aG81OWMyeTA3b3N4c3lpaGMzMDQ3aGU2cjdsZnZ5aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/f0VbswUmSY6X1cBz4C/giphy.gif" alt="Google" width="20" height="20" style="border-radius:8px;">
+<span class="name" style="color: #00361d;">Chat GPT</span>
+</a>
+<strong style="border: none; font-size: 16px; font-weight: bold;"> | </strong>
+<a href="https://www.youtube.com/" target="_blank" style="display:flex; align-items:center; gap:8px; text-decoration:none; color: rgb(109, 1, 1); font-weight:bold;">
+<img src="https://cliply.co/wp-content/uploads/2019/07/371907120_YOUTUBE_ICON_TRANSPARENT_400.gif" alt="Google" width="20" height="20" style="border-radius:8px;">
+<span class="name" style="color: #830000;">You Tube</span>
+</a>
+</div>
+</div>  <!-- == --------- .......... Footer Row ....... Stop xxx ......... ---------- === -->
+ </div>
+ <!-- ================= ------ Footer Div Stop -------  xxx =========================== --> 
+ 
+ <!-- ===========================Current date and time Script Start Hare ----------Start--- -->
+ <script>
+function displayCurrentDateTime() {
+const now = new Date();
+
+// Formatting options
+const options = { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric', 
+    hour: '2-digit', 
+    minute: '2-digit', 
+    second: '2-digit' 
+};
+
+// Formatting date and time
+const formattedDateTime = now.toLocaleString('en-US', options);
+
+// Displaying in the div
+document.getElementById("currentDateTime").textContent = `Today: ${formattedDateTime}`;
+}
+
+// Call the function on page load to show the current date and time
+displayCurrentDateTime();
+
+// Update the date and time every second
+setInterval(displayCurrentDateTime, 1000);
+</script>
+<!-- ===========================Current date and time Script Stop Hare ----------XXX--- -->
+<!-- ============ ------ =============== --------------------- ===========  Footer Area Stop ================-------  xxx =========================== -->
+
+
+
+<!-- ============ -----------------Top Bar/Worksapce/Status Bar CSS & Div Start ---  Start =========================== -->
+<style>
+/* Top Toolbar */
+.top-toolbar{ position:fixed; top:0; left:0;width:100%; height:40px;display:flex;justify-content:center;align-items:center;
+    background:linear-gradient(#ffffff,#f3f4f6);
+    border-bottom:1px solid #bfbfbf;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+    border-bottom: 3px solid salmon;
+    z-index:9999;
+}
+
+/* Center Content */
+.toolbar-content{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+    margin:0 auto;
+    flex-wrap:wrap;
+}
+
+/* Input & Select */
+.toolbar-content input,
+.toolbar-content select{
+    height:38px;
+    min-width:180px;
+    padding:0 12px;
+    border:1px solid #cfcfcf;
+    border-radius:6px;
+    font-size:14px;
+    outline:none;
+}
+
+/* Buttons */
+.toolbar-content button{
+    height:38px;
+    padding:0 18px;
+    background:#ffffff;
+    color:#333;
+    border:1px solid #cfcfcf;
+    border-radius:6px;
+    box-shadow:0 1px 2px rgba(0,0,0,.08);
+    cursor:pointer;
+    transition:.25s;
+}
+
+.toolbar-content button:hover{
+    background:#e8f0fe;
+    border-color:#0d6efd;
+    color:#0d6efd;
+}
+
+/* ------- right site panal ------------*/
+.right-fixed-panel{
+    position: fixed;
+
+    top: 45px;      /* Header के नीचे */
+    right: 0;
+    bottom: 60px;   /* Footer के ऊपर */
+    width: 40%;
+    background: #ebeaea;
+    border-radius: 8px 0 0 8px;
+    box-shadow: -2px 0 8px rgba(0,0,0,0.15);
+    z-index: 999;
+}
+
+.workspace{
+    position: fixed;
+    top: 45px;      /* Header के नीचे */
+    left: 0;
+    bottom: 60px;   /* Footer के ऊपर */
+    width: 60%;
+    background: #f4f4f4;
+    border-radius: 8px 0 0 8px;
+    box-shadow: -2px 0 8px rgba(0,0,0,0.15);
+    z-index: 999;
+}
+/*--------*/
+   .tracker-side-panel{
+    flex: 1; display: flex; flex-direction: column;
+    justify-content: center;   /* Vertical Center */
+    align-items: center;       /* Horizontal Center */
+    gap: 15px; text-align: center;
+}
+    .tracker-box { background: #ebeaea; border: 2px solid var(--border-dark); padding: 15px; max-height: 600px; width: 600px; overflow-y: auto;}
+    .tracker-box h3 { margin-top: 0; color: var(--tally-blue); font-size: 15px; border-bottom: 2px solid var(--tally-blue); padding-bottom: 5px; text-transform: uppercase;}
+</style>
+</head>
+
+<body>
+
+<!-- ============ ---------- Top Bar Start ----------- ============ -->   
+<div class="top-toolbar">
+
+    <strong>Search Voucher: &nbsp;&nbsp;</strong>
+    <div class="search-container">
+ <input type="text" id="universalSearchInput" class="search-box" placeholder="🔍 Search Sheet Records (Buyer, Job, Inv, Veh)..." autocomplete="off">
+        <ul id="universalSearchDropdown" class="universal-search-dropdown"></ul>
+         </div> 
+<button type="button" style="border: none;background-color: transparent;color: rgb(107, 0, 0);cursor: pointer;" id="triggerModalBtn">➕ New Entry</button>
+
+</div>
+
+
+<!-- ============ ---------- Right Panal / Status Bar Start ----------- ============ --> 
+<div class="right-fixed-panel">
+     
+      <div class="tracker-side-panel">
+        <div class="tracker-box">
+            <h3>⏳ Sheet Processing Lists</h3>
+            <div id="logsView"></div>
+        </div>
+
+        <div class="tracker-box" style="max-height: 550px;">
+            <h3>📅 Recent Saved (Last 5 Records)</h3>
+            <div id="recentLogsView"></div>
+        </div>
+    </div>
+   
+</div>
+<!-- ============ -----------------Top Bar/Worksapce/Status Bar CSS & Div Stop ---  XXX =========================== -->
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Sheets Linked - Packing List ERP Dashboard</title>
+    <title>AFI TexNexa - Packing List</title>
     <style>
         :root {
             --tally-blue: #005a70;
@@ -20,19 +265,6 @@
             background-color: #f4f4f4;
             margin: 20px;
             padding: 0;
-        }
-
-        .control-panel {
-            max-width: 1600px;
-            margin: 0 auto 15px auto;
-            background-color: var(--tally-bg);
-            border: 1px solid var(--tally-blue);
-            padding: 12px 15px;
-            border-radius: 4px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
         }
 
         .search-container { position: relative; display: inline-block; }
@@ -83,45 +315,12 @@
         .btn-update { background-color: #ffc107; color: #000; padding: 3px 8px; font-size: 11px; border-radius: 3px; font-weight: bold; border: none; cursor: pointer; }
         .btn-delete { background-color: #dc3545; color: #fff; padding: 3px 8px; font-size: 11px; border-radius: 3px; font-weight: bold; border: none; cursor: pointer; }
         .btn-mini-print { background-color: #005a70; color: #fff; padding: 3px 8px; font-size: 11px; border-radius: 3px; font-weight: bold; border: none; cursor: pointer; margin-right: 4px; }
-
-        .workspace {
-            max-width: 1600px;
-            margin: 0 auto;
-            display: flex;
-            gap: 15px;
-            align-items: flex-start;
-        }
-
         .document-box {
             flex: 2.6;
             background: #ffffff;
             padding: 20px;
             border: 2px solid var(--border-dark);
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .tracker-side-panel {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .tracker-box {
-            background: #ffffff;
-            border: 2px solid var(--border-dark);
-            padding: 15px;
-            max-height: 600px; width: 600px;
-            overflow-y: auto;
-        }
-
-        .tracker-box h3 {
-            margin-top: 0;
-            color: var(--tally-blue);
-            font-size: 15px;
-            border-bottom: 2px solid var(--tally-blue);
-            padding-bottom: 5px;
-            text-transform: uppercase;
         }
 
         .log-card {
@@ -198,67 +397,49 @@
         
         #loader { display: none; position: fixed; top: 10px; left: 50%; transform: translateX(-50%); background: #ffc107; color: black; padding: 8px 20px; font-weight: bold; border-radius: 4px; z-index: 9999; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
    
-  
-        /* Print ke time par baki sab hide karne ke liye */
-/* Print ke time par baki sab hide karne ke liye */
+
+
+        /* ------------------ document-box DIV PRINT -----*/
 @media print {
-    body {
-        background-color: #fff;
-        margin: 0;
-        padding: 0;
-    }
-    
-    /* Control panel, side panels aur buttons ko hide karein */
-    .control-panel, 
-    .tracker-side-panel, 
-    .btn-add-row, 
-    #insertRowBtn,
-    div[style*="text-align: center; margin-top: 15px;"] { 
-        display: none !important; 
-    }
-    
-    /* Document box ko full width karein aur borders adjust karein */
-    .document-box {
-        width: 100% !important;
-        max-width: 100% !important;
-        box-shadow: none !important;
-        border: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-    .workspace {
-        display: block !important;
+
+    body * {
+        visibility: hidden;
     }
 
-    /* 🔥 NYA CODE: Input placeholders ko print me se gayab karne ke liye */
+    .document-box,
+    .document-box * {
+        visibility: visible;
+    }
+
+    .document-box {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        background: #fff !important;
+    }
+
     input::placeholder {
         color: transparent !important;
         opacity: 0 !important;
     }
-    
-    /* Kuch browsers ke liye select elements ka empty ya default value hide karne ke liye */
+
     select option:disabled {
         display: none !important;
     }
 }
-   
    </style>
 </head>
 <body>
 
 <div id="loader">🔄 Connecting Google Sheets...</div>
 
-<div class="control-panel">
-    <div class="search-container">
-        <input type="text" id="universalSearchInput" class="search-box" placeholder="🔍 Search Sheet Records (Buyer, Job, Inv, Veh)..." autocomplete="off">
-        <ul id="universalSearchDropdown" class="universal-search-dropdown"></ul>
-    </div>
-    <div class="btn-group">
-        <button type="button" class="btn btn-new" id="triggerModalBtn">➕ New Entry</button>
-    
-    </div>
-</div>
-
+<!-- ============ ---------- Workspace Div  Start Here ----------- ============ --> 
 <div class="workspace">
     <div class="document-box">
         <table class="header-table">
@@ -341,18 +522,9 @@
        
     </div>
 
-    <div class="tracker-side-panel">
-        <div class="tracker-box">
-            <h3>⏳ Sheet Processing Lists</h3>
-            <div id="logsView"></div>
-        </div>
+</div>  <!-- ============ ---------- Workspace Div  Stop Here ----------- XXX ============ --> 
 
-        <div class="tracker-box" style="max-height: 550px;">
-            <h3>📅 Recent Saved (Last 5 Records)</h3>
-            <div id="recentLogsView"></div>
-        </div>
-    </div>
-</div>
+<!-- ============ ---------- New Entry Layout Div Start Here ----------- Start ============ --> 
 
 <div class="modal-overlay" id="wizardModal">
     <div class="modal-card">
@@ -374,6 +546,10 @@
             <label>Job / Reference No. *</label>
             <input type="text" id="wizJobNo" placeholder="e.g. 285">
         </div>
+         <div class="modal-group">
+            <label>Vehicle No. *</label>
+            <input type="text" id="wizVclNo" placeholder="e.g. UK18CA3770">
+        </div>
         <div class="modal-group">
             <label>Buyer Name *</label>
             <input type="text" id="wizBuyerInput" placeholder="Type to search buyer..." autocomplete="off" required>
@@ -386,6 +562,9 @@
     </div>
 </div>
 
+<!-- ============ ---------- New Entry Layout Div Stop Here ----------- XXX ============ --> 
+
+<!-- ============ ---------- Print Layout Div Start Here ----------- Start ============ --> 
 <div class="modal-overlay" id="previewModal">
     <div class="preview-card">
         <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:2px solid #005a70; padding-bottom:10px;">
@@ -399,20 +578,21 @@
         <div id="previewPrintArea"></div>
     </div>
 </div>
+<!-- ============ ---------- Print Layout Div Stop Here ----------- XXX ============ --> 
+
 
 <script>
-    // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE AFTER DEPLOYMENT
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwCw3-FG8I8-WyNGQ1e2vdO7sDTBKAMKpYCYGcVWrbjI8vd6AmPTFXIbLj65hFLLE2v/exec"; 
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyYwFZ3MrV-vt5Tq_ICXrIQCUPwVxhS3e-O0M1dVYr43i8V6JIEpMSctJo21zRscg80MA/exec"; 
 
     const sheetApiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-    const remoteSpreadsheetId = "1GtJRzCkHr3FaNZIJzlVDf1mWYoTBLLkuZdMi17JdHsQ";
+    const remoteSpreadsheetId = "1gOdnvS_To2tGVuIMtMdNGFT4cCkqyL5gHqBWjnhNG_4";
     const addressEndpoint = `https://sheets.googleapis.com/v4/spreadsheets/${remoteSpreadsheetId}/values/ADDRESS!A:M?key=${sheetApiKey}`;
     const supportEndpoint = `https://sheets.googleapis.com/v4/spreadsheets/${remoteSpreadsheetId}/values/SUPPORT!A:D?key=${sheetApiKey}`;
 
     let memoryClients = [];
     let memorySupportItems = [];
     let applicationDatabase = [];
-    let partiallySavedPlNos = new Set(); // Partial saves tracking ke liye custom variable
+    let partiallySavedPlNos = new Set(); 
     let selectedActivePreviewPlNo = "";
 
     const PREDEFINED_REMARKS = [
@@ -437,7 +617,6 @@
     const partialSaveDataBtn = document.getElementById('partialSaveDataBtn');
     const loader = document.getElementById('loader');
 
-    // Dropdown change events listener
     document.getElementById('wizDocType').addEventListener('change', function() {
         const selectedOption = this.options[this.selectedIndex];
         document.getElementById('docno').innerHTML = selectedOption.value + ":";
@@ -447,20 +626,31 @@
     function showLoader(text) { loader.innerText = text; loader.style.display = "block"; }
     function hideLoader() { loader.style.display = "none"; }
 
-    function cleanAndFormatDate(rawDate) {
-        if (!rawDate) return "";
-        if (typeof rawDate === 'string' && rawDate.includes("T")) {
-            const dt = new Date(rawDate);
-            if (!isNaN(dt.getTime())) {
-                const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                const day = String(dt.getUTCDate()).padStart(2, '0');
-                const month = months[dt.getUTCMonth()];
-                const year = dt.getUTCFullYear();
-                return `${day}-${month}-${year}`;
-            }
-        }
-        return rawDate;
+   function cleanAndFormatDate(rawDate) {
+    if (!rawDate) return "";
+    
+   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+if (typeof rawDate === 'string' && rawDate.includes("T")) {
+    const dt = new Date(rawDate);
+    if (!isNaN(dt.getTime())) {
+        const day = dt.getDate();
+        const month = months[dt.getMonth()];
+        const year = dt.getFullYear();
+        return `${day}-${month}-${year}`;
     }
+}
+
+if (typeof rawDate === 'string' && rawDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+    const parts = rawDate.split('-');
+    const year = parts[0];
+    const month = months[parseInt(parts[1], 10) - 1];
+    const day = parseInt(parts[2], 10); 
+    return `${day}-${month}-${year}`;
+}
+
+return rawDate;
+}
 
     async function assembleCoreData() {
         showLoader("🔄 Fetching Masters & Sheets...");
@@ -484,7 +674,6 @@
             const data = await response.json();
             applicationDatabase = data.map(item => {
                 if (item.date) item.date = cleanAndFormatDate(item.date);
-                // Agar item Google sheet me COMPLETED ban gaya ho par locally partiallySaved set me ho, toh use PENDING rakho
                 if (partiallySavedPlNos.has(item.plNo)) {
                     item.status = 'PENDING';
                 }
@@ -720,6 +909,7 @@
     document.getElementById('executeWizBtn').addEventListener('click', async () => {
         const inputDate = document.getElementById('wizDate').value.trim();
         const inputJob = document.getElementById('wizJobNo').value.trim();
+        const inputVcl = document.getElementById('wizVclNo').value.trim();
         const buyerName = wizBuyerInput.value.trim();
         
         const dropdownEl = document.getElementById('wizDocType');
@@ -727,21 +917,21 @@
         const docTypeLabel = selectedOption.value;
         const docNameText = selectedOption.getAttribute('data-docname');
 
-        if(!inputJob || !buyerName) { alert("Job Number and Buyer Name are required!"); return; }
-
+        if(!inputJob || !buyerName || !inputVcl) { alert("Job Number, Vehicle Number, and Buyer Name are required!"); return; }
         wizardModal.classList.remove('active');
         showLoader("🚀 Sending row to Google Sheet...");
 
         const payload = {
-          action: "create",
-          date: inputDate,
-          jobNo: inputJob,
-          buyer: buyerName,
-          buyerAddress: wizBuyerInput.dataset.address || '',
-          buyerGstin: wizBuyerInput.dataset.gstin || '',
-          buyerState: wizBuyerInput.dataset.state || '',
-          docType: docTypeLabel,  
-          docName: docNameText    
+            action: "create",
+            date: cleanAndFormatDate(inputDate), 
+            jobNo: inputJob,
+            vehicleNo: inputVcl, 
+            buyer: buyerName,
+            buyerAddress: wizBuyerInput.dataset.address || '',
+            buyerGstin: wizBuyerInput.dataset.gstin || '',
+            buyerState: wizBuyerInput.dataset.state || '',
+            docType: docTypeLabel,  
+            docName: docNameText    
         };
 
         try {
@@ -754,6 +944,8 @@
         } catch (e) { alert("Sheet integration error."); }
         
         wizBuyerInput.value = '';
+        document.getElementById('wizJobNo').value = '';
+        document.getElementById('wizVclNo').value = '';
         clearMainFormFields();
         hideLoader();
     });
@@ -766,12 +958,11 @@
         document.getElementById('displayGstin').innerText = '-';
         document.getElementById('displayState').innerText = '-';
         
-        // Reset defaults
         document.getElementById('docno').innerHTML = "---:";
         document.getElementById('docname').innerHTML = "PACKING LIST";
         
         gridBody.innerHTML = '';
-        for(let idx=0; idx < 13; idx++) insertGridDataRow();
+        for(let idx=0; idx < 10; idx++) insertGridDataRow();  
         commitDataBtn.style.display = "none";
         partialSaveDataBtn.style.display = "none";
     }
@@ -790,12 +981,12 @@
             card.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                     <div>
-                        <strong>${record.plNo}</strong> <span style="background:#005a70; color:#fff; padding:1px 4px; font-size:10px; border-radius:3px;">${labelBadge}</span><br>
-                        <span style="color:gray; font-size:11px;">Buyer: ${record.buyer} (Job: ${record.jobNo})</span><br>
-                        <span style="font-size:11px;color:#005a70;">Date: ${record.date}</span>
+                        <strong>🧾 Pl No.: ${record.plNo}</strong> / <span style="font-size:11px;color:#005a70;">📅 Date: ${record.date}</span> / 
+                        <span style="background:#005a70; color:#fff; padding:1px 4px; font-size:10px; border-radius:3px;">${labelBadge}</span><br>
+                      <strong>🚚 Vehicle: ${record.vehicleNo || '—'}</strong> |  <span style="color:gray; font-size:11px;">👤Buyer: ${record.buyer} (📄 Job: ${record.jobNo}) </span>
                     </div>
-                    <div style="display:flex; flex-direction:column; gap:4px;">
-                        <button class="btn-update" onclick="loadPendingListForUpdate('${record.plNo}')">⚡ UPDATE</button>
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                        <button class="btn-update" onclick="loadPendingListForUpdate('${record.plNo}')">⚡ UPDATE</button> &nbsp;&nbsp;
                         <button class="btn-delete" onclick="triggerDeleteRecord('${record.plNo}')">🗑️ DELETE</button>
                     </div>
                 </div>
@@ -815,7 +1006,7 @@
             const result = await res.json();
             if(result.status === "success") {
                 alert("Record successfully deleted from Google Sheet!");
-                partiallySavedPlNos.delete(plNo); // Delete par clear set tracking
+                partiallySavedPlNos.delete(plNo); 
                 await fetchDatabaseFromGoogleSheet();
                 clearMainFormFields();
             } else {
@@ -838,13 +1029,14 @@
             const card = document.createElement('div');
             card.className = 'log-card';
             card.innerHTML = `
-                <div><strong>DATE:</strong> ${record.date} | <strong>PL No:</strong> ${record.plNo}</div>
-                <div style="color:gray; margin:2px 0;"><strong>[${labelBadge}]</strong> Buyer: ${record.buyer} | Job: ${record.jobNo}</div>
+                <div><strong>📅 Date:</strong> ${record.date} | <strong>🧾 Pl No.:</strong> ${record.plNo} | <strong>🚚 Vehicle:</strong> ${record.vehicleNo}</div>
+                <div style="color:gray; margin:2px 0;"><strong style="background-color: transparent; color: rgb(128, 0, 0);">${labelBadge} :-</strong> 👤Buyer: ${record.buyer} | 📄 Job: ${record.jobNo} </div>
                 <div style="margin-top:6px; display:flex; justify-content:flex-end;">
                     <button class="btn-mini-print" onclick="directPrintRecord('${record.plNo}')">Print 🖨️</button>
                     <button class="btn-update" onclick="directEditRecord('${record.plNo}')">Edit ⚡</button>
                 </div>
             `;
+            //  <div style="color:gray; margin:2px 0;"><strong>[${labelBadge}]</strong> Buyer: ${record.buyer} | Job: ${record.jobNo} | Veh: ${record.vehicleNo || '—'}</div> 
             recentLogsView.appendChild(card);
         });
     }
@@ -855,7 +1047,7 @@
     };
 
     window.directEditRecord = function(plNo) {
-        partiallySavedPlNos.add(plNo); // Edit karne par isko tracking list me daal dein taaki hide na ho
+        partiallySavedPlNos.add(plNo); 
         loadPendingListForUpdate(plNo);
         let item = applicationDatabase.find(x => x.plNo === plNo);
         if(item) item.status = 'PENDING';
@@ -878,7 +1070,6 @@
         document.getElementById('displayGstin').innerText = record.buyerGstin || '-';
         document.getElementById('displayState').innerText = record.buyerState || '-';
 
-        // Update Labels dynamically from fetched data values
         const docTypeField = record.docType || "Invoice No.";
         const docNameField = record.docName || "PACKING LIST";
         document.getElementById('docno').innerHTML = docTypeField + ":";
@@ -895,7 +1086,6 @@
         partialSaveDataBtn.style.display = "inline-block"; 
     };
 
-    // Partial Save Functionality (Keeps tracking status PENDING)
     partialSaveDataBtn.addEventListener('click', async () => {
         const activePlNo = metaPkgListNo.value.trim();
         const invoiceNum = metaInvoiceNo.value.trim();
@@ -938,14 +1128,13 @@
             const result = await res.json();
             if(result.status === "success") {
                 alert("Partial Data Saved successfully!");
-                partiallySavedPlNos.add(activePlNo); // Is ID ko track rakhein taaki UI isko hide na kare
+                partiallySavedPlNos.add(activePlNo); 
                 await fetchDatabaseFromGoogleSheet();
             }
         } catch (e) { alert("Error saving partial row."); }
         hideLoader();
     });
 
-    // Final Save to Sheet Functionality (Clears tracking & hides from Pending List)
     commitDataBtn.addEventListener('click', async () => {
         const activePlNo = metaPkgListNo.value.trim();
         const invoiceNum = metaInvoiceNo.value.trim();
@@ -988,7 +1177,7 @@
             const result = await res.json();
             if(result.status === "success") {
                 alert("Saved & Completed successfully inside main database table rows!");
-                partiallySavedPlNos.delete(activePlNo); // Final save ho gaya, ab tracking list se hata do taaki ye pending list se gayab ho jaye
+                partiallySavedPlNos.delete(activePlNo); 
                 await fetchDatabaseFromGoogleSheet();
                 clearMainFormFields();
             }
