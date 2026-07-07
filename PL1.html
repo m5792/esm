@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sheets Linked - Packing List ERP Dashboard</title>
+    <style>
+        :root {
+            --tally-blue: #005a70;
+            --tally-bg: #e6f2f5;
+            --border-dark: #dddbdb;
+            --text-dark: #002344;
+            --text-gray: #4b5563;
+            --row-light-blue: #d1ecf1; 
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            color: var(--text-dark);
+            background-color: #f4f4f4;
+            margin: 20px;
+            padding: 0;
+        }
+
+        .control-panel {
+            max-width: 1600px;
+            margin: 0 auto 15px auto;
+            background-color: var(--tally-bg);
+            border: 1px solid var(--tally-blue);
+            padding: 12px 15px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .search-container { position: relative; display: inline-block; }
+        .search-box {
+            padding: 6px 10px;
+            width: 380px;
+            border: 1px solid var(--tally-blue);
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .universal-search-dropdown {
+            position: absolute;
+            top: 100%; left: 0; right: 0;
+            background: white;
+            border: 1px solid var(--tally-blue);
+            max-height: 250px;
+            overflow-y: auto;
+            z-index: 5000;
+            margin: 0; padding: 0;
+            list-style: none;
+            display: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .universal-search-dropdown li {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            border-bottom: 1px solid #eee;
+            color: var(--text-dark);
+            text-align: left;
+        }
+        .universal-search-dropdown li:hover { background-color: var(--tally-bg); color: var(--tally-blue); }
+
+        .btn-group { display: flex; gap: 8px; }
+        .btn {
+            padding: 8px 14px;
+            font-weight: bold;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .btn-new { background-color: #28a745; }
+        .btn-save { background-color: var(--tally-blue); display: none; } 
+        .btn-print { background-color: #6c757d; }
+        .btn-update { background-color: #ffc107; color: #000; padding: 3px 8px; font-size: 11px; border-radius: 3px; font-weight: bold; border: none; cursor: pointer; }
+        .btn-delete { background-color: #dc3545; color: #fff; padding: 3px 8px; font-size: 11px; border-radius: 3px; font-weight: bold; border: none; cursor: pointer; }
+        .btn-mini-print { background-color: #005a70; color: #fff; padding: 3px 8px; font-size: 11px; border-radius: 3px; font-weight: bold; border: none; cursor: pointer; margin-right: 4px; }
+
+        .workspace {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .document-box {
+            flex: 2.6;
+            background: #ffffff;
+            padding: 20px;
+            border: 2px solid var(--border-dark);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .tracker-side-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .tracker-box {
+            background: #ffffff;
+            border: 2px solid var(--border-dark);
+            padding: 15px;
+            max-height: 600px; width: 600px;
+            overflow-y: auto;
+        }
+
+        .tracker-box h3 {
+            margin-top: 0;
+            color: var(--tally-blue);
+            font-size: 15px;
+            border-bottom: 2px solid var(--tally-blue);
+            padding-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .log-card {
+            background: #fafafa;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .header-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        .header-table td { border: 1px solid var(--border-dark); padding: 8px; font-size: 13px; vertical-align: top; }
+
+        .company-title { font-size: 18px; font-weight: bold; color: var(--tally-blue); margin: 0 0 4px 0; }
+        .doc-header-title { font-size: 20px; font-weight: bold; letter-spacing: 1px; text-align: center; margin: 5px 0; }
+
+        .input-field {
+            width: 100%; border: none; outline: none; font-family: inherit; font-size: 13px; padding: 2px 0; background: transparent;
+        }
+        .input-field:focus { background-color: #f0f8ff; }
+        .input-field:disabled { background-color: #f3f4f6; cursor: not-allowed; }
+
+        .dropdown-menu {
+            position: absolute; top: 100%; left: 0; right: 0;
+            background: #ffffff; border: 1px solid var(--tally-blue);
+            max-height: 160px; overflow-y: auto; z-index: 1000;
+            margin: 0; padding: 0; list-style: none;
+        }
+        .dropdown-menu li { padding: 6px 10px; cursor: pointer; font-size: 12px; border-bottom: 1px solid #eee; text-align: left; color: #000; }
+        .dropdown-menu li:hover { background-color: var(--tally-bg); color: var(--tally-blue); }
+
+        .items-table { width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 5px; }
+        .items-table th, .items-table td { border: 1px solid rgb(241, 241, 241); padding: 6px; font-size: 13px; }
+        .items-table th {background-color: rgb(0, 69, 114); color: aliceblue; font-weight: bold; text-transform: uppercase; }
+
+        .row-main-head { background-color: var(--row-light-blue) !important; }
+        .row-main-head .input-field { font-weight: bold; font-style: normal !important; color: #000; }
+        
+        .row-manual-italic { background-color: #ffffff !important; }
+        .row-manual-italic .input-field { font-style: italic !important; font-weight: normal !important; color: #000; }
+
+        .row-remark-head { background-color: #343a40 !important; color: #ffffff !important; }
+        .row-remark-head .input-field { color: #ffffff !important; font-weight: bold; }
+
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .bold { font-weight: bold; }
+
+        .btn-add-row {
+            background-color: var(--tally-blue); color: white; border: none;
+            padding: 5px 12px; font-size: 12px; font-weight: bold; border-radius: 3px;
+            cursor: pointer; margin-bottom: 10px;
+        }
+
+        .footer-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .footer-table td { border: 1px solid var(--border-dark); padding: 8px; font-size: 13px; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); display: flex; justify-content: center; align-items: center;
+            z-index: 6000; visibility: hidden; opacity: 0; transition: all 0.3s ease;
+        }
+        .modal-overlay.active { visibility: visible; opacity: 1; }
+        
+        .modal-card { background: #ffffff; padding: 20px; border-radius: 4px; width: 320px; border: 2px solid var(--tally-blue); }
+        .modal-card h4 { margin: 0 0 12px 0; color: var(--tally-blue); font-size: 16px; }
+        .modal-group { margin-bottom: 10px; position: relative; }
+        .modal-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 3px; }
+        .modal-group input, .modal-group select { width: 100%; padding: 6px; font-size: 13px; border: 1px solid #ccc; border-radius: 3px; box-sizing: border-box; }
+
+        .preview-card { background: #ffffff; padding: 25px; width: 850px; max-height: 90vh; overflow-y: auto; border: 3px solid var(--tally-blue); border-radius: 4px; }
+        
+        #loader { display: none; position: fixed; top: 10px; left: 50%; transform: translateX(-50%); background: #ffc107; color: black; padding: 8px 20px; font-weight: bold; border-radius: 4px; z-index: 9999; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+   
+  
+        /* Print ke time par baki sab hide karne ke liye */
+/* Print ke time par baki sab hide karne ke liye */
+@media print {
+    body {
+        background-color: #fff;
+        margin: 0;
+        padding: 0;
+    }
+    
+    /* Control panel, side panels aur buttons ko hide karein */
+    .control-panel, 
+    .tracker-side-panel, 
+    .btn-add-row, 
+    #insertRowBtn,
+    div[style*="text-align: center; margin-top: 15px;"] { 
+        display: none !important; 
+    }
+    
+    /* Document box ko full width karein aur borders adjust karein */
+    .document-box {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    .workspace {
+        display: block !important;
+    }
+
+    /* 🔥 NYA CODE: Input placeholders ko print me se gayab karne ke liye */
+    input::placeholder {
+        color: transparent !important;
+        opacity: 0 !important;
+    }
+    
+    /* Kuch browsers ke liye select elements ka empty ya default value hide karne ke liye */
+    select option:disabled {
+        display: none !important;
+    }
+}
+   
+   </style>
+</head>
+<body>
+
+<div id="loader">🔄 Connecting Google Sheets...</div>
+
+<div class="control-panel">
+    <div class="search-container">
+        <input type="text" id="universalSearchInput" class="search-box" placeholder="🔍 Search Sheet Records (Buyer, Job, Inv, Veh)..." autocomplete="off">
+        <ul id="universalSearchDropdown" class="universal-search-dropdown"></ul>
+    </div>
+    <div class="btn-group">
+        <button type="button" class="btn btn-new" id="triggerModalBtn">➕ New Entry</button>
+    
+    </div>
+</div>
+
+<div class="workspace">
+    <div class="document-box">
+        <table class="header-table">
+            <tbody>
+                <tr>
+                    <td width="60%">
+                        <div class="company-title"> Multitech Infracon Pvt. Ltd.</div>
+                        <div><strong>GSTIN/UIN:</strong> 05AAMCM9896P1Z7 | <strong>CIN:</strong> U45200UR2019PTC010294</div>
+                        <div><strong>State Name:</strong> Uttarakhand, <strong>Code:</strong> 05</div>
+                        <div style="margin-top: 4px; font-size: 12px; color: var(--text-gray);">
+                            <strong>Address:</strong> Nh 74 12th Km Stone, Vill Dabhora Mustakam Bazpur Road Kashipur, U.S Nagar Uttarakhand 244713
+                        </div>
+                    </td>
+                    <td width="40%">
+                        <div><strong id="docno">---</strong> <input type="text" id="metaPkgListNo" class="input-field bold" style="width: 50%; display: inline; color: var(--tally-blue);" readonly></div>
+                        <div><strong>Date:</strong> <input type="text" id="metaDate" class="input-field" style="width: 70%; display: inline;" readonly></div>
+                        <div><strong>Job / Ref No:</strong> <input type="text" id="metaJobNo" class="input-field" style="width: 60%; display: inline;" readonly></div>
+                        <div><strong>Support Doc No: <span style="color:red;">*</span></strong> <input type="text" id="metaInvoiceNo" class="input-field" style="width: 65%; display: inline;" placeholder="Required to save"></div>
+                        <div><strong>Vehicle No: <span style="color:red;">*</span></strong> <input type="text" id="metaVehicleNo" class="input-field" style="width: 65%; display: inline;" placeholder="e.g. UK18CA3770" required></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="doc-header-title" id="docname"> PACKING LIST</div>
+
+        <table class="header-table">
+            <thead>
+                <tr>
+                    <th align="left" style="background-color: #f2f2f2; color: #000; border: 1px solid #000; padding: 4px 8px;"> Buyer (Bill to)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <input type="text" id="buyerSearchInput" class="input-field bold" style="font-size: 14px;" readonly placeholder="Buyer Auto-Fetched on Update...">
+                        <div id="displayAddress" style="margin-top: 4px; font-size: 12px; color: var(--text-gray);">No data loaded.</div>
+                        <div style="margin-top: 4px; font-size: 12px;">
+                            <strong>GSTIN:</strong> <span id="displayGstin">-</span> | <strong>State:</strong> <span id="displayState">-</span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="items-table" id="entryGrid">
+            <thead>
+                <tr>
+                    <th width="8%" class="text-center">S.No.</th>
+                    <th width="48%">Description of Head of Item</th>
+                    <th width="16%">HSN / Part No.</th>
+                    <th width="14%" class="text-right">Qty</th>
+                    <th width="14%">Unit</th>
+                </tr>
+            </thead>
+            <tbody id="gridBody"></tbody>
+        </table>
+        
+        <div style="display: flex; gap: 10px;">
+            <button type="button" class="btn-add-row" id="insertRowBtn">+ Add New Line Row</button>
+            <button type="button"  style="background-color: transparent; color: #000e22; border: none; cursor: pointer;" onclick="printCurrentDocument()">🖨️ Print Current</button>
+            <script>function printCurrentDocument() {window.print();}</script>
+        </div>
+
+        <table class="footer-table">
+            <tbody>
+                <tr>
+                    <td width="60%" class="text-right bold">Total Invoice Amount: <span style="color:red;">*</span></td>
+                    <td width="40%" class="bold">
+                        Rs. <input type="text" id="metaTotalAmount" class="input-field bold" style="width: 80%; display: inline-block;" placeholder="Required to save">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="text-align: center; margin-top: 15px; display: flex; justify-content: center; gap: 10px;"> 
+            <button type="button" class="btn" style="background-color: #17a2b8; color: white; font-weight: bold; display: none; padding: 8px 14px; border: none; border-radius: 4px; font-size: 13px; cursor: pointer;" id="partialSaveDataBtn">📝 Partial Save</button>
+            <button type="button" class="btn btn-save" style="background-color: #28a745;" id="commitDataBtn">💾 Final Save</button>
+        </div>
+       
+    </div>
+
+    <div class="tracker-side-panel">
+        <div class="tracker-box">
+            <h3>⏳ Sheet Processing Lists</h3>
+            <div id="logsView"></div>
+        </div>
+
+        <div class="tracker-box" style="max-height: 550px;">
+            <h3>📅 Recent Saved (Last 5 Records)</h3>
+            <div id="recentLogsView"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="wizardModal">
+    <div class="modal-card">
+        <h4>Generate Packing List Wizard</h4>
+        <div class="modal-group">
+            <label>Document Type *:</label>
+            <select id="wizDocType">
+                <option value="P-List No." data-docname="PACKING LIST" selected>Packing List</option>
+                <option value="NRGP No." data-docname="NON RETURNABLE GATE PASS">Non Returnable Gate Pass</option>
+                <option value="RGP No." data-docname="RETURNABLE GATE PASS">Returnable Gate Pass</option>
+                <option value="ST. No." data-docname="STOCK TRANSFER">Stock Transfer</option>
+            </select>
+        </div>
+        <div class="modal-group">
+            <label>Date *</label>
+            <input type="date" id="wizDate" value="" required>
+        </div>
+        <div class="modal-group">
+            <label>Job / Reference No. *</label>
+            <input type="text" id="wizJobNo" placeholder="e.g. 285">
+        </div>
+        <div class="modal-group">
+            <label>Buyer Name *</label>
+            <input type="text" id="wizBuyerInput" placeholder="Type to search buyer..." autocomplete="off" required>
+            <ul id="wizBuyerDropdown" class="dropdown-menu" style="display:none; position:absolute; width:100%;"></ul>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px;">
+            <button type="button" class="btn" style="background-color: #6c757d;" id="dismissWizBtn">Cancel</button>
+            <button type="button" class="btn btn-new" id="executeWizBtn">Generate & Sync</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="previewModal">
+    <div class="preview-card">
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:2px solid #005a70; padding-bottom:10px;">
+            <h3 style="margin:0; color:var(--tally-blue);" id="previewModalTitle">📋 Packing List Record View</h3>
+            <div>
+                <button type="button" class="btn" style="background-color:#005a70;" id="printPreviewBtn">🖨️ Print</button>
+                <button type="button" class="btn" style="background-color:#ffc107; color:#000;" id="editPreviewBtn">⚡ Edit Record</button>
+                <button type="button" class="btn" style="background-color:#6c757d;" id="closePreviewBtn">Close</button>
+            </div>
+        </div>
+        <div id="previewPrintArea"></div>
+    </div>
+</div>
+
+<script>
+    // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE AFTER DEPLOYMENT
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwCw3-FG8I8-WyNGQ1e2vdO7sDTBKAMKpYCYGcVWrbjI8vd6AmPTFXIbLj65hFLLE2v/exec"; 
+
+    const sheetApiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+    const remoteSpreadsheetId = "1GtJRzCkHr3FaNZIJzlVDf1mWYoTBLLkuZdMi17JdHsQ";
+    const addressEndpoint = `https://sheets.googleapis.com/v4/spreadsheets/${remoteSpreadsheetId}/values/ADDRESS!A:M?key=${sheetApiKey}`;
+    const supportEndpoint = `https://sheets.googleapis.com/v4/spreadsheets/${remoteSpreadsheetId}/values/SUPPORT!A:D?key=${sheetApiKey}`;
+
+    let memoryClients = [];
+    let memorySupportItems = [];
+    let applicationDatabase = [];
+    let partiallySavedPlNos = new Set(); // Partial saves tracking ke liye custom variable
+    let selectedActivePreviewPlNo = "";
+
+    const PREDEFINED_REMARKS = [
+        "MATERIAL DELIVERED IN GOOD CONDITION",
+        "WEIGHT AS PER WEIGHBRIDGE TICKET",
+        "LOADING DONE AT FACTORY PREMISES"
+    ];
+
+    const gridBody = document.getElementById('gridBody');
+    const wizardModal = document.getElementById('wizardModal');
+    const previewModal = document.getElementById('previewModal');
+    const metaPkgListNo = document.getElementById('metaPkgListNo');
+    const metaDate = document.getElementById('metaDate');
+    const metaJobNo = document.getElementById('metaJobNo');
+    const metaInvoiceNo = document.getElementById('metaInvoiceNo');
+    const metaVehicleNo = document.getElementById('metaVehicleNo');
+    const metaTotalAmount = document.getElementById('metaTotalAmount');
+    const buyerSearchInput = document.getElementById('buyerSearchInput');
+    const logsView = document.getElementById('logsView');
+    const recentLogsView = document.getElementById('recentLogsView');
+    const commitDataBtn = document.getElementById('commitDataBtn');
+    const partialSaveDataBtn = document.getElementById('partialSaveDataBtn');
+    const loader = document.getElementById('loader');
+
+    // Dropdown change events listener
+    document.getElementById('wizDocType').addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        document.getElementById('docno').innerHTML = selectedOption.value + ":";
+        document.getElementById('docname').innerHTML = selectedOption.getAttribute('data-docname');
+    });
+
+    function showLoader(text) { loader.innerText = text; loader.style.display = "block"; }
+    function hideLoader() { loader.style.display = "none"; }
+
+    function cleanAndFormatDate(rawDate) {
+        if (!rawDate) return "";
+        if (typeof rawDate === 'string' && rawDate.includes("T")) {
+            const dt = new Date(rawDate);
+            if (!isNaN(dt.getTime())) {
+                const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                const day = String(dt.getUTCDate()).padStart(2, '0');
+                const month = months[dt.getUTCMonth()];
+                const year = dt.getUTCFullYear();
+                return `${day}-${month}-${year}`;
+            }
+        }
+        return rawDate;
+    }
+
+    async function assembleCoreData() {
+        showLoader("🔄 Fetching Masters & Sheets...");
+        try {
+            const [clientBlob, supportBlob] = await Promise.all([
+                fetch(addressEndpoint).then(r => r.json()),
+                fetch(supportEndpoint).then(r => r.json())
+            ]);
+            if (clientBlob.values) memoryClients = clientBlob.values.slice(1);
+            if (supportBlob.values) memorySupportItems = supportBlob.values.slice(1);
+            
+            await fetchDatabaseFromGoogleSheet();
+        } catch (err) { console.error("Network fault:", err); }
+        hideLoader();
+    }
+
+    async function fetchDatabaseFromGoogleSheet() {
+        if(!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("YOUR_DEPLOYED")) return;
+        try {
+            const response = await fetch(GOOGLE_SCRIPT_URL);
+            const data = await response.json();
+            applicationDatabase = data.map(item => {
+                if (item.date) item.date = cleanAndFormatDate(item.date);
+                // Agar item Google sheet me COMPLETED ban gaya ho par locally partiallySaved set me ho, toh use PENDING rakho
+                if (partiallySavedPlNos.has(item.plNo)) {
+                    item.status = 'PENDING';
+                }
+                return item;
+            });
+            renderPendingTracker();
+            renderRecentTracker();
+        } catch (e) { console.error("Error loading sheet logs:", e); }
+    }
+
+    const universalSearchInput = document.getElementById('universalSearchInput');
+    const universalSearchDropdown = document.getElementById('universalSearchDropdown');
+
+    function filterUniversalSearch() {
+        const text = universalSearchInput.value.toLowerCase().trim();
+        universalSearchDropdown.innerHTML = '';
+
+        if (!text) {
+            universalSearchDropdown.style.display = 'none';
+            return;
+        }
+
+        const matched = applicationDatabase.filter(x => {
+            const plNo = (x.plNo || '').toString().toLowerCase();
+            const jobNo = (x.jobNo || '').toString().toLowerCase();
+            const invoiceNo = (x.invoiceNo || '').toString().toLowerCase();
+            const buyerName = (x.buyer || '').toString().toLowerCase();
+            const vehicleNo = (x.vehicleNo || '').toString().toLowerCase();
+
+            return plNo.includes(text) || 
+                   jobNo.includes(text) || 
+                   invoiceNo.includes(text) || 
+                   buyerName.includes(text) ||
+                   vehicleNo.includes(text);
+        });
+
+        if(matched.length === 0) {
+            universalSearchDropdown.innerHTML = '<li style="color:gray;text-align:center;padding:10px;">No matching records found</li>';
+            universalSearchDropdown.style.display = 'block';
+            return;
+        }
+
+        matched.forEach(res => {
+            const typeLabel = res.docName || "PACKING LIST";
+            const li = document.createElement('li');
+            li.innerHTML = `<strong>${res.plNo || 'N/A'}</strong> [${typeLabel}] | Job: ${res.jobNo || '—'}<br><small style="color:gray;">Buyer: ${res.buyer || '—'} | Veh: ${res.vehicleNo || '—'}</small>`;
+            
+            li.addEventListener('click', (e) => {
+                e.stopPropagation(); 
+                openPreviewPopupModal(res);
+                universalSearchDropdown.style.display = 'none';
+                universalSearchInput.value = '';
+            });
+            universalSearchDropdown.appendChild(li);
+        });
+        universalSearchDropdown.style.display = 'block';
+    }
+
+    universalSearchInput.addEventListener('click', (e) => { e.stopPropagation(); filterUniversalSearch(); });
+    universalSearchInput.addEventListener('input', (e) => { e.stopPropagation(); filterUniversalSearch(); });
+
+    const wizBuyerInput = document.getElementById('wizBuyerInput');
+    const wizBuyerDropdown = document.getElementById('wizBuyerDropdown');
+    wizBuyerInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase().trim();
+        wizBuyerDropdown.innerHTML = '';
+        if(!query) { wizBuyerDropdown.style.display = 'none'; return; }
+        const matched = memoryClients.filter(r => r[0] && r[0].toLowerCase().includes(query));
+        matched.forEach(rowData => {
+            const li = document.createElement('li');
+            li.textContent = rowData[0];
+            li.addEventListener('click', () => {
+                wizBuyerInput.value = rowData[0];
+                wizBuyerInput.dataset.address = rowData[1] || 'N/A';
+                wizBuyerInput.dataset.state = rowData[2] || 'N/A';
+                wizBuyerInput.dataset.gstin = rowData[4] || 'N/A';
+                wizBuyerDropdown.style.display = 'none';
+            });
+            wizBuyerDropdown.appendChild(li);
+        });
+        wizBuyerDropdown.style.display = matched.length ? 'block' : 'none';
+    });
+
+    function insertGridDataRow(rowData = null) {
+        const trNode = document.createElement('tr');
+        trNode.innerHTML = `
+            <td><input type="text" class="input-field text-center row-sno-input" placeholder="S.No." style="text-align: center;" value="${rowData ? rowData.sno : ''}"></td>
+            <td style="position: relative;">
+                <input type="text" class="input-field row-desc-input" value="${rowData ? rowData.desc : ''}" placeholder="Select Item Head (123..), Discription (-), Remark (R/O)...">
+                <ul class="dropdown-menu row-desc-menu" style="display:none;"></ul>
+            </td>
+            <td><input type="text" class="input-field row-part-input" style="text-align: center;" value="${rowData ? rowData.partNo : ''}" placeholder="HSN / Part No."></td>
+            <td><input type="text" class="input-field text-right row-qty-input" style="text-align: center;" value="${rowData ? rowData.qty : ''}" placeholder="0"></td>
+            <td>
+                <select class="input-field row-unit-select" style="font-weight: bold; color: var(--tally-blue); text-align: center;">
+                    <option value="" disabled ${!rowData ? 'selected' : ''}>Select</option>
+                    <option value="KGS" ${rowData && rowData.unit==='KGS'?'selected':''}> KGS</option>
+                    <option value="NOS" ${rowData && rowData.unit==='NOS'?'selected':''}> NOS</option>
+                    <option value="PCS" ${rowData && rowData.unit==='PCS'?'selected':''}>PCS</option>
+                     <option value="BDL" ${rowData && rowData.unit==='BDL'?'selected':''}> BDL</option>
+                    <option value="SQM" ${rowData && rowData.unit==='SQM'?'selected':''}>SQM</option>
+                    <option value="RMT" ${rowData && rowData.unit==='RMT'?'selected':''}>RMT</option>
+                </select>
+            </td>
+        `;
+
+        const snoField = trNode.querySelector('.row-sno-input');
+        const descField = trNode.querySelector('.row-desc-input');
+        const partField = trNode.querySelector('.row-part-input');
+        const qtyField = trNode.querySelector('.row-qty-input');
+        const unitField = trNode.querySelector('.row-unit-select');
+        const menuDropdown = trNode.querySelector('.row-desc-menu');
+
+        const applyLockRules = (val) => {
+            const upperVal = val.toUpperCase();
+            partField.removeAttribute('disabled');
+            qtyField.removeAttribute('disabled');
+            unitField.removeAttribute('disabled');
+
+            if (upperVal === "R") {
+                trNode.className = 'row-remark-head';
+                descField.value = "REMARK";
+                descField.placeholder = "";
+                partField.value = ""; partField.setAttribute('disabled', 'true');
+                qtyField.value = ""; qtyField.setAttribute('disabled', 'true');
+                unitField.value = ""; unitField.setAttribute('disabled', 'true');
+            } else if (upperVal === "-") {
+                trNode.className = 'row-manual-italic';
+                descField.placeholder = "Enter custom remark here...";
+            } else if (upperVal === "O") {
+                trNode.className = 'row-manual-italic';
+                descField.placeholder = "Click to select Predefined Remark...";
+            } else if (val === "") {
+                trNode.className = '';
+                descField.placeholder = "Fill S.No...";
+            } else {
+                trNode.className = 'row-main-head';
+                descField.placeholder = "Type to search...";
+            }
+        };
+
+        snoField.addEventListener('input', function() {
+            let val = this.value.trim();
+            let upperVal = val.toUpperCase();
+            if(val !== "" && val !== "-" && upperVal !== "R" && upperVal !== "O" && isNaN(val)) {
+                this.value = "";
+                val = "";
+            }
+            applyLockRules(val);
+        });
+        if(rowData) applyLockRules(rowData.sno.toString().trim());
+
+        function filterGridDropdown() {
+            const currentSno = snoField.value.trim().toUpperCase();
+            if(currentSno === "R" || currentSno === "-") {
+                menuDropdown.style.display = 'none';
+                return;
+            }
+            
+            menuDropdown.innerHTML = '';
+            const query = descField.value.toLowerCase().trim();
+
+            if (currentSno === "O") {
+                const filteredRemarks = PREDEFINED_REMARKS.filter(rem => rem.toLowerCase().includes(query));
+                if(filteredRemarks.length === 0) {
+                    menuDropdown.innerHTML = '<li style="color:gray;text-align:center;padding:6px;">No match</li>';
+                    menuDropdown.style.display = 'block';
+                    return;
+                }
+                filteredRemarks.forEach(remText => {
+                    const li = document.createElement('li');
+                    li.textContent = remText;
+                    li.style.color = "#6f42c1";
+                    li.addEventListener('click', (ev) => {
+                        ev.stopPropagation();
+                        descField.value = remText;
+                        partField.value = "";
+                        menuDropdown.style.display = 'none';
+                    });
+                    menuDropdown.appendChild(li);
+                });
+                menuDropdown.style.display = 'block';
+                return;
+            }
+
+            const uniqueHeads = [...new Set(memorySupportItems.map(r => r[0]).filter(Boolean))];
+            const filteredHeads = uniqueHeads.filter(h => h.toLowerCase().includes(query));
+
+            if(filteredHeads.length === 0) {
+                menuDropdown.innerHTML = '<li style="color:gray;text-align:center;padding:6px;">No match</li>';
+                menuDropdown.style.display = 'block';
+                return;
+            }
+
+            filteredHeads.forEach(headName => {
+                const li = document.createElement('li');
+                li.textContent = headName;
+                li.addEventListener('click', (ev) => {
+                    ev.stopPropagation();
+                    descField.value = headName;
+                    const matchData = memorySupportItems.find(r => r[0].toString().trim() === headName.toString().trim());
+                    if (matchData && matchData[1]) {
+                        partField.value = matchData[1];
+                    } else {
+                        partField.value = '';
+                    }
+                    menuDropdown.style.display = 'none';
+                });
+                menuDropdown.appendChild(li);
+            });
+            menuDropdown.style.display = 'block';
+        }
+
+        descField.addEventListener('click', function(event) {
+            if(snoField.value.trim() === "") return;
+            event.stopPropagation();
+            document.querySelectorAll('.row-desc-menu').forEach(m => m.style.display = 'none');
+            filterGridDropdown();
+        });
+
+        descField.addEventListener('input', function() {
+            if(snoField.value.trim() === "") return;
+            filterGridDropdown();
+        });
+
+        gridBody.appendChild(trNode);
+    }
+
+    document.getElementById('insertRowBtn').addEventListener('click', () => insertGridDataRow());
+    document.getElementById('triggerModalBtn').addEventListener('click', () => wizardModal.classList.add('active'));
+    document.getElementById('dismissWizBtn').addEventListener('click', () => wizardModal.classList.remove('active'));
+    
+    document.getElementById('executeWizBtn').addEventListener('click', async () => {
+        const inputDate = document.getElementById('wizDate').value.trim();
+        const inputJob = document.getElementById('wizJobNo').value.trim();
+        const buyerName = wizBuyerInput.value.trim();
+        
+        const dropdownEl = document.getElementById('wizDocType');
+        const selectedOption = dropdownEl.options[dropdownEl.selectedIndex];
+        const docTypeLabel = selectedOption.value;
+        const docNameText = selectedOption.getAttribute('data-docname');
+
+        if(!inputJob || !buyerName) { alert("Job Number and Buyer Name are required!"); return; }
+
+        wizardModal.classList.remove('active');
+        showLoader("🚀 Sending row to Google Sheet...");
+
+        const payload = {
+          action: "create",
+          date: inputDate,
+          jobNo: inputJob,
+          buyer: buyerName,
+          buyerAddress: wizBuyerInput.dataset.address || '',
+          buyerGstin: wizBuyerInput.dataset.gstin || '',
+          buyerState: wizBuyerInput.dataset.state || '',
+          docType: docTypeLabel,  
+          docName: docNameText    
+        };
+
+        try {
+            const res = await fetch(GOOGLE_SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+            const result = await res.json();
+            if(result.status === "success") {
+                alert(`Generated successfully on Sheet! Number Assigned: ${result.plNo}`);
+                await fetchDatabaseFromGoogleSheet();
+            }
+        } catch (e) { alert("Sheet integration error."); }
+        
+        wizBuyerInput.value = '';
+        clearMainFormFields();
+        hideLoader();
+    });
+
+    function clearMainFormFields() {
+        metaPkgListNo.value = ''; metaDate.value = ''; metaJobNo.value = '';
+        metaInvoiceNo.value = ''; metaVehicleNo.value = ''; metaTotalAmount.value = '';
+        buyerSearchInput.value = '';
+        document.getElementById('displayAddress').innerText = 'No active record loaded.';
+        document.getElementById('displayGstin').innerText = '-';
+        document.getElementById('displayState').innerText = '-';
+        
+        // Reset defaults
+        document.getElementById('docno').innerHTML = "---:";
+        document.getElementById('docname').innerHTML = "PACKING LIST";
+        
+        gridBody.innerHTML = '';
+        for(let idx=0; idx < 13; idx++) insertGridDataRow();
+        commitDataBtn.style.display = "none";
+        partialSaveDataBtn.style.display = "none";
+    }
+
+    function renderPendingTracker() {
+        logsView.innerHTML = '';
+        const pendingLists = applicationDatabase.filter(x => x.status === 'PENDING');
+        if(pendingLists.length === 0) {
+            logsView.innerHTML = '<div style="color: gray; font-size:12px; text-align:center; padding:10px;">No pending rows in sheet.</div>';
+            return;
+        }
+        pendingLists.forEach(record => {
+            const labelBadge = record.docName || "PACKING LIST";
+            const card = document.createElement('div');
+            card.className = 'log-card';
+            card.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div>
+                        <strong>${record.plNo}</strong> <span style="background:#005a70; color:#fff; padding:1px 4px; font-size:10px; border-radius:3px;">${labelBadge}</span><br>
+                        <span style="color:gray; font-size:11px;">Buyer: ${record.buyer} (Job: ${record.jobNo})</span><br>
+                        <span style="font-size:11px;color:#005a70;">Date: ${record.date}</span>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:4px;">
+                        <button class="btn-update" onclick="loadPendingListForUpdate('${record.plNo}')">⚡ UPDATE</button>
+                        <button class="btn-delete" onclick="triggerDeleteRecord('${record.plNo}')">🗑️ DELETE</button>
+                    </div>
+                </div>
+            `;
+            logsView.appendChild(card);
+        });
+    }
+
+    window.triggerDeleteRecord = async function(plNo) {
+        if(!confirm(`Are you sure you want to completely delete ${plNo} from Google Sheet?`)) return;
+        showLoader("🗑️ Removing row from Google Sheet...");
+        try {
+            const res = await fetch(GOOGLE_SCRIPT_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "delete", plNo: plNo })
+            });
+            const result = await res.json();
+            if(result.status === "success") {
+                alert("Record successfully deleted from Google Sheet!");
+                partiallySavedPlNos.delete(plNo); // Delete par clear set tracking
+                await fetchDatabaseFromGoogleSheet();
+                clearMainFormFields();
+            } else {
+                alert("Could not delete from sheet: " + result.message);
+            }
+        } catch(e) { alert("Error trying to connect with Delete API."); }
+        hideLoader();
+    };
+
+    function renderRecentTracker() {
+        recentLogsView.innerHTML = '';
+        const completedLists = applicationDatabase.filter(x => x.status === 'COMPLETED');
+        const sliced = completedLists.slice(0, 5);
+        if(sliced.length === 0) {
+            recentLogsView.innerHTML = '<div style="color: gray; font-size:12px; text-align:center; padding:10px;">No saved records yet.</div>';
+            return;
+        }
+        sliced.forEach(record => {
+            const labelBadge = record.docName || "PACKING LIST";
+            const card = document.createElement('div');
+            card.className = 'log-card';
+            card.innerHTML = `
+                <div><strong>DATE:</strong> ${record.date} | <strong>PL No:</strong> ${record.plNo}</div>
+                <div style="color:gray; margin:2px 0;"><strong>[${labelBadge}]</strong> Buyer: ${record.buyer} | Job: ${record.jobNo}</div>
+                <div style="margin-top:6px; display:flex; justify-content:flex-end;">
+                    <button class="btn-mini-print" onclick="directPrintRecord('${record.plNo}')">Print 🖨️</button>
+                    <button class="btn-update" onclick="directEditRecord('${record.plNo}')">Edit ⚡</button>
+                </div>
+            `;
+            recentLogsView.appendChild(card);
+        });
+    }
+
+    window.directPrintRecord = function(plNo) {
+        const rec = applicationDatabase.find(x => x.plNo === plNo);
+        if(rec) openPreviewPopupModal(rec);
+    };
+
+    window.directEditRecord = function(plNo) {
+        partiallySavedPlNos.add(plNo); // Edit karne par isko tracking list me daal dein taaki hide na ho
+        loadPendingListForUpdate(plNo);
+        let item = applicationDatabase.find(x => x.plNo === plNo);
+        if(item) item.status = 'PENDING';
+        renderPendingTracker();
+        renderRecentTracker();
+    };
+
+    window.loadPendingListForUpdate = function(plNumber) {
+        const record = applicationDatabase.find(x => x.plNo === plNumber);
+        if(!record) return;
+
+        metaPkgListNo.value = record.plNo;
+        metaDate.value = record.date;
+        metaJobNo.value = record.jobNo;
+        metaInvoiceNo.value = record.invoiceNo || '';
+        metaVehicleNo.value = record.vehicleNo || '';
+        metaTotalAmount.value = record.amount || '';
+        buyerSearchInput.value = record.buyer;
+        document.getElementById('displayAddress').innerText = record.buyerAddress || 'N/A';
+        document.getElementById('displayGstin').innerText = record.buyerGstin || '-';
+        document.getElementById('displayState').innerText = record.buyerState || '-';
+
+        // Update Labels dynamically from fetched data values
+        const docTypeField = record.docType || "Invoice No.";
+        const docNameField = record.docName || "PACKING LIST";
+        document.getElementById('docno').innerHTML = docTypeField + ":";
+        document.getElementById('docname').innerHTML = docNameField;
+
+        gridBody.innerHTML = '';
+        if(record.items && record.items.length > 0) {
+            record.items.forEach(it => insertGridDataRow(it));
+        } else {
+            for(let idx=0; idx < 8; idx++) insertGridDataRow();
+        }
+
+        commitDataBtn.style.display = "inline-block"; 
+        partialSaveDataBtn.style.display = "inline-block"; 
+    };
+
+    // Partial Save Functionality (Keeps tracking status PENDING)
+    partialSaveDataBtn.addEventListener('click', async () => {
+        const activePlNo = metaPkgListNo.value.trim();
+        const invoiceNum = metaInvoiceNo.value.trim();
+        const vehicleNum = metaVehicleNo.value.trim();
+        const totalAmt = metaTotalAmount.value.trim();
+
+        if(!activePlNo) {
+            alert("❌ Save Blocked! No active record loaded.");
+            return;
+        }
+
+        showLoader("💾 Saving partial data inside Google Sheet...");
+        
+        const extractedItems = [];
+        const rows = gridBody.querySelectorAll('tr');
+        rows.forEach(row => {
+            const sno = row.querySelector('.row-sno-input').value.trim();
+            const desc = row.querySelector('.row-desc-input').value.trim();
+            if(sno || desc) {
+                extractedItems.push({
+                    sno: sno, desc: desc,
+                    partNo: row.querySelector('.row-part-input').value.trim(),
+                    qty: row.querySelector('.row-qty-input').value.trim(),
+                    unit: row.querySelector('.row-unit-select').value
+                });
+            }
+        });
+
+        const payload = {
+            action: "update",
+            plNo: activePlNo,
+            invoiceNo: invoiceNum,
+            vehicleNo: vehicleNum,
+            amount: totalAmt,
+            items: extractedItems
+        };
+
+        try {
+            const res = await fetch(GOOGLE_SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+            const result = await res.json();
+            if(result.status === "success") {
+                alert("Partial Data Saved successfully!");
+                partiallySavedPlNos.add(activePlNo); // Is ID ko track rakhein taaki UI isko hide na kare
+                await fetchDatabaseFromGoogleSheet();
+            }
+        } catch (e) { alert("Error saving partial row."); }
+        hideLoader();
+    });
+
+    // Final Save to Sheet Functionality (Clears tracking & hides from Pending List)
+    commitDataBtn.addEventListener('click', async () => {
+        const activePlNo = metaPkgListNo.value.trim();
+        const invoiceNum = metaInvoiceNo.value.trim();
+        const vehicleNum = metaVehicleNo.value.trim();
+        const totalAmt = metaTotalAmount.value.trim();
+
+        if(!activePlNo || !invoiceNum || !vehicleNum || !totalAmt) {
+            alert("❌ Save Blocked! Please fill all mandatory fields.");
+            return;
+        }
+
+        showLoader("💾 Overwriting data inside Google Sheet...");
+        
+        const extractedItems = [];
+        const rows = gridBody.querySelectorAll('tr');
+        rows.forEach(row => {
+            const sno = row.querySelector('.row-sno-input').value.trim();
+            const desc = row.querySelector('.row-desc-input').value.trim();
+            if(sno || desc) {
+                extractedItems.push({
+                    sno: sno, desc: desc,
+                    partNo: row.querySelector('.row-part-input').value.trim(),
+                    qty: row.querySelector('.row-qty-input').value.trim(),
+                    unit: row.querySelector('.row-unit-select').value
+                });
+            }
+        });
+
+        const payload = {
+            action: "update",
+            plNo: activePlNo,
+            invoiceNo: invoiceNum,
+            vehicleNo: vehicleNum,
+            amount: totalAmt,
+            items: extractedItems
+        };
+
+        try {
+            const res = await fetch(GOOGLE_SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+            const result = await res.json();
+            if(result.status === "success") {
+                alert("Saved & Completed successfully inside main database table rows!");
+                partiallySavedPlNos.delete(activePlNo); // Final save ho gaya, ab tracking list se hata do taaki ye pending list se gayab ho jaye
+                await fetchDatabaseFromGoogleSheet();
+                clearMainFormFields();
+            }
+        } catch (e) { alert("Error updating row."); }
+        hideLoader();
+    });
+
+    function openPreviewPopupModal(record) {
+        selectedActivePreviewPlNo = record.plNo;
+        let itemsRowsMarkup = "";
+        
+        const currentDocNoLabel = (record.docType || "Invoice No.") + ":";
+        const currentDocNameText = record.docName || "PACKING LIST";
+        
+        document.getElementById('previewModalTitle').innerText = `📋 ${currentDocNameText} Record View`;
+
+        if(record.items && record.items.length > 0) {
+            record.items.forEach(it => {
+                const cleanSno = (it.sno || '').toString().trim().toUpperCase();
+                let bgStyle = "background-color: #ffffff; font-style: normal;";
+                let textStyle = "color: #000000;";
+                
+                if (cleanSno === "R") {
+                    bgStyle = "background-color: #343a40; font-weight: bold;";
+                    textStyle = "color: #ffffff;";
+                } else if (cleanSno === "-" || cleanSno === "O") {
+                    bgStyle = "background-color: #ffffff; font-style: italic; font-weight: normal; text-align: center;";
+                } else if (cleanSno !== "") {
+                    bgStyle = "background-color: #d1ecf1; font-style: normal; font-weight: bold;";
+                }
+
+                itemsRowsMarkup += `
+                    <tr style="${bgStyle} ${textStyle} ">
+                        <td align="center" style="border:1px solid #000; padding:6px; font-family:inherit; color:inherit; border: 1px solid rgb(241, 241, 241);">${it.sno}</td>  
+                        <td style="border:1px solid #000; padding:6px; font-family:inherit; color:inherit; border: 1px solid rgb(241, 241, 241);">${it.desc}</td> 
+                        <td style="border:1px solid #000; padding:6px; font-family:inherit; color:inherit; text-align: center; border: 1px solid rgb(241, 241, 241);">${it.partNo || ''}</td>  
+                        <td align="right" style="border:1px solid #000; padding:6px; font-family:inherit; color:inherit; text-align: center; border: 1px solid rgb(241, 241, 241);">${it.qty || ''}</td>
+                        <td style="border:1px solid #000; padding:6px; font-family:inherit; color:inherit; text-align: center; border: 1px solid rgb(241, 241, 241);">${it.unit || ''}</td>
+                    </tr>`;
+            });
+        }
+
+        const previewHTML = `
+            <div style="padding:10px; font-family:Arial, sans-serif; color:#000;">
+                <table style="width:100%; border-collapse:collapse; margin-bottom:10px;">
+                    <tr>
+                        <td style="border: 1px solid rgb(230, 228, 228); padding:8px;" width="60%">
+                            <div style="font-size:16px; font-weight:bold; color:#005a70;">Multitech Infracon Pvt. Ltd.</div>
+                            <div style="font-size:11px; margin-top:2px;"><strong>GSTIN/UIN:</strong> 05AAMCM9896P1Z7 | <strong>CIN:</strong> U45200UR2019PTC010294</div>
+                            <div style="font-size:11px;"><strong>State:</strong> Uttarakhand, Code: 05</div>
+                            <div style="font-size:11px; color:#4b5563; margin-top:4px;"><strong>Address:</strong> Nh 74 12th Km Stone, Vill Dabhora Mustakam Bazpur Road Kashipur, U.S Nagar Uttarakhand 244713</div>
+                        </td>
+                        <td style="border:1px solid #000; padding:8px; border: 1px solid rgb(230, 228, 228);" width="40%">
+                            <div style="font-size:12px;"><strong>${currentDocNoLabel}</strong> ${record.plNo}</div>
+                            <div style="font-size:12px;"><strong>Date:</strong> ${record.date}</div>
+                            <div style="font-size:12px;"><strong>Job / Ref No:</strong> ${record.jobNo}</div>
+                            <div style="font-size:12px;"><strong>Support Doc No:</strong> ${record.invoiceNo || '—'}</div>
+                            <div style="font-size:12px;"><strong>Vehicle No:</strong> ${record.vehicleNo || '—'}</div>
+                        </td>
+                    </tr>
+                </table>
+                
+                <div style="text-align:center; font-size:16px; font-weight:bold; margin:10px 0; letter-spacing:1px;">${currentDocNameText}</div>
+                
+                <table style="width:100%; border-collapse:collapse; margin-bottom:10px;">
+                    <tr>
+                        <th align="left" style="background:#f2f2f2; border: 1px solid rgb(230, 228, 228); padding:4px 8px; font-size:12px;">Buyer (Bill to) Details</th>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid rgb(230, 228, 228); padding:8px; font-size:12px; line-height:1.5;">
+                            <strong>Buyer Name:</strong> ${record.buyer}<br>
+                            <strong>Full Address:</strong> ${record.buyerAddress || 'N/A'}<br>
+                            <strong>GSTIN:</strong> ${record.buyerGstin || '—'} | <strong>State Name:</strong> ${record.buyerState || '—'}
+                        </td>
+                    </tr>
+                </table>
+
+                <table style="width:100%; border-collapse:collapse; margin-top:10px; border: 1px solid rgb(241, 241, 241);">
+                    <thead>
+                        <tr style="background-color: rgb(0, 69, 114); color: aliceblue; font-size: 14px;">
+                            <th width="8%" style="border:1px solid #000; padding:6px; color:#ffffff;">S.No.</th>
+                            <th width="48%" style="border:1px solid #000; padding:6px; color:#ffffff;">Description of Head of Item</th>
+                            <th width="16%" style="border:1px solid #000; padding:6px; color:#ffffff;">HSN / Part No.</th>
+                            <th width="14%" style="border:1px solid #000; padding:6px; color:#ffffff;">Qty</th>
+                            <th width="14%" style="border:1px solid #000; padding:6px; color:#ffffff;">Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-size:12px;">
+                        ${itemsRowsMarkup}
+                    </tbody>
+                </table>
+                
+                <div style="margin-top:10px; text-align:right; font-weight:bold; font-size:13px; padding:5px; border: 1px solid rgb(230, 228, 228); background-color: #ffffff;">
+                    Total Invoice Amount: Rs. ${record.amount || '0'}
+                </div>
+
+                <table style="width:100%; border-collapse:collapse; margin-top:40px;">
+                    <tr>
+                        <td width="50%" style="border:none;"></td>
+                        <td width="50%" align="right" style="border:none; font-size:13px;">
+                            <strong>For Multitech Infracon Pvt. Ltd.</strong>
+                            <br><br><br><br>
+                            <span style="border-top:1px dashed #000; padding-top:4px; display:inline-block; width:180px; text-align:center;">Authorised Signatory</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        `;
+        document.getElementById('previewPrintArea').innerHTML = previewHTML;
+        previewModal.classList.add('active');
+    }
+
+    document.getElementById('closePreviewBtn').addEventListener('click', () => previewModal.classList.remove('active'));
+    document.getElementById('editPreviewBtn').addEventListener('click', () => {
+        previewModal.classList.remove('active');
+        loadPendingListForUpdate(selectedActivePreviewPlNo);
+        let item = applicationDatabase.find(x => x.plNo === selectedActivePreviewPlNo);
+        if(item) item.status = 'PENDING';
+        renderPendingTracker();
+    });
+    
+    document.getElementById('printPreviewBtn').addEventListener('click', () => {
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write('<html><head><style>table{width:100%;border-collapse:collapse;} th,td{border:1px solid #000;padding:6px;font-family:Arial;}</style></head><body>');
+        printWindow.document.write(document.getElementById('previewPrintArea').innerHTML);
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.print();
+    });
+
+    document.addEventListener('click', (e) => {
+        if(e.target !== universalSearchInput) universalSearchDropdown.style.display = 'none';
+        if(e.target !== wizBuyerInput) wizBuyerDropdown.style.display = 'none';
+        if(!e.target.classList.contains('row-desc-input')) {
+            document.querySelectorAll('.row-desc-menu').forEach(m => m.style.display = 'none');
+        }
+    });
+
+    assembleCoreData().then(() => { clearMainFormFields(); });
+</script>
+</body>
+</html>
