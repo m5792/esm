@@ -480,13 +480,34 @@ setInterval(displayCurrentDateTime, 1000);
         <table class="header-table">
             <thead>
                 <tr>
-                    <th align="left" style="background-color: #f2f2f2; color: #000; border: 1px solid #000; padding: 4px 8px;"> Buyer (Bill to)</th>
+                  <!-- The <th> Element with the Input Field Inside -->
+<th align="left" style="background-color: #f2f2f2; color: #000; border: 2px solid #d4d4d4; padding: 4px 8px;"> Buyer (Bill to)
+    <input type="text" id="buyerSearchInput" class="input-field bold" style="font-size: 14px; color: rgb(0, 61, 87);" readonly placeholder="Buyer Auto-Fetched on Update...">
+</th>
+
+<!-- The Short Script to Handle Auto-Fetched Data -->
+<script>
+setInterval(() => {
+    const input = document.getElementById('buyerSearchInput');
+    const th = input ? input.closest('th') : null;
+    if (th) {
+        if (input.value.trim() !== "") {
+            th.style.backgroundColor = "rgb(167, 249, 198)";
+            th.style.color = "rgb(187, 9, 0)"; // Changes text to white so it's readable on red background
+        } else {
+            th.style.backgroundColor = "#f2f2f2"; // Original background color
+            th.style.color = "#000"; // Original text color
+        }}}, 300); // Checks every 0.3 seconds for auto-fetched data
+</script>
+
                 </tr>
             </thead>
+
+
             <tbody>
                 <tr>
                     <td>
-                        <input type="text" id="buyerSearchInput" class="input-field bold" style="font-size: 14px;" readonly placeholder="Buyer Auto-Fetched on Update...">
+                      <!--   <input type="text" id="buyerSearchInput" class="input-field bold" style="font-size: 14px;" readonly placeholder="Buyer Auto-Fetched on Update...">  -->
                         <div id="displayAddress" style="margin-top: 4px; font-size: 12px; color: var(--text-gray);">No data loaded.</div>
                         <div style="margin-top: 4px; font-size: 12px;">
                             <strong>GSTIN:</strong> <span id="displayGstin">-</span> | <strong>State:</strong> <span id="displayState">-</span>
