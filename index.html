@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>MIPL e|SmTally V-6.2</title>
+  <title>MIPL e|SmTally V-6.3</title>
  <style>
     * {
       box-sizing: border-box;
@@ -1196,15 +1196,7 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
   <!-- ============  Right Side Section Stop ====================== -->
   <div class="home-right">
 
-      <div class="card">
-      <span style="color: rgb(1, 97, 81); font-size: 14px; font-weight: bold; font-style: italic;">Packing List Status..</span>
-      <ul id="plantList" style="padding:0;"></ul>
-      </div>
-
-      <div class="card">
-      <span style="color: rgb(1, 78, 97); font-size: 14px; font-weight: bold; font-style: italic;">Store Status..</span>
-      <ul id="storeList" style="padding:0;"></ul>
-      </div>
+  <div id="cst-main-container-unique">Loading Packing List & Store Status...</div>
     
       <div class="card">
       <span style="color: rgb(1, 97, 81); font-size: 14px; font-weight: bold; font-style: italic;">Payment Demand Status..</span>
@@ -3456,6 +3448,10 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
 <!-- ✅ Fixed Positioned Refresh Button -->
  
 
+
+
+
+
 <script>
 function refreshAll(btn) {
 
@@ -3463,13 +3459,17 @@ function refreshAll(btn) {
   btn.disabled = true;
   btn.textContent = "⏳ Refreshing...";
 
-  // aapke refresh functions
+  // Aapke refresh functions + Naya Custom Tracker add kar diya hai
   Promise.all([
-    loadNoticeBoard(),  // notice board loding, unloding, packing list summru status show
-  //   loadMIPLDATATABLE(), // daybook aur monthly receipt & bill summry
-  daybookRefresh(),
+    // If you ever uncomment these, they will run in parallel too:
+    // loadNoticeBoard(),  
+    // loadMIPLDATATABLE(), 
+    daybookRefresh(),
     loadActiveTable(),  // voucher form me show table
-    loadPendingDATAE() // payment demand voucher table
+    loadPendingDATAE(), // payment demand voucher table
+    
+    // Naya unique tracker yahan se manually refresh hoga
+    typeof CustomSheetTracker_2026 !== 'undefined' ? CustomSheetTracker_2026.fetchAndRenderAll() : Promise.resolve()
     
   ]).then(() => {
 
@@ -3483,15 +3483,20 @@ function refreshAll(btn) {
 }
 
 
-// ✅ Auto Refresh Every 5 Minutes
+// ✅ Auto Refresh Every 5 Minutes (Updated)
 setInterval(() => {
-  loadNoticeBoard();
-  loadActiveTable();
-  loadPendingDATAE();
+  if (typeof loadNoticeBoard === 'function') loadNoticeBoard();
+  if (typeof loadActiveTable === 'function') loadActiveTable();
+  if (typeof loadPendingDATAE === 'function') loadPendingDATAE();
+  
+  // Naya tracker background me auto-refresh hoga
+  if (typeof CustomSheetTracker_2026 !== 'undefined') {
+    console.log("Auto refreshing Custom Sheet Tracker via main interval...");
+    CustomSheetTracker_2026.fetchAndRenderAll();
+  }
 }, 300000);
 
 </script>
-
 
 
 <!-- ============ website open navgation buttan code start start  ========= -->  
@@ -8224,129 +8229,233 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 <!---- =========== LODING NOTICE BOARD SCRIPT START =====================----------- -->
 
-<script>
-// ================= CONFIG =================
-const apiNBKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-const sheetNBId = "1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4";
-const rangeNB = "DATABASE!K:T";
-
-// ================= CSS =================
-const css = `
-.status-loading    { background:#ff4d4d; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
-.status-processing { background:#fd2222; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
-.status-done  { background:#28a745; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
-.status-complete   { background:#28a745; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
-.status-unloading  { background:#39b3d8; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
-
-.remarkBox{
-  background:#000;
-  color:#fff;
-  padding:6px;
-  margin-top:6px;
-  border-radius:5px;
-  font-size:13px;
-}
-
-ul li{
-  list-style:none;
-  margin-bottom:10px;
-  padding:10px;
-  border-left:5px solid #8b0202;
-  background:#f4f4f4;
-  font-size:14px;
-  border-radius:6px;
-}
-`;
-document.head.appendChild(Object.assign(document.createElement("style"),{innerText:css}));
-
-// ================= DATE =================
-function formatDateToYYYYMMDD(dateObj) {
-  return dateObj.toISOString().split("T")[0];
-}
-
-function formatCustomDate(dateStr) {
-  const m = {Jan:"01",Feb:"02",Mar:"03",Apr:"04",May:"05",Jun:"06",Jul:"07",Aug:"08",Sep:"09",Oct:"10",Nov:"11",Dec:"12"};
-  const p = dateStr.split("-");
-  return (p.length===3) ? `${p[2]}-${m[p[1]]}-${p[0].padStart(2,"0")}` : "";
-}
-
-// ================= LOAD =================
-async function loadNoticeBoard(){
-
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetNBId}/values/${rangeNB}?key=${apiNBKey}`;
-  const response = await fetch(url);
-  const data = await response.json();
-
-  const rows = data.values;
-  const plantUL = document.getElementById("plantList");
-  const storeUL = document.getElementById("storeList");
-
-  plantUL.innerHTML = "";
-  storeUL.innerHTML = "";
-
-  if(!rows || rows.length<=1){
-    plantUL.innerHTML="<li>No Data</li>";
-    return;
-  }
-
-  // last 3 days
-  const today = new Date();
-  let allowedDates=[];
-  for(let i=0;i<3;i++){
-    let d=new Date();
-    d.setDate(today.getDate()-i);
-    allowedDates.push(formatDateToYYYYMMDD(d));
-  }
-
-  rows.forEach((row,index)=>{
-    if(index===0) return;
-
-    const formattedDate = row[1] ? formatCustomDate(row[1]) : "";
-    if(!allowedDates.includes(formattedDate)) return;
-
-    let statusClass="";
-    const status=(row[5]||"").toUpperCase();
-
-    if(status==="LOADING") statusClass="status-loading";
-    else if(status==="PROCESSING") statusClass="status-processing";
-    else if(status==="Done") statusClass="status-done";
-    else if(status==="UNLOADING") statusClass="status-unloading";
-    else if(status==="COMPLETE") statusClass="status-complete";
-
-    const remark=row[8]||"";
-
-    const li=document.createElement("li");
-
-  const bgColor = status === "LOAD" ? "green" : status === "DONE" ? "green" :  status === "UNLOAD" ? "red" : "blue";
-
-li.innerHTML = `
-  <strong>${row[2] || ""}</strong> (${row[0] || ""})<br>
-  🚚 Vehicle: ${row[3] || "-"} |
-  📄 Job: ${row[4] || "-"} |
-  🧾 Inv: ${row[6] || "-"}<br>
-  📅 Date: ${row[1] || "-"} |
-  
-  <span class="${statusClass}" style="background-color:${bgColor}; color:white; padding:2px 6px; border-radius:4px; display:inline-block;">${status}</span> |
-
-
-
-  ${remark ? `<div class="remarkBox">${remark}</div>` : ""}
-`;
-
-    // ===== Separate UL =====
-    const type=(row[0]||"").toUpperCase();
-
-    if(type==="STORE"){
-      storeUL.appendChild(li);
-    }else if(["PL1","PL2","PL3","CHALLAN","STOCK TRANSFER"].includes(type)){
-      plantUL.appendChild(li);
+<style>
+    .cst-outer-wrapper {
+        font-family: Arial, sans-serif;
+        max-width: 600px; /* Aapke mutabik 600px fix kar diya */
+        margin: 0 auto 20px auto;
     }
+    .cst-notes-container {
+        background: #ffffff;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+    .cst-notes-container h4 {
+        color: #333;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 6px;
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+    .cst-note-item, .cst-store-item {
+        padding: 8px 10px;
+        margin-bottom: 8px;
+        border-radius: 4px;
+        font-size: 13px; /* Font size thoda kam kiya */
+        line-height: 1.4;  /* Line height compact ki */
+    }
+    .cst-note-item {
+        background: #fefdfd;
+        border-left: 4px solid #919191;
+        color: #005f7f;
+    }
+    .cst-store-item {
+        background: #fafafa;
+        border-left: 4px solid #28a745;
+        color: #333;
+    }
+    
+    /* Horizontal alignment taaki max 3 row me data fix ho sake */
+    .cst-row-line {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px 12px;
+        margin-top: 4px;
+    }
+    
+    .cst-no-data {
+        color: #28a745;
+        font-weight: bold;
+        font-size: 13px;
+    }
+    .cst-status-tab {
+        background-color: #000000;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-weight: bold;
+        display: inline-block;
+        text-transform: uppercase;
+        font-size: 11px;
+        letter-spacing: 0.5px;
+        vertical-align: middle;
+    }
+    .cst-status-white { color: #ffffff; }
+    .cst-status-load { color: #ff4d4d; }
+    .cst-status-unload { color: #3399ff; }
+    .cst-status-complete { color: #2ecc71; }
+</style>
 
-  });
-}
+<script>
+const CustomSheetTracker_2026 = {
+    sheetKey: "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM",
+    sheetId: "1gOdnvS_To2tGVuIMtMdNGFT4cCkqyL5gHqBWjnhNG_4",
+    rangePL: "PLERP!A:N",
+    rangeStore: "STORE!A:P",
+    storeRemarksMap: {},
 
-loadNoticeBoard();
+    initUI: function() {
+        const mainDiv = document.getElementById('cst-main-container-unique');
+        if (mainDiv) {
+            mainDiv.innerHTML = `
+                <div class="cst-outer-wrapper">
+                    <div class="cst-notes-container">
+                        <h4>Packing List Status..</h4>
+                        <div id="cst-notesList">Loading data...</div>
+                    </div>
+                    <div class="cst-notes-container">
+                        <h4>Store Status..</h4>
+                        <div id="cst-storeList">Loading store data...</div>
+                    </div>
+                </div>
+            `;
+        }
+    },
 
+    fetchAndRenderAll: async function() {
+        const urlPL = `https://sheets.googleapis.com/v4/spreadsheets/${this.sheetId}/values/${this.rangePL}?key=${this.sheetKey}`;
+        const urlStore = `https://sheets.googleapis.com/v4/spreadsheets/${this.sheetId}/values/${this.rangeStore}?key=${this.sheetKey}`;
+
+        try {
+            const storeResponse = await fetch(urlStore);
+            const storeData = await storeResponse.json();
+            
+            if (storeData.values && storeData.values.length > 0) {
+                this.storeRemarksMap = {};
+                storeData.values.forEach(row => {
+                    const colO = row[14] ? row[14].trim() : "";
+                    const colP = row[15] ? row[15].trim() : "";
+                    if (colO !== "") {
+                        this.storeRemarksMap[colO] = colP;
+                    }
+                });
+                this.renderStoreNotes(storeData.values);
+            } else {
+                document.getElementById('cst-storeList').innerHTML = "<p class='cst-no-data'>No data found in Store sheet.</p>";
+            }
+        } catch (error) {
+            console.error("Error fetching store data:", error);
+            document.getElementById('cst-storeList').innerHTML = "<p style='color:red; font-size:12px;'>Store data load error.</p>";
+        }
+
+        try {
+            const response = await fetch(urlPL);
+            const data = await response.json();
+            
+            if (data.values && data.values.length > 0) {
+                this.renderPLNotes(data.values);
+            } else {
+                document.getElementById('cst-notesList').innerHTML = "<p class='cst-no-data'>No data found in the sheet.</p>";
+            }
+        } catch (error) {
+            console.error("Error fetching PL data:", error);
+            document.getElementById('cst-notesList').innerHTML = "<p style='color:red; font-size:12px;'>Data load error.</p>";
+        }
+    },
+
+    renderPLNotes: function(rows) {
+        const notesListDiv = document.getElementById('cst-notesList');
+        notesListDiv.innerHTML = ""; 
+        let hasPendingItems = false;
+
+        for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            const colA = row[0] ? row[0].trim() : "";
+            const colB = row[1] ? row[1].trim() : "";
+            const colC = row[2] ? row[2].trim() : ""; 
+            const colD = row[3] ? row[3].trim() : "";
+            const colE = row[4] ? row[4].trim() : "";
+            const colG = row[6] ? row[6].trim() : "";
+            const colN = row[13] ? row[13].trim() : "";
+
+            if (colA !== "" && colD === "") {
+                hasPendingItems = true;
+                const matchedRemark = this.storeRemarksMap[colC] || "No Remark";
+
+                // Pure content ko 3 compact row me strictly bind kiya gaya hai
+                const noteHTML = `
+                    <div class="cst-note-item">
+                        <span class="cst-status-tab cst-status-white">${colN || 'N/A'}</span> | 
+                        <strong>👤 Name:</strong> ${colG || 'N/A'} <br>
+                        <strong>PL NO:</strong> ${colA} | 
+                        <strong>📅 Date:</strong> ${colB || 'N/A'} | 
+                        <strong>🧾 Job No:</strong> ${colC || 'N/A'} | 
+                        <strong>🚚 Vehicle No:</strong> ${colE || 'N/A'} <br>
+                        <strong>⚡ Remark:</strong> <span style="color: #d9534f; font-weight: bold;">${matchedRemark}</span>
+                    </div>
+                       
+                `;
+                notesListDiv.innerHTML += noteHTML;
+            }
+        }
+
+        if (!hasPendingItems) {
+            notesListDiv.innerHTML = "<p class='cst-no-data'>Relax, no loading status Found.</p>";
+        }
+    },
+
+    renderStoreNotes: function(rows) {
+        const storeListDiv = document.getElementById('cst-storeList');
+        storeListDiv.innerHTML = ""; 
+        let hasStoreItems = false;
+
+        for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            const colC = row[2] ? row[2].trim().toLowerCase() : ""; 
+            const colC_original = row[2] ? row[2].trim() : ""; 
+            const colD = row[3] ? row[3].trim() : "N/A";
+            const colE = row[4] ? row[4].trim() : "N/A";
+            const colH = row[7] ? row[7].trim() : "N/A";
+            const colK = row[10] ? row[10].trim() : "N/A";
+
+            if (colC === "load" || colC === "unload" || colC === "complete") {
+                hasStoreItems = true;
+
+                let statusClass = "";
+                if (colC === "load") statusClass = "cst-status-load";
+                else if (colC === "unload") statusClass = "cst-status-unload";
+                else if (colC === "complete") statusClass = "cst-status-complete";
+
+                // Content ko compact 3-row structured format diya gaya hai
+                const storeHTML = `
+                    <div class="cst-store-item">
+                        <span class="cst-status-tab ${statusClass}">${colC_original}</span> | 
+                        <strong>📅 Date:</strong> ${colD} | 
+                        <strong>👤 Name:</strong> ${colE} <br>
+                        <strong>🚚 Vehicle No:</strong> ${colK} | 
+                        <strong>🧾 Inv. No.:</strong> ${colH}
+                    </div>
+                `;
+                storeListDiv.innerHTML += storeHTML;
+            }
+        }
+
+        if (!hasStoreItems) {
+            storeListDiv.innerHTML = "<p class='cst-no-data'>No dynamic status matches found in Store.</p>";
+        }
+    },
+
+// Interval hata diya hai, ab yeh sirf UI setup aur first load karega
+    start: function() {
+        this.initUI();
+        this.fetchAndRenderAll();
+    }
+};
+
+// Pehli baar run karne ke liye call
+CustomSheetTracker_2026.start();
 </script>
 
 <!---- =========== LODING NOTICE BOARD SCRIPT STOP =====================----------- -->
@@ -9759,6 +9868,8 @@ function closeSchedule(){
 <br/>
 <p onclick="window.open('https://docs.google.com/spreadsheets/d/1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU/edit?gid=1462163867#gid=1462163867','_blank')" style="cursor:pointer;color:#0026ff;">Master Data Google Sheet</p>
 <p onclick="window.open('https://docs.google.com/spreadsheets/d/1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4/edit?gid=2007779252#gid=2007779252','_blank')" style="cursor:pointer;color:#0026ff;">Address, Event Other Google Sheet</p>
+<p onclick="window.open('https://docs.google.com/spreadsheets/d/1gOdnvS_To2tGVuIMtMdNGFT4cCkqyL5gHqBWjnhNG_4/edit?gid=0#gid=0','_blank')" style="cursor:pointer;color:#0026ff;">Packing List Google Sheet</p>
+
 <p onclick="showSection(8)" style="cursor:pointer;color:#0026ff;">Rabbit Game</p>
 <p onclick="window.open('https://m5792.github.io/esmTally/BSPLCLC.html','_blank')" style="cursor:pointer;color:#0026ff;">Bussinus Income Calculater</p>
 
