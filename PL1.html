@@ -197,7 +197,7 @@ setInterval(displayCurrentDateTime, 1000);
     align-items: center;       /* Horizontal Center */
     gap: 15px; text-align: center;
 }
-    .tracker-box { background: #ebeaea; border: 2px solid var(--border-dark); padding: 15px; max-height: 600px; width: 600px; overflow-y: auto;}
+    .tracker-box { background: #ebeaea; border: 2px solid var(--border-dark); padding: 15px; max-height: 600px; width: 700px; overflow-y: auto;}
     .tracker-box h3 { margin-top: 0; color: var(--tally-blue); font-size: 15px; border-bottom: 2px solid var(--tally-blue); padding-bottom: 5px; text-transform: uppercase;}
 </style>
 </head>
@@ -449,15 +449,26 @@ setInterval(displayCurrentDateTime, 1000);
                         <div class="company-title"> Multitech Infracon Pvt. Ltd.</div>
                         <div><strong>GSTIN/UIN:</strong> 05AAMCM9896P1Z7 | <strong>CIN:</strong> U45200UR2019PTC010294</div>
                         <div><strong>State Name:</strong> Uttarakhand, <strong>Code:</strong> 05</div>
-                        <div style="margin-top: 4px; font-size: 12px; color: var(--text-gray);">
-                            <strong>Address:</strong> Nh 74 12th Km Stone, Vill Dabhora Mustakam Bazpur Road Kashipur, U.S Nagar Uttarakhand 244713
-                        </div>
+                        
+                        
+    <div style="margin-top: 4px; font-size: 12px; color: #4b5563; font-family: Arial, sans-serif;">
+    <strong>Address:</strong> 
+    <!-- Yeh select dropdown dikhne me ekdum normal text jaisa lagega -->
+    <select onchange="this.style.width = (this.options[this.selectedIndex].text.length * 7) + 'px';" id="unitadd"
+            style="font-size: 12px; color: #4b5563; border: none; background: transparent; font-family: Arial, sans-serif; font-weight: bold; padding: 0; margin: 0; outline: none; cursor: pointer; -webkit-appearance: none; -moz-appearance: none; appearance: none;">
+        <option value="unit1">Unit - 2 : Nh 74 12th Km Stone, Vill Dabhora Mustakam Bazpur Road Kashipur, U.S Nagar Uttarakhand 244713</option>
+        <option value="unit2">Unit - 1 : T-2 , BEHIND KENDRIYA SCHOOL, Opp IMT College, Bazpyr Road Kashipr,Uttarakhand 244713</option>
+        <option value="unit3">Unit - 3 : Vill-Dabhora Ehatamali, AJeetput Road Kashipur, U.S Nagar Uttarakhand 244713</option>
+    </select>
+</div>
+
+
                     </td>
                     <td width="40%">
                         <div><strong id="docno">---</strong> <input type="text" id="metaPkgListNo" class="input-field bold" style="width: 50%; display: inline; color: var(--tally-blue);" readonly></div>
                         <div><strong>Date:</strong> <input type="text" id="metaDate" class="input-field" style="width: 70%; display: inline;" readonly></div>
                         <div><strong>Job / Ref No:</strong> <input type="text" id="metaJobNo" class="input-field" style="width: 60%; display: inline;" readonly></div>
-                        <div><strong>Support Doc No: <span style="color:red;">*</span></strong> <input type="text" id="metaInvoiceNo" class="input-field" style="width: 65%; display: inline;" placeholder="Required to save"></div>
+                        <div><strong>Inv/Challan No: <span style="color:red;">*</span></strong> <input type="text" id="metaInvoiceNo" class="input-field" style="width: 65%; display: inline;" placeholder="Required to save"></div>
                         <div><strong>Vehicle No: <span style="color:red;">*</span></strong> <input type="text" id="metaVehicleNo" class="input-field" style="width: 65%; display: inline;" placeholder="e.g. UK18CA3770" required></div>
                     </td>
                 </tr>
@@ -596,9 +607,16 @@ setInterval(displayCurrentDateTime, 1000);
     let selectedActivePreviewPlNo = "";
 
     const PREDEFINED_REMARKS = [
-        "MATERIAL DELIVERED IN GOOD CONDITION",
-        "WEIGHT AS PER WEIGHBRIDGE TICKET",
-        "LOADING DONE AT FACTORY PREMISES"
+        "Note For Sale. Material Return After Compilation of Work.",
+        "Note For Sale, No sale Transaction is Invoied",
+        "Note For Sale. Machine Return After Compilation of Work.",
+        "Note for Sale Job Work Only, Material Return After Job Work.",
+        "The machine is being sent for repair. It will be returned to the plant after repair.",
+        "Stock Transfer - Unit 1 to Unit 2",
+        "Stock Transfer - Unit 1 to Unit 3",
+        "Stock Transfer - Unit 2 to Unit 1",
+        "Stock Transfer - Unit 2 to Unit 3",
+        "Stock Transfer - Unit 3 to Unit 2"
     ];
 
     const gridBody = document.getElementById('gridBody');
@@ -719,7 +737,7 @@ return rawDate;
         matched.forEach(res => {
             const typeLabel = res.docName || "PACKING LIST";
             const li = document.createElement('li');
-            li.innerHTML = `<strong>${res.plNo || 'N/A'}</strong> [${typeLabel}] | Job: ${res.jobNo || '—'}<br><small style="color:gray;">Buyer: ${res.buyer || '—'} | Veh: ${res.vehicleNo || '—'}</small>`;
+            li.innerHTML = `<strong>${res.plNo || 'N/A'}</strong> [${typeLabel}] | Job: ${res.jobNo || '—'} | <strong style="color: brown;">Inv. No.: ${res.invoiceNo}</strong> <br><small style="color:gray;">Buyer: ${res.buyer || '—'} | Veh: ${res.vehicleNo || '—'}</small>`;
             
             li.addEventListener('click', (e) => {
                 e.stopPropagation(); 
@@ -776,6 +794,7 @@ return rawDate;
                      <option value="BDL" ${rowData && rowData.unit==='BDL'?'selected':''}> BDL</option>
                     <option value="SQM" ${rowData && rowData.unit==='SQM'?'selected':''}>SQM</option>
                     <option value="RMT" ${rowData && rowData.unit==='RMT'?'selected':''}>RMT</option>
+                     <option value="LTR" ${rowData && rowData.unit==='LTR'?'selected':''}>LTR</option>
                 </select>
             </td>
         `;
@@ -981,6 +1000,7 @@ return rawDate;
             card.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                     <div>
+                    
                         <strong>🧾 Pl No.: ${record.plNo}</strong> / <span style="font-size:11px;color:#005a70;">📅 Date: ${record.date}</span> / 
                         <span style="background:#005a70; color:#fff; padding:1px 4px; font-size:10px; border-radius:3px;">${labelBadge}</span><br>
                       <strong>🚚 Vehicle: ${record.vehicleNo || '—'}</strong> |  <span style="color:gray; font-size:11px;">👤Buyer: ${record.buyer} (📄 Job: ${record.jobNo}) </span>
@@ -1029,7 +1049,7 @@ return rawDate;
             const card = document.createElement('div');
             card.className = 'log-card';
             card.innerHTML = `
-                <div><strong>📅 Date:</strong> ${record.date} | <strong>🧾 Pl No.:</strong> ${record.plNo} | <strong>🚚 Vehicle:</strong> ${record.vehicleNo}</div>
+                <div><strong>📅 Date:</strong> ${record.date} | <strong>🧾 Pl No.:</strong> ${record.plNo} | <strong style="color: rgb(0, 102, 60);">🧾 Inv. No: ${record.invoiceNo || '—'}</strong> | <strong>🚚 Vehicle:</strong> ${record.vehicleNo}</div>
                 <div style="color:gray; margin:2px 0;"><strong style="background-color: transparent; color: rgb(128, 0, 0);">${labelBadge} :-</strong> 👤Buyer: ${record.buyer} | 📄 Job: ${record.jobNo} </div>
                 <div style="margin-top:6px; display:flex; justify-content:flex-end;">
                     <button class="btn-mini-print" onclick="directPrintRecord('${record.plNo}')">Print 🖨️</button>
@@ -1220,6 +1240,15 @@ return rawDate;
             });
         }
 
+//--------------------- address fetch automation
+// openPreviewPopupModal function ke andar sabse pehle yeh line honi chahiye:
+const selectElement = document.getElementById('unitadd');
+const selectedAddress = selectElement && selectElement.selectedIndex !== -1 
+    ? selectElement.options[selectElement.selectedIndex].text 
+    : "Unit - 2 : Nh 74 12th Km Stone... Mustakam Bazpur Road"; // Default value agar kuch select na ho
+
+//----------------------
+        // print table div code112233
         const previewHTML = `
             <div style="padding:10px; font-family:Arial, sans-serif; color:#000;">
                 <table style="width:100%; border-collapse:collapse; margin-bottom:10px;">
@@ -1228,13 +1257,19 @@ return rawDate;
                             <div style="font-size:16px; font-weight:bold; color:#005a70;">Multitech Infracon Pvt. Ltd.</div>
                             <div style="font-size:11px; margin-top:2px;"><strong>GSTIN/UIN:</strong> 05AAMCM9896P1Z7 | <strong>CIN:</strong> U45200UR2019PTC010294</div>
                             <div style="font-size:11px;"><strong>State:</strong> Uttarakhand, Code: 05</div>
-                            <div style="font-size:11px; color:#4b5563; margin-top:4px;"><strong>Address:</strong> Nh 74 12th Km Stone, Vill Dabhora Mustakam Bazpur Road Kashipur, U.S Nagar Uttarakhand 244713</div>
-                        </td>
+                        
+                             <div style="font-size:11px; color:#4b5563; margin-top:4px;"> <strong>Address:</strong> ${selectedAddress} </div>
+
+                            </td>
                         <td style="border:1px solid #000; padding:8px; border: 1px solid rgb(230, 228, 228);" width="40%">
                             <div style="font-size:12px;"><strong>${currentDocNoLabel}</strong> ${record.plNo}</div>
                             <div style="font-size:12px;"><strong>Date:</strong> ${record.date}</div>
                             <div style="font-size:12px;"><strong>Job / Ref No:</strong> ${record.jobNo}</div>
-                            <div style="font-size:12px;"><strong>Support Doc No:</strong> ${record.invoiceNo || '—'}</div>
+
+                            <div style="font-size:12px;">
+                                <strong>${currentDocNameText === 'PACKING LIST' ? 'Invoice No.' : 'Challan No.'}:</strong> ${record.invoiceNo || '—'}
+                            </div>
+                            
                             <div style="font-size:12px;"><strong>Vehicle No:</strong> ${record.vehicleNo || '—'}</div>
                         </td>
                     </tr>
