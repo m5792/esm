@@ -338,18 +338,7 @@ th {
   .boxCol1,.boxCol2,.boxCol3,.boxCol4{width:100%;}}
 </style>
 <div class="boxCol1">
-  <div class="card">
-    <span style="color: rgb(1, 97, 81); font-size: 14px; font-weight: bold; font-style: italic;">Packing List Status..</span>
-    <ul id="plantList" style="padding:0;"></ul>
-  </div>
-</div>
-
-<div class="boxCol2">
-  <div class="card">
-
-      <span style="color: rgb(1, 78, 97); font-size: 14px; font-weight: bold; font-style: italic;">Store Status..</span>
-      <ul id="storeList" style="padding:0;"></ul>
-  </div>
+<div id="cst-main-container-unique">Loading Packing List & Store Status...</div>
 </div>
 
 <div class="boxCol3">
@@ -395,127 +384,233 @@ th {
 
 <!---- =========== LODING NOTICE BOARD SCRIPT START =====================----------- -->
 
-<script>
-// ================= CONFIG =================
-const apiNBKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-const sheetNBId = "1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4";
-const rangeNB = "DATABASE!K:S";
-
-// ================= CSS =================
-const css = `
-.status-loading    { background:#ff4d4d; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
-.status-processing { background:#fd2222; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
-.status-done  { background:#28a745; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
-.status-complete   { background:#28a745; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
-.status-unloading  { background:#39b3d8; color:#fff; padding:3px 8px; border-radius:5px; font-weight:bold;}
-
-.remarkBox{
-  background:#000;
-  color:#fff;
-  padding:6px;
-  margin-top:6px;
-  border-radius:5px;
-  font-size:13px;
-}
-
-ul li{
-  list-style:none;
-  margin-bottom:10px;
-  padding:10px;
-  border-left:5px solid #8b0202;
-  background:#f4f4f4;
-  font-size:14px;
-  border-radius:6px;
-}
-`;
-document.head.appendChild(Object.assign(document.createElement("style"),{innerText:css}));
-
-// ================= DATE =================
-function formatDateToYYYYMMDD(dateObj) {
-  return dateObj.toISOString().split("T")[0];
-}
-
-function formatCustomDate(dateStr) {
-  const m = {Jan:"01",Feb:"02",Mar:"03",Apr:"04",May:"05",Jun:"06",Jul:"07",Aug:"08",Sep:"09",Oct:"10",Nov:"11",Dec:"12"};
-  const p = dateStr.split("-");
-  return (p.length===3) ? `${p[2]}-${m[p[1]]}-${p[0].padStart(2,"0")}` : "";
-}
-
-// ================= LOAD =================
-async function loadNoticeBoard(){
-
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetNBId}/values/${rangeNB}?key=${apiNBKey}`;
-  const response = await fetch(url);
-  const data = await response.json();
-
-  const rows = data.values;
-  const plantUL = document.getElementById("plantList");
-  const storeUL = document.getElementById("storeList");
-
-  plantUL.innerHTML = "";
-  storeUL.innerHTML = "";
-
-  if(!rows || rows.length<=1){
-    plantUL.innerHTML="<li>No Data</li>";
-    return;
-  }
-
-  // last 3 days
-  const today = new Date();
-  let allowedDates=[];
-  for(let i=0;i<3;i++){
-    let d=new Date();
-    d.setDate(today.getDate()-i);
-    allowedDates.push(formatDateToYYYYMMDD(d));
-  }
-
-  rows.forEach((row,index)=>{
-    if(index===0) return;
-
-    const formattedDate = row[1] ? formatCustomDate(row[1]) : "";
-    if(!allowedDates.includes(formattedDate)) return;
-
-    let statusClass="";
-    const status=(row[5]||"").toUpperCase();
-
-    if(status==="LOADING") statusClass="status-loading";
-    else if(status==="PROCESSING") statusClass="status-processing";
-    else if(status==="Done") statusClass="status-done";
-    else if(status==="UNLOADING") statusClass="status-unloading";
-    else if(status==="COMPLETE") statusClass="status-complete";
-
-    const remark=row[8]||"";
-
-    const li=document.createElement("li");
-
-  const bgColor = status === "LOAD" ? "green" : status === "DONE" ? "green" :  status === "UNLOAD" ? "red" : "blue";
-
-li.innerHTML = `
-  <strong>${row[2] || ""}</strong> (${row[0] || ""})<br>
-  🚚 Vehicle: ${row[3] || "-"} |
-  📄 Job: ${row[4] || "-"} |
-  🧾 Inv: ${row[6] || "-"}<br>
-  📅 Date: ${row[1] || "-"} |
-  
-  <span class="${statusClass}" style="background-color:${bgColor}; color:white; padding:2px 6px; border-radius:4px; display:inline-block;">${status}</span>
-
-  ${remark ? `<div class="remarkBox">${remark}</div>` : ""}
-`;
-
-    // ===== Separate UL =====
-    const type=(row[0]||"").toUpperCase();
-
-    if(type==="STORE"){
-      storeUL.appendChild(li);
-    }else if(["PL1","PL2","PL3","CHALLAN","STOCK TRANSFER"].includes(type)){
-      plantUL.appendChild(li);
+<style>
+    /* Sabhi CSS classes ko unique prefix 'cst-' diya hai taaki conflict na ho */
+    .cst-outer-wrapper {
+        font-family: Arial, sans-serif;
+        max-width: 700px;
+        margin: 0 auto 20px auto;
     }
+    .cst-notes-container {
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    .cst-notes-container h4 {
+        color: #333;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+        margin-top: 0;
+    }
+    .cst-note-item {
+        background: #fefdfd;
+        border-left: 5px solid #919191;
+        padding: 12px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        font-size: 14px;
+        color: #005f7f;
+        line-height: 1.8;
+    }
+    .cst-store-item {
+        background: #fafafa;
+        border-left: 5px solid #28a745;
+        padding: 12px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        font-size: 14px;
+        color: #333;
+        line-height: 1.8;
+    }
+    .cst-no-data {
+        color: #28a745;
+        font-weight: bold;
+    }
+    .cst-status-tab {
+        background-color: #000000;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+        display: inline-block;
+        text-transform: uppercase;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+    }
+    .cst-status-white { color: #ffffff; }
+    .cst-status-load { color: #ff4d4d; }
+    .cst-status-unload { color: #3399ff; }
+    .cst-status-complete { color: #2ecc71; }
+</style>
 
-  });
-}
+<script>
+// Pure logic ko ek unique object ke andar band kar diya hai (Encapsulation)
+const CustomSheetTracker_2026 = {
+    sheetKey: "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM",
+    sheetId: "1gOdnvS_To2tGVuIMtMdNGFT4cCkqyL5gHqBWjnhNG_4",
+    rangePL: "PLERP!A:N",
+    rangeStore: "STORE!A:P",
+    storeRemarksMap: {},
 
-loadNoticeBoard();
+    // UI Structure ko create karne ka function
+    initUI: function() {
+        const mainDiv = document.getElementById('cst-main-container-unique');
+        if (mainDiv) {
+            mainDiv.innerHTML = `
+                <div class="cst-outer-wrapper">
+                    <div class="cst-notes-container">
+                        <h4>Packing List Status..</h4>
+                        <div id="cst-notesList">Loading data...</div>
+                    </div>
+                    <div class="cst-notes-container">
+                        <h4>Store Status..</h4>
+                        <div id="cst-storeList">Loading store data...</div>
+                    </div>
+                </div>
+            `;
+        }
+    },
 
+    // Dono Sheet ka data fetch aur render karne ka main logic
+    fetchAndRenderAll: async function() {
+        const urlPL = `https://sheets.googleapis.com/v4/spreadsheets/${this.sheetId}/values/${this.rangePL}?key=${this.sheetKey}`;
+        const urlStore = `https://sheets.googleapis.com/v4/spreadsheets/${this.sheetId}/values/${this.rangeStore}?key=${this.sheetKey}`;
+
+        // 1. Fetch Store Data for Remarks & Store Status
+        try {
+            const storeResponse = await fetch(urlStore);
+            const storeData = await storeResponse.json();
+            
+            if (storeData.values && storeData.values.length > 0) {
+                // Clear old map for fresh data on refresh
+                this.storeRemarksMap = {};
+                
+                // Map Column O to Column P for Remarks
+                storeData.values.forEach(row => {
+                    const colO = row[14] ? row[14].trim() : "";
+                    const colP = row[15] ? row[15].trim() : "";
+                    if (colO !== "") {
+                        this.storeRemarksMap[colO] = colP;
+                    }
+                });
+
+                // Render Store Status
+                this.renderStoreNotes(storeData.values);
+            } else {
+                document.getElementById('cst-storeList').innerHTML = "<p class='cst-no-data'>No data found in Store sheet.</p>";
+            }
+        } catch (error) {
+            console.error("Error fetching store data:", error);
+            document.getElementById('cst-storeList').innerHTML = "<p style='color:red;'>Store data load karne me dikkat aayi hai.</p>";
+        }
+
+        // 2. Fetch Packing List Data
+        try {
+            const response = await fetch(urlPL);
+            const data = await response.json();
+            
+            if (data.values && data.values.length > 0) {
+                this.renderPLNotes(data.values);
+            } else {
+                document.getElementById('cst-notesList').innerHTML = "<p class='cst-no-data'>No data found in the sheet.</p>";
+            }
+        } catch (error) {
+            console.error("Error fetching PL data:", error);
+            document.getElementById('cst-notesList').innerHTML = "<p style='color:red;'>Data load karne me dikkat aayi hai.</p>";
+        }
+    },
+
+    // Packing List Render Function
+    renderPLNotes: function(rows) {
+        const notesListDiv = document.getElementById('cst-notesList');
+        notesListDiv.innerHTML = ""; 
+        let hasPendingItems = false;
+
+        for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            const colA = row[0] ? row[0].trim() : "";
+            const colB = row[1] ? row[1].trim() : "";
+            const colC = row[2] ? row[2].trim() : ""; 
+            const colD = row[3] ? row[3].trim() : "";
+            const colE = row[4] ? row[4].trim() : "";
+            const colG = row[6] ? row[6].trim() : "";
+            const colN = row[13] ? row[13].trim() : "";
+
+            if (colA !== "" && colD === "") {
+                hasPendingItems = true;
+                const matchedRemark = this.storeRemarksMap[colC] || "No Remark Found";
+
+                const noteHTML = `
+                    <div class="cst-note-item">
+                        <span class="cst-status-tab cst-status-white">${colN || 'N/A'}</span> | 
+                        <strong>👤 Name:</strong> ${colG || 'N/A'} <br>
+                        <strong>PL NO:</strong> ${colA} | 
+                        <strong>📅 Date:</strong> ${colB || 'N/A'} | 
+                        <strong>🧾 Job No:</strong> ${colC || 'N/A'} | 
+                        <strong>🚚 Vehicle No:</strong> ${colE || 'N/A'} <br>
+                        <strong>⚡ Remark:</strong> <span style="color: #d9534f; font-weight: bold;">${matchedRemark}</span>
+                    </div>
+                `;
+                notesListDiv.innerHTML += noteHTML;
+            }
+        }
+
+        if (!hasPendingItems) {
+            notesListDiv.innerHTML = "<p class='cst-no-data'>Relax, no loading status Found.</p>";
+        }
+    },
+
+    // Store Status Render Function
+    renderStoreNotes: function(rows) {
+        const storeListDiv = document.getElementById('cst-storeList');
+        storeListDiv.innerHTML = ""; 
+        let hasStoreItems = false;
+
+        for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            const colC = row[2] ? row[2].trim().toLowerCase() : ""; 
+            const colC_original = row[2] ? row[2].trim() : ""; 
+            const colD = row[3] ? row[3].trim() : "N/A";
+            const colE = row[4] ? row[4].trim() : "N/A";
+            const colH = row[7] ? row[7].trim() : "N/A";
+            const colK = row[10] ? row[10].trim() : "N/A";
+
+            if (colC === "load" || colC === "unload" || colC === "complete") {
+                hasStoreItems = true;
+
+                let statusClass = "";
+                if (colC === "load") statusClass = "cst-status-load";
+                else if (colC === "unload") statusClass = "cst-status-unload";
+                else if (colC === "complete") statusClass = "cst-status-complete";
+
+                const storeHTML = `
+                    <div class="cst-store-item">
+                        <span class="cst-status-tab ${statusClass}">${colC_original}</span> | 
+                        <strong>📅 Date:</strong> ${colD} | 
+                        <strong>👤 Name:</strong> ${colE} <br>
+                        <strong>🚚 Vehicle No:</strong> ${colK} | 
+                        <strong>🧾 Inv. No.:</strong> ${colH}
+                    </div>
+                `;
+                storeListDiv.innerHTML += storeHTML;
+            }
+        }
+
+        if (!hasStoreItems) {
+            storeListDiv.innerHTML = "<p class='cst-no-data'>No dynamic status matches (load/unload/complete) found in Store.</p>";
+        }
+    },
+
+    // Interval hata diya hai, ab yeh sirf UI setup aur first load karega
+    start: function() {
+        this.initUI();
+        this.fetchAndRenderAll();
+    }
+};
+
+// Pehli baar run karne ke liye call
+CustomSheetTracker_2026.start();
 </script>
 
 
