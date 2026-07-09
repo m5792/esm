@@ -1,1563 +1,1121 @@
-<!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8">
 
- <!-- ============ ------ =============== --------------------- ===========  Footer Area Start ================-------  Start =========================== -->
 <style>
-/* FIXED FOOTER */
-.fixed-footer{
-position:fixed;
-left:0;
-bottom:0;   
-width:100%;
-background:#f1f1f1;
-border:5px solid #00203d; border-radius:10px;
-padding:5px;
-z-index:99999;
-box-shadow:0 -2px 10px rgba(0,0,0,0.2);
+/* ===== PAGE WRAPPER ===== */
+.page-wrapper {
+    background-color: rgb(247, 249, 249);
+    color: #004d80;
+    font-weight: bold;
+    border: 10px solid rgb(2, 45, 77);
+    width: 10in;
+    height: 18in;
+    box-sizing: border-box;
+    margin: 30px auto;        /* top-bottom + center horizontally * 10-18/
+    padding: 30px;            /* inner spacing from border */
 }
-/* FOOTER ROW */
-.footer-row{display:flex;align-items:center;gap:10px;width:100%;overflow-x:auto;justify-content: center;}
-/* COMMON DIV STYLE */
-.footer-box{
-padding:6px 10px;
-border:3px solid #ffffff;
-background:#e9e7e7;
-border-radius:8px;
-white-space:nowrap;
-font-size:14px;
-font-weight:bold;
+
+/* ===== FORM CONTAINER ===== */
+.form-container {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    background-color: #f5fafc;
+    padding: 20px 30px;       /* left-right + top spacing */
 }
-/* TIME BOX */
-#currentDateTime{background:#1e3a8a; color:rgb(252, 252, 252); font-size:16px;}
-/* MOBILE */
-@media(max-width:600px){
-.footer-box{font-size:12px; padding:5px 8px;}
-#currentDateTime{font-size:13px;}}
-</style>
 
-<style id="customDropdownStyle">
-    .customDropdown{ position:absolute; background:rgb(240, 238, 238); border:1px solid #ccc; border-radius:8px; width:300px !important; max-height:400px; overflow-y:auto; box-shadow:0 4px 12px rgba(0,0,0,.15); z-index:99999; padding:4px; box-sizing:border-box; }
-    .dropdownItem{ padding:8px 10px; cursor:pointer; border-radius:5px; font-size:14px; user-select:none; }
-    .dropdownItem:hover, .dropdownItem.active{ background:#007bff; color:#fff; }
-    .newHead{ position:sticky; bottom:0; background: rgb(251, 244, 244); font-weight:bold; border: 3px solid white; }
-    </style></head><body>
+/* ===== HEADING CENTER ===== */
+.form-container h2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 25px;
+}
 
-<!-- ================= ------ Footer Container Start -------  Start =========================== -->     
-<div class="fixed-footer">  
+/* ===== LABELS ===== */
+.form-container label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
 
-<!-- == --------- .......... Footer Row .......  Start ......... ---------- === -->
-<div class="footer-row">       
-<div id="currentDateTime" class="footer-box"></div>
+/* ===== INPUTS & SELECTS ===== */
+.form-container input,
+.form-container select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 16px;
+    border: 2px solid #d6d7d8;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+}
 
-<div class="footer-box" style="display:flex; align-items:center; gap:8px; text-decoration:none; color: black; font-weight:bold; background-color: #e3f3f5; border:3px solid #013769; border-radius:10px;">
-<a href="https://www.google.com/" target="_blank" style="display:flex; align-items:center; gap:8px; text-decoration:none; color: black; font-weight:bold;">
-<img src="https://cdn.dribbble.com/users/1717214/screenshots/4124610/g-logo.gif" alt="Google" width="20" height="20" style="border-radius:8px;">
-<span class="name" style="color: #01225f;">Google</span>
-</a>
-<strong style="border: none; font-size: 16px; font-weight: bold;"> | </strong>
-<a href="https://web.whatsapp.com/" target="_blank" style="display:flex; align-items:center; gap:8px; text-decoration:none; color: black; font-weight:bold;">
-<img src="https://cliply.co/wp-content/uploads/2021/08/372108180_WHATSAPP_ICON_400.gif" alt="Google" width="20" height="20" style="border-radius:8px;">
-<span class="name" style="color: #00361d;">Whatsapp</span>
-</a>
-<strong style="border: none; font-size: 16px; font-weight: bold;"> | </strong>
-<a href="https://www.incometax.gov.in/iec/foportal/" target="_blank" style="display:flex; align-items:center; gap:8px; text-decoration:none; color: black; font-weight:bold;">
-<img src="https://upload.wikimedia.org/wikipedia/commons/1/13/Logo_of_Income_Tax_Department_India.png?utm_source=commons.wikimedia.org&amp;utm_campaign=index&amp;utm_content=original" alt="Google" width="20" height="20" style="border-radius:8px;">
-<span class="name" style="color: #00361d;">ITR Login</span>
-</a>
-<strong style="border: none; font-size: 16px; font-weight: bold;"> | </strong>
-<a href="https://chatgpt.com/" target="_blank" style="display:flex; align-items:center; gap:8px; text-decoration:none; color: black; font-weight:bold;">
-<img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMDIzNGhlOTZ3aG81OWMyeTA3b3N4c3lpaGMzMDQ3aGU2cjdsZnZ5aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/f0VbswUmSY6X1cBz4C/giphy.gif" alt="Google" width="20" height="20" style="border-radius:8px;">
-<span class="name" style="color: #00361d;">Chat GPT</span>
-</a>
-<strong style="border: none; font-size: 16px; font-weight: bold;"> | </strong>
-<a href="https://www.youtube.com/" target="_blank" style="display:flex; align-items:center; gap:8px; text-decoration:none; color: rgb(109, 1, 1); font-weight:bold;">
-<img src="https://cliply.co/wp-content/uploads/2019/07/371907120_YOUTUBE_ICON_TRANSPARENT_400.gif" alt="Google" width="20" height="20" style="border-radius:8px;">
-<span class="name" style="color: #830000;">You Tube</span>
-</a>
-</div>
-</div>  <!-- == --------- .......... Footer Row ....... Stop xxx ......... ---------- === -->
- </div>
- <!-- ================= ------ Footer Div Stop -------  xxx =========================== --> 
+/* ===== BUTTONS ===== */
+.form-container input[type="submit"],
+.form-container input[type="button"],
+.form-container button {
+    background-color: #080808;
+    color: #f6f6f8;
+
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+
+    padding: 10px;
+    border-radius: 6px;
+
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.form-container input[type="submit"]:hover,
+.form-container input[type="button"]:hover,
+.form-container button:hover {
+    background-color: #575555;
+    transform: translateY(-2px);
+}
+
+#search5792Bar {
+    background-color: #424242;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+    box-sizing: border-box;
+  }
+
+  #search5792Input {
+    flex: 1;
+    background-color: #fdfdf6;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+  }
+
+  #search5792Bar label { font-weight: bold; color: rgb(247, 244, 244); margin-left: 10px;}
+  #search5792Bar input[type="date"] { padding: 4px 60px; border-radius: 4px;border: 1px solid #ccc; font-size: 14px;}
+
+/* Table Styling */
+/* Container to control table width and responsiveness */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
  
- <!-- ===========================Current date and time Script Start Hare ----------Start--- -->
- <script>
-function displayCurrentDateTime() {
-const now = new Date();
+ /* Table container ************/
+table{
+    width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  background: #ffffff;
+  border: 1px solid #d0d0d0;
 
-// Formatting options
-const options = { 
-    weekday: 'long', 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric', 
-    hour: '2-digit', 
-    minute: '2-digit', 
-    second: '2-digit' 
-};
+  }
 
-// Formatting date and time
-const formattedDateTime = now.toLocaleString('en-US', options);
+/* Optional heder alwayas fix on top and table scrolling  */
+  table{
+  overflow-x: auto;
+  display: block;
+  max-height: 750px; /* Optional scrolling */
+  }
 
-// Displaying in the div
-document.getElementById("currentDateTime").textContent = `Today: ${formattedDateTime}`;
+  /* Table border & cell style */
+th {
+   background: #01305c;
+  color: #ffffff;
+  padding: 10px;
+  border: 1px solid #b5b5b5;
+  text-align: left;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  white-space: nowrap;
+  border-bottom:5px solid #dfc206;
+  }
+ td {
+   padding: 8px 10px;
+  border: 1px solid #e0e0e0;
+  vertical-align: top;
+  word-wrap: break-word; /* Wrap long text */
+  white-space: normal;
+  }
+  /* Header design */
+  tr:nth-child(even) {
+  background-color: #f9f9f9;
 }
-
-// Call the function on page load to show the current date and time
-displayCurrentDateTime();
-
-// Update the date and time every second
-setInterval(displayCurrentDateTime, 1000);
-</script>
-<!-- ===========================Current date and time Script Stop Hare ----------XXX--- -->
-<!-- ============ ------ =============== --------------------- ===========  Footer Area Stop ================-------  xxx =========================== -->
-
-
-
-<!-- ============ -----------------Top Bar/Worksapce/Status Bar CSS & Div Start ---  Start =========================== -->
-<style>
-/* Top Toolbar */
-.top-toolbar{ position:fixed; top:0; left:0;width:100%; height:40px;display:flex;justify-content:center;align-items:center;
-    background:linear-gradient(#ffffff,#f3f4f6);
-    border-bottom:1px solid #bfbfbf;
-    box-shadow:0 2px 8px rgba(0,0,0,.08);
-    border-bottom: 3px solid salmon;
-    z-index:9999;
-}
-
-/* Center Content */
-.toolbar-content{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:12px;
-    margin:0 auto;
-    flex-wrap:wrap;
-}
-
-/* Input & Select */
-.toolbar-content input,
-.toolbar-content select{
-    height:38px;
-    min-width:180px;
-    padding:0 12px;
-    border:1px solid #cfcfcf;
-    border-radius:6px;
-    font-size:14px;
-    outline:none;
-}
-
-/* Buttons */
-.toolbar-content button{
-    height:38px;
-    padding:0 18px;
-    background:#ffffff;
-    color:#333;
-    border:1px solid #cfcfcf;
-    border-radius:6px;
-    box-shadow:0 1px 2px rgba(0,0,0,.08);
-    cursor:pointer;
-    transition:.25s;
-}
-
-.toolbar-content button:hover{
-    background:#e8f0fe;
-    border-color:#0d6efd;
-    color:#0d6efd;
-}
-
-/* ------- right site panal ------------*/
-.right-fixed-panel{
-    position: fixed;
-
-    top: 45px;      /* Header के नीचे */
-    right: 0;
-    bottom: 60px;   /* Footer के ऊपर */
-    width: 40%;
-    background: #ebeaea;
-    border-radius: 8px 0 0 8px;
-    box-shadow: -2px 0 8px rgba(0,0,0,0.15);
-    z-index: 999;
-}
-
-.workspace{
-    position: fixed;
-    top: 45px;      /* Header के नीचे */
-    left: 0;
-    bottom: 60px;   /* Footer के ऊपर */
-    width: 60%;
-    background: #f4f4f4;
-    border-radius: 8px 0 0 8px;
-    box-shadow: -2px 0 8px rgba(0,0,0,0.15);
-    z-index: 999;
-}
-/*--------*/
-   .tracker-side-panel{
-    flex: 1; display: flex; flex-direction: column;
-    justify-content: center;   /* Vertical Center */
-    align-items: center;       /* Horizontal Center */
-    gap: 15px; text-align: center;
-}
-    .tracker-box { background: #ebeaea; border: 2px solid var(--border-dark); padding: 15px; max-height: 600px; width: 700px; overflow-y: auto;}
-    .tracker-box h3 { margin-top: 0; color: var(--tally-blue); font-size: 15px; border-bottom: 2px solid var(--tally-blue); padding-bottom: 5px; text-transform: uppercase;}
+  /* Row hover effect */
+  tr:hover td {
+   background: #fccc49;
+ color: rgb(0, 15, 15);
+  transition: background-color 1s ease, color 1s ease;
+  }
 </style>
-</head>
-
-<body>
-
-<!-- ============ ---------- Top Bar Start ----------- ============ -->   
-<div class="top-toolbar">
-
-    <strong>Search Voucher: &nbsp;&nbsp;</strong>
-    <div class="search-container">
- <input type="text" id="universalSearchInput" class="search-box" placeholder="🔍 Search Sheet Records (Buyer, Job, Inv, Veh)..." autocomplete="off">
-        <ul id="universalSearchDropdown" class="universal-search-dropdown"></ul>
-         </div> 
-<button type="button" style="border: none;background-color: transparent;color: rgb(107, 0, 0);cursor: pointer;" id="triggerModalBtn">➕ New Entry</button>
-
-</div>
 
 
 
+  <body style=" margin: 0; display: flex;justify-content: center; align-items: center; background-color: rgb(9, 9, 9);">
+
+  <div style="background-color: rgb(247, 249, 249); color: #004d80; font-weight: bold; border: 10px solid rgb(2, 85, 100); width: 10in; height: 18in; box-sizing: border-box; ">
 
 
-<!-- ============ ---------- Right Panal / Status Bar Start ----------- ============ --> 
-<div class="right-fixed-panel">
-     
-      <div class="tracker-side-panel">
-        <div class="tracker-box">
-            <h3>⏳ Sheet Processing Lists</h3>
-            <div id="logsView"></div>
-        </div>
+  <div style="text-align:center; background-color: #920601; color: white; font-weight: bold;"> <strong>Imprest Voucher Data Entry</strong>  </div> 
 
-        <div class="tracker-box" style="max-height: 550px;">
-            <h3>📅 Recent Saved (Last 5 Records)</h3>
-            <div id="recentLogsView"></div>
-        </div>
+  <br/>
+  <div class="form-container">
+  <h2 style="display:flex; justify-content:center;">Welcome, <span id="username"></span></h2>
+
+  <!-- MAIN FORM -->
+  <form id="mainAFICMForm">
+
+  <input type="hidden" name="SNo" id="sNo">
+  <input type="hidden" name="Timestamp" id="TimestampAFICM">
+
+  <label for="vtype">Voucher Name:</label>
+  <select id="vtype" name="vtype" style="background-color:#f8efed;" required></select>
+
+  <label for="afi01">User Name:</label>
+  <select id="afi01" name="Type" style="background-color:#f8efed;" required></select>
+
+  <label">Select Transection Type*:</label>
+  <select id="afi02" name="esmC"  style="background-color: #f0f6ed;"   required>
+  <option value="PAYMENT">Payment</option>
+  <option value="RECEIPT" style="color: rgb(243, 138, 138);">Receipt</option>
+  </select>
+
+  <label">Enter Date*:</label>
+  <input type="date" id="afi03"  style="background-color: #f0f6ed;" name="esmD" required>
+
+
+  <!-- Searchable Ledger Dropdown -->
+    <div class="dropdownWrapper">
+    <label">Search & Select Ledger*:</label>
+    <input type="text" id="afi04" name="esmE" class="dropdownCLSearch" style="background-color: #f0f6ed;" required placeholder=" Search Ledger..." />
+    <ul id="ledgerDropdown" class="dropdownList"></ul>
     </div>
-   
-</div>
-<!-- ============ -----------------Top Bar/Worksapce/Status Bar CSS & Div Stop ---  XXX =========================== -->
 
 
 
+  <label">Enter Amount*:</label>
+  <input type="number" id="afi05" name="esmF" style="background-color: #f0f6ed;"  placeholder="Amount" required>
+
+  <label">Enter Narration if any:</label>
+  <input type="text" id="afi06" name="esmG" style="background-color: #f0f6ed;" placeholder="Narration">
+
+  <input type="submit" id="submitAFICMButton" value="Submit">
+  <button type="button" id="openMODIFYBtn" style="border: none; color: #012458; font-weight: bold;  cursor: pointer; background-color: #fafafa; font-weight: bold;"> Click to Modify</button>
+
+  <br/><br/><br/>
+  Fetched SR:
+  <span id="fetchedSRNo"></span>
+  <br/>
+
+  <input type="button" id="deleteAFICMButton" value=" Delete" style="display:none; background:#dcfaf5;color:#5a0202; border: none; cursor: pointer; width: 2in;">
+  <input type="button" id="newEntryAFICMButton"  value=" New Entry"  style="display:none; background:#dcfaf5; color:#004d12; border: none; cursor: pointer; width: 2in;">
+  <strong id="waitAFIMessage" style="display:none;"></strong>
+  </form>
+
+  </div>
+
+  <div id="search5792Bar" style="padding: 5px 10px;">
+
+  <button id="refreshcmivTableBtn" style="border: none; color: rgb(252, 198, 196); font-weight: bold;  cursor: pointer; background: #424242;"> Refresh</button>
+  <button onclick="printCUSERTable()" style="border: none; color: rgb(228, 252, 196); font-weight: bold;  cursor: pointer; background: #424242;"> Print Table</button>
+  <input type="text" id="searchCLedger" style="width: 4in; border: #000 5px; cursor: pointer; border-radius: 4px;" placeholder=" Search in Table..." />
+
+  </div>
 
 
+  <!-- Table Output -->
+  <div id="tableContainer" style="background-color: #fef8f6;"></div>
 
+  <br/><br/>
+  <span style="color:rgb(129, 1, 1);font-size:130%;font-family:Magneto;">eS |</span> 
+  <span style="color:#004d80;font-size:130%;font-family:Magneto;">MTally</span>
+ 
 
+  </div> 
+  </body>
 
-
+<!-- ==================  ledger dropdown with table and user voucher salection and user authrised section script start hare ============================ -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AFI TexNexa - Packing List</title>
-    <style>
-        :root {
-            --tally-blue: #005a70;
-            --tally-bg: #e6f2f5;
-            --border-dark: #dddbdb;
-            --text-dark: #002344;
-            --text-gray: #4b5563;
-            --row-light-blue: #d1ecf1; 
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            color: var(--text-dark);
-            background-color: #f4f4f4;
-            margin: 20px;
-            padding: 0;
-        }
-
-        .search-container { position: relative; display: inline-block; }
-        .search-box {
-            padding: 6px 10px;
-            width: 380px;
-            border: 1px solid var(--tally-blue);
-            border-radius: 4px;
-            font-size: 13px;
-        }
-
-        .universal-search-dropdown {
-            position: absolute;
-            top: 100%; left: 0; right: 0;
-            background: white;
-            border: 1px solid var(--tally-blue);
-            max-height: 250px;
-            overflow-y: auto;
-            z-index: 5000;
-            margin: 0; padding: 0;
-            list-style: none;
-            display: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-        }
-        .universal-search-dropdown li {
-            padding: 8px 12px;
-            cursor: pointer;
-            font-size: 12px;
-            border-bottom: 1px solid #eee;
-            color: var(--text-dark);
-            text-align: left;
-        }
-        .universal-search-dropdown li:hover { background-color: var(--tally-bg); color: var(--tally-blue); }
-
-        .btn-group { display: flex; gap: 8px; }
-        .btn {
-            padding: 8px 14px;
-            font-weight: bold;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 4px;
-            font-size: 13px;
-        }
-        .btn-new { background-color: #28a745; }
-        .btn-save { background-color: var(--tally-blue); display: none; } 
-        .btn-print { background-color: #6c757d; }
-        .btn-update { background-color: #ffc107; color: #000; padding: 3px 8px; font-size: 11px; border-radius: 3px; font-weight: bold; border: none; cursor: pointer; }
-        .btn-delete { background-color: #dc3545; color: #fff; padding: 3px 8px; font-size: 11px; border-radius: 3px; font-weight: bold; border: none; cursor: pointer; }
-        .btn-mini-print { background-color: #005a70; color: #fff; padding: 3px 8px; font-size: 11px; border-radius: 3px; font-weight: bold; border: none; cursor: pointer; margin-right: 4px; }
-        .document-box {
-            flex: 2.6;
-            background: #ffffff;
-            padding: 20px;
-            border: 2px solid var(--border-dark);
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .log-card {
-            background: #fafafa;
-            border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 10px;
-            font-size: 12px;
-            line-height: 1.4;
-        }
-
-        .header-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-        .header-table td { border: 1px solid var(--border-dark); padding: 8px; font-size: 13px; vertical-align: top; }
-
-        .company-title { font-size: 18px; font-weight: bold; color: var(--tally-blue); margin: 0 0 4px 0; }
-        .doc-header-title { font-size: 20px; font-weight: bold; letter-spacing: 1px; text-align: center; margin: 5px 0; }
-
-        .input-field {
-            width: 100%; border: none; outline: none; font-family: inherit; font-size: 13px; padding: 2px 0; background: transparent;
-        }
-        .input-field:focus { background-color: #f0f8ff; }
-        .input-field:disabled { background-color: #f3f4f6; cursor: not-allowed; }
-
-        .dropdown-menu {
-            position: absolute; top: 100%; left: 0; right: 0;
-            background: #ffffff; border: 1px solid var(--tally-blue);
-            max-height: 160px; overflow-y: auto; z-index: 1000;
-            margin: 0; padding: 0; list-style: none;
-        }
-        .dropdown-menu li { padding: 6px 10px; cursor: pointer; font-size: 12px; border-bottom: 1px solid #eee; text-align: left; color: #000; }
-        .dropdown-menu li:hover { background-color: var(--tally-bg); color: var(--tally-blue); }
-
-        .items-table { width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 5px; }
-        .items-table th, .items-table td { border: 1px solid rgb(241, 241, 241); padding: 6px; font-size: 13px; }
-        .items-table th {background-color: rgb(0, 69, 114); color: aliceblue; font-weight: bold; text-transform: uppercase; }
-
-        .row-main-head { background-color: var(--row-light-blue) !important; }
-        .row-main-head .input-field { font-weight: bold; font-style: normal !important; color: #000; }
-        
-        .row-manual-italic { background-color: #ffffff !important; }
-        .row-manual-italic .input-field { font-style: italic !important; font-weight: normal !important; color: #000; }
-
-        .row-remark-head { background-color: #343a40 !important; color: #ffffff !important; }
-        .row-remark-head .input-field { color: #ffffff !important; font-weight: bold; }
-
-        .text-center { text-align: center; }
-        .text-right { text-align: right; }
-        .bold { font-weight: bold; }
-
-        .btn-add-row {
-            background-color: var(--tally-blue); color: white; border: none;
-            padding: 5px 12px; font-size: 12px; font-weight: bold; border-radius: 3px;
-            cursor: pointer; margin-bottom: 10px;
-        }
-
-        .footer-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        .footer-table td { border: 1px solid var(--border-dark); padding: 8px; font-size: 13px; }
-
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4); display: flex; justify-content: center; align-items: center;
-            z-index: 6000; visibility: hidden; opacity: 0; transition: all 0.3s ease;
-        }
-        .modal-overlay.active { visibility: visible; opacity: 1; }
-        
-        .modal-card { background: #ffffff; padding: 20px; border-radius: 4px; width: 320px; border: 2px solid var(--tally-blue); }
-        .modal-card h4 { margin: 0 0 12px 0; color: var(--tally-blue); font-size: 16px; }
-        .modal-group { margin-bottom: 10px; position: relative; }
-        .modal-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 3px; }
-        .modal-group input, .modal-group select { width: 100%; padding: 6px; font-size: 13px; border: 1px solid #ccc; border-radius: 3px; box-sizing: border-box; }
-
-        .preview-card { background: #ffffff; padding: 25px; width: 850px; max-height: 90vh; overflow-y: auto; border: 3px solid var(--tally-blue); border-radius: 4px; }
-        
-        #loader { display: none; position: fixed; top: 10px; left: 50%; transform: translateX(-50%); background: #ffc107; color: black; padding: 8px 20px; font-weight: bold; border-radius: 4px; z-index: 9999; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-   
-   </style>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Imprest Voucher - MIPL</title>
 </head>
-<body>
-
-<div id="loader">🔄 Connecting Google Sheets...</div>
-
-<!-- ============ ---------- Workspace Div  Start Here ----------- ============ --> 
-<div class="workspace">
-    <div class="document-box">
-        <table class="header-table">
-            <tbody>
-                <tr>
-                    <td width="60%">
-                        <div class="company-title"> Multitech Infracon Pvt. Ltd.</div>
-                        <div><strong>GSTIN/UIN:</strong> 05AAMCM9896P1Z7 | <strong>CIN:</strong> U45200UR2019PTC010294</div>
-                        <div><strong>State Name:</strong> Uttarakhand, <strong>Code:</strong> 05</div>
-                        
-                        
-    <div style="margin-top: 4px; font-size: 12px; color: #4b5563; font-family: Arial, sans-serif;">
-    <strong>Address:</strong> 
-    <!-- Yeh select dropdown dikhne me ekdum normal text jaisa lagega -->
-    <select onchange="this.style.width = (this.options[this.selectedIndex].text.length * 7) + 'px';" id="unitadd"
-            style="font-size: 12px; color: #4b5563; border: none; background: transparent; font-family: Arial, sans-serif; font-weight: bold; padding: 0; margin: 0; outline: none; cursor: pointer; -webkit-appearance: none; -moz-appearance: none; appearance: none;">
-        <option value="unit1">Unit - 2 : NH 74 12th Km Stone, Vill Dabhora Mustakam Bazpur Road Kashipur, U.S Nagar Uttarakhand 244713</option>
-        <option value="unit2">Unit - 1 : T-2 , BEHIND KENDRIYA SCHOOL, Opp IMT College, Bazpyr Road Kashipr,Uttarakhand 244713</option>
-        <option value="unit3">Unit - 3 : Vill-Dabhora Ehatamali, AJeetput Road Kashipur, U.S Nagar Uttarakhand 244713</option>
-    </select>
-</div>
+</head>
 
 
-                    </td>
-                    <td width="40%">
-                        <div><strong id="docno">---</strong> <input type="text" id="metaPkgListNo" class="input-field bold" style="width: 50%; display: inline; color: var(--tally-blue);" readonly></div>
-                        <div><strong>Date:</strong> <input type="text" id="metaDate" class="input-field" style="width: 70%; display: inline;" readonly></div>
-                        <div><strong>Job / Ref No:</strong> <input type="text" id="metaJobNo" class="input-field" style="width: 60%; display: inline;" readonly></div>
-                        <div><strong>Inv/Challan No: <span style="color:red;">*</span></strong> <input type="text" id="metaInvoiceNo" class="input-field" style="width: 65%; display: inline;" placeholder="Required to save"></div>
-                        <div><strong>Vehicle No: <span style="color:red;">*</span></strong> <input type="text" id="metaVehicleNo" class="input-field" style="width: 65%; display: inline;" placeholder="e.g. UK18CA3770" required></div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+  <style>
+    .dropdownWrapper {
+      position: relative;
+      width: 300px;
+      }
 
-        <div class="doc-header-title" id="docname"> PACKING LIST</div>
-
-        <table class="header-table">
-            <thead>
-                <tr>
-                  <!-- The <th> Element with the Input Field Inside -->
-<th align="left" style="background-color: #f2f2f2; color: #000; border: 2px solid #d4d4d4; padding: 4px 8px;"> Buyer (Bill to)
-    <input type="text" id="buyerSearchInput" class="input-field bold" style="font-size: 14px; color: rgb(0, 61, 87);" readonly placeholder="Buyer Auto-Fetched on Update...">
-</th>
-
-<!-- The Short Script to Handle Auto-Fetched Data -->
-<script>
-setInterval(() => {
-    const input = document.getElementById('buyerSearchInput');
-    const th = input ? input.closest('th') : null;
-    if (th) {
-        if (input.value.trim() !== "") {
-            th.style.backgroundColor = "rgb(167, 249, 198)";
-            th.style.color = "rgb(187, 9, 0)"; // Changes text to white so it's readable on red background
-        } else {
-            th.style.backgroundColor = "#f2f2f2"; // Original background color
-            th.style.color = "#000"; // Original text color
-        }}}, 300); // Checks every 0.3 seconds for auto-fetched data
-</script>
-
-                </tr>
-            </thead>
-
-
-            <tbody>
-                <tr>
-                    <td>
-                      <!--   <input type="text" id="buyerSearchInput" class="input-field bold" style="font-size: 14px;" readonly placeholder="Buyer Auto-Fetched on Update...">  -->
-                        <div id="displayAddress" style="margin-top: 4px; font-size: 12px; color: var(--text-gray);">No data loaded.</div>
-                        <div style="margin-top: 4px; font-size: 12px;">
-                            <strong>GSTIN:</strong> <span id="displayGstin">-</span> | <strong>State:</strong> <span id="displayState">-</span>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <table class="items-table" id="entryGrid">
-            <thead>
-                <tr>
-                    <th width="8%" class="text-center">S.No.</th>
-                    <th width="48%">Description of Head of Item</th>
-                    <th width="16%">HSN / Part No.</th>
-                    <th width="14%" class="text-right">Qty</th>
-                    <th width="14%">Unit</th>
-                </tr>
-            </thead>
-            <tbody id="gridBody"></tbody>
-        </table>
-        
-        <div style="display: flex; gap: 10px;">
-            <button type="button" class="btn-add-row" id="insertRowBtn">+ Add New Line Row</button>
-              </div>
-
-        <table class="footer-table">
-            <tbody>
-                <tr>
-                    <td width="60%" class="text-right bold">Total Invoice Amount: <span style="color:red;">*</span></td>
-                    <td width="40%" class="bold">
-                        Rs. <input type="text" id="metaTotalAmount" class="input-field bold" style="width: 80%; display: inline-block;" placeholder="Required to save">
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div style="text-align: center; margin-top: 15px; display: flex; justify-content: center; gap: 10px;"> 
-             <button id="customProfessionalPrintBtn" style="color: #000; border: none; background-color: transparent; cursor: pointer; font-weight: bold;""> 🖨️ Print Temproary View</button>
-            <button type="button" class="btn" style="background-color: #17a2b8; color: white; font-weight: bold; display: none; padding: 8px 14px; border: none; border-radius: 4px; font-size: 13px; cursor: pointer;" id="partialSaveDataBtn">📝 Partial Save</button>
-            <button type="button" class="btn btn-save" style="background-color: #28a745;" id="commitDataBtn">💾 Final Save</button>
-        </div>
-       
-
-
-    </div>
-
-</div>  <!-- ============ ---------- Workspace Div  Stop Here ----------- XXX ============ --> 
-
-<!-- ============ ---------- New Entry Layout Div Start Here ----------- Start ============ --> 
-
-<div class="modal-overlay" id="wizardModal">
-    <div class="modal-card">
-        <h4>Generate Packing List Wizard</h4>
-        <div class="modal-group">
-            <label>Document Type *:</label>
-            <select id="wizDocType">
-                <option value="P-List No." data-docname="PACKING LIST" selected>Packing List</option>
-                <option value="NRGP No." data-docname="NON RETURNABLE GATE PASS">Non Returnable Gate Pass</option>
-                <option value="RGP No." data-docname="RETURNABLE GATE PASS">Returnable Gate Pass</option>
-                <option value="ST. No." data-docname="STOCK TRANSFER">Stock Transfer</option>
-            </select>
-        </div>
-        <div class="modal-group">
-            <label>Date *</label>
-            <input type="date" id="wizDate" value="" required>
-        </div>
-        <div class="modal-group">
-            <label>Job / Reference No. *</label>
-            <input type="text" id="wizJobNo" placeholder="e.g. 285">
-        </div>
-         <div class="modal-group">
-            <label>Vehicle No. *</label>
-            <input type="text" id="wizVclNo" placeholder="e.g. UK18CA3770">
-        </div>
-        <div class="modal-group">
-            <label>Buyer Name *</label>
-            <input type="text" id="wizBuyerInput" placeholder="Type to search buyer..." autocomplete="off" required>
-            <ul id="wizBuyerDropdown" class="dropdown-menu" style="display:none; position:absolute; width:100%;"></ul>
-        </div>
-        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px;">
-            <button type="button" class="btn" style="background-color: #6c757d;" id="dismissWizBtn">Cancel</button>
-            <button type="button" class="btn btn-new" id="executeWizBtn">Generate & Sync</button>
-        </div>
-    </div>
-</div>
-
-<!-- ============ ---------- New Entry Layout Div Stop Here ----------- XXX ============ --> 
-
-<!-- ============ ---------- Print Layout Div Start Here ----------- Start ============ --> 
-<div class="modal-overlay" id="previewModal">
-    <div class="preview-card">
-        <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:2px solid #005a70; padding-bottom:10px;">
-            <h3 style="margin:0; color:var(--tally-blue);" id="previewModalTitle">📋 Packing List Record View</h3>
-            <div>
-                <button type="button" class="btn" style="background-color:#005a70;" id="printPreviewBtn">🖨️ Print</button>
-                <button type="button" class="btn" style="background-color:#ffc107; color:#000;" id="editPreviewBtn">⚡ Edit Record</button>
-                <button type="button" class="btn" style="background-color:#6c757d;" id="closePreviewBtn">Close</button>
-            </div>
-        </div>
-        <div id="previewPrintArea"></div>
-    </div>
-</div>
-<!-- ============ ---------- Print Layout Div Stop Here ----------- XXX ============ --> 
-
-
-<script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyYwFZ3MrV-vt5Tq_ICXrIQCUPwVxhS3e-O0M1dVYr43i8V6JIEpMSctJo21zRscg80MA/exec"; 
-
-    const sheetApiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-    const remoteSpreadsheetId = "1gOdnvS_To2tGVuIMtMdNGFT4cCkqyL5gHqBWjnhNG_4";
-    const addressEndpoint = `https://sheets.googleapis.com/v4/spreadsheets/${remoteSpreadsheetId}/values/ADDRESS!A:M?key=${sheetApiKey}`;
-    const supportEndpoint = `https://sheets.googleapis.com/v4/spreadsheets/${remoteSpreadsheetId}/values/SUPPORT!A:D?key=${sheetApiKey}`;
-
-    let memoryClients = [];
-    let memorySupportItems = [];
-    let applicationDatabase = [];
-    let partiallySavedPlNos = new Set(); 
-    let selectedActivePreviewPlNo = "";
-
-    const PREDEFINED_REMARKS = [
-        "Note For Sale. Material Return After Compilation of Work.",
-        "Note For Sale, No sale Transaction is Invoied",
-        "Note For Sale. Machine Return After Compilation of Work.",
-        "Note for Sale Job Work Only, Material Return After Job Work.",
-        "The machine is being sent for repair. It will be returned to the plant after repair.",
-        "Stock Transfer - Unit 1 to Unit 2",
-        "Stock Transfer - Unit 1 to Unit 3",
-        "Stock Transfer - Unit 2 to Unit 1",
-        "Stock Transfer - Unit 2 to Unit 3",
-        "Stock Transfer - Unit 3 to Unit 2"
-    ];
-
-    const gridBody = document.getElementById('gridBody');
-    const wizardModal = document.getElementById('wizardModal');
-    const previewModal = document.getElementById('previewModal');
-    const metaPkgListNo = document.getElementById('metaPkgListNo');
-    const metaDate = document.getElementById('metaDate');
-    const metaJobNo = document.getElementById('metaJobNo');
-    const metaInvoiceNo = document.getElementById('metaInvoiceNo');
-    const metaVehicleNo = document.getElementById('metaVehicleNo');
-    const metaTotalAmount = document.getElementById('metaTotalAmount');
-    const buyerSearchInput = document.getElementById('buyerSearchInput');
-    const logsView = document.getElementById('logsView');
-    const recentLogsView = document.getElementById('recentLogsView');
-    const commitDataBtn = document.getElementById('commitDataBtn');
-    const partialSaveDataBtn = document.getElementById('partialSaveDataBtn');
-    const loader = document.getElementById('loader');
-
-    document.getElementById('wizDocType').addEventListener('change', function() {
-        const selectedOption = this.options[this.selectedIndex];
-        document.getElementById('docno').innerHTML = selectedOption.value + ":";
-        document.getElementById('docname').innerHTML = selectedOption.getAttribute('data-docname');
-    });
-
-    function showLoader(text) { loader.innerText = text; loader.style.display = "block"; }
-    function hideLoader() { loader.style.display = "none"; }
-
-   function cleanAndFormatDate(rawDate) {
-    if (!rawDate) return "";
-    
-   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-if (typeof rawDate === 'string' && rawDate.includes("T")) {
-    const dt = new Date(rawDate);
-    if (!isNaN(dt.getTime())) {
-        const day = dt.getDate();
-        const month = months[dt.getMonth()];
-        const year = dt.getFullYear();
-        return `${day}-${month}-${year}`;
+    .dropdownSearch {
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #a3a1a1;
+      border-radius: 4px;
     }
+    .dropdownList {
+      list-style: none;
+      border: 1px solid #ccc;
+      max-height: 5000px;
+      width: 3in;
+      overflow-y: auto;
+      margin: 0;
+      padding: 0;
+      display: none;
+      background: white;
+      position: absolute;
+      width: 100%;
+      z-index: 1000;
+      border-radius: 0 0 4px 4px;
+    }
+    /* Style for the entire dropdown container */
+    #ledgerDropdown.dropdownList {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    z-index: 999;
+    width: 100%;
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    background-color: white;
+    color: #000;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+    font-size: 16px;
+    border-radius: 4px;
+    }
+
+  /* Style for each dropdown item */
+  #ledgerDropdown.dropdownList li {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  /* Highlight on hover */
+  #ledgerDropdown.dropdownList li:hover {
+    background-color: #007BFF;
+    color: white;
+   }
+
+    /* Optional: remove border from last item */
+    #ledgerDropdown.dropdownList li:last-child {
+    border-bottom: none;
+    }
+    .positive {
+      color: RED;
+      font-weight: bold;
+      }
+  </style>
+</head>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+
+/* =====================================================
+   🔑 GOOGLE SHEET CONFIG
+===================================================== */
+const apiCLKey  = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheetCLId = "1vjkI_bpHNR6Tna17FISridqXSvCUnELA5oMgnAqzbO0";
+
+/* =====================================================
+   MASTER DATA
+===================================================== */
+const voucherList = {
+  CMVCR:{value:"CMVCR",text:"Cash User Voucher"},
+  IVVCR:{value:"IVVCR",text:"Imprest Voucher (IV) Voucher"}
+};
+
+const cashVoucherUsers = {
+  MA:{value:"MA",text:"MUKHTAR"},
+  TA:{value:"TA",text:"TUSHAR"},
+  JLN:{value:"JLN",text:"JOURNAL"},
+  BANK:{value:"BANK",text:"BANK"},
+  DB:{value:"DB",text:"DAYBOOK"}
+};
+
+const ivVoucherUsers = {
+  IV01:{value:"IV01",text:"Amarbhadur"},
+  IV02:{value:"IV02",text:"Vijender Sharma"},
+  IV03:{value:"IV03",text:"Rahul Kumar"},
+  IV04:{value:"IV04",text:"Raju"},
+  IV05:{value:"IV05",text:"Mannu"},
+  IV06:{value:"IV06",text:"Aakash"},
+  IV07:{value:"IV07",text:"Manjeet"},
+  IV08:{value:"IV08",text:"Nitin Kumar"},
+  IV09:{value:"IV09",text:"Sunil Yadav"},
+  IV10:{value:"IV10",text:"Ajay Kumar"},
+  IV11:{value:"IV11",text:"Ravinder Kumar"},
+  IV12:{value:"IV12",text:"Mahender"},
+  IV13:{value:"IV13",text:"Suresh"},
+  IV16:{value:"IV16",text:"Parveen"},
+  IV17:{value:"IV17",text:"Sudhanshu"}
+};
+
+const defaultSelections = {
+  "Amarbhadur":{voucher:"IVVCR",user:"IV01"},
+  "Vijender Sharma":{voucher:"IVVCR",user:"IV02"},
+  "Mukhtar (Admin)":{voucher:"CMVCR",user:"MA"},
+  "Nitin Kumar":{voucher:"IVVCR",user:"IV08"},
+  "Rahul Kumar":{voucher:"IVVCR",user:"IV03"},
+    "Amarbhadur":{voucher:"IVVCR",user:"IV01"},
+  "Parveen":{voucher:"IVVCR",user:"IV16"},
+   "Sudhanshu":{voucher:"IVVCR",user:"IV17"}
+};
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+const voucherSel=document.getElementById("vtype");
+const userSel=document.getElementById("afi01");
+const usernameEl=document.getElementById("username");
+const tableBox=document.getElementById("tableContainer");
+
+/* =====================================================
+   STATE
+===================================================== */
+let fullData=[];
+let lastRenderedData=[];
+let dataLoaded=false;
+
+/* =====================================================
+   UTIL
+===================================================== */
+function setSingleOption(sel,data){
+  sel.innerHTML="";
+  const o=document.createElement("option");
+  o.value=data.value;
+  o.textContent=data.text;
+  sel.appendChild(o);
+  sel.value=data.value;
 }
 
-if (typeof rawDate === 'string' && rawDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
-    const parts = rawDate.split('-');
-    const year = parts[0];
-    const month = months[parseInt(parts[1], 10) - 1];
-    const day = parseInt(parts[2], 10); 
-    return `${day}-${month}-${year}`;
+/* =====================================================
+   DEFAULT APPLY
+===================================================== */
+function applyDefaults(){
+  const u=usernameEl.innerText.trim();
+  if(!defaultSelections[u]) return false;
+
+  const d=defaultSelections[u];
+  setSingleOption(voucherSel,voucherList[d.voucher]);
+  const src=d.voucher==="CMVCR"?cashVoucherUsers:ivVoucherUsers;
+  setSingleOption(userSel,src[d.user]);
+  handleSelection();
+  return true;
 }
 
-return rawDate;
+const obs=new MutationObserver(()=>{
+  if(applyDefaults()) obs.disconnect();
+});
+obs.observe(usernameEl,{childList:true,subtree:true});
+
+/* =====================================================
+   EVENTS
+===================================================== */
+voucherSel.onchange=handleSelection;
+userSel.onchange=handleSelection;
+
+/* =====================================================
+   SHEET CONFIG
+===================================================== */
+function getSheetConfig(){
+  if(voucherSel.value==="CMVCR")
+    return {sheet:"CMDATA",range:"A:G",mode:"CMDATA"};
+  if(voucherSel.value==="IVVCR")
+    return {sheet:"IVCALC",range:"N:T",mode:"IV"};
+  return null;
 }
 
-    async function assembleCoreData() {
-        showLoader("🔄 Fetching Masters & Sheets...");
-        try {
-            const [clientBlob, supportBlob] = await Promise.all([
-                fetch(addressEndpoint).then(r => r.json()),
-                fetch(supportEndpoint).then(r => r.json())
-            ]);
-            if (clientBlob.values) memoryClients = clientBlob.values.slice(1);
-            if (supportBlob.values) memorySupportItems = supportBlob.values.slice(1);
-            
-            await fetchDatabaseFromGoogleSheet();
-        } catch (err) { console.error("Network fault:", err); }
-        hideLoader();
-    }
+/* =====================================================
+   SELECTION
+===================================================== */
+async function handleSelection(){
+  tableBox.innerHTML="";
+  dataLoaded=false;
+  if(!voucherSel.value||!userSel.value) return;
+  await loadSheetData();
+}
 
-    async function fetchDatabaseFromGoogleSheet() {
-        if(!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("YOUR_DEPLOYED")) return;
-        try {
-            const response = await fetch(GOOGLE_SCRIPT_URL);
-            const data = await response.json();
-            applicationDatabase = data.map(item => {
-                if (item.date) item.date = cleanAndFormatDate(item.date);
-                if (partiallySavedPlNos.has(item.plNo)) {
-                    item.status = 'PENDING';
-                }
-                return item;
-            });
-            renderPendingTracker();
-            renderRecentTracker();
-        } catch (e) { console.error("Error loading sheet logs:", e); }
-    }
+/* =====================================================
+   FETCH
+===================================================== */
+async function fetchSheetData(sheet,range){
+  const url=`https://sheets.googleapis.com/v4/spreadsheets/${sheetCLId}/values/${sheet}!${range}?key=${apiCLKey}`;
+  const r=await fetch(url);
+  const j=await r.json();
+  return j.values||[];
+}
 
-    const universalSearchInput = document.getElementById('universalSearchInput');
-    const universalSearchDropdown = document.getElementById('universalSearchDropdown');
+/* =====================================================
+   PROCESS
+===================================================== */
+function processRawData(rows,mode){
+  if(mode==="IV"){
+    return rows.slice(1)
+      .filter(r=>!["JNP","JNR"].includes((r[4]||"").toUpperCase()))
+      .map(r=>({
+        tno:r[0]||"",
+        type:r[1]||"",
+        drcr:r[2]||"",
+        dateStr:r[3]||"-",
+        dateObj:parseIVDate(r[3]),
+        ledger:r[4]||"",
+        amount:Number(r[5])||0,
+        narration:r[6]||"-"
+      }));
+  }
+  return rows.slice(1).map(r=>({
+    tno:r[0]||"",
+    type:r[1]||"",
+    drcr:r[2]||"",
+    date:r[3]||"-",
+    ledger:r[4]||"",
+    amount:Number(r[5])||0,
+    narration:r[6]||"-"
+  }));
+}
 
-    function filterUniversalSearch() {
-        const text = universalSearchInput.value.toLowerCase().trim();
-        universalSearchDropdown.innerHTML = '';
+/* =====================================================
+   LOAD
+===================================================== */
+async function loadSheetData(){
+  tableBox.innerHTML="⏳ Loading...";
+  const cfg=getSheetConfig();
+  const raw=await fetchSheetData(cfg.sheet,cfg.range);
+  fullData=processRawData(raw,cfg.mode);
+  dataLoaded=true;
+  setupLedgerSearch();
+  setupGlobalSearch();
+  applyFilter();
+}
 
-        if (!text) {
-            universalSearchDropdown.style.display = 'none';
-            return;
-        }
+/* =====================================================
+   FILTER
+===================================================== */
+function applyFilter(){
+  if(!dataLoaded) return;
+  const u=userSel.value;
+  lastRenderedData = u==="MA"
+    ? fullData.filter(r=>r.type==="MA"||r.type==="JNP")
+    : fullData.filter(r=>r.type===u);
+  renderTable(lastRenderedData);
+}
 
-        const matched = applicationDatabase.filter(x => {
-            const plNo = (x.plNo || '').toString().toLowerCase();
-            const jobNo = (x.jobNo || '').toString().toLowerCase();
-            const invoiceNo = (x.invoiceNo || '').toString().toLowerCase();
-            const buyerName = (x.buyer || '').toString().toLowerCase();
-            const vehicleNo = (x.vehicleNo || '').toString().toLowerCase();
+/* =====================================================
+   RENDER
+===================================================== */
+function renderTable(data){
+  if(!data.length){tableBox.innerHTML="No data";return;}
+  const isIV=voucherSel.value==="IVVCR";
+  let rows=[],bal=0;
 
-            return plNo.includes(text) || 
-                   jobNo.includes(text) || 
-                   invoiceNo.includes(text) || 
-                   buyerName.includes(text) ||
-                   vehicleNo.includes(text);
-        });
+  if(isIV){
+    const asc=[...data].sort((a,b)=>a.dateObj-b.dateObj||(+a.tno||0)-(+b.tno||0));
+    rows=asc.map(r=>{
+      bal+=(r.drcr==="RECEIPT"?r.amount:-r.amount);
+      return {...r,bal};
+    }).reverse();
+  }else{
+    rows=[...data].sort((a,b)=>(+a.tno||0)-(+b.tno||0))
+      .map(r=>{
+        bal+=(r.drcr==="PAYMENT"?-1:1)*r.amount;
+        return {...r,bal};
+      }).reverse();
+  }
 
-        if(matched.length === 0) {
-            universalSearchDropdown.innerHTML = '<li style="color:gray;text-align:center;padding:10px;">No matching records found</li>';
-            universalSearchDropdown.style.display = 'block';
-            return;
-        }
+  tableBox.innerHTML=`
+  <table border="1" width="100%" cellpadding="6">
+    <tr>
+      <th>T.No</th><th>User</th><th>Type</th><th>Date</th>
+      <th>Ledger</th><th>Narration</th><th>Amount</th><th>Balance</th>
+    </tr>
+    ${rows.map(r=>{
+      let style="";
+      if(r.drcr==="RECEIPT") style="color:red;font-weight:600";
+      if(r.drcr==="BILL") style="color:blue;font-weight:600";
+      if(r.drcr==="BILLDR") style="background:#eaeaea;color:green;font-weight:700";
+      return`
+      <tr style="${style}">
+        <td>${r.tno}</td><td>${r.type}</td><td>${r.drcr}</td>
+        <td>${isIV?r.dateStr:r.date}</td>
+        <td>${r.ledger}</td><td>${r.narration}</td>
+        <td>${r.amount}</td><td>${r.bal}</td>
+      </tr>`;
+    }).join("")}
+  </table>`;
+}
 
-        matched.forEach(res => {
-            const typeLabel = res.docName || "PACKING LIST";
-            const li = document.createElement('li');
-            li.innerHTML = `<strong>${res.plNo || 'N/A'}</strong> [${typeLabel}] | Job: ${res.jobNo || '—'} | <strong style="color: brown;">Inv. No.: ${res.invoiceNo}</strong> <br><small style="color:gray;">Buyer: ${res.buyer || '—'} | Veh: ${res.vehicleNo || '—'}</small>`;
-            
-            li.addEventListener('click', (e) => {
-                e.stopPropagation(); 
-                openPreviewPopupModal(res);
-                universalSearchDropdown.style.display = 'none';
-                universalSearchInput.value = '';
-            });
-            universalSearchDropdown.appendChild(li);
-        });
-        universalSearchDropdown.style.display = 'block';
-    }
+/* =====================================================
+   DATE PARSER
+===================================================== */
+function parseIVDate(d){
+  if(!d) return new Date(0);
+  const [dd,mon,yy]=d.split("-");
+  const m={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+  return new Date(+yy,m[mon],+dd);
+}
 
-    universalSearchInput.addEventListener('click', (e) => { e.stopPropagation(); filterUniversalSearch(); });
-    universalSearchInput.addEventListener('input', (e) => { e.stopPropagation(); filterUniversalSearch(); });
+/* =====================================================
+   GLOBAL SEARCH
+===================================================== */
+function setupGlobalSearch(){
+  const i=document.getElementById("searchCLedger");
+  if(!i) return;
+  i.oninput=()=>{
+    const q=i.value.toLowerCase();
+    renderTable(!q?lastRenderedData:
+      lastRenderedData.filter(r=>Object.values(r).some(v=>String(v).toLowerCase().includes(q)))
+    );
+  };
+}
 
-    const wizBuyerInput = document.getElementById('wizBuyerInput');
-    const wizBuyerDropdown = document.getElementById('wizBuyerDropdown');
-    wizBuyerInput.addEventListener('input', function() {
-        const query = this.value.toLowerCase().trim();
-        wizBuyerDropdown.innerHTML = '';
-        if(!query) { wizBuyerDropdown.style.display = 'none'; return; }
-        const matched = memoryClients.filter(r => r[0] && r[0].toLowerCase().includes(query));
-        matched.forEach(rowData => {
-            const li = document.createElement('li');
-            li.textContent = rowData[0];
-            li.addEventListener('click', () => {
-                wizBuyerInput.value = rowData[0];
-                wizBuyerInput.dataset.address = rowData[1] || 'N/A';
-                wizBuyerInput.dataset.state = rowData[2] || 'N/A';
-                wizBuyerInput.dataset.gstin = rowData[4] || 'N/A';
-                wizBuyerDropdown.style.display = 'none';
-            });
-            wizBuyerDropdown.appendChild(li);
-        });
-        wizBuyerDropdown.style.display = matched.length ? 'block' : 'none';
+/* =====================================================
+   LEDGER DROPDOWN
+===================================================== */
+/* =====================================================
+   📒 LEDGER DROPDOWN (FIXED – CREATE NEW ENABLED)
+===================================================== */
+let selectedLedger="";
+function setupLedgerSearch(){
+  const input=document.getElementById("afi04");
+  const drop=document.getElementById("ledgerDropdown");
+  if(!input||!drop) return;
+
+  const ledgers=[...new Set(fullData.map(r=>r.ledger).filter(Boolean))];
+  const lower=ledgers.map(l=>l.toLowerCase());
+
+  input.oninput=()=>{
+    drop.innerHTML="";
+    selectedLedger="";
+    const v=input.value.toLowerCase();
+    if(!v) return drop.style.display="none";
+
+    ledgers.filter(l=>l.toLowerCase().includes(v)).forEach(l=>{
+      const li=document.createElement("li");
+      li.textContent=l;
+      li.onclick=()=>{selectedLedger=l;input.value=l;drop.style.display="none";};
+      drop.appendChild(li);
     });
 
-    function insertGridDataRow(rowData = null) {
-        const trNode = document.createElement('tr');
-        trNode.innerHTML = `
-            <td><input type="text" class="input-field text-center row-sno-input" placeholder="S.No." style="text-align: center;" value="${rowData ? rowData.sno : ''}"></td>
-            <td style="position: relative;">
-                <input type="text" class="input-field row-desc-input" value="${rowData ? rowData.desc : ''}" placeholder="Select Item Head (123..), Discription (-), Remark (R/O)...">
-                <ul class="dropdown-menu row-desc-menu" style="display:none;"></ul>
-            </td>
-            <td><input type="text" class="input-field row-part-input" style="text-align: center;" value="${rowData ? rowData.partNo : ''}" placeholder="HSN / Part No."></td>
-            <td><input type="text" class="input-field text-right row-qty-input" style="text-align: center;" value="${rowData ? rowData.qty : ''}" placeholder="0"></td>
-            <td>
-                <select class="input-field row-unit-select" style="font-weight: bold; color: var(--tally-blue); text-align: center;">
-                    <option value="" disabled ${!rowData ? 'selected' : ''}>Select</option>
-                    <option value="KGS" ${rowData && rowData.unit==='KGS'?'selected':''}> KGS</option>
-                    <option value="NOS" ${rowData && rowData.unit==='NOS'?'selected':''}> NOS</option>
-                    <option value="PCS" ${rowData && rowData.unit==='PCS'?'selected':''}>PCS</option>
-                     <option value="BDL" ${rowData && rowData.unit==='BDL'?'selected':''}> BDL</option>
-                    <option value="SQM" ${rowData && rowData.unit==='SQM'?'selected':''}>SQM</option>
-                    <option value="RMT" ${rowData && rowData.unit==='RMT'?'selected':''}>RMT</option>
-                     <option value="LTR" ${rowData && rowData.unit==='LTR'?'selected':''}>LTR</option>
-                </select>
-            </td>
-        `;
-
-        const snoField = trNode.querySelector('.row-sno-input');
-        const descField = trNode.querySelector('.row-desc-input');
-        const partField = trNode.querySelector('.row-part-input');
-        const qtyField = trNode.querySelector('.row-qty-input');
-        const unitField = trNode.querySelector('.row-unit-select');
-        const menuDropdown = trNode.querySelector('.row-desc-menu');
-
-        const applyLockRules = (val) => {
-            const upperVal = val.toUpperCase();
-            partField.removeAttribute('disabled');
-            qtyField.removeAttribute('disabled');
-            unitField.removeAttribute('disabled');
-
-            if (upperVal === "R") {
-                trNode.className = 'row-remark-head';
-                descField.value = "REMARK";
-                descField.placeholder = "";
-                partField.value = ""; partField.setAttribute('disabled', 'true');
-                qtyField.value = ""; qtyField.setAttribute('disabled', 'true');
-                unitField.value = ""; unitField.setAttribute('disabled', 'true');
-            } else if (upperVal === "-") {
-                trNode.className = 'row-manual-italic';
-                descField.placeholder = "Enter custom remark here...";
-            } else if (upperVal === "O") {
-                trNode.className = 'row-manual-italic';
-                descField.placeholder = "Click to select Predefined Remark...";
-            } else if (val === "") {
-                trNode.className = '';
-                descField.placeholder = "Fill S.No...";
-            } else {
-                trNode.className = 'row-main-head';
-                descField.placeholder = "Type to search...";
-            }
-        };
-
-        snoField.addEventListener('input', function() {
-            let val = this.value.trim();
-            let upperVal = val.toUpperCase();
-            if(val !== "" && val !== "-" && upperVal !== "R" && upperVal !== "O" && isNaN(val)) {
-                this.value = "";
-                val = "";
-            }
-            applyLockRules(val);
-        });
-        if(rowData) applyLockRules(rowData.sno.toString().trim());
-
-        function filterGridDropdown() {
-            const currentSno = snoField.value.trim().toUpperCase();
-            if(currentSno === "R" || currentSno === "-") {
-                menuDropdown.style.display = 'none';
-                return;
-            }
-            
-            menuDropdown.innerHTML = '';
-            const query = descField.value.toLowerCase().trim();
-
-            if (currentSno === "O") {
-                const filteredRemarks = PREDEFINED_REMARKS.filter(rem => rem.toLowerCase().includes(query));
-                if(filteredRemarks.length === 0) {
-                    menuDropdown.innerHTML = '<li style="color:gray;text-align:center;padding:6px;">No match</li>';
-                    menuDropdown.style.display = 'block';
-                    return;
-                }
-                filteredRemarks.forEach(remText => {
-                    const li = document.createElement('li');
-                    li.textContent = remText;
-                    li.style.color = "#6f42c1";
-                    li.addEventListener('click', (ev) => {
-                        ev.stopPropagation();
-                        descField.value = remText;
-                        partField.value = "";
-                        menuDropdown.style.display = 'none';
-                    });
-                    menuDropdown.appendChild(li);
-                });
-                menuDropdown.style.display = 'block';
-                return;
-            }
-
-            const uniqueHeads = [...new Set(memorySupportItems.map(r => r[0]).filter(Boolean))];
-            const filteredHeads = uniqueHeads.filter(h => h.toLowerCase().includes(query));
-
-            if(filteredHeads.length === 0) {
-                menuDropdown.innerHTML = '<li style="color:gray;text-align:center;padding:6px;">No match</li>';
-                menuDropdown.style.display = 'block';
-                return;
-            }
-
-            filteredHeads.forEach(headName => {
-                const li = document.createElement('li');
-                li.textContent = headName;
-                li.addEventListener('click', (ev) => {
-                    ev.stopPropagation();
-                    descField.value = headName;
-                    const matchData = memorySupportItems.find(r => r[0].toString().trim() === headName.toString().trim());
-                    if (matchData && matchData[1]) {
-                        partField.value = matchData[1];
-                    } else {
-                        partField.value = '';
-                    }
-                    menuDropdown.style.display = 'none';
-                });
-                menuDropdown.appendChild(li);
-            });
-            menuDropdown.style.display = 'block';
-        }
-
-        descField.addEventListener('click', function(event) {
-            if(snoField.value.trim() === "") return;
-            event.stopPropagation();
-            document.querySelectorAll('.row-desc-menu').forEach(m => m.style.display = 'none');
-            filterGridDropdown();
-        });
-
-        descField.addEventListener('input', function() {
-            if(snoField.value.trim() === "") return;
-            filterGridDropdown();
-        });
-
-        gridBody.appendChild(trNode);
-    }
-
-    document.getElementById('insertRowBtn').addEventListener('click', () => insertGridDataRow());
-    document.getElementById('triggerModalBtn').addEventListener('click', () => wizardModal.classList.add('active'));
-    document.getElementById('dismissWizBtn').addEventListener('click', () => wizardModal.classList.remove('active'));
-    
-    document.getElementById('executeWizBtn').addEventListener('click', async () => {
-        const inputDate = document.getElementById('wizDate').value.trim();
-        const inputJob = document.getElementById('wizJobNo').value.trim();
-        const inputVcl = document.getElementById('wizVclNo').value.trim();
-        const buyerName = wizBuyerInput.value.trim();
-        
-        const dropdownEl = document.getElementById('wizDocType');
-        const selectedOption = dropdownEl.options[dropdownEl.selectedIndex];
-        const docTypeLabel = selectedOption.value;
-        const docNameText = selectedOption.getAttribute('data-docname');
-
-        if(!inputJob || !buyerName || !inputVcl) { alert("Job Number, Vehicle Number, and Buyer Name are required!"); return; }
-        wizardModal.classList.remove('active');
-        showLoader("🚀 Sending row to Google Sheet...");
-
-        const payload = {
-            action: "create",
-            date: cleanAndFormatDate(inputDate), 
-            jobNo: inputJob,
-            vehicleNo: inputVcl, 
-            buyer: buyerName,
-            buyerAddress: wizBuyerInput.dataset.address || '',
-            buyerGstin: wizBuyerInput.dataset.gstin || '',
-            buyerState: wizBuyerInput.dataset.state || '',
-            docType: docTypeLabel,  
-            docName: docNameText    
-        };
-
-        try {
-            const res = await fetch(GOOGLE_SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
-            const result = await res.json();
-            if(result.status === "success") {
-                alert(`Generated successfully on Sheet! Number Assigned: ${result.plNo}`);
-                await fetchDatabaseFromGoogleSheet();
-            }
-        } catch (e) { alert("Sheet integration error."); }
-        
-        wizBuyerInput.value = '';
-        document.getElementById('wizJobNo').value = '';
-        document.getElementById('wizVclNo').value = '';
-        clearMainFormFields();
-        hideLoader();
-    });
-
-    function clearMainFormFields() {
-        metaPkgListNo.value = ''; metaDate.value = ''; metaJobNo.value = '';
-        metaInvoiceNo.value = ''; metaVehicleNo.value = ''; metaTotalAmount.value = '';
-        buyerSearchInput.value = '';
-        document.getElementById('displayAddress').innerText = 'No active record loaded.';
-        document.getElementById('displayGstin').innerText = '-';
-        document.getElementById('displayState').innerText = '-';
-        
-        document.getElementById('docno').innerHTML = "---:";
-        document.getElementById('docname').innerHTML = "PACKING LIST";
-        
-        gridBody.innerHTML = '';
-        for(let idx=0; idx < 10; idx++) insertGridDataRow();  
-        commitDataBtn.style.display = "none";
-        partialSaveDataBtn.style.display = "none";
-    }
-
-    function renderPendingTracker() {
-        logsView.innerHTML = '';
-        const pendingLists = applicationDatabase.filter(x => x.status === 'PENDING');
-        if(pendingLists.length === 0) {
-            logsView.innerHTML = '<div style="color: gray; font-size:12px; text-align:center; padding:10px;">No pending rows in sheet.</div>';
-            return;
-        }
-        pendingLists.forEach(record => {
-            const labelBadge = record.docName || "PACKING LIST";
-            const card = document.createElement('div');
-            card.className = 'log-card';
-            card.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                    <div>
-                    
-                        <strong>🧾 Pl No.: ${record.plNo}</strong> / <span style="font-size:11px;color:#005a70;">📅 Date: ${record.date}</span> / 
-                        <span style="background:#005a70; color:#fff; padding:1px 4px; font-size:10px; border-radius:3px;">${labelBadge}</span><br>
-                      <strong>🚚 Vehicle: ${record.vehicleNo || '—'}</strong> |  <span style="color:gray; font-size:11px;">👤Buyer: ${record.buyer} (📄 Job: ${record.jobNo}) </span>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                        <button class="btn-update" onclick="loadPendingListForUpdate('${record.plNo}')">⚡ UPDATE</button> &nbsp;&nbsp;
-                        <button class="btn-delete" onclick="triggerDeleteRecord('${record.plNo}')">🗑️ DELETE</button>
-                    </div>
-                </div>
-            `;
-            logsView.appendChild(card);
-        });
-    }
-
-    window.triggerDeleteRecord = async function(plNo) {
-        if(!confirm(`Are you sure you want to completely delete ${plNo} from Google Sheet?`)) return;
-        showLoader("🗑️ Removing row from Google Sheet...");
-        try {
-            const res = await fetch(GOOGLE_SCRIPT_URL, {
-                method: "POST",
-                body: JSON.stringify({ action: "delete", plNo: plNo })
-            });
-            const result = await res.json();
-            if(result.status === "success") {
-                alert("Record successfully deleted from Google Sheet!");
-                partiallySavedPlNos.delete(plNo); 
-                await fetchDatabaseFromGoogleSheet();
-                clearMainFormFields();
-            } else {
-                alert("Could not delete from sheet: " + result.message);
-            }
-        } catch(e) { alert("Error trying to connect with Delete API."); }
-        hideLoader();
+    const create=document.createElement("li");
+    create.textContent="+ Create New";
+    create.onclick=()=>{
+      const val=prompt("Enter new ledger");
+      if(!val||lower.includes(val.toLowerCase())) return;
+      selectedLedger=val; input.value=val; drop.style.display="none";
     };
+    drop.appendChild(create);
+    drop.style.display="block";
+  };
 
-    function renderRecentTracker() {
-        recentLogsView.innerHTML = '';
-        const completedLists = applicationDatabase.filter(x => x.status === 'COMPLETED');
-        const sliced = completedLists.slice(0, 5);
-        if(sliced.length === 0) {
-            recentLogsView.innerHTML = '<div style="color: gray; font-size:12px; text-align:center; padding:10px;">No saved records yet.</div>';
-            return;
-        }
-        sliced.forEach(record => {
-            const labelBadge = record.docName || "PACKING LIST";
-            const card = document.createElement('div');
-            card.className = 'log-card';
-            card.innerHTML = `
-                <div><strong>📅 Date:</strong> ${record.date} | <strong>🧾 Pl No.:</strong> ${record.plNo} | <strong style="color: rgb(0, 102, 60);">🧾 Inv. No: ${record.invoiceNo || '—'}</strong> | <strong>🚚 Vehicle:</strong> ${record.vehicleNo}</div>
-                <div style="color:gray; margin:2px 0;"><strong style="background-color: transparent; color: rgb(128, 0, 0);">${labelBadge} :-</strong> 👤Buyer: ${record.buyer} | 📄 Job: ${record.jobNo} </div>
-                <div style="margin-top:6px; display:flex; justify-content:flex-end;">
-                    <button class="btn-mini-print" onclick="directPrintRecord('${record.plNo}')">Print 🖨️</button>
-                    <button class="btn-update" onclick="directEditRecord('${record.plNo}')">Edit ⚡</button>
-                </div>
-            `;
-            //  <div style="color:gray; margin:2px 0;"><strong>[${labelBadge}]</strong> Buyer: ${record.buyer} | Job: ${record.jobNo} | Veh: ${record.vehicleNo || '—'}</div> 
-            recentLogsView.appendChild(card);
-        });
+  document.addEventListener("click",e=>{
+    if(!input.contains(e.target)&&!drop.contains(e.target)){
+      drop.style.display="none";
+      input.value=selectedLedger||"";
     }
+  });
+}
+/* =====================================================
+   🔄 REFRESH
+===================================================== */
+async function refreshcmivTableBtn(){
+  if(!voucherSel.value || !userSel.value) return;
+  await handleSelection();
+}
+
+document.getElementById("refreshcmivTableBtn")
+  ?.addEventListener("click", refreshcmivTableBtn);
 
-    window.directPrintRecord = function(plNo) {
-        const rec = applicationDatabase.find(x => x.plNo === plNo);
-        if(rec) openPreviewPopupModal(rec);
-    };
-
-    window.directEditRecord = function(plNo) {
-        partiallySavedPlNos.add(plNo); 
-        loadPendingListForUpdate(plNo);
-        let item = applicationDatabase.find(x => x.plNo === plNo);
-        if(item) item.status = 'PENDING';
-        renderPendingTracker();
-        renderRecentTracker();
-    };
-
-    window.loadPendingListForUpdate = function(plNumber) {
-        const record = applicationDatabase.find(x => x.plNo === plNumber);
-        if(!record) return;
-
-        metaPkgListNo.value = record.plNo;
-        metaDate.value = record.date;
-        metaJobNo.value = record.jobNo;
-        metaInvoiceNo.value = record.invoiceNo || '';
-        metaVehicleNo.value = record.vehicleNo || '';
-        metaTotalAmount.value = record.amount || '';
-        buyerSearchInput.value = record.buyer;
-        document.getElementById('displayAddress').innerText = record.buyerAddress || 'N/A';
-        document.getElementById('displayGstin').innerText = record.buyerGstin || '-';
-        document.getElementById('displayState').innerText = record.buyerState || '-';
-
-        const docTypeField = record.docType || "Invoice No.";
-        const docNameField = record.docName || "PACKING LIST";
-        document.getElementById('docno').innerHTML = docTypeField + ":";
-        document.getElementById('docname').innerHTML = docNameField;
-
-        gridBody.innerHTML = '';
-        if(record.items && record.items.length > 0) {
-            record.items.forEach(it => insertGridDataRow(it));
-        } else {
-            for(let idx=0; idx < 8; idx++) insertGridDataRow();
-        }
-
-        commitDataBtn.style.display = "inline-block"; 
-        partialSaveDataBtn.style.display = "inline-block"; 
-    };
-
-    partialSaveDataBtn.addEventListener('click', async () => {
-        const activePlNo = metaPkgListNo.value.trim();
-        const invoiceNum = metaInvoiceNo.value.trim();
-        const vehicleNum = metaVehicleNo.value.trim();
-        const totalAmt = metaTotalAmount.value.trim();
-
-        if(!activePlNo) {
-            alert("❌ Save Blocked! No active record loaded.");
-            return;
-        }
-
-        showLoader("💾 Saving partial data inside Google Sheet...");
-        
-        const extractedItems = [];
-        const rows = gridBody.querySelectorAll('tr');
-        rows.forEach(row => {
-            const sno = row.querySelector('.row-sno-input').value.trim();
-            const desc = row.querySelector('.row-desc-input').value.trim();
-            if(sno || desc) {
-                extractedItems.push({
-                    sno: sno, desc: desc,
-                    partNo: row.querySelector('.row-part-input').value.trim(),
-                    qty: row.querySelector('.row-qty-input').value.trim(),
-                    unit: row.querySelector('.row-unit-select').value
-                });
-            }
-        });
-
-        const payload = {
-            action: "update",
-            plNo: activePlNo,
-            invoiceNo: invoiceNum,
-            vehicleNo: vehicleNum,
-            amount: totalAmt,
-            items: extractedItems
-        };
-
-        try {
-            const res = await fetch(GOOGLE_SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
-            const result = await res.json();
-            if(result.status === "success") {
-                alert("Partial Data Saved successfully!");
-                partiallySavedPlNos.add(activePlNo); 
-                await fetchDatabaseFromGoogleSheet();
-            }
-        } catch (e) { alert("Error saving partial row."); }
-        hideLoader();
-    });
-
-    commitDataBtn.addEventListener('click', async () => {
-        const activePlNo = metaPkgListNo.value.trim();
-        const invoiceNum = metaInvoiceNo.value.trim();
-        const vehicleNum = metaVehicleNo.value.trim();
-        const totalAmt = metaTotalAmount.value.trim();
-
-        if(!activePlNo || !invoiceNum || !vehicleNum || !totalAmt) {
-            alert("❌ Save Blocked! Please fill all mandatory fields.");
-            return;
-        }
-
-        showLoader("💾 Overwriting data inside Google Sheet...");
-        
-        const extractedItems = [];
-        const rows = gridBody.querySelectorAll('tr');
-        rows.forEach(row => {
-            const sno = row.querySelector('.row-sno-input').value.trim();
-            const desc = row.querySelector('.row-desc-input').value.trim();
-            if(sno || desc) {
-                extractedItems.push({
-                    sno: sno, desc: desc,
-                    partNo: row.querySelector('.row-part-input').value.trim(),
-                    qty: row.querySelector('.row-qty-input').value.trim(),
-                    unit: row.querySelector('.row-unit-select').value
-                });
-            }
-        });
-
-        const payload = {
-            action: "update",
-            plNo: activePlNo,
-            invoiceNo: invoiceNum,
-            vehicleNo: vehicleNum,
-            amount: totalAmt,
-            items: extractedItems
-        };
-
-        try {
-            const res = await fetch(GOOGLE_SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
-            const result = await res.json();
-            if(result.status === "success") {
-                alert("Saved & Completed successfully inside main database table rows!");
-                partiallySavedPlNos.delete(activePlNo); 
-                await fetchDatabaseFromGoogleSheet();
-                clearMainFormFields();
-            }
-        } catch (e) { alert("Error updating row."); }
-        hideLoader();
-    });
-
-    function openPreviewPopupModal(record) {
-        selectedActivePreviewPlNo = record.plNo;
-        let itemsRowsMarkup = "";
-        
-        const currentDocNoLabel = (record.docType || "Invoice No.") + ":";
-        const currentDocNameText = record.docName || "PACKING LIST";
-        
-        document.getElementById('previewModalTitle').innerText = `📋 ${currentDocNameText} Record View`;
-
-        if(record.items && record.items.length > 0) {
-            record.items.forEach(it => {
-                const cleanSno = (it.sno || '').toString().trim().toUpperCase();
-                let bgStyle = "background-color: #ffffff; font-style: normal;";
-                let textStyle = "color: #000000;";
-                
-                if (cleanSno === "R") {
-                    bgStyle = "background-color: #343a40; font-weight: bold;";
-                    textStyle = "color: #ffffff;";
-                } else if (cleanSno === "-" || cleanSno === "O") {
-                    bgStyle = "background-color: #ffffff; font-style: italic; font-weight: normal; text-align: center;";
-                } else if (cleanSno !== "") {
-                    bgStyle = "background-color: #d1ecf1; font-style: normal; font-weight: bold;";
-                }
-
-                itemsRowsMarkup += `
-                    <tr style="${bgStyle} ${textStyle} ">
-                        <td align="center" style="border:1px solid #000; padding:6px; font-family:inherit; color:inherit; border: 1px solid rgb(241, 241, 241);">${it.sno}</td>  
-                        <td style="border:1px solid #000; padding:6px; font-family:inherit; color:inherit; border: 1px solid rgb(241, 241, 241);">${it.desc}</td> 
-                        <td style="border:1px solid #000; padding:6px; font-family:inherit; color:inherit; text-align: center; border: 1px solid rgb(241, 241, 241);">${it.partNo || ''}</td>  
-                        <td align="right" style="border:1px solid #000; padding:6px; font-family:inherit; color:inherit; text-align: center; border: 1px solid rgb(241, 241, 241);">${it.qty || ''}</td>
-                        <td style="border:1px solid #000; padding:6px; font-family:inherit; color:inherit; text-align: center; border: 1px solid rgb(241, 241, 241);">${it.unit || ''}</td>
-                    </tr>`;
-            });
-        }
-
-//--------------------- address fetch automation
-// openPreviewPopupModal function ke andar sabse pehle yeh line honi chahiye:
-const selectElement = document.getElementById('unitadd');
-const selectedAddress = selectElement && selectElement.selectedIndex !== -1 
-    ? selectElement.options[selectElement.selectedIndex].text 
-    : "Unit - 2 : Nh 74 12th Km Stone... Mustakam Bazpur Road"; // Default value agar kuch select na ho
-
-//----------------------
-        // print table div code112233
-        const previewHTML = `
-            <div style="padding:10px; font-family:Arial, sans-serif; color:#000;">
-                <table style="width:100%; border-collapse:collapse; margin-bottom:10px;">
-                    <tr>
-                        <td style="border: 1px solid rgb(230, 228, 228); padding:8px;" width="60%">
-                            <div style="font-size:16px; font-weight:bold; color:#005a70;">Multitech Infracon Pvt. Ltd.</div>
-                            <div style="font-size:11px; margin-top:2px;"><strong>GSTIN/UIN:</strong> 05AAMCM9896P1Z7 | <strong>CIN:</strong> U45200UR2019PTC010294</div>
-                            <div style="font-size:11px;"><strong>State:</strong> Uttarakhand, Code: 05</div>
-                        
-                             <div style="font-size:11px; color:#4b5563; margin-top:4px;"> <strong>Address:</strong> ${selectedAddress} </div>
-
-                            </td>
-                        <td style="border:1px solid #000; padding:8px; border: 1px solid rgb(230, 228, 228);" width="40%">
-                            <div style="font-size:12px;"><strong>${currentDocNoLabel}</strong> ${record.plNo}</div>
-                            <div style="font-size:12px;"><strong>Date:</strong> ${record.date}</div>
-                            <div style="font-size:12px;"><strong>Job / Ref No:</strong> ${record.jobNo}</div>
-
-                            <div style="font-size:12px;">
-                                <strong>${currentDocNameText === 'PACKING LIST' ? 'Invoice No.' : 'Challan No.'}:</strong> ${record.invoiceNo || '—'}
-                            </div>
-                            
-                            <div style="font-size:12px;"><strong>Vehicle No:</strong> ${record.vehicleNo || '—'}</div>
-                        </td>
-                    </tr>
-                </table>
-                
-                <div style="text-align:center; font-size:16px; font-weight:bold; margin:10px 0; letter-spacing:1px;">${currentDocNameText}</div>
-                
-                <table style="width:100%; border-collapse:collapse; margin-bottom:10px;">
-                    <tr>
-                        <th align="left" style="background:#f2f2f2; border: 1px solid rgb(230, 228, 228); padding:4px 8px; font-size:12px;">Buyer (Bill to) Details</th>
-                    </tr>
-                    <tr>
-                        <td style="border: 1px solid rgb(230, 228, 228); padding:8px; font-size:12px; line-height:1.5;">
-                            <strong>Buyer Name:</strong> ${record.buyer}<br>
-                            <strong>Full Address:</strong> ${record.buyerAddress || 'N/A'}<br>
-                            <strong>GSTIN:</strong> ${record.buyerGstin || '—'} | <strong>State Name:</strong> ${record.buyerState || '—'}
-                        </td>
-                    </tr>
-                </table>
-
-                <table style="width:100%; border-collapse:collapse; margin-top:10px; border: 1px solid rgb(241, 241, 241);">
-                    <thead>
-                        <tr style="background-color: rgb(0, 69, 114); color: aliceblue; font-size: 14px;">
-                            <th width="8%" style="border:1px solid #000; padding:6px; color:#ffffff;">S.No.</th>
-                            <th width="48%" style="border:1px solid #000; padding:6px; color:#ffffff;">Description of Head of Item</th>
-                            <th width="16%" style="border:1px solid #000; padding:6px; color:#ffffff;">HSN / Part No.</th>
-                            <th width="14%" style="border:1px solid #000; padding:6px; color:#ffffff;">Qty</th>
-                            <th width="14%" style="border:1px solid #000; padding:6px; color:#ffffff;">Unit</th>
-                        </tr>
-                    </thead>
-                    <tbody style="font-size:12px;">
-                        ${itemsRowsMarkup}
-                    </tbody>
-                </table>
-                
-                <div style="margin-top:10px; text-align:right; font-weight:bold; font-size:13px; padding:5px; border: 1px solid rgb(230, 228, 228); background-color: #ffffff;">
-                    Total Invoice Amount: Rs. ${record.amount || '0'}
-                </div>
-
-                <table style="width:100%; border-collapse:collapse; margin-top:40px;">
-                    <tr>
-                        <td width="50%" style="border:none;"></td>
-                        <td width="50%" align="right" style="border:none; font-size:13px;">
-                            <strong>For Multitech Infracon Pvt. Ltd.</strong>
-                            <br><br><br><br>
-                            <span style="border-top:1px dashed #000; padding-top:4px; display:inline-block; width:180px; text-align:center;">Authorised Signatory</span>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        `;
-        document.getElementById('previewPrintArea').innerHTML = previewHTML;
-        previewModal.classList.add('active');
-    }
-
-    document.getElementById('closePreviewBtn').addEventListener('click', () => previewModal.classList.remove('active'));
-    document.getElementById('editPreviewBtn').addEventListener('click', () => {
-        previewModal.classList.remove('active');
-        loadPendingListForUpdate(selectedActivePreviewPlNo);
-        let item = applicationDatabase.find(x => x.plNo === selectedActivePreviewPlNo);
-        if(item) item.status = 'PENDING';
-        renderPendingTracker();
-    });
-    
-    document.getElementById('printPreviewBtn').addEventListener('click', () => {
-        const printWindow = window.open('', '_blank');
-        printWindow.document.write('<html><head><style>table{width:100%;border-collapse:collapse;} th,td{border:1px solid #000;padding:6px;font-family:Arial;}</style></head><body>');
-        printWindow.document.write(document.getElementById('previewPrintArea').innerHTML);
-        printWindow.document.write('</body></html>');
-        printWindow.document.close();
-        printWindow.print();
-    });
-
-    document.addEventListener('click', (e) => {
-        if(e.target !== universalSearchInput) universalSearchDropdown.style.display = 'none';
-        if(e.target !== wizBuyerInput) wizBuyerDropdown.style.display = 'none';
-        if(!e.target.classList.contains('row-desc-input')) {
-            document.querySelectorAll('.row-desc-menu').forEach(m => m.style.display = 'none');
-        }
-    });
-
-    assembleCoreData().then(() => { clearMainFormFields(); });
-</script>
-</body>
-</html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- ============ ---------- 🖨️ Temporary Print script  start Here ----------- Start ============ --> 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const printBtn = document.getElementById('customProfessionalPrintBtn');
-    
-    if (printBtn) {
-        printBtn.addEventListener('click', () => {
-            // Screen ke active inputs/elements se dynamic data automatic pull karna
-            const jobno = document.getElementById('metaJobNo')?.value || document.querySelector('[placeholder*="Job"]')?.value || '—';
-            const vcno = document.getElementById('metaVehicleNo')?.value || document.querySelector('[placeholder*="Vehicle"]')?.value || '—';
-            const buyerValue = document.getElementById('buyerSearchInput')?.value || document.getElementById('wizBuyerInput')?.value || '—';
-            const addressContent = document.getElementById('displayAddress')?.innerText || '—';
-            const gstinContent = document.getElementById('displayGstin')?.innerText || '—';
-            const stateContent = document.getElementById('displayState')?.innerText || '—';
-            const currentDocNameText = document.getElementById('docname')?.innerText || 'PACKING LIST';
-
-            // Current Indian date aur time format
-            const currentNow = new Date();
-            const formattedDateStr = currentNow.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).replace(/ /g, '-');
-            const formattedTimeStr = currentNow.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }).toLowerCase();
-            const timeStampStr = `${formattedDateStr} / ${formattedTimeStr}`;
-
-            // TABLE ROWS GENERATION
-            let gridRows = "";
-            const formRows = document.querySelectorAll('#previewPrintArea table tbody tr, #gridBody tr, .items-table tbody tr');
-            
-            formRows.forEach((row) => {
-                const snoInput = row.cells[0]?.querySelector('input') || row.querySelector('.row-sno-input');
-                const sno = snoInput ? snoInput.value : (row.cells[0]?.innerText || '');
-
-                const descInput = row.cells[1]?.querySelector('input') || row.querySelector('.row-desc-input');
-                const desc = descInput ? descInput.value : (row.cells[1]?.innerText || '');
-
-                const partNoInput = row.cells[2]?.querySelector('input') || row.querySelector('.row-part-input');
-                const partNo = partNoInput ? partNoInput.value : (row.cells[2]?.innerText || '');
-
-                const qtyInput = row.cells[3]?.querySelector('input') || row.querySelector('.row-qty-input');
-                const qty = qtyInput ? qtyInput.value : (row.cells[3]?.innerText || '');
-
-                // Dropdown single option fix
-                const unitSelect = row.cells[4]?.querySelector('select') || row.querySelector('.row-unit-select');
-                let unit = '';
-                if (unitSelect) {
-                    unit = unitSelect.options[unitSelect.selectedIndex]?.text || unitSelect.value || '';
-                } else {
-                    unit = row.cells[4]?.innerText || '';
-                }
-
-                // Filtering empty rows
-                if (desc.trim() !== "" || sno.trim() !== "") {
-                    // Original Row colors extraction
-                    const computedStyle = window.getComputedStyle(row);
-                    const originalBgColor = computedStyle.backgroundColor;
-                    const originalTextColor = computedStyle.color;
-                    const originalFontWeight = computedStyle.fontWeight;
-
-                    gridRows += `
-                        <tr style="background-color: ${originalBgColor} !important; color: ${originalTextColor} !important; font-weight: ${originalFontWeight} !important;">
-                            <td class="col-sno">${sno}</td>
-                            <td class="col-desc">${desc}</td>
-                            <td class="col-hsn">${partNo}</td>
-                            <td class="col-qty">${qty}</td>
-                            <td class="col-unit">${unit}</td>
-                        </tr>
-                    `;
-                }
-            });
-
-            if (!gridRows || gridRows.trim() === "") {
-                gridRows = `<tr><td colspan="5" style="text-align: center; padding: 20px; color: #777;">No Items Found</td></tr>`;
-            }
-
-            // New Window open karke professional print window generate karna
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <title>Print Preview - ${currentDocNameText}</title>
-                    <style>
-                        @page { size: A4 portrait; margin: 12mm 15mm; }
-                        * {
-                            -webkit-print-color-adjust: exact !important;
-                            print-color-adjust: exact !important;
-                            color-adjust: exact !important;
-                        }
-                        body { font-family: 'Segoe UI', Arial, sans-serif; color: #000; margin: 0; padding: 0; background: #fff; }
-                        
-                        /* Watermark */
-                        .watermark {
-                            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg);
-                            font-size: 65pt; font-weight: 900; color: rgba(220, 220, 220, 0.25) !important;
-                            z-index: -1000; pointer-events: none; white-space: nowrap; text-transform: uppercase; letter-spacing: 5px;
-                        }
-                        
-                        .print-container { width: 100%; position: relative; z-index: 10; }
-                        .top-timestamp { display: block; font-size: 9pt; color: #444; margin-bottom: 6px; font-weight: 500; text-align: left; }
-                        .doc-header-title { font-size: 22pt; font-weight: bold; letter-spacing: 2px; text-align: center; margin: 5px 0 15px 0; color: #000; text-transform: uppercase; border-bottom: 2px solid #000; padding-bottom: 5px; }
-                        .meta-info-panel { margin-bottom: 15px; font-size: 11pt; border-bottom: 1px dashed #999; padding-bottom: 8px; }
-                        
-                        .header-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-                        .header-table th, .header-table td { border: 1px solid #000; padding: 10px; font-size: 11pt; text-align: left; vertical-align: top; }
-                        .buyer-th { background-color: #f2f2f2 !important; font-size: 11.5pt; font-weight: bold; border-bottom: 1px solid #000; }
-                        .input-field-print { font-weight: bold; color: #000; margin-left: 4px; }
-                        
-                        .items-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-                        .items-table th, .items-table td { border: 1px solid #000; padding: 8px 10px; font-size: 10.5pt; vertical-align: middle; }
-                        .items-table th { background-color: #f2f2f2 !important; font-weight: bold; text-transform: uppercase; font-size: 10pt; color: #000 !important; text-align: center; }
-                        
-                        /* Aligning column headers text */
-                        .items-table th.col-desc { text-align: left; }
-                        
-                        /* FIXED ALIGNMENTS (As per requested, Part No, Qty, Unit are CENTERED) */
-                        .col-sno { width: 8%; text-align: center !important; }
-                        .col-desc { width: 48%; text-align: left !important; }
-                        .col-hsn { width: 16%; text-align: center !important; }
-                        .col-qty { width: 14%; text-align: center !important; }
-                        .col-unit { width: 14%; text-align: center !important; }
-
-                        .print-footer-sig { width: 100%; margin-top: 60px; border-collapse: collapse; page-break-inside: avoid; }
-                        .print-footer-sig td { border: none; font-size: 11pt; }
-                    </style>
-                </head>
-                <body>
-                    <div class="watermark">TEMPORARY VIEW</div>
-                    <div class="print-container">
-                        <span class="top-timestamp">${timeStampStr}</span>
-                        <div class="doc-header-title">${currentDocNameText}</div>
-
-                        <div class="meta-info-panel">
-                            <strong>Job No:</strong> <span>${jobno}</span> &nbsp;|&nbsp; <strong>Vehicle No:</strong> <span>${vcno}</span>
-                        </div>
-
-                        <table class="header-table">
-                            <thead>
-                                <tr> 
-                                    <th class="buyer-th">Buyer (Bill to): <span class="input-field-print">${buyerValue}</span></th> 
-                                </tr> 
-                            </thead>
-                            <tbody> 
-                                <tr> 
-                                    <td> 
-                                        <div style="margin-top: 2px; font-size: 11pt; color: #111; line-height: 1.5; white-space: pre-wrap;">${addressContent}</div>
-                                        <div style="margin-top: 8px; font-size: 11pt; border-top: 1px dashed #ccc; padding-top: 6px;"> 
-                                            <strong>GSTIN:</strong> <span>${gstinContent}</span> &nbsp;|&nbsp; <strong>State:</strong> <span>${stateContent}</span> 
-                                        </div>
-                                    </td>
-                                </tr> 
-                            </tbody>
-                        </table>
-
-                        <table class="items-table">
-                            <thead>
-                                <tr>
-                                    <th class="col-sno">S.No.</th>
-                                    <th class="col-desc">Description of Head of Item</th>
-                                    <th class="col-hsn">Part No.</th>
-                                    <th class="col-qty">Qty</th>
-                                    <th class="col-unit">Unit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${gridRows}
-                            </tbody>
-                        </table>
-
-                        <table class="print-footer-sig">
-                            <tr>
-                                <td width="50%"></td>
-                                <td width="50%" align="right" style="line-height: 1.5;">
-                                    <strong>For Multitech Infracon Pvt. Ltd.</strong>
-                                    <br><br><br><br><br>
-                                    <span style="border-top: 1px dashed #000; padding-top: 5px; display: inline-block; width: 220px; text-align: center; font-weight: bold;">Authorised Signatory</span>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </body>
-                </html>
-            `);
-            
-            printWindow.document.close();
-            
-            printWindow.setTimeout(() => {
-                printWindow.print();
-            }, 500);
-        });
-    }
 });
 </script>
-<!-- ============ ---------- 🖨️ Temporary Print script  Stop Here ----------- XXX ============ --> 
+
+<!-- ==================  ledger dropdown with table and user voucher salection and user authrised section script stop hare ============================ -->
+
+
+<!-- ==================  form submit with modify, new entry and delete option script start hare ============================ -->
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const scriptAFICMURL =
+  "https://script.google.com/macros/s/AKfycbwm0zp9iFhv-e9iuEbg4xG_fUY-gsgHNjs9Sff1J3npIj3C52XvmHtBWyEKtE7Frcmr/exec";
+  
+  const formUser  = document.getElementById("afi01");   // USER
+  const formVtype = document.getElementById("vtype");   // VOUCHER
+  const tableContainer = document.getElementById("tableContainer"); // Table box
+
+      /* ============================================
+   🔠 FORCE ALL TEXT INPUTS TO CAPITAL LETTER
+   ============================================ */
+function forceUppercase(form) {
+  form.querySelectorAll("input[type='text'], textarea").forEach(el => {
+    if (el.value) {
+      el.value = el.value.toUpperCase().trim();
+    }
+  });
+}
+  /* =====================================================
+     📝 FORM ELEMENTS
+  ===================================================== */
+  const mainForm  = document.getElementById("mainAFICMForm");
+  const submitBtn = document.getElementById("submitAFICMButton");
+  const deleteBtn = document.getElementById("deleteAFICMButton");
+  const waitMsg   = document.getElementById("waitAFIMessage");
+  const sNo = document.getElementById("sNo");
+  const fetchedSRNo = document.getElementById("fetchedSRNo");
+  const TimestampAFICM = document.getElementById("TimestampAFICM");
+  const newEntryBtn = document.getElementById("newEntryAFICMButton");
+
+  /* =====================================================
+     ✏️ MODIFY / FETCH
+  ===================================================== */
+  document.getElementById("openMODIFYBtn").onclick = async () => {
+    if (!formUser.value || !formVtype.value) {
+      alert("❌ Please select USER and VOUCHER first");
+      return;
+    }
+
+    const sr = prompt("Enter SR No");
+    if (!sr) return;
+
+    waitMsg.innerText = "Please wait, fetching data...";
+    waitMsg.style.display = "block";
+
+    try {
+      const res = await fetch(`${scriptAFICMURL}?sNo=${sr}&vtype=${formVtype.value}`);
+      const d = await res.json();
+
+      if (d.result === "error") { alert("❌ SR No not found"); return; }
+      if (formUser.value !== d.Type) { alert("❌ SR No does not match selected user"); return; }
+
+      afi02.value = d.esmC || "";
+      afi03.value = d.esmD || "";
+      afi04.value = d.esmE || "";
+      afi05.value = d.esmF || "";
+      afi06.value = d.esmG || "";
+
+      sNo.value = d.SNo;
+      fetchedSRNo.textContent = d.SNo;
+
+      deleteBtn.style.display = "inline-block";
+      newEntryBtn.style.display = "inline-block";
+
+      // ✅ ONLY TRIGGER
+     document.getElementById("refreshcmivTableBtn")?.click();
+
+
+    } catch (err) {
+      alert("❌ Fetch error");
+    } finally {
+      waitMsg.style.display = "none";
+    }
+  };
+
+  /* =====================================================
+     🗑 DELETE ENTRY
+  ===================================================== */
+  deleteBtn.onclick = async () => {
+    if (!sNo.value) { alert("❌ No record selected"); return; }
+    if (!confirm("You want to delete it?")) return;
+
+    waitMsg.innerText = "Deleting...";
+    waitMsg.style.display = "block";
+
+    try {
+      const res = await fetch(`${scriptAFICMURL}?action=delete&sNo=${sNo.value}&vtype=${formVtype.value}`);
+      const r = await res.json();
+
+      if (r.result === "success") {
+        alert("✅ Deleted successfully");
+        mainForm.reset();
+        fetchedSRNo.textContent = "";
+        sNo.value = "";
+        deleteBtn.style.display = "none";
+        newEntryBtn.style.display = "none";
+
+        // ✅ ONLY TRIGGER
+       document.getElementById("refreshcmivTableBtn")?.click();
+
+
+      } else {
+        alert("❌ Delete failed");
+      }
+
+    } catch (err) {
+      alert("❌ Delete error");
+    } finally {
+      waitMsg.style.display = "none";
+    }
+  };
+
+
+  /* =====================================================
+     🚀 SUBMIT FORM  -13-FEB-2026
+  ===================================================== */
+  function formatDateToDDMMMYYYY(dateStr) {
+  const months = ["Jan","Feb","Mar","Apr","May","Jun",
+                  "Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  const d = new Date(dateStr);
+
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = months[d.getMonth()];
+  const year = d.getFullYear();
+
+  return `${day}-${month}-${year}`;
+}
+
+  /* =====================================================
+     🚀 SUBMIT FORM
+  ===================================================== */
+  mainForm.onsubmit = async e => {
+  e.preventDefault();
+
+  forceUppercase(mainForm);
+  submitBtn.disabled = true;
+  submitBtn.value = "Please wait...";
+  waitMsg.innerText = "Submitting...";
+  waitMsg.style.display = "block";
+
+  TimestampAFICM.value = new Date().toLocaleString();
+
+  // ✅ CREATE FORMDATA FIRST
+  const fd = new FormData(mainForm);
+
+  // ✅ DATE FORMAT FIX
+  mainForm.querySelectorAll("input[type='date']").forEach(dateInput => {
+    if (dateInput.value) {
+      fd.set(dateInput.name, formatDateToDDMMMYYYY(dateInput.value));
+    }
+  });
+
+  try {
+    const res = await fetch(scriptAFICMURL, {
+      method: "POST",
+      body: fd   // ✅ UPDATED
+    });
+
+    const r = await res.json();
+
+    if (r.result === "success") {
+      alert("✅ Saved successfully");
+
+      mainForm.reset();
+      fetchedSRNo.textContent = "";
+      sNo.value = "";
+      deleteBtn.style.display = "none";
+      newEntryBtn.style.display = "none";
+
+      document.getElementById("refreshcmivTableBtn")?.click();
+
+    } else {
+      alert("❌ Error while saving");
+    }
+
+  } catch (err) {
+    alert("❌ Submit error");
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.value = "Submit";
+    setTimeout(() => waitMsg.style.display = "none", 1200);
+  }
+};
+
+
+  /* =====================================================
+     🆕 NEW ENTRY
+  ===================================================== */
+  if (newEntryBtn) {
+    newEntryBtn.onclick = () => {
+      mainForm.reset();
+      sNo.value = "";
+      fetchedSRNo.textContent = "";
+      deleteBtn.style.display = "none";
+      newEntryBtn.style.display = "none";
+      waitMsg.style.display = "none";
+
+      // ✅ ONLY TRIGGER
+      document.getElementById("refreshcmivTableBtn")?.click();
+
+
+      console.log("🆕 New Entry mode");
+    };
+  }
+
+  /* =====================================================
+     🚀 INITIAL STATE
+  ===================================================== */
+  deleteBtn.style.display = "none";
+
+});
+</script>
+<!-- ==================  form submit with modify, new entry and delete option script stop hare ============================ -->
+
+
+
+<!-- ===================================  user login script start hare ============================ -->
+<style>
+/* ================= LOGIN POPUP ================= */
+.login-modal {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* LOGIN CARD */
+.login-box {
+  background: #ffffff;
+  padding: 30px 25px;
+  width: 340px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  animation: slideUp 0.6s ease;
+}
+
+/* TITLE */
+.login-box h3 {
+  margin-bottom: 20px;
+  font-size: 22px;
+  color: #333;
+}
+
+/* INPUTS */
+.login-box input {
+  width: 100%;
+  padding: 12px 14px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.login-box input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102,126,234,0.2);
+}
+
+/* BUTTON */
+.login-box button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-box button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* MESSAGE */
+.login-msg {
+  color: #e53935;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+/* ANIMATION */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================= DASHBOARD ================= */
+#dashboard {
+  display: none;
+  padding: 20px;
+}
+
+.hidden {
+  display: none;
+}
+
+.button-div {
+  display: none;
+  margin-top: 10px;
+}
+
+</style>
+</head>
+
+
+<!-- ================= LOGIN POPUP ================= -->
+<!-- ================= LOGIN POPUP ================= -->
+<div id="loginModal" class="login-modal">
+  <div class="login-box">
+
+    <h3 style="color: rgb(2, 118, 196);">Welcome to Multitech Infracon Pvt. Ltd.</h3>
+    <h3>User Login..</h3>
+
+    <input type="text" id="user-id" placeholder="Enter User ID">
+    <input type="password" id="password" placeholder="Enter Password">
+
+    <button onclick="login()">Login</button>
+
+    <p id="login-msg" class="login-msg"></p>
+  </div>
+</div>
+
+
+<!-- ================= DASHBOARD ================= -->
+<div id="dashboard">
+
+
+
+ <div id="loginModal">
+  <!-- login form -->
+</div>
+
+<div id="dashboard" style="display:none;">
+  <!-- your app content -->
+  <button onclick="logout()">Logout</button>
+</div>
+
+<p id="login-msg"></p>
+</div>
+
+<!-- ================= SCRIPT ================= -->
+<script>
+const apiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
+const sheetId = "1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU";
+const range = 'ADMIN!C:I';
+
+let users = {};
+let currentUser = "";
+
+/* ===== Username helper ===== */
+function setUsernameDisplays(name) {
+  document.querySelectorAll('#username').forEach(el => {
+    el.innerText = name || "";
+  });
+}
+
+function clearUsernameDisplays() {
+  document.querySelectorAll('#username').forEach(el => {
+    el.innerText = "";
+  });
+}
+
+/* ===== Fetch User Data ===== */
+async function fetchUserData() {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+  const response = await fetch(url);
+  const data = await response.json();
+  const rows = data.values || [];
+
+  users = {};
+  for (let i = 1; i < rows.length; i++) {
+    const [enabled, userId, password, status, displayName] = rows[i];
+    if (enabled === "1") {
+      users[userId] = {
+        password,
+        displayName,
+        status: status?.toLowerCase() || "unlocked"
+      };
+    }
+  }
+}
+
+/* ===== Login ===== */
+function login() {
+  const userId = document.getElementById('user-id').value.trim();
+  const password = document.getElementById('password').value;
+  const msg = document.getElementById('login-msg');
+
+  if (!users[userId]) {
+    msg.innerText = "Invalid User ID or Password!";
+    return;
+  }
+
+  const user = users[userId];
+
+  if (user.status === "locked") {
+    msg.innerText = "Your account is locked!";
+    return;
+  }
+
+  const expiryDate = Date.parse(user.status);
+  if (!isNaN(expiryDate)) {
+    const diffDays = Math.ceil((expiryDate - new Date()) / 86400000);
+    if (diffDays < 0) {
+      msg.innerText = "Your Licence Expired, Please Contact Admin";
+      return;
+    } else if (diffDays <= 5) {
+      alert(`Your licence will expire in ${diffDays} day(s)`);
+    }
+  }
+
+  if (user.password !== password) {
+    msg.innerText = "Invalid User ID or Password!";
+    return;
+  }
+
+  /* ===== SUCCESS LOGIN ===== */
+  currentUser = userId;
+
+  document.getElementById('loginModal').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+
+  setUsernameDisplays(user.displayName);
+
+  msg.innerText = "";
+  document.getElementById('user-id').value = "";
+  document.getElementById('password').value = "";
+}
+
+/* ===== Logout ===== */
+function logout() {
+  currentUser = "";
+  clearUsernameDisplays();
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('loginModal').style.display = 'flex';
+}
+
+/* ===== On Load ===== */
+window.onload = async () => {
+  await fetchUserData();
+  document.getElementById('loginModal').style.display = 'flex';
+};
+</script>
+
+<!-- ===================================  user login script stop hare ============================ -->
+
+
