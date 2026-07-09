@@ -1357,178 +1357,6 @@ const selectedAddress = selectElement && selectElement.selectedIndex !== -1
 
 
 
-<!-- --- 2. JAVASCRIPT FUNCTION WITH FIX --- -->
-<script>
-function printOnlyPackingList() {
-    // Current live values read karna
-    const buyerValue = document.getElementById('buyerSearchInput') ? document.getElementById('buyerSearchInput').value : '';
-    const addressContent = document.getElementById('displayAddress') ? document.getElementById('displayAddress').innerHTML : 'No data loaded.';
-    const gstinContent = document.getElementById('displayGstin') ? document.getElementById('displayGstin').innerHTML : '-';
-    const stateContent = document.getElementById('displayState') ? document.getElementById('displayState').innerHTML : '-';
-    const gridRows = document.getElementById('gridBody') ? document.getElementById('gridBody').innerHTML : '';
-
-    // Print Layout HTML + CSS Template
-    const printWindowTemplate = `
-        <html>
-        <head>
-            <title>Print Packing List</title>
-            <style>
-                @page {
-                    size: A4;
-                    margin: 15mm 12mm;
-                }
-                body {
-                    font-family: Arial, sans-serif;
-                    background-color: #ffffff;
-                    color: #000000;
-                    margin: 0;
-                    padding: 0;
-                    -webkit-print-color-adjust: exact !important;
-                    print-color-adjust: exact !important;
-                }
-                .print-container {
-                    width: 100%;
-                }
-                .doc-header-title {
-                    font-size: 20pt;
-                    font-weight: bold;
-                    text-align: center;
-                    margin-bottom: 20px;
-                    letter-spacing: 1px;
-                }
-                
-                /* FIX 3: Table Borders Light White / Soft Gray Setup */
-                .header-table, .items-table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    margin-bottom: 15px;
-                }
-                .header-table th, .header-table td, .items-table th, .items-table td {
-                    border: 1px solid #e0e0e0 !important; /* Light white-gray border */
-                    padding: 8px;
-                    font-size: 10.5pt;
-                }
-                .buyer-th {
-                    background-color: rgb(167, 249, 198) !important; 
-                    color: rgb(187, 9, 0) !important; 
-                    font-weight: bold;
-                    text-align: left;
-                }
-                .items-table th {
-                    background-color: #222222 !important;
-                    color: #ffffff !important;
-                    text-align: left;
-                    font-weight: bold;
-                    border: 1px solid #222222 !important;
-                }
-                .text-center { text-align: center; }
-                .text-right { text-align: right; }
-                
-                /* FIX 1 & 2: Borders, selection styles aur placeholder hide karne ka rule */
-                .input-field-print, .header-table input, .items-table input, .items-table select {
-                    border: none !important;
-                    outline: none !important;
-                    background: transparent !important;
-                    font-size: 10.5pt !important;
-                    font-family: Arial, sans-serif !important;
-                    color: #000000 !important;
-                    padding: 0 !important;
-                    margin: 0 !important;
-                    box-shadow: none !important;
-                    -webkit-appearance: none !important; /* Dropdown arrow invisible targets */
-                    -moz-appearance: none !important;
-                    appearance: none !important;
-                }
-
-                /* Kisi bhi bache huye placeholder text को transparent / invisible करना */
-                input::placeholder {
-                    color: transparent !important;
-                    opacity: 0 !important;
-                }
-                
-                /* Agar cells me dummy text placeholders hain toh unhe chupane ke liye custom utilities */
-                .placeholder-text {
-                    display: none !important;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="print-container">
-                <div class="doc-header-title">PACKING LIST</div>
-
-                <table class="header-table">
-                    <thead>
-                        <tr>
-                            <th class="buyer-th">
-                                Buyer (Bill to): <span class="input-field-print">${buyerValue}</span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <div style="margin-top: 4px; font-size: 11pt; color: #333;">${addressContent}</div>
-                                <div style="margin-top: 6px; font-size: 11pt;">
-                                    <strong>GSTIN:</strong> <span>${gstinContent}</span> | <strong>State:</strong> <span>${stateContent}</span>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <table class="items-table">
-                    <thead>
-                        <tr>
-                            <th width="8%" class="text-center">S.No.</th>
-                            <th width="48%">Description of Head of Item</th>
-                            <th width="16%">HSN / Part No.</th>
-                            <th width="14%" class="text-right">Qty</th>
-                            <th width="14%">Unit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${gridRows ? gridRows : '<tr><td colspan="5" class="text-center">No Items Found</td></tr>'}
-                    </tbody>
-                </table>
-            </div>
-
-            <script>
-                // Ek final cleanup script jo real-time print view me dummy elements ko filter karega
-                document.querySelectorAll('input, select').forEach(el => {
-                    // Agar value select ya empty default placeholder default dikhaye toh saaf karein
-                    if(el.value.includes("Select Item") || el.value === "0" || el.value.includes("S.No.")) {
-                        el.value = "";
-                        if(el.tagName === 'SELECT') el.style.opacity = "0"; 
-                    }
-                });
-            <\/script>
-        </body>
-        </html>
-    `;
-
-    // Temporary window kholkar print command trigger karna
-    var printWindow = window.open('', '_blank', 'height=600,width=800');
-    printWindow.document.write(printWindowTemplate);
-    printWindow.document.close();
-    
-    printWindow.focus();
-    setTimeout(function() {
-        printWindow.print();
-        printWindow.close();
-    }, 400);
-}
-</script>
-
-
-
-
-
-
-
-
-
-
-
 
 <!-- ============ ---------- 🖨️ Temporary Print script  start Here ----------- Start ============ --> 
 <script>
@@ -1539,6 +1367,10 @@ function printOnlyPackingList() {
     const gstinContent = document.getElementById('displayGstin') ? document.getElementById('displayGstin').innerHTML : '-';
     const stateContent = document.getElementById('displayState') ? document.getElementById('displayState').innerHTML : '-';
     const gridRows = document.getElementById('gridBody') ? document.getElementById('gridBody').innerHTML : '';
+    
+    // FIX: Input elements se value read karne ke liye .value ka use kiya hai
+    const jobno = document.getElementById('metaJobNo') ? document.getElementById('metaJobNo').value : '';
+    const vcno = document.getElementById('metaVehicleNo') ? document.getElementById('metaVehicleNo').value : '';
 
     // Print Layout HTML + CSS Template
     const printWindowTemplate = `
@@ -1661,6 +1493,10 @@ function printOnlyPackingList() {
 
                 <div class="doc-header-title">PACKING LIST</div>
 
+                <div style="margin-bottom: 12px; font-size: 11pt;">
+                    <strong>Job No:</strong> <span>${jobno}</span> | <strong>Vehicle No:</strong> <span>${vcno}</span>
+                </div>
+
      <table class="header-table">
      <thead><tr> <th class="buyer-th">  Buyer (Bill to): <span class="input-field-print">${buyerValue}</span> </th> </tr> </thead>
      <tbody> <tr> <td>  <div style="margin-top: 4px; font-size: 11pt; color: #333;">${addressContent}</div>
@@ -1722,4 +1558,4 @@ function printOnlyPackingList() {
     }, 400);
 }
 </script>
-<!-- ============ ---------- 🖨️ Temporary Print script  Stop Here ------------ XXX ============ --> 
+<!-- ============ ---------- 🖨️ Temporary Print script  Stop Here ----------- XXX ============ --> 
