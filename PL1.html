@@ -499,8 +499,7 @@ setInterval(() => {
         
         <div style="display: flex; gap: 10px;">
             <button type="button" class="btn-add-row" id="insertRowBtn">+ Add New Line Row</button>
-             <button onclick="printOnlyPackingList();" style="border: none; color: rgb(94, 25, 0); font-weight: bold; background-color: transparent;cursor: pointer;"> 🖨️ Temporary Print</button>
-        </div>
+              </div>
 
         <table class="footer-table">
             <tbody>
@@ -514,10 +513,13 @@ setInterval(() => {
         </table>
 
         <div style="text-align: center; margin-top: 15px; display: flex; justify-content: center; gap: 10px;"> 
+             <button id="customProfessionalPrintBtn" style="color: #000; border: none; background-color: transparent; cursor: pointer; font-weight: bold;""> 🖨️ Print Temproary View</button>
             <button type="button" class="btn" style="background-color: #17a2b8; color: white; font-weight: bold; display: none; padding: 8px 14px; border: none; border-radius: 4px; font-size: 13px; cursor: pointer;" id="partialSaveDataBtn">📝 Partial Save</button>
             <button type="button" class="btn btn-save" style="background-color: #28a745;" id="commitDataBtn">💾 Final Save</button>
         </div>
        
+
+
     </div>
 
 </div>  <!-- ============ ---------- Workspace Div  Stop Here ----------- XXX ============ --> 
@@ -1358,204 +1360,204 @@ const selectedAddress = selectElement && selectElement.selectedIndex !== -1
 
 
 
+
+
+
+
+
+
+
+
+
 <!-- ============ ---------- 🖨️ Temporary Print script  start Here ----------- Start ============ --> 
 <script>
-function printOnlyPackingList() {
-    // Live values read karna
-    const buyerValue = document.getElementById('buyerSearchInput') ? document.getElementById('buyerSearchInput').value : '';
-    const addressContent = document.getElementById('displayAddress') ? document.getElementById('displayAddress').innerHTML : 'No data loaded.';
-    const gstinContent = document.getElementById('displayGstin') ? document.getElementById('displayGstin').innerHTML : '-';
-    const stateContent = document.getElementById('displayState') ? document.getElementById('displayState').innerHTML : '-';
-    const gridRows = document.getElementById('gridBody') ? document.getElementById('gridBody').innerHTML : '';
+document.addEventListener("DOMContentLoaded", () => {
+    const printBtn = document.getElementById('customProfessionalPrintBtn');
     
-    // FIX: Input elements se value read karne ke liye .value ka use kiya hai
-    const jobno = document.getElementById('metaJobNo') ? document.getElementById('metaJobNo').value : '';
-    const vcno = document.getElementById('metaVehicleNo') ? document.getElementById('metaVehicleNo').value : '';
+    if (printBtn) {
+        printBtn.addEventListener('click', () => {
+            // Screen ke active inputs/elements se dynamic data automatic pull karna
+            const jobno = document.getElementById('metaJobNo')?.value || document.querySelector('[placeholder*="Job"]')?.value || '—';
+            const vcno = document.getElementById('metaVehicleNo')?.value || document.querySelector('[placeholder*="Vehicle"]')?.value || '—';
+            const buyerValue = document.getElementById('buyerSearchInput')?.value || document.getElementById('wizBuyerInput')?.value || '—';
+            const addressContent = document.getElementById('displayAddress')?.innerText || '—';
+            const gstinContent = document.getElementById('displayGstin')?.innerText || '—';
+            const stateContent = document.getElementById('displayState')?.innerText || '—';
+            const currentDocNameText = document.getElementById('docname')?.innerText || 'PACKING LIST';
 
-    // Print Layout HTML + CSS Template
-    const printWindowTemplate = `
-        <html>
-        <head>
-            <title>Print Packing List</title>
-            <style>
-                @page { size: A4; margin: 15mm 12mm 15mm 12mm;}
-                body {
-                    font-family: Arial, sans-serif;
-                    background-color: #ffffff;
-                    color: #000000;
-                    margin: 0;
-                    padding: 0;
-                    -webkit-print-color-adjust: exact !important;
-                    print-color-adjust: exact !important;
-                    position: relative;
-                }
-                
-                /* Diagonal Watermark */
-                .watermark {
-                    position: fixed;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%) rotate(-45deg);
-                    font-size: 52pt;
-                    color: rgba(220, 220, 220, 0.25) !important;
-                    font-weight: bold;
-                    text-transform: uppercase;
-                    white-space: nowrap;
-                    z-index: -1000;
-                    pointer-events: none;
-                }
+            // Current Indian date aur time format
+            const currentNow = new Date();
+            const formattedDateStr = currentNow.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).replace(/ /g, '-');
+            const formattedTimeStr = currentNow.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }).toLowerCase();
+            const timeStampStr = `${formattedDateStr} / ${formattedTimeStr}`;
 
-                /* FIX: Top-Right Timestamp Styling */
-                .top-timestamp { position: absolute;  top: 0; right: 0; font-size: 9.5pt;  color: #555555; font-weight: normal; }
-                .print-container {  width: 100%; position: relative; padding-top: 10px; }
-                .doc-header-title {
-                    font-size: 20pt;
-                    font-weight: bold;
-                    text-align: center;
-                    margin-bottom: 20px;
-                    letter-spacing: 1px;
-                }
-                
-                /* Tables Layout & Light Border */
-                .header-table, .items-table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    margin-bottom: 15px;
-                    table-layout: fixed;
-                }
-                
-                .header-table th, .header-table td {
-                    border: 1px solid #e0e0e0 !important;
-                    padding: 6px;
-                    font-size: 10.5pt;
+            // TABLE ROWS GENERATION
+            let gridRows = "";
+            const formRows = document.querySelectorAll('#previewPrintArea table tbody tr, #gridBody tr, .items-table tbody tr');
+            
+            formRows.forEach((row) => {
+                const snoInput = row.cells[0]?.querySelector('input') || row.querySelector('.row-sno-input');
+                const sno = snoInput ? snoInput.value : (row.cells[0]?.innerText || '');
+
+                const descInput = row.cells[1]?.querySelector('input') || row.querySelector('.row-desc-input');
+                const desc = descInput ? descInput.value : (row.cells[1]?.innerText || '');
+
+                const partNoInput = row.cells[2]?.querySelector('input') || row.querySelector('.row-part-input');
+                const partNo = partNoInput ? partNoInput.value : (row.cells[2]?.innerText || '');
+
+                const qtyInput = row.cells[3]?.querySelector('input') || row.querySelector('.row-qty-input');
+                const qty = qtyInput ? qtyInput.value : (row.cells[3]?.innerText || '');
+
+                // Dropdown single option fix
+                const unitSelect = row.cells[4]?.querySelector('select') || row.querySelector('.row-unit-select');
+                let unit = '';
+                if (unitSelect) {
+                    unit = unitSelect.options[unitSelect.selectedIndex]?.text || unitSelect.value || '';
+                } else {
+                    unit = row.cells[4]?.innerText || '';
                 }
 
-                .items-table td {
-                    border: 1px solid #e0e0e0 !important;
-                    padding: 8px;
-                    font-size: 10.5pt;
-                    word-wrap: break-word;
-                    white-space: normal !important;
-                }
-                
-                /* FIX: Aapke anusaar exact Ratio aur Center Alignment Apply kiya gaya hai */
-                .col-sno   { width: 6% !important; text-align: center !important; }
-                .col-desc  { width: 60% !important; text-align: left !important; } /* Baaki bacha 64% Description ko diya */
-                .col-hsn   { width: 12.5% !important; text-align: center !important; }
-                .col-qty   { width: 10.5% !important; text-align: center !important; }
-                .col-unit  { width: 11% !important; text-align: center !important; }
-                
-                .items-table th {
-                    background-color: #222222 !important;
-                    color: #ffffff !important;
-                    font-weight: bold;
-                    border: 1px solid #222222 !important;
-                    padding: 8px;
-                    font-size: 10.5pt;
-                    word-wrap: break-word;
-                    white-space: normal !important;
-                }
-                
-                .buyer-th {
-                    background-color: rgb(167, 249, 198) !important; 
-                    color: rgb(187, 9, 0) !important; 
-                    font-weight: bold;
-                    text-align: left;
-                }
-                
-                /* Input inputs cleaning */
-                .input-field-print, .header-table input, .items-table input, .items-table select {
-                    border: none !important;
-                    outline: none !important;
-                    background: transparent !important;
-                    font-size: 10.5pt !important;
-                    font-family: Arial, sans-serif !important;
-                    color: #000000 !important;
-                    padding: 0 !important;
-                    margin: 0 !important;
-                    box-shadow: none !important;
-                    width: 100%;
-                    text-align: inherit !important; /* Row setting ke direction ko follow karega */
-                    -webkit-appearance: none !important;
-                    appearance: none !important;
-                }
+                // Filtering empty rows
+                if (desc.trim() !== "" || sno.trim() !== "") {
+                    // Original Row colors extraction
+                    const computedStyle = window.getComputedStyle(row);
+                    const originalBgColor = computedStyle.backgroundColor;
+                    const originalTextColor = computedStyle.color;
+                    const originalFontWeight = computedStyle.fontWeight;
 
-                input::placeholder {
-                    color: transparent !important;
-                    opacity: 0 !important;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="watermark">TEMPORARY VIEW</div>
-            <div class="print-container">
-                <span class="top-timestamp">7-Jan-2026 / 2:05 pm</span>
-
-                <div class="doc-header-title">PACKING LIST</div>
-
-                <div style="margin-bottom: 12px; font-size: 11pt;">
-                    <strong>Job No:</strong> <span>${jobno}</span> | <strong>Vehicle No:</strong> <span>${vcno}</span>
-                </div>
-
-     <table class="header-table">
-     <thead><tr> <th class="buyer-th">  Buyer (Bill to): <span class="input-field-print">${buyerValue}</span> </th> </tr> </thead>
-     <tbody> <tr> <td>  <div style="margin-top: 4px; font-size: 11pt; color: #333;">${addressContent}</div>
-     <div style="margin-top: 6px; font-size: 11pt;"> <strong>GSTIN:</strong> <span>${gstinContent}</span> | <strong>State:</strong> <span>${stateContent}</span> </div>
-     </td>
-      </tr> </tbody>
-     </table>
-
-                <table class="items-table">
-                    <thead>
-                        <tr>
-                            <th class="col-sno">S.No.</th>
-                            <th class="col-desc">Description of Head of Item</th>
-                            <th class="col-hsn">Part No.</th>
-                            <th class="col-qty">Qty</th>
-                            <th class="col-unit">Unit</th>
+                    gridRows += `
+                        <tr style="background-color: ${originalBgColor} !important; color: ${originalTextColor} !important; font-weight: ${originalFontWeight} !important;">
+                            <td class="col-sno">${sno}</td>
+                            <td class="col-desc">${desc}</td>
+                            <td class="col-hsn">${partNo}</td>
+                            <td class="col-qty">${qty}</td>
+                            <td class="col-unit">${unit}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        ${gridRows ? gridRows : '<tr><td colspan="5" style="text-align: center;">No Items Found</td></tr>'}
-                    </tbody>
-                </table>
-            </div>
+                    `;
+                }
+            });
 
-            <script>
-                // Map columns styles dynamically inside grid rows for keeping ratios and alignment accurate
-                const rows = document.querySelectorAll('.items-table tbody tr');
-                rows.forEach(row => {
-                    if(row.cells.length === 5) {
-                        row.cells[0].classList.add('col-sno');
-                        row.cells[1].classList.add('col-desc');
-                        row.cells[2].classList.add('col-hsn');
-                        row.cells[3].classList.add('col-qty');
-                        row.cells[4].classList.add('col-unit');
-                    }
-                });
+            if (!gridRows || gridRows.trim() === "") {
+                gridRows = `<tr><td colspan="5" style="text-align: center; padding: 20px; color: #777;">No Items Found</td></tr>`;
+            }
 
-                // Clear placeholder entries
-                document.querySelectorAll('input, select').forEach(el => {
-                    if(el.value.includes("Select Item") || el.value === "0" || el.value.includes("S.No.")) {
-                        el.value = "";
-                        if(el.tagName === 'SELECT') el.style.opacity = "0";
-                    }
-                });
-            <\/script>
-        </body>
-        </html>
-    `;
+            // New Window open karke professional print window generate karna
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Print Preview - ${currentDocNameText}</title>
+                    <style>
+                        @page { size: A4 portrait; margin: 12mm 15mm; }
+                        * {
+                            -webkit-print-color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+                            color-adjust: exact !important;
+                        }
+                        body { font-family: 'Segoe UI', Arial, sans-serif; color: #000; margin: 0; padding: 0; background: #fff; }
+                        
+                        /* Watermark */
+                        .watermark {
+                            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg);
+                            font-size: 65pt; font-weight: 900; color: rgba(220, 220, 220, 0.25) !important;
+                            z-index: -1000; pointer-events: none; white-space: nowrap; text-transform: uppercase; letter-spacing: 5px;
+                        }
+                        
+                        .print-container { width: 100%; position: relative; z-index: 10; }
+                        .top-timestamp { display: block; font-size: 9pt; color: #444; margin-bottom: 6px; font-weight: 500; text-align: left; }
+                        .doc-header-title { font-size: 22pt; font-weight: bold; letter-spacing: 2px; text-align: center; margin: 5px 0 15px 0; color: #000; text-transform: uppercase; border-bottom: 2px solid #000; padding-bottom: 5px; }
+                        .meta-info-panel { margin-bottom: 15px; font-size: 11pt; border-bottom: 1px dashed #999; padding-bottom: 8px; }
+                        
+                        .header-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+                        .header-table th, .header-table td { border: 1px solid #000; padding: 10px; font-size: 11pt; text-align: left; vertical-align: top; }
+                        .buyer-th { background-color: #f2f2f2 !important; font-size: 11.5pt; font-weight: bold; border-bottom: 1px solid #000; }
+                        .input-field-print { font-weight: bold; color: #000; margin-left: 4px; }
+                        
+                        .items-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+                        .items-table th, .items-table td { border: 1px solid #000; padding: 8px 10px; font-size: 10.5pt; vertical-align: middle; }
+                        .items-table th { background-color: #f2f2f2 !important; font-weight: bold; text-transform: uppercase; font-size: 10pt; color: #000 !important; text-align: center; }
+                        
+                        /* Aligning column headers text */
+                        .items-table th.col-desc { text-align: left; }
+                        
+                        /* FIXED ALIGNMENTS (As per requested, Part No, Qty, Unit are CENTERED) */
+                        .col-sno { width: 8%; text-align: center !important; }
+                        .col-desc { width: 48%; text-align: left !important; }
+                        .col-hsn { width: 16%; text-align: center !important; }
+                        .col-qty { width: 14%; text-align: center !important; }
+                        .col-unit { width: 14%; text-align: center !important; }
 
-    // Print Window trigger sequence
-    var printWindow = window.open('', '_blank', 'height=600,width=800');
-    printWindow.document.write(printWindowTemplate);
-    printWindow.document.close();
-    
-    printWindow.focus();
-    setTimeout(function() {
-        printWindow.print();
-        printWindow.close();
-    }, 400);
-}
+                        .print-footer-sig { width: 100%; margin-top: 60px; border-collapse: collapse; page-break-inside: avoid; }
+                        .print-footer-sig td { border: none; font-size: 11pt; }
+                    </style>
+                </head>
+                <body>
+                    <div class="watermark">TEMPORARY VIEW</div>
+                    <div class="print-container">
+                        <span class="top-timestamp">${timeStampStr}</span>
+                        <div class="doc-header-title">${currentDocNameText}</div>
+
+                        <div class="meta-info-panel">
+                            <strong>Job No:</strong> <span>${jobno}</span> &nbsp;|&nbsp; <strong>Vehicle No:</strong> <span>${vcno}</span>
+                        </div>
+
+                        <table class="header-table">
+                            <thead>
+                                <tr> 
+                                    <th class="buyer-th">Buyer (Bill to): <span class="input-field-print">${buyerValue}</span></th> 
+                                </tr> 
+                            </thead>
+                            <tbody> 
+                                <tr> 
+                                    <td> 
+                                        <div style="margin-top: 2px; font-size: 11pt; color: #111; line-height: 1.5; white-space: pre-wrap;">${addressContent}</div>
+                                        <div style="margin-top: 8px; font-size: 11pt; border-top: 1px dashed #ccc; padding-top: 6px;"> 
+                                            <strong>GSTIN:</strong> <span>${gstinContent}</span> &nbsp;|&nbsp; <strong>State:</strong> <span>${stateContent}</span> 
+                                        </div>
+                                    </td>
+                                </tr> 
+                            </tbody>
+                        </table>
+
+                        <table class="items-table">
+                            <thead>
+                                <tr>
+                                    <th class="col-sno">S.No.</th>
+                                    <th class="col-desc">Description of Head of Item</th>
+                                    <th class="col-hsn">Part No.</th>
+                                    <th class="col-qty">Qty</th>
+                                    <th class="col-unit">Unit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${gridRows}
+                            </tbody>
+                        </table>
+
+                        <table class="print-footer-sig">
+                            <tr>
+                                <td width="50%"></td>
+                                <td width="50%" align="right" style="line-height: 1.5;">
+                                    <strong>For Multitech Infracon Pvt. Ltd.</strong>
+                                    <br><br><br><br><br>
+                                    <span style="border-top: 1px dashed #000; padding-top: 5px; display: inline-block; width: 220px; text-align: center; font-weight: bold;">Authorised Signatory</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            
+            printWindow.setTimeout(() => {
+                printWindow.print();
+            }, 500);
+        });
+    }
+});
 </script>
-<!-- ============ ---------- 🖨️ Temporary Print script  Stop Here ----------- XXX ----------------------------- ============ --> 
+<!-- ============ ---------- 🖨️ Temporary Print script  Stop Here ----------- XXX ============ --> 
