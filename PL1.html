@@ -217,6 +217,9 @@ setInterval(displayCurrentDateTime, 1000);
 </div>
 
 
+
+
+
 <!-- ============ ---------- Right Panal / Status Bar Start ----------- ============ --> 
 <div class="right-fixed-panel">
      
@@ -397,42 +400,6 @@ setInterval(displayCurrentDateTime, 1000);
         
         #loader { display: none; position: fixed; top: 10px; left: 50%; transform: translateX(-50%); background: #ffc107; color: black; padding: 8px 20px; font-weight: bold; border-radius: 4px; z-index: 9999; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
    
-
-
-        /* ------------------ document-box DIV PRINT -----*/
-@media print {
-
-    body * {
-        visibility: hidden;
-    }
-
-    .document-box,
-    .document-box * {
-        visibility: visible;
-    }
-
-    .document-box {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        border: none !important;
-        box-shadow: none !important;
-        background: #fff !important;
-    }
-
-    input::placeholder {
-        color: transparent !important;
-        opacity: 0 !important;
-    }
-
-    select option:disabled {
-        display: none !important;
-    }
-}
    </style>
 </head>
 <body>
@@ -456,7 +423,7 @@ setInterval(displayCurrentDateTime, 1000);
     <!-- Yeh select dropdown dikhne me ekdum normal text jaisa lagega -->
     <select onchange="this.style.width = (this.options[this.selectedIndex].text.length * 7) + 'px';" id="unitadd"
             style="font-size: 12px; color: #4b5563; border: none; background: transparent; font-family: Arial, sans-serif; font-weight: bold; padding: 0; margin: 0; outline: none; cursor: pointer; -webkit-appearance: none; -moz-appearance: none; appearance: none;">
-        <option value="unit1">Unit - 2 : Nh 74 12th Km Stone, Vill Dabhora Mustakam Bazpur Road Kashipur, U.S Nagar Uttarakhand 244713</option>
+        <option value="unit1">Unit - 2 : NH 74 12th Km Stone, Vill Dabhora Mustakam Bazpur Road Kashipur, U.S Nagar Uttarakhand 244713</option>
         <option value="unit2">Unit - 1 : T-2 , BEHIND KENDRIYA SCHOOL, Opp IMT College, Bazpyr Road Kashipr,Uttarakhand 244713</option>
         <option value="unit3">Unit - 3 : Vill-Dabhora Ehatamali, AJeetput Road Kashipur, U.S Nagar Uttarakhand 244713</option>
     </select>
@@ -532,8 +499,7 @@ setInterval(() => {
         
         <div style="display: flex; gap: 10px;">
             <button type="button" class="btn-add-row" id="insertRowBtn">+ Add New Line Row</button>
-            <button type="button"  style="background-color: transparent; color: #000e22; border: none; cursor: pointer;" onclick="printCurrentDocument()">🖨️ Print Current</button>
-            <script>function printCurrentDocument() {window.print();}</script>
+             <button onclick="printOnlyPackingList();" style="border: none; color: rgb(94, 25, 0); font-weight: bold; background-color: transparent;cursor: pointer;"> 🖨️ Temporary Print</button>
         </div>
 
         <table class="footer-table">
@@ -1376,3 +1342,384 @@ const selectedAddress = selectElement && selectElement.selectedIndex !== -1
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- --- 2. JAVASCRIPT FUNCTION WITH FIX --- -->
+<script>
+function printOnlyPackingList() {
+    // Current live values read karna
+    const buyerValue = document.getElementById('buyerSearchInput') ? document.getElementById('buyerSearchInput').value : '';
+    const addressContent = document.getElementById('displayAddress') ? document.getElementById('displayAddress').innerHTML : 'No data loaded.';
+    const gstinContent = document.getElementById('displayGstin') ? document.getElementById('displayGstin').innerHTML : '-';
+    const stateContent = document.getElementById('displayState') ? document.getElementById('displayState').innerHTML : '-';
+    const gridRows = document.getElementById('gridBody') ? document.getElementById('gridBody').innerHTML : '';
+
+    // Print Layout HTML + CSS Template
+    const printWindowTemplate = `
+        <html>
+        <head>
+            <title>Print Packing List</title>
+            <style>
+                @page {
+                    size: A4;
+                    margin: 15mm 12mm;
+                }
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #ffffff;
+                    color: #000000;
+                    margin: 0;
+                    padding: 0;
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+                .print-container {
+                    width: 100%;
+                }
+                .doc-header-title {
+                    font-size: 20pt;
+                    font-weight: bold;
+                    text-align: center;
+                    margin-bottom: 20px;
+                    letter-spacing: 1px;
+                }
+                
+                /* FIX 3: Table Borders Light White / Soft Gray Setup */
+                .header-table, .items-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 15px;
+                }
+                .header-table th, .header-table td, .items-table th, .items-table td {
+                    border: 1px solid #e0e0e0 !important; /* Light white-gray border */
+                    padding: 8px;
+                    font-size: 10.5pt;
+                }
+                .buyer-th {
+                    background-color: rgb(167, 249, 198) !important; 
+                    color: rgb(187, 9, 0) !important; 
+                    font-weight: bold;
+                    text-align: left;
+                }
+                .items-table th {
+                    background-color: #222222 !important;
+                    color: #ffffff !important;
+                    text-align: left;
+                    font-weight: bold;
+                    border: 1px solid #222222 !important;
+                }
+                .text-center { text-align: center; }
+                .text-right { text-align: right; }
+                
+                /* FIX 1 & 2: Borders, selection styles aur placeholder hide karne ka rule */
+                .input-field-print, .header-table input, .items-table input, .items-table select {
+                    border: none !important;
+                    outline: none !important;
+                    background: transparent !important;
+                    font-size: 10.5pt !important;
+                    font-family: Arial, sans-serif !important;
+                    color: #000000 !important;
+                    padding: 0 !important;
+                    margin: 0 !important;
+                    box-shadow: none !important;
+                    -webkit-appearance: none !important; /* Dropdown arrow invisible targets */
+                    -moz-appearance: none !important;
+                    appearance: none !important;
+                }
+
+                /* Kisi bhi bache huye placeholder text को transparent / invisible करना */
+                input::placeholder {
+                    color: transparent !important;
+                    opacity: 0 !important;
+                }
+                
+                /* Agar cells me dummy text placeholders hain toh unhe chupane ke liye custom utilities */
+                .placeholder-text {
+                    display: none !important;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="print-container">
+                <div class="doc-header-title">PACKING LIST</div>
+
+                <table class="header-table">
+                    <thead>
+                        <tr>
+                            <th class="buyer-th">
+                                Buyer (Bill to): <span class="input-field-print">${buyerValue}</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div style="margin-top: 4px; font-size: 11pt; color: #333;">${addressContent}</div>
+                                <div style="margin-top: 6px; font-size: 11pt;">
+                                    <strong>GSTIN:</strong> <span>${gstinContent}</span> | <strong>State:</strong> <span>${stateContent}</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th width="8%" class="text-center">S.No.</th>
+                            <th width="48%">Description of Head of Item</th>
+                            <th width="16%">HSN / Part No.</th>
+                            <th width="14%" class="text-right">Qty</th>
+                            <th width="14%">Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${gridRows ? gridRows : '<tr><td colspan="5" class="text-center">No Items Found</td></tr>'}
+                    </tbody>
+                </table>
+            </div>
+
+            <script>
+                // Ek final cleanup script jo real-time print view me dummy elements ko filter karega
+                document.querySelectorAll('input, select').forEach(el => {
+                    // Agar value select ya empty default placeholder default dikhaye toh saaf karein
+                    if(el.value.includes("Select Item") || el.value === "0" || el.value.includes("S.No.")) {
+                        el.value = "";
+                        if(el.tagName === 'SELECT') el.style.opacity = "0"; 
+                    }
+                });
+            <\/script>
+        </body>
+        </html>
+    `;
+
+    // Temporary window kholkar print command trigger karna
+    var printWindow = window.open('', '_blank', 'height=600,width=800');
+    printWindow.document.write(printWindowTemplate);
+    printWindow.document.close();
+    
+    printWindow.focus();
+    setTimeout(function() {
+        printWindow.print();
+        printWindow.close();
+    }, 400);
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ============ ---------- 🖨️ Temporary Print script  start Here ----------- Start ============ --> 
+<script>
+function printOnlyPackingList() {
+    // Live values read karna
+    const buyerValue = document.getElementById('buyerSearchInput') ? document.getElementById('buyerSearchInput').value : '';
+    const addressContent = document.getElementById('displayAddress') ? document.getElementById('displayAddress').innerHTML : 'No data loaded.';
+    const gstinContent = document.getElementById('displayGstin') ? document.getElementById('displayGstin').innerHTML : '-';
+    const stateContent = document.getElementById('displayState') ? document.getElementById('displayState').innerHTML : '-';
+    const gridRows = document.getElementById('gridBody') ? document.getElementById('gridBody').innerHTML : '';
+
+    // Print Layout HTML + CSS Template
+    const printWindowTemplate = `
+        <html>
+        <head>
+            <title>Print Packing List</title>
+            <style>
+                @page { size: A4; margin: 15mm 12mm 15mm 12mm;}
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #ffffff;
+                    color: #000000;
+                    margin: 0;
+                    padding: 0;
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                    position: relative;
+                }
+                
+                /* Diagonal Watermark */
+                .watermark {
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%) rotate(-45deg);
+                    font-size: 52pt;
+                    color: rgba(220, 220, 220, 0.25) !important;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    white-space: nowrap;
+                    z-index: -1000;
+                    pointer-events: none;
+                }
+
+                /* FIX: Top-Right Timestamp Styling */
+                .top-timestamp { position: absolute;  top: 0; right: 0; font-size: 9.5pt;  color: #555555; font-weight: normal; }
+                .print-container {  width: 100%; position: relative; padding-top: 10px; }
+                .doc-header-title {
+                    font-size: 20pt;
+                    font-weight: bold;
+                    text-align: center;
+                    margin-bottom: 20px;
+                    letter-spacing: 1px;
+                }
+                
+                /* Tables Layout & Light Border */
+                .header-table, .items-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 15px;
+                    table-layout: fixed;
+                }
+                
+                .header-table th, .header-table td {
+                    border: 1px solid #e0e0e0 !important;
+                    padding: 6px;
+                    font-size: 10.5pt;
+                }
+
+                .items-table td {
+                    border: 1px solid #e0e0e0 !important;
+                    padding: 8px;
+                    font-size: 10.5pt;
+                    word-wrap: break-word;
+                    white-space: normal !important;
+                }
+                
+                /* FIX: Aapke anusaar exact Ratio aur Center Alignment Apply kiya gaya hai */
+                .col-sno   { width: 6% !important; text-align: center !important; }
+                .col-desc  { width: 60% !important; text-align: left !important; } /* Baaki bacha 64% Description ko diya */
+                .col-hsn   { width: 12.5% !important; text-align: center !important; }
+                .col-qty   { width: 10.5% !important; text-align: center !important; }
+                .col-unit  { width: 11% !important; text-align: center !important; }
+                
+                .items-table th {
+                    background-color: #222222 !important;
+                    color: #ffffff !important;
+                    font-weight: bold;
+                    border: 1px solid #222222 !important;
+                    padding: 8px;
+                    font-size: 10.5pt;
+                    word-wrap: break-word;
+                    white-space: normal !important;
+                }
+                
+                .buyer-th {
+                    background-color: rgb(167, 249, 198) !important; 
+                    color: rgb(187, 9, 0) !important; 
+                    font-weight: bold;
+                    text-align: left;
+                }
+                
+                /* Input inputs cleaning */
+                .input-field-print, .header-table input, .items-table input, .items-table select {
+                    border: none !important;
+                    outline: none !important;
+                    background: transparent !important;
+                    font-size: 10.5pt !important;
+                    font-family: Arial, sans-serif !important;
+                    color: #000000 !important;
+                    padding: 0 !important;
+                    margin: 0 !important;
+                    box-shadow: none !important;
+                    width: 100%;
+                    text-align: inherit !important; /* Row setting ke direction ko follow karega */
+                    -webkit-appearance: none !important;
+                    appearance: none !important;
+                }
+
+                input::placeholder {
+                    color: transparent !important;
+                    opacity: 0 !important;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="watermark">TEMPORARY VIEW</div>
+            <div class="print-container">
+                <span class="top-timestamp">7-Jan-2026 / 2:05 pm</span>
+
+                <div class="doc-header-title">PACKING LIST</div>
+
+     <table class="header-table">
+     <thead><tr> <th class="buyer-th">  Buyer (Bill to): <span class="input-field-print">${buyerValue}</span> </th> </tr> </thead>
+     <tbody> <tr> <td>  <div style="margin-top: 4px; font-size: 11pt; color: #333;">${addressContent}</div>
+     <div style="margin-top: 6px; font-size: 11pt;"> <strong>GSTIN:</strong> <span>${gstinContent}</span> | <strong>State:</strong> <span>${stateContent}</span> </div>
+     </td>
+      </tr> </tbody>
+     </table>
+
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th class="col-sno">S.No.</th>
+                            <th class="col-desc">Description of Head of Item</th>
+                            <th class="col-hsn">Part No.</th>
+                            <th class="col-qty">Qty</th>
+                            <th class="col-unit">Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${gridRows ? gridRows : '<tr><td colspan="5" style="text-align: center;">No Items Found</td></tr>'}
+                    </tbody>
+                </table>
+            </div>
+
+            <script>
+                // Map columns styles dynamically inside grid rows for keeping ratios and alignment accurate
+                const rows = document.querySelectorAll('.items-table tbody tr');
+                rows.forEach(row => {
+                    if(row.cells.length === 5) {
+                        row.cells[0].classList.add('col-sno');
+                        row.cells[1].classList.add('col-desc');
+                        row.cells[2].classList.add('col-hsn');
+                        row.cells[3].classList.add('col-qty');
+                        row.cells[4].classList.add('col-unit');
+                    }
+                });
+
+                // Clear placeholder entries
+                document.querySelectorAll('input, select').forEach(el => {
+                    if(el.value.includes("Select Item") || el.value === "0" || el.value.includes("S.No.")) {
+                        el.value = "";
+                        if(el.tagName === 'SELECT') el.style.opacity = "0";
+                    }
+                });
+            <\/script>
+        </body>
+        </html>
+    `;
+
+    // Print Window trigger sequence
+    var printWindow = window.open('', '_blank', 'height=600,width=800');
+    printWindow.document.write(printWindowTemplate);
+    printWindow.document.close();
+    
+    printWindow.focus();
+    setTimeout(function() {
+        printWindow.print();
+        printWindow.close();
+    }, 400);
+}
+</script>
+<!-- ============ ---------- 🖨️ Temporary Print script  Stop Here ----------- XXX ============ --> 
