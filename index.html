@@ -889,8 +889,7 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
 <span style="color: #848585; font-weight: bold; font-size: 22px;">|</span>
 <button onclick="showSection(3)" style="text-align:center;border: none; background-color: #f9fbfc; color: #011738; font-weight: bold; font-size: 16px;cursor: pointer;" id="f3">Accounting Voucher &nbsp;<span style="color: rgb(247, 149, 149); font-weight: bold;">(F3)</button>
 <span style="color: #848585; font-weight: bold; font-size: 22px;">|</span>
-<button onclick="window.open('https://docs.google.com/spreadsheets/d/1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4/edit?gid=2081509697#gid=2081509697','_blank')" mfvbtn="11" style="text-align:center;border: none; background-color: #f9fbfc; color: #011738; font-weight: bold; font-size: 16px;cursor: pointer;">Packing List </span></button>
-<button onclick="window.open('https://m5792.github.io/esm/PL1.html','_blank')" mfvbtn="11" style="text-align:center;border: none; background-color: #f9fbfc; color: #011738; font-weight: bold; font-size: 16px;cursor: pointer;">Packing List - 2</span></button>
+<button onclick="window.open('https://m5792.github.io/esm/PL1.html','_blank')" mfvbtn="11" style="text-align:center;border: none; background-color: #f9fbfc; color: #011738; font-weight: bold; font-size: 16px;cursor: pointer;">Packing List</span></button>
 
 <span style="color: #848585; font-weight: bold; font-size: 22px;">|</span>
 
@@ -898,7 +897,7 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
 <span style="color: #848585; font-weight: bold; font-size: 22px;">|</span>
  <select onchange="if(this.value) window.open(this.value, '_blank'); this.selectedIndex = 0;" mfvbtn="6" style="text-align:center;border: none; background-color: #f9fbfc; color: #011738; font-weight: bold; font-size: 16px;cursor: pointer;">
 <option value="">📂 Select Google Sheet to Open</option>
-<option value="https://docs.google.com/spreadsheets/d/1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4/edit?gid=2081509697#gid=2081509697">Packing List</option>
+<option value="https://docs.google.com/spreadsheets/d/1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4/edit?gid=2081509697#gid=2081509697">Packing List - G Sheet</option>
 <option value="https://docs.google.com/spreadsheets/d/1bT0GHM6VHMyw9zZq8M2FDaVMS-dOcPGaChWF2Ywyn14/edit?gid=0#gid=0">Running Project Balance Sheet </option>
 <option value="https://docs.google.com/spreadsheets/d/1B6dyXPay3Tyl_7RzGuL9Rg8AhkzdBNhJNRu-T-3kmvI/edit?gid=147958071#gid=147958071">	MIPL Clint Cash Ledger Sheet*</option>
 <option value="https://docs.google.com/spreadsheets/d/17F_ZqsWbmKywv61ke3ZvCsr879fd2nfuLURObC6PuMs/edit?gid=765264997#gid=765264997">Running Project Balance By Anchal</option>
@@ -8303,8 +8302,9 @@ const CustomSheetTracker_2026 = {
     sheetKey: "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM",
     sheetId: "1gOdnvS_To2tGVuIMtMdNGFT4cCkqyL5gHqBWjnhNG_4",
     rangePL: "PLERP!A:N",
-    rangeStore: "STORE!A:P",
+    rangeStore: "STORE!A:X",
     storeRemarksMap: {},
+    storeWXDataMap: {}, // Column W aur X ka data store karne ke liye
 
     initUI: function() {
         const mainDiv = document.getElementById('cst-main-container-unique');
@@ -8334,11 +8334,27 @@ const CustomSheetTracker_2026 = {
             
             if (storeData.values && storeData.values.length > 0) {
                 this.storeRemarksMap = {};
+                this.storeWXDataMap = {}; // Reset map
+                
                 storeData.values.forEach(row => {
+                    // Remark Mapping (Col O aur Col P)
                     const colO = row[14] ? row[14].trim() : "";
                     const colP = row[15] ? row[15].trim() : "";
                     if (colO !== "") {
                         this.storeRemarksMap[colO] = colP;
+                    }
+
+                    // Job No Matching Mapping (Col R, Col W, Col X)
+                    const colR = row[17] ? row[17].trim() : "";
+                    const colW = row[22] ? row[22].trim() : "0";
+                    const colX = row[23] ? row[23].trim() : "0";
+
+                    if (colR !== "") {
+                        // Extract last 3 digits from Column R
+                        const last3Digits = colR.slice(-3);
+                        if (last3Digits) {
+                            this.storeWXDataMap[last3Digits] = { w: colW, x: colX };
+                        }
                     }
                 });
                 this.renderStoreNotes(storeData.values);
@@ -8384,18 +8400,37 @@ const CustomSheetTracker_2026 = {
                 hasPendingItems = true;
                 const matchedRemark = this.storeRemarksMap[colC] || "No Remark";
 
+                // Job No ke aakhiri 3 digits nikalke W aur X ka data dhundna
+                const colCLast3 = colC.slice(-3);
+                const matchedWX = this.storeWXDataMap[colCLast3] || { w: "0", x: "0" };
+                
+                const valW = parseFloat(matchedWX.w) || 0;
+                const valX = parseFloat(matchedWX.x) || 0;
+
+                // Color Condition Setup
+                const colorW = valW < 0 ? "#d9534f" : "rgb(0, 106, 130)";
+                const colorX = valX < 0 ? "#d9534f" : "rgb(8, 83, 100)";
+
                 // Pure content ko 3 compact row me strictly bind kiya gaya hai
                 const noteHTML = `
-                    <div class="cst-note-item">
+                       <div class="cst-note-item">
                         <span class="cst-status-tab cst-status-white">${colN || 'N/A'}</span> | 
-                        <strong>👤 Name:</strong> ${colG || 'N/A'} <br>
+                        <strong>👤 Name: ${colG || 'N/A'}</strong>  | <strong>🧾 Job No:</strong> <strong style="color: rgb(130, 22, 0);"> ${colC || 'N/A'}</strong> <br>
+                        
+                        <div style="background-color: rgb(229, 246, 246); text-align: center; border-top: 1px solid rgb(168, 168, 168); border-bottom: 1px solid rgb(168, 168, 168);">
+                        <span style="color: blue; font-weight: bold;">Po Summary:</span> 
+                       <span style="color: ${colorW}; font-weight: bold;">B-Amt: Rs. ${matchedWX.w}</span> | 
+                        <span style="color: ${colorX}; font-weight: bold;">B-Wgt: ${matchedWX.x} Kg.</span>
+                        </div> 
+
                         <strong>PL NO:</strong> ${colA} | 
-                        <strong>📅 Date:</strong> ${colB || 'N/A'} | 
-                        <strong>🧾 Job No:</strong> ${colC || 'N/A'} | 
-                        <strong>🚚 Vehicle No:</strong> ${colE || 'N/A'} <br>
-                        <strong>⚡ Remark:</strong> <span style="color: #d9534f; font-weight: bold;">${matchedRemark}</span>
+                        <strong>📅 Date:</strong> ${colB || 'N/A'} |  
+                        <strong>🚚 Vehicle No:</strong> ${colE || 'N/A'}
+
+                        <div style=" text-align: center; border-top: 1px solid rgb(168, 168, 168); ">
+                        <strong>⚡ Remark:</strong> <span style="color: #d9534f; font-weight: bold;">${matchedRemark}</span> 
+                         </div> 
                     </div>
-                       
                 `;
                 notesListDiv.innerHTML += noteHTML;
             }
@@ -8447,7 +8482,6 @@ const CustomSheetTracker_2026 = {
         }
     },
 
-// Interval hata diya hai, ab yeh sirf UI setup aur first load karega
     start: function() {
         this.initUI();
         this.fetchAndRenderAll();
@@ -9818,7 +9852,7 @@ function closeSchedule(){
 <p onclick="showSection(8)" style="cursor:pointer;color:#0026ff;">8- Rabbit Game (shortcuts-F6)</p>
 <p onclick="showSection(9)" style="cursor:pointer;color:#0026ff;">9- Pay Slip</p>
 <p onclick="showSection(10)" style="cursor:pointer;color:#0026ff;">10- Job/Reff Summary</p>
-<p onclick="window.open('https://docs.google.com/spreadsheets/d/1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4/edit?gid=2081509697#gid=2081509697','_blank')" style="cursor:pointer;color:#0026ff;">11- Packing List</p>
+<p onclick="window.open('https://docs.google.com/spreadsheets/d/1Bx0FqnXHadVATN9DGhUtRZr2EDgz10hfDEgIlwtSC_4/edit?gid=2081509697#gid=2081509697','_blank')" style="cursor:pointer;color:#0026ff;">11- - G- Sheet</p>
 <p>4- Attendance | 5- ID/Password</p>
 <p>11- Packing List | 12- Url & Link Dropdown</p>
 
