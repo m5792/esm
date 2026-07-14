@@ -118,8 +118,9 @@ setInterval(displayCurrentDateTime, 1000);
 /* Top Toolbar */
 .top-toolbar{ position:fixed; top:0; left:0;width:100%; height:40px;display:flex;justify-content:center;align-items:center;
     background:linear-gradient(#ffffff,#f3f4f6);
-    border-bottom:5px solid salmon;
+    border-bottom:1px solid #bfbfbf;
     box-shadow:0 2px 8px rgba(0,0,0,.08);
+    border-bottom: 3px solid salmon;
     z-index:9999;
 }
 
@@ -164,7 +165,7 @@ setInterval(displayCurrentDateTime, 1000);
     color:#0d6efd;
 }
 
-/* ------- right site panal MOBAIL VIEW ------------*/
+/* ------- right site panal ------------*/
 /* ------- Right Side Panel Mobile View ------------*/
 .right-fixed-panel{
     position: fixed;
@@ -226,14 +227,13 @@ setInterval(displayCurrentDateTime, 1000);
 
 <!-- ============ ---------- Right Panal / Status Bar Start ----------- ============ --> 
 <div class="right-fixed-panel">
-     <br><br>
+     
       <div class="tracker-side-panel">
         <div class="tracker-box">
             <h3>⏳ Sheet Processing Lists</h3>
             <div id="logsView"></div>
         </div>
 
-        
         <div class="tracker-box" style="max-height: 550px;">
             <h3>📅 Recent Saved (Last 5 Records)</h3>
             <div id="recentLogsView"></div>
@@ -405,6 +405,17 @@ setInterval(displayCurrentDateTime, 1000);
         
         #loader { display: none; position: fixed; top: 10px; left: 50%; transform: translateX(-50%); background: #ffc107; color: black; padding: 8px 20px; font-weight: bold; border-radius: 4px; z-index: 9999; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
    
+    /* Fixed row ko physical print out se puri tarah gayab karne ke liye */
+    /* Screen par normal display ke liye rule aur print me conditional classes */
+    @media print {
+        .no-print-row {
+            display: none !important;
+        }
+        /* Jab preview me button dabaya jayega tab print ke waqt ye force show hoga */
+        .force-print-fixed-row {
+            display: table-row !important;
+        }
+    }
    </style>
 </head>
 <body>
@@ -586,6 +597,7 @@ setInterval(() => {
 <!-- ============ ---------- Print Layout Div Stop Here ----------- XXX ============ --> 
 
 
+
 <script>
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyYwFZ3MrV-vt5Tq_ICXrIQCUPwVxhS3e-O0M1dVYr43i8V6JIEpMSctJo21zRscg80MA/exec"; 
 
@@ -638,31 +650,29 @@ setInterval(() => {
     function showLoader(text) { loader.innerText = text; loader.style.display = "block"; }
     function hideLoader() { loader.style.display = "none"; }
 
-   function cleanAndFormatDate(rawDate) {
-    if (!rawDate) return "";
-    
-   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    function cleanAndFormatDate(rawDate) {
+        if (!rawDate) return "";
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-if (typeof rawDate === 'string' && rawDate.includes("T")) {
-    const dt = new Date(rawDate);
-    if (!isNaN(dt.getTime())) {
-        const day = dt.getDate();
-        const month = months[dt.getMonth()];
-        const year = dt.getFullYear();
-        return `${day}-${month}-${year}`;
+        if (typeof rawDate === 'string' && rawDate.includes("T")) {
+            const dt = new Date(rawDate);
+            if (!isNaN(dt.getTime())) {
+                const day = dt.getDate();
+                const month = months[dt.getMonth()];
+                const year = dt.getFullYear();
+                return `${day}-${month}-${year}`;
+            }
+        }
+
+        if (typeof rawDate === 'string' && rawDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            const parts = rawDate.split('-');
+            const year = parts[0];
+            const month = months[parseInt(parts[1], 10) - 1];
+            const day = parseInt(parts[2], 10); 
+            return `${day}-${month}-${year}`;
+        }
+        return rawDate;
     }
-}
-
-if (typeof rawDate === 'string' && rawDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
-    const parts = rawDate.split('-');
-    const year = parts[0];
-    const month = months[parseInt(parts[1], 10) - 1];
-    const day = parseInt(parts[2], 10); 
-    return `${day}-${month}-${year}`;
-}
-
-return rawDate;
-}
 
     async function assembleCoreData() {
         showLoader("🔄 Fetching Masters & Sheets...");
@@ -781,14 +791,15 @@ return rawDate;
             <td><input type="text" class="input-field text-right row-qty-input" style="text-align: center;" value="${rowData ? rowData.qty : ''}" placeholder="0"></td>
             <td>
                 <select class="input-field row-unit-select" style="font-weight: bold; color: var(--tally-blue); text-align: center;">
-                    <option value="" disabled ${!rowData ? 'selected' : ''}>Select</option>
+                    <option value=""  ${!rowData ? 'selected' : ''}>Select</option>
                     <option value="KGS" ${rowData && rowData.unit==='KGS'?'selected':''}> KGS</option>
                     <option value="NOS" ${rowData && rowData.unit==='NOS'?'selected':''}> NOS</option>
                     <option value="PCS" ${rowData && rowData.unit==='PCS'?'selected':''}>PCS</option>
-                     <option value="BDL" ${rowData && rowData.unit==='BDL'?'selected':''}> BDL</option>
+                    <option value="BDL" ${rowData && rowData.unit==='BDL'?'selected':''}> BDL</option>
                     <option value="SQM" ${rowData && rowData.unit==='SQM'?'selected':''}>SQM</option>
+                    <option value="SQFT" ${rowData && rowData.unit==='SQFT'?'selected':''}>SQFT</option>
                     <option value="RMT" ${rowData && rowData.unit==='RMT'?'selected':''}>RMT</option>
-                     <option value="LTR" ${rowData && rowData.unit==='LTR'?'selected':''}>LTR</option>
+                    <option value="LTR" ${rowData && rowData.unit==='LTR'?'selected':''}>LTR</option>
                 </select>
             </td>
         `;
@@ -815,16 +826,16 @@ return rawDate;
                 unitField.value = ""; unitField.setAttribute('disabled', 'true');
             } else if (upperVal === "-") {
                 trNode.className = 'row-manual-italic';
-                descField.placeholder = "Enter custom remark here...";
+                descField.placeholder = "Enter Discription (S) of Item here...";
             } else if (upperVal === "O") {
                 trNode.className = 'row-manual-italic';
-                descField.placeholder = "Click to select Predefined Remark...";
+                descField.placeholder = "Select Remark Option...";
             } else if (val === "") {
                 trNode.className = '';
                 descField.placeholder = "Fill S.No...";
             } else {
                 trNode.className = 'row-main-head';
-                descField.placeholder = "Type to search...";
+                descField.placeholder = "Clik & Type to Item Serch...";
             }
         };
 
@@ -912,7 +923,12 @@ return rawDate;
             filterGridDropdown();
         });
 
-        gridBody.appendChild(trNode);
+        const fixedRow = document.getElementById('fixedFooterRow');
+        if (fixedRow) {
+            gridBody.insertBefore(trNode, fixedRow);
+        } else {
+            gridBody.appendChild(trNode);
+        }
     }
 
     document.getElementById('insertRowBtn').addEventListener('click', () => insertGridDataRow());
@@ -976,8 +992,28 @@ return rawDate;
         
         gridBody.innerHTML = '';
         for(let idx=0; idx < 10; idx++) insertGridDataRow();  
+        
+        appendFixedFooterRowElement(null);
+
         commitDataBtn.style.display = "none";
         partialSaveDataBtn.style.display = "none";
+    }
+
+    function appendFixedFooterRowElement(fixedRowData = null) {
+        if(document.getElementById('fixedFooterRow')) return;
+        
+        const fixedTr = document.createElement('tr');
+        fixedTr.id = "fixedFooterRow";
+        fixedTr.className = "no-print-row"; 
+        fixedTr.style.backgroundColor = "#fff9db"; // home page fixed row color 
+        fixedTr.innerHTML = `
+            <td><input type="text" class="input-field text-center row-sno-input" placeholder="Notes" style="text-align: center; font-weight:bold;" value="${fixedRowData ? (fixedRowData.sno || '') : ''}"></td>
+            <td><input type="text" class="input-field row-desc-input" placeholder="Add Personal Remark ....." value="${fixedRowData ? (fixedRowData.desc || '') : ''}"></td>
+            <td><input type="text" class="input-field row-part-input" style="text-align: center;" placeholder="-" value="${fixedRowData ? (fixedRowData.partNo || '') : ''}"></td>
+            <td><input type="text" class="input-field text-right row-qty-input" style="text-align: center;" placeholder="-" value="${fixedRowData ? (fixedRowData.qty || '') : ''}"></td>
+            <td></td>
+        `;
+        gridBody.appendChild(fixedTr);
     }
 
     function renderPendingTracker() {
@@ -994,7 +1030,6 @@ return rawDate;
             card.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                     <div>
-                    
                         <strong>🧾 Pl No.: ${record.plNo}</strong> / <span style="font-size:11px;color:#005a70;">📅 Date: ${record.date}</span> / 
                         <span style="background:#005a70; color:#fff; padding:1px 4px; font-size:10px; border-radius:3px;">${labelBadge}</span><br>
                       <strong>🚚 Vehicle: ${record.vehicleNo || '—'}</strong> |  <span style="color:gray; font-size:11px;">👤Buyer: ${record.buyer} (📄 Job: ${record.jobNo}) </span>
@@ -1050,7 +1085,6 @@ return rawDate;
                     <button class="btn-update" onclick="directEditRecord('${record.plNo}')">Edit ⚡</button>
                 </div>
             `;
-            //  <div style="color:gray; margin:2px 0;"><strong>[${labelBadge}]</strong> Buyer: ${record.buyer} | Job: ${record.jobNo} | Veh: ${record.vehicleNo || '—'}</div> 
             recentLogsView.appendChild(card);
         });
     }
@@ -1090,11 +1124,21 @@ return rawDate;
         document.getElementById('docname').innerHTML = docNameField;
 
         gridBody.innerHTML = '';
+        let fixedRowData = null;
+
         if(record.items && record.items.length > 0) {
-            record.items.forEach(it => insertGridDataRow(it));
+            record.items.forEach(it => {
+                if (it.isFixedRow) {
+                    fixedRowData = it;
+                } else {
+                    insertGridDataRow(it);
+                }
+            });
         } else {
             for(let idx=0; idx < 8; idx++) insertGridDataRow();
         }
+
+        appendFixedFooterRowElement(fixedRowData);
 
         commitDataBtn.style.display = "inline-block"; 
         partialSaveDataBtn.style.display = "inline-block"; 
@@ -1116,14 +1160,25 @@ return rawDate;
         const extractedItems = [];
         const rows = gridBody.querySelectorAll('tr');
         rows.forEach(row => {
-            const sno = row.querySelector('.row-sno-input').value.trim();
-            const desc = row.querySelector('.row-desc-input').value.trim();
-            if(sno || desc) {
+            const snoEl = row.querySelector('.row-sno-input');
+            const descEl = row.querySelector('.row-desc-input');
+            if(!snoEl || !descEl) return;
+
+            const sno = snoEl.value.trim();
+            const desc = descEl.value.trim();
+            const isFixed = row.id === "fixedFooterRow";
+
+            if(sno || desc || isFixed) {
+                const partEl = row.querySelector('.row-part-input');
+                const qtyEl = row.querySelector('.row-qty-input');
+                const unitEl = row.querySelector('.row-unit-select');
+
                 extractedItems.push({
                     sno: sno, desc: desc,
-                    partNo: row.querySelector('.row-part-input').value.trim(),
-                    qty: row.querySelector('.row-qty-input').value.trim(),
-                    unit: row.querySelector('.row-unit-select').value
+                    partNo: partEl ? partEl.value.trim() : '',
+                    qty: qtyEl ? qtyEl.value.trim() : '',
+                    unit: unitEl ? unitEl.value : '',
+                    isFixedRow: isFixed 
                 });
             }
         });
@@ -1144,6 +1199,8 @@ return rawDate;
                 alert("Partial Data Saved successfully!");
                 partiallySavedPlNos.add(activePlNo); 
                 await fetchDatabaseFromGoogleSheet();
+            } else {
+                alert("Error from script: " + (result.message || "Unknown error"));
             }
         } catch (e) { alert("Error saving partial row."); }
         hideLoader();
@@ -1165,14 +1222,25 @@ return rawDate;
         const extractedItems = [];
         const rows = gridBody.querySelectorAll('tr');
         rows.forEach(row => {
-            const sno = row.querySelector('.row-sno-input').value.trim();
-            const desc = row.querySelector('.row-desc-input').value.trim();
-            if(sno || desc) {
+            const snoEl = row.querySelector('.row-sno-input');
+            const descEl = row.querySelector('.row-desc-input');
+            if(!snoEl || !descEl) return;
+
+            const sno = snoEl.value.trim();
+            const desc = descEl.value.trim();
+            const isFixed = row.id === "fixedFooterRow";
+
+            if(sno || desc || isFixed) {
+                const partEl = row.querySelector('.row-part-input');
+                const qtyEl = row.querySelector('.row-qty-input');
+                const unitEl = row.querySelector('.row-unit-select');
+
                 extractedItems.push({
                     sno: sno, desc: desc,
-                    partNo: row.querySelector('.row-part-input').value.trim(),
-                    qty: row.querySelector('.row-qty-input').value.trim(),
-                    unit: row.querySelector('.row-unit-select').value
+                    partNo: partEl ? partEl.value.trim() : '',
+                    qty: qtyEl ? qtyEl.value.trim() : '',
+                    unit: unitEl ? unitEl.value : '',
+                    isFixedRow: isFixed
                 });
             }
         });
@@ -1194,76 +1262,119 @@ return rawDate;
                 partiallySavedPlNos.delete(activePlNo); 
                 await fetchDatabaseFromGoogleSheet();
                 clearMainFormFields();
+            } else {
+                alert("Error from script: " + (result.message || "Unknown error"));
             }
         } catch (e) { alert("Error updating row."); }
         hideLoader();
     });
 
+    window.toggleFixedRowVisibility = function() {
+        const previewRow = document.getElementById('previewFixedRow');
+        const toggleBtn = document.getElementById('toggleFixedRowBtn');
+        if(!previewRow) return;
+
+        if (previewRow.style.display === 'none') {
+            previewRow.style.display = 'table-row';
+            previewRow.classList.add('force-print-fixed-row'); 
+            if(toggleBtn) {
+                toggleBtn.innerText = "👁️ Hide Fixed Row";
+                toggleBtn.style.background = "#dc3545";
+            }
+        } else {
+            previewRow.style.display = 'none';
+            previewRow.classList.remove('force-print-fixed-row'); 
+            if(toggleBtn) {
+                toggleBtn.innerText = "👁️ Show Personal Remark";
+                toggleBtn.style.background = "#28a745";
+            }
+        }
+    };
+
     function openPreviewPopupModal(record) {
         selectedActivePreviewPlNo = record.plNo;
         let itemsRowsMarkup = "";
+        let fixedRowMarkup = ""; 
         
         const currentDocNoLabel = (record.docType || "Invoice No.") + ":";
         const currentDocNameText = record.docName || "PACKING LIST";
         
         document.getElementById('previewModalTitle').innerText = `📋 ${currentDocNameText} Record View`;
 
-        if(record.items && record.items.length > 0) {
-            record.items.forEach(it => {
-                const cleanSno = (it.sno || '').toString().trim().toUpperCase();
-                let bgStyle = "background-color: #ffffff; font-style: normal;";
-                let textStyle = "color: #000000;";
-                
-                if (cleanSno === "R") {
-                    bgStyle = "background-color: #343a40; font-weight: bold;";
-                    textStyle = "color: #ffffff;";
-                } else if (cleanSno === "-" || cleanSno === "O") {
-                    bgStyle = "background-color: #ffffff; font-style: italic; font-weight: normal; text-align: center;";
-                } else if (cleanSno !== "") {
-                    bgStyle = "background-color: #d1ecf1; font-style: normal; font-weight: bold;";
-                }
+        
 
-                itemsRowsMarkup += `
-                    <tr style="${bgStyle} ${textStyle} ">
-                        <td align="center" style="border:1px solid #000; padding:6px; font-family:inherit; color:inherit; border: 1px solid rgb(241, 241, 241);">${it.sno}</td>  
-                        <td style="border:1px solid #000; padding:6px; font-family:inherit; color:inherit; border: 1px solid rgb(241, 241, 241);">${it.desc}</td> 
-                        <td style="border:1px solid #000; padding:6px; font-family:inherit; color:inherit; text-align: center; border: 1px solid rgb(241, 241, 241);">${it.partNo || ''}</td>  
-                        <td align="right" style="border:1px solid #000; padding:6px; font-family:inherit; color:inherit; text-align: center; border: 1px solid rgb(241, 241, 241);">${it.qty || ''}</td>
-                        <td style="border:1px solid #000; padding:6px; font-family:inherit; color:inherit; text-align: center; border: 1px solid rgb(241, 241, 241);">${it.unit || ''}</td>
-                    </tr>`;
-            });
+        if(record.items && record.items.length > 0) {
+    record.items.forEach(it => {
+        const cleanSno = (it.sno || '').toString().trim().toUpperCase();
+        let bgStyle = "background-color: #ffffff; font-style: normal;";
+        let textStyle = "color: #000000;";
+        let tdBorderStyle = "border: 1px solid rgb(241, 241, 241);"; // Default border
+
+        if (cleanSno === "R") {
+            bgStyle = "background-color: #343a40; font-weight: bold;";
+            textStyle = "color: #ffffff;";
+            tdBorderStyle = "border: none;"; // Border remove ho jayega jab 'R' hoga
+        } else if (cleanSno === "-" || cleanSno === "O") {
+            bgStyle = "background-color: #ffffff; font-style: italic; font-weight: normal; text-align: center;";
+        } else if (cleanSno !== "") {
+            bgStyle = "background-color: #d1ecf1; font-style: normal; font-weight: bold;";
         }
 
-//--------------------- address fetch automation
-// openPreviewPopupModal function ke andar sabse pehle yeh line honi chahiye:
-const selectElement = document.getElementById('unitadd');
-const selectedAddress = selectElement && selectElement.selectedIndex !== -1 
-    ? selectElement.options[selectElement.selectedIndex].text 
-    : "Unit - 2 : Nh 74 12th Km Stone... Mustakam Bazpur Road"; // Default value agar kuch select na ho
+         // ---------------- print Record View ----------------------------- 579201
 
-//----------------------
-        // print table div code112233
+        const currentMarkup = `
+            <tr style="${bgStyle} ${textStyle}">
+                <td align="center" style="border:1px solid #000; padding:6px; font-family:inherit; color:inherit; ${tdBorderStyle}">${it.sno}</td>  
+                <td style="border:1px solid #000; padding:6px; font-family:inherit; color:inherit; ${tdBorderStyle}">${it.desc}</td> 
+                <td style="border:1px solid #000; padding:6px; font-family:inherit; color:inherit; text-align: center; ${tdBorderStyle}">${it.partNo || ''}</td>  
+                <td align="right" style="border:1px solid #000; padding:6px; font-family:inherit; color:inherit; text-align: center; ${tdBorderStyle}">${it.qty || ''}</td>
+                <td style="border:1px solid #000; padding:6px; font-family:inherit; color:inherit; text-align: center; ${tdBorderStyle}">${it.unit || ''}</td>
+            </tr>`;
+
+        // Fixed row logic remains as is
+        if (it.isFixedRow) {
+            fixedRowMarkup = `
+             <tr id="previewFixedRow" class="no-print-row" style="background-color: transparent; display: none;border: none; border-top:3px solid rgb(182, 182, 184) ;">
+                        <td align="center" style="border:1px solid #000; padding:6px; font-weight: bold; border: none;">${it.sno || 'Note'}</td>  
+                        <td style="border:1px solid #000; padding:6px; font-weight: bold; border: none; ">${it.desc}</td> 
+                        <td style="border:1px solid #000; padding:6px; text-align: center;border: none; ">${it.partNo || ''}</td>  
+                        <td align="right" style="border:1px solid #000; padding:6px; text-align: center; border: none; ">${it.qty || ''}</td>
+                        <td style="border:1px solid #000; padding:6px; text-align: center; border: none; ">${it.unit || ''}</td>
+            </tr>`;
+        } else {
+            itemsRowsMarkup += currentMarkup;
+        }
+    });
+}
+
+        const selectElement = document.getElementById('unitadd');
+        const selectedAddress = selectElement && selectElement.selectedIndex !== -1 
+            ? selectElement.options[selectElement.selectedIndex].text 
+            : "Unit - 2 : Nh 74 12th Km Stone... Mustakam Bazpur Road";
+
         const previewHTML = `
             <div style="padding:10px; font-family:Arial, sans-serif; color:#000;">
+                <div style="margin-bottom: 12px;" class="no-print-row">
+                    <button id="toggleFixedRowBtn" onclick="toggleFixedRowVisibility()" style="border: none;background-color: transparent;color: rgb(107, 0, 0);cursor: pointer;">
+                        👁️ Show Fixed Row
+                    </button>
+                </div>
+
                 <table style="width:100%; border-collapse:collapse; margin-bottom:10px;">
                     <tr>
                         <td style="border: 1px solid rgb(230, 228, 228); padding:8px;" width="60%">
                             <div style="font-size:16px; font-weight:bold; color:#005a70;">Multitech Infracon Pvt. Ltd.</div>
                             <div style="font-size:11px; margin-top:2px;"><strong>GSTIN/UIN:</strong> 05AAMCM9896P1Z7 | <strong>CIN:</strong> U45200UR2019PTC010294</div>
                             <div style="font-size:11px;"><strong>State:</strong> Uttarakhand, Code: 05</div>
-                        
                              <div style="font-size:11px; color:#4b5563; margin-top:4px;"> <strong>Address:</strong> ${selectedAddress} </div>
-
-                            </td>
+                        </td>
                         <td style="border:1px solid #000; padding:8px; border: 1px solid rgb(230, 228, 228);" width="40%">
                             <div style="font-size:12px;"><strong>${currentDocNoLabel}</strong> ${record.plNo}</div>
                             <div style="font-size:12px;"><strong>Date:</strong> ${record.date}</div>
                             <div style="font-size:12px;"><strong>Job / Ref No:</strong> ${record.jobNo}</div>
-
                             <div style="font-size:12px;">
                                 <strong>${currentDocNameText === 'PACKING LIST' ? 'Invoice No.' : 'Challan No.'}:</strong> ${record.invoiceNo || '—'}
                             </div>
-                            
                             <div style="font-size:12px;"><strong>Vehicle No:</strong> ${record.vehicleNo || '—'}</div>
                         </td>
                     </tr>
@@ -1296,6 +1407,7 @@ const selectedAddress = selectElement && selectElement.selectedIndex !== -1
                     </thead>
                     <tbody style="font-size:12px;">
                         ${itemsRowsMarkup}
+                        ${fixedRowMarkup}
                     </tbody>
                 </table>
                 
@@ -1330,7 +1442,7 @@ const selectedAddress = selectElement && selectElement.selectedIndex !== -1
     
     document.getElementById('printPreviewBtn').addEventListener('click', () => {
         const printWindow = window.open('', '_blank');
-        printWindow.document.write('<html><head><style>table{width:100%;border-collapse:collapse;} th,td{border:1px solid #000;padding:6px;font-family:Arial;}</style></head><body>');
+        printWindow.document.write('<html><head><style>table{width:100%;border-collapse:collapse;} th,td{border:1px solid #000;padding:6px;font-family:Arial;} @media print { .no-print-row { display:none !important; } .force-print-fixed-row { display: table-row !important; } }</style></head><body>');
         printWindow.document.write(document.getElementById('previewPrintArea').innerHTML);
         printWindow.document.write('</body></html>');
         printWindow.document.close();
@@ -1340,7 +1452,7 @@ const selectedAddress = selectElement && selectElement.selectedIndex !== -1
     document.addEventListener('click', (e) => {
         if(e.target !== universalSearchInput) universalSearchDropdown.style.display = 'none';
         if(e.target !== wizBuyerInput) wizBuyerDropdown.style.display = 'none';
-        if(!e.target.classList.contains('row-desc-input')) {
+        if(e.target && !e.target.classList.contains('row-desc-input')) {
             document.querySelectorAll('.row-desc-menu').forEach(m => m.style.display = 'none');
         }
     });
