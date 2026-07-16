@@ -550,10 +550,10 @@ setInterval(() => {
         <div class="modal-group">
             <label>Document Type *:</label>
             <select id="wizDocType">
-                <option value="P-List No." data-docname="PACKING LIST" selected>Packing List</option>
-                <option value="NRGP No." data-docname="NON RETURNABLE GATE PASS">Non Returnable Gate Pass</option>
-                <option value="RGP No." data-docname="RETURNABLE GATE PASS">Returnable Gate Pass</option>
-                <option value="ST. No." data-docname="STOCK TRANSFER">Stock Transfer</option>
+                <option value="Tr.No." data-docname="PACKING LIST" selected>Packing List</option>
+                <option value="Tr.No." data-docname="NON RETURNABLE GATE PASS">Non Returnable Gate Pass</option>
+                <option value="Tr.No." data-docname="RETURNABLE GATE PASS">Returnable Gate Pass</option>
+                <option value="Tr.No." data-docname="STOCK TRANSFER">Stock Transfer</option>
             </select>
         </div>
         <div class="modal-group">
@@ -1414,7 +1414,7 @@ setInterval(() => {
                 </table>
                 
                 <div style="margin-top:10px; text-align:right; font-weight:bold; font-size:13px; padding:5px; border: 1px solid rgb(230, 228, 228); background-color: #ffffff;">
-                    Total Invoice Amount: Rs. ${record.amount || '0'}
+                    <strong>${currentDocNameText === 'PACKING LIST' ? 'Total Invoice Amount:' : 'Approx Goods Amount: '} Rs. ${record.amount || '0'}</strong> 
                 </div>
 
                 <table style="width:100%; border-collapse:collapse; margin-top:40px;">
