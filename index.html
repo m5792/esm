@@ -8229,72 +8229,140 @@ document.addEventListener("DOMContentLoaded", async () => {
 <!---- =========== LODING NOTICE BOARD SCRIPT START =====================----------- -->
 
 <style>
+    /* ==========================================================
+       ULTRA-COMPACT ANDROID LIGHT WIDGET THEME
+       ========================================================== */
     .cst-outer-wrapper {
-        font-family: Arial, sans-serif;
-        max-width: 600px; /* Aapke mutabik 600px fix kar diya */
-        margin: 0 auto 20px auto;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        max-width: 650px; /* Compact Android Widget standard width */
+        margin: 0 auto;
+        background: #f1f5f9; /* Clean & Premium Light Slate Background */
+        padding: 6px;
+        border-radius: 14px;
+        box-shadow: inset 0 1px 1px rgba(255,255,255,0.6), 0 4px 12px rgba(0,0,0,0.08);
     }
+    
     .cst-notes-container {
-        background: #ffffff;
-        border-radius: 6px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-        padding: 12px;
-        margin-bottom: 15px;
+        background: rgba(255, 255, 255, 0.45); /* Soft light transparent overlay */
+        border-radius: 10px;
+        padding: 6px;
+        margin-bottom: 6px;
+        border: 1px solid rgba(0, 0, 0, 0.04);
     }
+    .cst-notes-container:last-child {
+        margin-bottom: 0;
+    }
+    
     .cst-notes-container h4 {
-        color: #333;
-        border-bottom: 2px solid #007bff;
-        padding-bottom: 6px;
+        color: #475569;
+        padding-bottom: 3px; 
         margin-top: 0;
-        margin-bottom: 10px;
+        margin-bottom: 6px; 
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    /* Light Mode Crisp Grid Cards */
+    .cst-note-item, .cst-store-item {
+        background: #ffffff; /* Stark white card for sharp text visibility */
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 4px 8px; 
+        margin-bottom: 4px; 
+        position: relative;
+        box-shadow: 0 1.5px 3px rgba(0,0,0,0.04);
+    }
+    .cst-note-item:last-child, .cst-store-item:last-child {
+        margin-bottom: 0;
+    }
+    
+    /* Micro Left Indicator line */
+    .cst-note-item::before, .cst-store-item::before {
+        content: ''; position: absolute; left: 0; top: 4px; bottom: 4px; width: 3px; border-radius: 0 2px 2px 0;
+    }
+    .cst-note-item::before { background: #0284c7; } /* Deep sky blue */
+    .cst-store-item::before { background: #16a34a; } /* Deep green */
+    
+    /* Super tight row layouts */
+    .cst-pl-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 2px 8px; 
+        border-top: 2px solid white; background-color: rgb(240, 241, 241);
+    }
+    
+    .cst-pl-data {
+        font-size: 16px; 
+        color: #334155; /* Sharp dark text for clear readability */
+        line-height: 1.2;
+    }
+    .cst-pl-label {
+        color: #94a3b8;
+        font-weight: 600;
+        font-size: 14px;
+        text-transform: uppercase;
+    }
+    .cst-pl-value {
+        color: #0f172a;
+        font-weight: 600;
+    }
+    
+    /* Light Mode Slim PO Badge Strip */
+    .cst-po-summary-bar {
+        background-color: transparent; /* Fresh light mint */
+        border-top: 1px solid #ccd0fb;
+        border-radius: 4px;
+        padding: 2px 6px; 
+        margin: 3px 0; 
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         font-size: 14px;
     }
-    .cst-note-item, .cst-store-item {
-        padding: 8px 10px;
-        margin-bottom: 8px;
-        border-radius: 4px;
-        font-size: 13px; /* Font size thoda kam kiya */
-        line-height: 1.4;  /* Line height compact ki */
-    }
-    .cst-note-item {
-        background: #fefdfd;
-        border-left: 4px solid #919191;
-        color: #005f7f;
-    }
-    .cst-store-item {
-        background: #fafafa;
-        border-left: 4px solid #28a745;
-        color: #333;
-    }
     
-    /* Horizontal alignment taaki max 3 row me data fix ho sake */
-    .cst-row-line {
+    /* Light Mode Compact Remark Footer */
+    .cst-remark-bar {
+        background-color: #fff1f2; /* Light soft rose */
+        border-radius: 4px;
+        padding: 2px 6px;
+        margin-top: 3px; 
+        font-size: 12px;
         display: flex;
-        flex-wrap: wrap;
-        gap: 5px 12px;
-        margin-top: 4px;
+        align-items: center;
+        gap: 4px;
+        border: 1px solid #ffe4e6;
+         justify-content: center;
     }
+    /* ========================================================== */
     
     .cst-no-data {
-        color: #28a745;
-        font-weight: bold;
-        font-size: 13px;
+        color: #16a34a;
+        font-weight: 600;
+        font-size: 14px;
+        text-align: center;
+        padding: 4px 0;
     }
+    
+    /* Compact Widget Status Pills */
     .cst-status-tab {
-        background-color: #000000;
-        padding: 2px 6px;
+        background-color: #475569;
+        color: #ffffff;
+        padding: 1px 4px; 
         border-radius: 3px;
-        font-weight: bold;
+        font-weight: 700;
         display: inline-block;
         text-transform: uppercase;
-        font-size: 11px;
-        letter-spacing: 0.5px;
-        vertical-align: middle;
+        font-size: 14px;
+        letter-spacing: 0.3px;
     }
     .cst-status-white { color: #ffffff; }
-    .cst-status-load { color: #ff4d4d; }
-    .cst-status-unload { color: #3399ff; }
-    .cst-status-complete { color: #2ecc71; }
+    .cst-status-load { background-color: #dc2626; color: #ffffff; } 
+    .cst-status-unload { background-color: #2563eb; color: #ffffff; } 
+    .cst-status-complete { background-color: #16a34a; color: #ffffff; } 
 </style>
 
 <script>
@@ -8304,7 +8372,7 @@ const CustomSheetTracker_2026 = {
     rangePL: "PLERP!A:N",
     rangeStore: "STORE!A:X",
     storeRemarksMap: {},
-    storeWXDataMap: {}, // Column W aur X ka data store karne ke liye
+    storeWXDataMap: {}, 
 
     initUI: function() {
         const mainDiv = document.getElementById('cst-main-container-unique');
@@ -8312,12 +8380,12 @@ const CustomSheetTracker_2026 = {
             mainDiv.innerHTML = `
                 <div class="cst-outer-wrapper">
                     <div class="cst-notes-container">
-                        <h4>Packing List Status..</h4>
-                        <div id="cst-notesList">Loading data...</div>
+                    <span style="color: rgb(1, 78, 97); font-size: 16px; font-weight: bold; font-style: italic;">📋 Packing List ...</span>
+                        <div id="cst-notesList">Loading...</div>
                     </div>
                     <div class="cst-notes-container">
-                        <h4>Store Status..</h4>
-                        <div id="cst-storeList">Loading store data...</div>
+                     <span style="color: rgb(1, 78, 97); font-size: 16px; font-weight: bold; font-style: italic;">📋 Store Status..</span>
+                        <div id="cst-storeList">Loading...</div>
                     </div>
                 </div>
             `;
@@ -8334,23 +8402,20 @@ const CustomSheetTracker_2026 = {
             
             if (storeData.values && storeData.values.length > 0) {
                 this.storeRemarksMap = {};
-                this.storeWXDataMap = {}; // Reset map
+                this.storeWXDataMap = {}; 
                 
                 storeData.values.forEach(row => {
-                    // Remark Mapping (Col O aur Col P)
                     const colO = row[14] ? row[14].trim() : "";
                     const colP = row[15] ? row[15].trim() : "";
                     if (colO !== "") {
                         this.storeRemarksMap[colO] = colP;
                     }
 
-                    // Job No Matching Mapping (Col R, Col W, Col X)
                     const colR = row[17] ? row[17].trim() : "";
                     const colW = row[22] ? row[22].trim() : "0";
                     const colX = row[23] ? row[23].trim() : "0";
 
                     if (colR !== "") {
-                        // Extract last 3 digits from Column R
                         const last3Digits = colR.slice(-3);
                         if (last3Digits) {
                             this.storeWXDataMap[last3Digits] = { w: colW, x: colX };
@@ -8363,7 +8428,7 @@ const CustomSheetTracker_2026 = {
             }
         } catch (error) {
             console.error("Error fetching store data:", error);
-            document.getElementById('cst-storeList').innerHTML = "<p style='color:red; font-size:12px;'>Store data load error.</p>";
+            document.getElementById('cst-storeList').innerHTML = "<p style='color:red; font-size:14px;'>Store data load error.</p>";
         }
 
         try {
@@ -8377,7 +8442,7 @@ const CustomSheetTracker_2026 = {
             }
         } catch (error) {
             console.error("Error fetching PL data:", error);
-            document.getElementById('cst-notesList').innerHTML = "<p style='color:red; font-size:12px;'>Data load error.</p>";
+            document.getElementById('cst-notesList').innerHTML = "<p style='color:red; font-size:14px;'>Data load error.</p>";
         }
     },
 
@@ -8400,36 +8465,55 @@ const CustomSheetTracker_2026 = {
                 hasPendingItems = true;
                 const matchedRemark = this.storeRemarksMap[colC] || "No Remark";
 
-                // Job No ke aakhiri 3 digits nikalke W aur X ka data dhundna
                 const colCLast3 = colC.slice(-3);
                 const matchedWX = this.storeWXDataMap[colCLast3] || { w: "0", x: "0" };
                 
                 const valW = parseFloat(matchedWX.w) || 0;
                 const valX = parseFloat(matchedWX.x) || 0;
 
-                // Color Condition Setup
-                const colorW = valW < 0 ? "#d9534f" : "rgb(0, 106, 130)";
-                const colorX = valX < 0 ? "#d9534f" : "rgb(8, 83, 100)";
+                const colorW = valW < 0 ? "#b91c1c" : "#0f766e";
+                const colorX = valX < 0 ? "#b91c1c" : "#0f766e";
 
-                // Pure content ko 3 compact row me strictly bind kiya gaya hai
+                // LIGHT MODE COMPACT ANDROID WIDGET LAYOUT
                 const noteHTML = `
-                       <div class="cst-note-item">
-                        <span class="cst-status-tab cst-status-white">${colN || 'N/A'}</span> | 
-                        <strong>👤 Name: ${colG || 'N/A'}</strong>  | <strong>🧾 Job No:</strong> <strong style="color: rgb(130, 22, 0);"> ${colC || 'N/A'}</strong> <br>
+                    <div class="cst-note-item" style="padding-left: 10px;">
+                        <div class="cst-pl-row">
+                            <div style="display:flex; align-items:center; gap:4px;">
+                                <span class="cst-status-tab">${colN || 'N/A'}</span>
+                                <span class="cst-pl-data"> 👤 -<span class="cst-pl-value"> ${colG || 'N/A'}</span></span>
+                            </div>
+                            
+                        </div>
                         
-                        <div style="background-color: rgb(229, 246, 246); text-align: center; border-top: 1px solid rgb(168, 168, 168); border-bottom: 1px solid rgb(168, 168, 168);">
-                        <span style="color: blue; font-weight: bold;">Po Summary:</span> 
-                       <span style="color: ${colorW}; font-weight: bold;">B-Amt: Rs. ${matchedWX.w}</span> | 
-                        <span style="color: ${colorX}; font-weight: bold;">B-Wgt: ${matchedWX.x} Kg.</span>
+                      
+
+                        <div style=" display: flex; justify-content: space-between;">
+                            <div class="cst-pl-data">
+                                <span class="cst-pl-label">🔢 No.:</span> <span class="cst-pl-value">${colA}</span>
+                            </div>
+                            <div class="cst-pl-data">
+                                <span class="cst-pl-label">📅 Date:</span> <span class="cst-pl-value">${colB || 'N/A'}</span>
+                            </div>
+
+                            <div class="cst-pl-data" style="text-align: right;">
+                                <span class="cst-pl-label">🧾 Job No:</span> <strong style="color: #ea580c; font-weight:700;">${colC || 'N/A'}</strong>
+                            </div>
+                            <div class="cst-pl-data" style="text-align: right;">
+                                <span class="cst-pl-label">🚚</span> <span class="cst-pl-value" style="color:#2563eb;">${colE || 'N/A'}</span>
+                            </div>
+                        </div>
+
+                          <div class="cst-remark-bar">
+                            <span class="cst-pl-label" style="color: #dc2626;">📝 </span> <span style="color: #991b1b; font-weight: 600;">${matchedRemark}</span> 
                         </div> 
 
-                        <strong>PL NO:</strong> ${colA} | 
-                        <strong>📅 Date:</strong> ${colB || 'N/A'} |  
-                        <strong>🚚 Vehicle No:</strong> ${colE || 'N/A'}
+                          <div class="cst-po-summary-bar">
+                            <span style="color: #0284c7; font-weight: 700; font-size:14px; text-transform: uppercase;">PO Summary</span> 
+                            <span style="color: ${colorW}; font-weight: 700;">💵 B-Amt : ${matchedWX.w}</span>
+                            <span style="color: ${colorX}; font-weight: 700;">⚖️ B-Wgt: ${matchedWX.x}</span>
+                        </div> 
 
-                        <div style=" text-align: center; border-top: 1px solid rgb(168, 168, 168); ">
-                        <strong>⚡ Remark:</strong> <span style="color: #d9534f; font-weight: bold;">${matchedRemark}</span> 
-                         </div> 
+                      
                     </div>
                 `;
                 notesListDiv.innerHTML += noteHTML;
@@ -8463,14 +8547,28 @@ const CustomSheetTracker_2026 = {
                 else if (colC === "unload") statusClass = "cst-status-unload";
                 else if (colC === "complete") statusClass = "cst-status-complete";
 
-                // Content ko compact 3-row structured format diya gaya hai
+                // LIGHT MODE STORE STATUS COMPACT
                 const storeHTML = `
-                    <div class="cst-store-item">
-                        <span class="cst-status-tab ${statusClass}">${colC_original}</span> | 
-                        <strong>📅 Date:</strong> ${colD} | 
-                        <strong>👤 Name:</strong> ${colE} <br>
-                        <strong>🚚 Vehicle No:</strong> ${colK} | 
-                        <strong>🧾 Inv. No.:</strong> ${colH}
+                    <div class="cst-store-item" style="padding-left: 10px;">
+                        <div class="cst-pl-row">
+                            <div style="display:flex; align-items:center; gap:4px;">
+                                <span class="cst-status-tab ${statusClass}">${colC_original}</span>
+                                <span class="cst-pl-data">👤 - <span class="cst-pl-value">${colE}</span></span>
+                            </div>
+                           
+                        </div>
+                        <div style=" display: flex; justify-content: space-between;">
+
+                           <div class="cst-pl-data" style="text-align: right;">
+                                <span class="cst-pl-label">📅 Date:</span> <span class="cst-pl-value">${colD}</span>
+                            </div>
+                            <div class="cst-pl-data">
+                                <span class="cst-pl-label">🚚 Veh:</span> <span class="cst-pl-value" style="color:#2563eb;">${colK}</span>
+                            </div>
+                            <div class="cst-pl-data" style="text-align: right;">
+                                <span class="cst-pl-label">🧾 Inv:</span> <strong class="cst-pl-value" style="color:#334155">${colH}</strong>
+                            </div>
+                        </div>
                     </div>
                 `;
                 storeListDiv.innerHTML += storeHTML;
@@ -8488,7 +8586,6 @@ const CustomSheetTracker_2026 = {
     }
 };
 
-// Pehli baar run karne ke liye call
 CustomSheetTracker_2026.start();
 </script>
 
