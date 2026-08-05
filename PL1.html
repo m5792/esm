@@ -251,7 +251,7 @@ setInterval(displayCurrentDateTime, 1000);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AFI TexNexa - Packing List</title>
+    <title>Packing List - AFI</title>
     <style>
         :root {
             --tally-blue: #005a70;
@@ -715,17 +715,21 @@ setInterval(() => {
             return;
         }
 
-        const matched = applicationDatabase.filter(x => {
+       const matched = applicationDatabase.filter(x => {
             const plNo = (x.plNo || '').toString().toLowerCase();
             const jobNo = (x.jobNo || '').toString().toLowerCase();
             const invoiceNo = (x.invoiceNo || '').toString().toLowerCase();
             const buyerName = (x.buyer || '').toString().toLowerCase();
             const vehicleNo = (x.vehicleNo || '').toString().toLowerCase();
+            // Option 1: docName baseline property name
+            // Option 2: Fallback to docNameText if available
+            const docNameText = (x.docName || x.docNameText || '').toString().toLowerCase();
 
             return plNo.includes(text) || 
                    jobNo.includes(text) || 
                    invoiceNo.includes(text) || 
                    buyerName.includes(text) ||
+                   docNameText.includes(text) ||
                    vehicleNo.includes(text);
         });
 
