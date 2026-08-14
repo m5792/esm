@@ -1320,7 +1320,7 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);">
             <option value="RECEIPT" >Receipt</option>
         </select>
 
-        <label style="font-size: 14px; font-weight: bold;">Enter Date*:</label>  <input type="date" id="afi03" name="esmD" style="background-color: #ffffff;" required>
+        <label style="font-size: 14px; font-weight: bold;">Enter Date*:</label>  <input class="primeDate" id="afi03" name="esmD" style="background-color: #ffffff;" required>
         <label style="font-size: 14px; font-weight: bold;">Ledger*: </label>  <input type="text"  id="afi04" name="esmE" style="width: 3in;" placeholder="🔍 Search Ledger">
         <label style="font-size: 14px; font-weight: bold;">Enter Amount*: </label>    <input type="number" id="afi05" name="esmF" style="background-color: #ffffff;" placeholder="Amount" required>
         <label style="font-size: 14px; font-weight: bold;">Narration:</label> <input type="text" id="afi06" name="esmG"  style="background-color: #ffffff; width: 4in;" placeholder="Narration">
@@ -1707,7 +1707,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <input type="hidden" id="msaf99"  name="cl7"  value="" readonly>
 
   <label  style="color:#0a0a0a;font-size:90%;font-family:Arial;">Select Date*</label>
-  <input type="date" id="msaf92" name="Date" required>
+  <input class="primeDate" id="msaf92" name="Date" required>
 
 <div class="ledger-box" style="position:relative;">
   <label  style="color:#0a0a0a;font-size:90%;font-family:Arial;">Select Ledger*</label>
@@ -1855,7 +1855,7 @@ function syncLedgermsaf91Option() {
  <div class="row" style="background-color: #e4e2e2; padding: 5px 10px; ">       
 
   <label  style="color:#0a0a0a;font-size:90%;font-family:Arial;">Select Date*</label>
-  <input type="date" id="msaf92" name="Date" required>
+  <input class="primeDate" id="msaf92" name="Date" required>
 
 <div class="ledger-box" style="position:relative;">
   <label  style="color:#fd0505;font-size:90%;font-family:Arial; font-weight: bold;">Select Ledger*</label>
@@ -1958,7 +1958,7 @@ window.addEventListener("load", function () {
     </select>
 
     <label  style="color:#0a0a0a;font-size:90%;font-family:Arial;">Select Date*</label>
-    <input type="date" id="msaf92" name="Date" required></input>
+    <input class="primeDate" id="msaf92" name="Date" required></input>
 
    <label  style="color:#0a0a0a;font-size:90%;font-family:Arial;">Select Ledger*</label>
 <div class="ledger-box" style="position:relative;">
@@ -2020,7 +2020,7 @@ window.addEventListener("load", function () {
     </select>
 
     <label  style="color:#0a0a0a;font-size:90%;font-family:Arial;">Select Date*</label>
-    <input type="date" id="msaf92" name="Date" required></input>
+    <input class="primeDate" id="msaf92" name="Date" required></input>
 
     <label  style="color:#0c0c0c;font-size:90%;font-family:Arial;" >Serch & Select Ledger:</label><br/>
     <div class="ledger-box" style="position:relative;">
@@ -2105,7 +2105,7 @@ window.addEventListener("load", function () {
     </select>
 
     <label  style="color:#0a0a0a;font-size:90%;font-family:Arial;">Select Date*</label>
-    <input type="date" id="msaf92" name="Date" required></input>
+    <input class="primeDate" id="msaf92" name="Date" required></input>
 
 <label  style="color:#0c0c0c;font-size:90%;font-family:Arial;" >Serch & Select Ledger:</label><br/>
 <div class="ledger-box" style="position:relative;">
@@ -2959,13 +2959,14 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
       <option value="IV14">IV14- Leshant</option>
        <option value="IV15">IV14- Dharmpal</option>
        <option value="IV18">IV18- Tahir</option>
+       <option value="IV19">IV19- Omprakash</option>
   </select>
 
   <input type="text" id="search5793Input" placeholder="🔍 Search in Imprest Voucher table...">
   <label style="color: white;font-size: 14px;">From:</label>
-  <input type="date" id="start5793Date">
+  <input class="primeDate2" id="start5793Date">
   <label style="color: white;font-size: 14px;">To:</label>
-  <input type="date" id="end5793Date">
+  <input class="primeDate2" id="end5793Date">
 
   
 <button id="export5793" data-value="export5793"  data-target="table5793Container" style="border: none; font-weight: bold; cursor: pointer; background-color: #014842; color: rgb(245, 242, 163);">🏢 Export</button>
@@ -7081,7 +7082,7 @@ loadPOMaster();
 
       <!-- Date -->
       <label style="font-size:13px;font-weight:bold;">Date:</label>
-      <input id="popupULU-date" type="date" name="Date" style="padding:4px 6px; border-radius:6px; border:1px solid #ccc;">
+      <input id="popupULU-date" class="primeDate2" name="Date" style="padding:4px 6px; border-radius:6px; border:1px solid #ccc;">
 
       <!-- Ledger -->
       <label style="font-size:13px;font-weight:bold;">User:</label>
@@ -12901,3 +12902,202 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 <!-- ===== Note:  ========== Performa Invoice Div and Script code Stop Here ======= XXX ========= -->
+
+
+
+
+
+
+
+
+<!-- ===== Note:  ========== tally prime Date Format entry script start Here =======  ========= -->
+<!-- ===== Note: ========== Unified Tally Prime Date Format Script Start ======= ========= -->
+<script>
+// Smart Tally-style Date Parser & Validation Engine
+function smartParseTallyDateInput(inputStr, baseDateStr) {
+    if (!inputStr || !inputStr.toString().trim()) return null;
+
+    const cleanInput = inputStr.toString().trim();
+
+    // 1. ISO Date string format (e.g., "2026-08-06T18:30:00.000Z")
+    if (cleanInput.includes('T') || (cleanInput.length >= 10 && !isNaN(Date.parse(cleanInput)) && cleanInput.includes('-') && cleanInput.split('-')[0].length === 4)) {
+        const isoDate = new Date(cleanInput);
+        if (!isNaN(isoDate.getTime())) {
+            return isoDate;
+        }
+    }
+
+    const lowerInput = cleanInput.toLowerCase();
+    const months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+    
+    // Base Date extract karein
+    let baseObj = (typeof parseTallyDate === 'function' && baseDateStr) ? parseTallyDate(baseDateStr) : new Date();
+    if (isNaN(baseObj.getTime()) || baseObj.getTime() === 0) {
+        baseObj = new Date();
+    }
+    
+    let curMonth = baseObj.getMonth(); // 0-11
+    let curYear = baseObj.getFullYear();
+
+    let day, month = curMonth, year = curYear;
+
+    const pureNumeric = cleanInput.replace(/\D/g, '');
+    const containsSeparators = /[-/\s.]/.test(cleanInput);
+
+    if (!containsSeparators && pureNumeric.length > 0) {
+        if (pureNumeric.length === 1 || pureNumeric.length === 2) {
+            // "1" -> 1st day of current month/year
+            day = parseInt(pureNumeric, 10);
+        } else if (pureNumeric.length === 3) {
+            day = parseInt(pureNumeric.substring(0, 1), 10);
+            month = parseInt(pureNumeric.substring(1, 3), 10) - 1;
+        } else if (pureNumeric.length === 4) {
+            day = parseInt(pureNumeric.substring(0, 2), 10);
+            month = parseInt(pureNumeric.substring(2, 4), 10) - 1;
+        } else if (pureNumeric.length === 6) {
+            day = parseInt(pureNumeric.substring(0, 2), 10);
+            month = parseInt(pureNumeric.substring(2, 4), 10) - 1;
+            year = parseInt(pureNumeric.substring(4, 6), 10) + 2000;
+        } else if (pureNumeric.length === 8) {
+            day = parseInt(pureNumeric.substring(0, 2), 10);
+            month = parseInt(pureNumeric.substring(2, 4), 10) - 1;
+            year = parseInt(pureNumeric.substring(4, 8), 10);
+        } else {
+            return null;
+        }
+    } else {
+        // Pattern: Match with separators (e.g., 18.10.26, 18-10-2025, 18/10/25, 18 Jan 2026)
+        const parts = lowerInput.split(/[-/\s.]+/);
+
+        if (parts.length === 1) {
+            day = parseInt(parts[0], 10);
+        } else if (parts.length === 2) {
+            day = parseInt(parts[0], 10);
+            let mStr = parts[1];
+            let mIdx = months.indexOf(mStr);
+            if (mIdx !== -1) {
+                month = mIdx;
+            } else {
+                month = parseInt(mStr, 10) - 1;
+            }
+        } else if (parts.length >= 3) {
+            day = parseInt(parts[0], 10);
+            let mStr = parts[1];
+            let mIdx = months.indexOf(mStr);
+            if (mIdx !== -1) {
+                month = mIdx;
+            } else {
+                month = parseInt(mStr, 10) - 1;
+            }
+            year = parseInt(parts[2], 10);
+            if (year < 100) {
+                year += 2000;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    // Number Validity Check
+    if (isNaN(day) || isNaN(month) || isNaN(year) || month < 0 || month > 11 || day < 1) {
+        return null;
+    }
+
+    // Month ke exact days ki validation
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    if (day > daysInMonth) {
+        return null;
+    }
+
+    return new Date(year, month, day);
+}
+
+// Universal Formatter (Padded vs Non-Padded)
+function formatParsedDateToTally(dateObj, isPadded) {
+    if (!isPadded && typeof formatDateToTally === 'function') {
+        return formatDateToTally(dateObj);
+    }
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const day = isPadded ? String(dateObj.getDate()).padStart(2, '0') : dateObj.getDate();
+    return `${day}-${months[dateObj.getMonth()]}-${dateObj.getFullYear()}`;
+}
+
+// Single Setup Function for Both Classes
+document.addEventListener('DOMContentLoaded', () => {
+    function setupAllPrimeDateInputs() {
+        const selector = 'input.primedate, input.primeDate, input.primedate2, input.primeDate2';
+        const primeInputs = document.querySelectorAll(selector);
+        
+        primeInputs.forEach((inputEl) => {
+            if (inputEl.dataset.primeDateBound) return;
+            inputEl.dataset.primeDateBound = "true";
+
+            // Check if input is primeDate2 (zero-padded)
+            const isPadded = inputEl.classList.contains('primedate2') || inputEl.classList.contains('primeDate2');
+
+            inputEl.type = "text";
+            inputEl.placeholder = isPadded ? "dd-mm-yyyy" : "dd-mm-yyy";
+
+            const processDateValidation = () => {
+                if (!inputEl.value.toString().trim()) return;
+
+                const baseDate = (typeof ERPStore !== 'undefined' && ERPStore.date) ? ERPStore.date : null;
+                const parsedDateObj = smartParseTallyDateInput(inputEl.value, baseDate);
+
+                if (!parsedDateObj) {
+                    alert("❌ Invalid Date Format!");
+                    inputEl.value = "";
+                    setTimeout(() => inputEl.focus(), 10);
+                    return;
+                }
+
+                inputEl.value = formatParsedDateToTally(parsedDateObj, isPadded);
+            };
+
+            // 1. Initial Load / Auto-fill Formatting
+            if (inputEl.value.toString().trim()) {
+                const initialParsed = smartParseTallyDateInput(inputEl.value);
+                if (initialParsed) {
+                    inputEl.value = formatParsedDateToTally(initialParsed, isPadded);
+                }
+            }
+
+            // 2. Value setter override (Auto-Format for JS programmatic setter)
+            const originalValueDescriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+            if (originalValueDescriptor && originalValueDescriptor.set) {
+                Object.defineProperty(inputEl, 'value', {
+                    get() {
+                        return originalValueDescriptor.get.call(this);
+                    },
+                    set(val) {
+                        originalValueDescriptor.set.call(this, val);
+                        if (val !== undefined && val !== null && val.toString().trim() !== '') {
+                            const autoParsed = smartParseTallyDateInput(val);
+                            if (autoParsed) {
+                                originalValueDescriptor.set.call(this, formatParsedDateToTally(autoParsed, isPadded));
+                            }
+                        }
+                    },
+                    configurable: true
+                });
+            }
+
+            // User Events
+            inputEl.addEventListener('change', processDateValidation);
+            inputEl.addEventListener('blur', processDateValidation);
+            inputEl.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    processDateValidation();
+                }
+            });
+        });
+    }
+
+    setupAllPrimeDateInputs();
+
+    // DOM dynamic changes watcher
+    const observer = new MutationObserver(() => setupAllPrimeDateInputs());
+    observer.observe(document.body, { childList: true, subtree: true });
+});
+</script>
+<!-- ===== Note: ========== Unified Tally Prime Date Format Script Stop ======= xxx ========= -->
