@@ -1,11 +1,14 @@
-<!-- ==============================================dashboard start================================================================================ -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>MIPL e|SmTally V-6.3</title>
- <style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MIPL-Texovate Erp</title>
+  
+  <style>
+    /* =========================================================
+       1. GLOBAL & DASHBOARD STYLES (ORIGINAL - UNTOUCHED)
+    ========================================================= */
     * {
       box-sizing: border-box;
     }
@@ -15,107 +18,6 @@
       margin: 0;
       padding: 0;
       background-color: #f4f4f4;
-      
-     
-    }
-
-    /* Login section with full screen and positioned at top */
-    #login-section {
-      display: flex;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-      z-index: 10;
-      background-color: #fff;
-    }
-
-    .left-panel {
-      flex: 1;
-      background-color: #026186;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 40px;
-
-      overflow: hidden;
-  z-index: 1;
-  position: relative; /* if only image show in right panal "position: relative;" */
-    }
-
-    .left-panel h1 {
-      font-size: 32px;
-      margin-bottom: 20px;
-    }
-
-    .right-panel {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #ffffff;
-
-
-  background-image: url('https://community.thriveglobal.com/wp-content/uploads/2018/09/GettyImages-743706161.jpg'); /* Replace with your image URL "https://i.gifer.com/OFAF.gif" */
-  background-size: cover;
-  background-position: center;
-       
-    }
-
-    .left-panel::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url('https://bizimages.withfloats.com/tile/65cef793263c631cd33d55fd.jpg'); /* Replace with your image URL "https://i.gifer.com/OFAF.gif" */
-  background-size: cover;
-  background-position: center;
-  opacity: 0.4; /* Change opacity here */
-  z-index: -1; /* Keep it behind the login box */
-}
-
-
-    .login-box {
-      width: 300px;
-    }
-
-    .login-box h2 {
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    .login-box input {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
-   
-    .login-box button {
-      width: 100%;
-      padding: 10px;
-      background-color: #026186;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-      border-radius: 4px;
-    }
-
-    .login-box button:hover {
-      background-color: #026186;
-    }
-
-    #login-msg {
-      color: red;
-      margin-top: 10px;
-      text-align: center;
     }
 
     /* Dashboard styles */
@@ -127,7 +29,6 @@
       background-color: rgb(255, 255, 255);
     }
 
-   
     .section {
       border: 1px solid #ccc;
       padding: 2px;
@@ -135,27 +36,21 @@
       border-radius: 1px;
     }
 
-#sections {
-  position: fixed;
-  top: 50px; /* 1 inch from top */
-  left: 0;
-  right: 0;
-  bottom: 0; /* allows full height scrolling inside */
-  overflow-y: auto; /* only inner content scrolls */
-  padding: 1px;
-  background-color: #e9f7fc;
-}
-  .message {
-    display: none;
-  }
-
-    .hidden {
-      display: none;
+    #sections {
+      position: fixed;
+      top: 50px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow-y: auto;
+      padding: 1px;
+      background-color: #e9f7fc;
     }
 
+    .message { display: none; }
+    .hidden { display: none; }
 
-
-   header {
+    header {
       position: fixed;
       top: 0;
       left: 0;
@@ -168,303 +63,437 @@
     }
 
     #top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 2px;
-  background-color: #060606;
-  color: white;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 999;
-   border-bottom: 5px solid #fcfcfc;
-   border-radius: 4px;
-}
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2px;
+      background-color: #060606;
+      color: white;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 999;
+      border-bottom: 5px solid #fcfcfc;
+      border-radius: 4px;
+    }
 
-.button-div {
-  display: flex;
-  flex-wrap: nowrap;              /* ❌ wrapping band */
-  overflow-x: auto;               /* ✅ horizontal scroll */
-  white-space: nowrap;            /* ✅ content ek line me */
-  gap: 1px;
-}
+    .button-div {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      white-space: nowrap;
+      gap: 1px;
+    }
 
-.button-div button {
-  flex: 0 0 auto;                 /* ✅ fixed width, no shrink/wrap */
-  min-width: 200px;
-  padding: 10px 10px;
-  background-color: #060606;
-  color: white;
-  border: none;
-  border-radius: 0px;
-  cursor: pointer;
-  font-size: 18px;
-}
+    .button-div button {
+      flex: 0 0 auto;
+      min-width: 200px;
+      padding: 10px 10px;
+      background-color: #060606;
+      color: white;
+      border: none;
+      border-radius: 0px;
+      cursor: pointer;
+      font-size: 18px;
+    }
 
+    .button-div button:hover {
+      background-color: #cfcfcf;
+      color: rgb(0, 9, 16);
+    }
 
-.button-div button:hover {
-  background-color: #cfcfcf;
-  color: rgb(0, 9, 16);
-}
+    #logout-btn {
+      background-color: #f44336;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
 
+    #logout-btn:hover { background-color: #e53935; }
 
-#logout-btn {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-}
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background-color: rgb(8, 8, 8);
+      color: white;
+      border: 1px solid rgb(1, 45, 75);
+      border-radius: 4px;
+      padding-left: 5px;
+      padding-right: 5px;
+    }
 
-#logout-btn:hover {
-  background-color: #e53935;
-}
+    #username {
+      font-size: 20px;
+      font-weight: bold;
+      color: rgb(243, 243, 242);
+      text-align: center;
+    }
 
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background-color: rgb(8, 8, 8);
-  color: white;
-  border: 1px solid rgb(1, 45, 75);       /* "border: yes;" ko correct kiya */
-  border-radius: 4px;
-  padding-left: 5px;              /* Left se 5px space */
-  padding-right: 5px;             /* Right se 5px space */
-}
+    .multidivbar {
+      margin-bottom: 10px;
+      padding: 5px 2px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+    }
 
-#username {
-  font-size: 20px;
-  font-weight: bold;
-  color: rgb(243, 243, 242);
-  text-align: center;
-}
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+    }
 
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: auto;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      background: #ffffff;
+      border: 1px solid #d0d0d0;
+      overflow-x: auto;
+      display: block;
+      max-height: 670px;
+    }
 
-  .multidivbar {
-            margin-bottom: 10px;
-            padding: 5px 2px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-        }
+    th {
+      background: #d5d3d3;
+      color: #000b20;
+      padding: 10px;
+      border: 1px solid #b5b5b5;
+      text-align: left;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      white-space: nowrap;
+      border-bottom: 5px solid #0c0c0c;
+    }
 
+    td {
+      padding: 8px 10px;
+      border: 1px solid #e0e0e0;
+      vertical-align: top;
+      word-wrap: break-word;
+      white-space: normal;
+    }
 
-/* Table Styling */
-/* Container to control table width and responsiveness */
-.table-container {
-  width: 100%;
-  overflow-x: auto;
-}
+    tr:nth-child(even) { border-top: 2px solid #9c9c9c; background-color: #f7f7f7; }
+    tr:nth-child(odd) { border-top: 2px solid #c2c1c1; background-color: #fcfcfc; }
+    tr:hover td { background: #fccc49; color: rgb(0, 15, 15); transition: background-color 1s ease, color 1s ease; }
 
- 
- /* Table container ************/
-table{
-    width: 100%;
-  border-collapse: collapse;
-  table-layout: auto;
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  background: #ffffff;
-  border: 1px solid #d0d0d0;
+    .form-container input, .form-container select {
+      width: 100%;
+      padding: 6px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
 
-  }
+    .form-container input[type="text"], .form-container input[type="number"],
+    .form-container input[type="date"], .form-container select { background-color: #f9f9f9; }
 
-/* Optional heder alwayas fix on top and table scrolling  */
-  table{
-  overflow-x: auto;
-  display: block;
-  max-height: 670px; /* Optional scrolling */
-  }
+    .form-container input[type="submit"], .form-container button {
+      background-color: #080808;
+      color: #f6f6f8;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
 
-  /* Table border & cell style */
-th {
-   background: #d5d3d3;
-  color: #000b20;
-  padding: 10px;
-  border: 1px solid #b5b5b5;
-  text-align: left;
-  font-weight: 600;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  white-space: nowrap;
-  border-bottom:5px solid #0c0c0c;
-  }
+    .form-container input[type="submit"]:hover, .form-container button:hover {
+      background-color: #575555;
+      transform: translateY(-2px);
+    }
 
+    .fetchbtn {
+      background-color: #b9e0f9;
+      color: rgb(44, 3, 0);
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      font-family: 'Eras Bold ITC', sans-serif;
+      width: 1.5in;
+      padding: 5px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
 
- td {
-   padding: 8px 10px;
-  border: 1px solid #e0e0e0;
-  vertical-align: top;
-  word-wrap: break-word; /* Wrap long text */
-  white-space: normal;
-  
-  }
+    .fetchbtn:hover { background-color: #a5d4f0; }
 
-  /* Header design */
+    #mytoolsbar {
+      background-color: #027175;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      box-sizing: border-box;
+      flex-wrap: wrap;
+      border-radius: 10px;
+    }
 
-
-  tr:nth-child(even) {
-    border-top:2px solid #9c9c9c;
-  background-color: #f7f7f7;
-}
-
-  tr:nth-child(odd) {
-    border-top:2px solid #c2c1c1;
-  background-color: #fcfcfc;
-}
-
-  /* Row hover effect */
-  tr:hover td {
-   background: #fccc49;
- color: rgb(0, 15, 15);
-  transition: background-color 1s ease, color 1s ease;
-  }
-    
-
- 
-
-/* Form Styling Scoped to .form-container */
-.form-container input,
-.form-container select {
-    width: 100%;
-    padding: 6px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 16px;
-    box-sizing: border-box;
-}
-
-.form-container input[type="text"],
-.form-container input[type="number"],
-.form-container input[type="date"],
-.form-container select {
-    background-color: #f9f9f9;
-}
-
-.form-container input[type="submit"],
-.form-container button {
-    background-color: #080808;
-    color: #f6f6f8;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.form-container input[type="submit"]:hover,
-.form-container button:hover {
-    background-color: #575555;
-    transform: translateY(-2px);
-}
+    #mytoolsbar strong { color: white; font-size: 14px; }
+    #mytoolsbar select, #mytoolsbar input[type="text"], #mytoolsbar input[type="date"] {
+      height: 32px; padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; font-size: 14px; box-sizing: border-box;
+    }
+    #searchCLedger { width: 260px; }
+    #mytoolsbar button { height: 32px; padding: 0 12px; border-radius: 4px; border: none; font-size: 14px; cursor: pointer; }
 
 
-.fetchbtn {
-  background-color: #b9e0f9;
-  color: rgb(44, 3, 0);
-  border: none;
-  font-size: 16px;
-  font-weight: bold;
-  font-family: 'Eras Bold ITC', sans-serif;
-  width: 1.5in;
-  padding: 5px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
+    /* =========================================================
+       2. LOGIN MODULE STYLES (CENTER ALIGNED & SCOPED)
+    ========================================================= */
+    #login-section {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #090d16;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(0, 242, 254, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(79, 172, 254, 0.12) 0px, transparent 50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999999;
+    }
 
-.fetchbtn:hover {
-  background-color: #a5d4f0;
-}
+    .txv-login-wrapper {
+      display: flex;
+      width: 90%;
+      max-width: 1050px;
+      min-height: 560px;
+      background: rgba(18, 24, 38, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255);
+      border-radius: 24px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+    }
 
+    /* Center Aligned Left Panel */
+    .left-panel {
+      flex: 1.2;
+      padding: 45px 35px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      background: transparent;
+      color: #f1f5f9;
+    }
 
-/* mytoolsbar */
-#mytoolsbar {
-    background-color: #027175;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 12px;
-    box-sizing: border-box;
-    flex-wrap: wrap;
-    border-radius: 10px;
-}
+    .txv-logo-circle {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.8);
+      border: 2px solid rgba(0, 242, 254, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
+    }
 
-/* Labels */
-#mytoolsbar strong{
-    color:white;
-    font-size:14px;
-}
+    .left-panel h1 {
+      font-size: 26px;
+      font-weight: 700;
+      margin: 0;
+      color: #ffffff;
+    }
 
-/* All inputs and selects same size */
-#mytoolsbar select,
-#mytoolsbar input[type="text"],
-#mytoolsbar input[type="date"]{
-    height:32px;
-    padding:4px 8px;
-    border-radius:4px;
-    border:1px solid #ccc;
-    font-size:14px;
-    box-sizing:border-box;
-}
+    .left-panel .address-text {
+      font-size: 13px;
+      color: #94a3b8;
+      font-weight: 400;
+      margin-top: 12px;
+      line-height: 1.6;
+      max-width: 420px;
+    }
 
-/* Search box thoda bada */
-#searchCLedger{
-    width:260px;
-}
+    .left-panel .contact-text {
+      font-size: 13px;
+      color: #00f2fe;
+      margin-top: 12px;
+      font-weight: 500;
+    }
 
-/* Buttons */
-#mytoolsbar button{
-    height:32px;
-    padding:0 12px;
-    border-radius:4px;
-    border:none;
-    font-size:14px;
-    cursor:pointer;
-}
+    .right-panel {
+      flex: 1;
+      padding: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10, 15, 26, 0.4);
+    }
 
+    .login-box {
+      width: 100%;
+      max-width: 320px;
+    }
 
+    .login-box h2 {
+      color: #ffffff;
+      font-size: 24px;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 12px 15px;
+      margin: 10px 0;
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      color: #ffffff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .login-box input:focus {
+      border-color: #00f2fe;
+      box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+    }
+
+    .login-box button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+      color: #090d16;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 20px -5px rgba(0, 242, 254, 0.4);
+    }
+
+    .login-box button:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    #login-msg {
+      color: #ff5252;
+      margin-top: 12px;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    @media (max-width: 800px) {
+      .txv-login-wrapper { flex-direction: column; width: 95%; }
+      .left-panel { border-right: none; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding: 30px 20px; }
+      .right-panel { padding: 30px 20px; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Login Section -->
+  <!-- =========================================================
+       INDEPENDENT LOGIN MODULE (CENTER ALIGNED)
+  ========================================================= -->
   <div id="login-section">
-    <div class="left-panel">
-     
-<br/><br/><br/><br/><br/>
-<h1 style="color:#2F4F4F;text-align:center;font-size:150%">
-<span style="color:#f8f9fa;font-size: 150%;">Multitech Infracon Pvt. Ltd.</span>
-</h1>
+    <div class="txv-login-wrapper">
+      
+      <!-- Center-Aligned Left Panel -->
+      <div class="left-panel">
+        <!-- Center Logo Circle -->
+        <div class="txv-logo-circle">
+          <canvas id="texovateCanvas" width="90" height="90" style="border: transparent;"></canvas>
+        </div>
 
- <h1 style="color:rgb(251, 249, 249); text-align: center; font-size: 100%;">Nh 74 12th Km Stone <br/> Vill Dabhora Mustakam Bazpur Road Kashipur <br/>U.S Nagar Uttarakhand 244713</h1>
-<h1 style="color:#2F4F4F;text-align:center;font-size:100%">
-<span style="color:#def8f8;font-size: 100%;">#9719012011,9639012011</span>
-<span style="color:#f8e1e1;font-size: 100%;">(mail:-multitechsolutions@yahoo.com)</span>
-</h1>
+        <h1>Multitech Infracon Pvt. Ltd.</h1>
+        
+        <div class="address-text">
+          Nh 74 12th Km Stone, Vill Dabhora Mustakam Bazpur Road Kashipur, <br/>U.S Nagar Uttarakhand 244713
+        </div>
+        
+        <div class="contact-text">
+          #9719012011, 9639012011 <br/>
+          <span style="color:#94a3b8; font-weight: normal;">(mail:-multitechsolutions@yahoo.com)</span>
+        </div>
 
-<br/>
-<h3>
-        <span style="color:rgb(250, 218, 218);font-size:130%;font-family:Magneto;">eS | <span style="color:#e0f5f5;font-size:130%;font-family:Magneto;">MTally</span></span> 
-       </h3> 
-
-    </div>
-    <div class="right-panel">
-    
-      <div class="login-box">
-        <h2>Login</h2>
-        <input type="text" id="user-id" placeholder="User ID" />
-        <input type="password" id="password" placeholder="Password" />
-        <button onclick="login()">Login</button>
-        <div id="login-msg"></div>
+        <h3 style="margin: 0; margin-top: 20px;">
+          <span style="color:#ffffff; font-size:16px;">AFI Texovate | <span style="color:#00f2fe;">erp</span></span> 
+        </h3> 
       </div>
+
+      <!-- Right Panel -->
+      <div class="right-panel">
+        <div class="login-box">
+          <h2>Login</h2>
+          <input type="text" id="user-id" placeholder="User ID" />
+          <input type="password" id="password" placeholder="Password" />
+          <button onclick="login()">Login</button>
+          <div id="login-msg"></div>
+        </div>
+      </div>
+
     </div>
   </div>
+
+
+
+
+
+  <!-- =========================================================
+       JAVASCRIPT MODULES
+  ========================================================= -->
+  <script>
+    /* 1. Canvas Texovate Logo Drawing */
+    function drawTexovateLogo() {
+      const canvas = document.getElementById('texovateCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      let grad = ctx.createLinearGradient(0, 0, 90, 90);
+      grad.addColorStop(0, '#00f2fe');
+      grad.addColorStop(1, '#4facfe');
+
+      ctx.beginPath();
+      ctx.fillStyle = grad;
+      ctx.arc(35, 36, 11, 0.5 * Math.PI, 1.5 * Math.PI);
+      ctx.arc(45, 24, 14, 1 * Math.PI, 1.85 * Math.PI);
+      ctx.arc(58, 29, 10, 1.3 * Math.PI, 0 * Math.PI);
+      ctx.arc(59, 36, 9, 1.7 * Math.PI, 0.5 * Math.PI);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.font = 'bold 10px sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.fillText('TEXOVATE', 45, 60);
+
+      ctx.font = '600 7px sans-serif';
+      ctx.fillStyle = '#00f2fe';
+      ctx.fillText('E R P', 45, 70);
+    }
+
+    window.addEventListener('load', drawTexovateLogo);
+
+    /* 2. Your existing login() function logic */
+    function login() {
+      // Logic goes here...
+    }
+  </script>
+
 
   <!-- Dashboard div start !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
   <div id="dashboard">  <!-- Dashboard div open -->
