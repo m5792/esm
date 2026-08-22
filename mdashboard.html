@@ -383,131 +383,77 @@ th {
 
 
 <!---- =========== LODING NOTICE BOARD SCRIPT START =====================----------- -->
+
 <style>
+    /* Sabhi CSS classes ko unique prefix 'cst-' diya hai taaki conflict na ho */
     .cst-outer-wrapper {
-        font-family: 'Segoe UI', Arial, sans-serif;
-        max-width: 600px; 
-        margin: 0 auto 10px auto;
+        font-family: Arial, sans-serif;
+        max-width: 700px;
+        margin: 0 auto 20px auto;
     }
     .cst-notes-container {
         background: #ffffff;
-        border-radius: 6px;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.06);
-        padding: 10px; 
-        margin-bottom: 12px;
-        border: 1px solid #eef2f5;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 20px;
     }
     .cst-notes-container h4 {
-        color: #2c3e50;
+        color: #333;
         border-bottom: 2px solid #007bff;
-        padding-bottom: 4px; 
+        padding-bottom: 10px;
         margin-top: 0;
-        margin-bottom: 8px; 
-        font-size: 14px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
     }
-    
-    /* ==========================================================
-       COMPACT PACKING LIST & STORE CARD DESIGN
-       ========================================================== */
-    .cst-note-item, .cst-store-item {
-        background: #f8fafc; 
-        border: 1px solid #e2e8f0;
-        border-radius: 4px;
-        padding: 6px 10px; 
-        margin-bottom: 6px; 
-        box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-    }
-    
-    /* Left border accent colors */
     .cst-note-item {
-        border-left: 4px solid #475569; 
+        background: #fefdfd;
+        border-left: 5px solid #919191;
+        padding: 12px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        font-size: 14px;
+        color: #005f7f;
+        line-height: 1.8;
     }
     .cst-store-item {
-        border-left: 4px solid #16a34a; /* Professional green for store */
+        background: #fafafa;
+        border-left: 5px solid #28a745;
+        padding: 12px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        font-size: 14px;
+        color: #333;
+        line-height: 1.8;
     }
-    
-    /* Flex rows layout for tight gaps */
-    .cst-pl-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 4px 10px; 
-    }
-    
-    .cst-pl-data {
-        font-size: 12.5px; 
-        color: #334155;
-        line-height: 1.2;
-    }
-    .cst-pl-label {
-        color: #64748b;
-        font-weight: 600;
-    }
-    .cst-pl-value {
-        color: #1e293b;
-        font-weight: 500;
-    }
-    
-    /* PO Summary Horizontal Styled Bar */
-    .cst-po-summary-bar {
-        background-color: #f0fdfa; 
-        border: 1px solid #ccfbf1;
-        border-radius: 3px;
-        padding: 3px 8px; 
-        margin: 4px 0; 
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        flex-wrap: wrap;
-        font-size: 12px;
-    }
-    
-    /* Remark Bottom Bar */
-    .cst-remark-bar {
-        background-color: #fff1f2; 
-        border-top: 1px dashed #fecdd3;
-        padding-top: 3px; 
-        margin-top: 4px; 
-        font-size: 12px;
-        line-height: 1.2;
-    }
-    /* ========================================================== */
-    
     .cst-no-data {
         color: #28a745;
         font-weight: bold;
-        font-size: 13px;
     }
     .cst-status-tab {
-        background-color: #1e293b;
-        color: #ffffff;
-        padding: 1px 5px; 
-        border-radius: 3px;
+        background-color: #000000;
+        padding: 3px 8px;
+        border-radius: 4px;
         font-weight: bold;
         display: inline-block;
         text-transform: uppercase;
-        font-size: 10.5px;
+        font-size: 12px;
         letter-spacing: 0.5px;
     }
     .cst-status-white { color: #ffffff; }
-    .cst-status-load { background-color: #dc2626; color: #ffffff; } /* Refined modern red badge */
-    .cst-status-unload { background-color: #2563eb; color: #ffffff; } /* Refined modern blue badge */
-    .cst-status-complete { background-color: #16a34a; color: #ffffff; } /* Refined modern green badge */
+    .cst-status-load { color: #ff4d4d; }
+    .cst-status-unload { color: #3399ff; }
+    .cst-status-complete { color: #2ecc71; }
 </style>
 
 <script>
+// Pure logic ko ek unique object ke andar band kar diya hai (Encapsulation)
 const CustomSheetTracker_2026 = {
     sheetKey: "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM",
     sheetId: "1gOdnvS_To2tGVuIMtMdNGFT4cCkqyL5gHqBWjnhNG_4",
     rangePL: "PLERP!A:N",
-    rangeStore: "STORE!A:X",
+    rangeStore: "STORE!A:P",
     storeRemarksMap: {},
-    storeWXDataMap: {}, 
 
+    // UI Structure ko create karne ka function
     initUI: function() {
         const mainDiv = document.getElementById('cst-main-container-unique');
         if (mainDiv) {
@@ -526,45 +472,40 @@ const CustomSheetTracker_2026 = {
         }
     },
 
+    // Dono Sheet ka data fetch aur render karne ka main logic
     fetchAndRenderAll: async function() {
         const urlPL = `https://sheets.googleapis.com/v4/spreadsheets/${this.sheetId}/values/${this.rangePL}?key=${this.sheetKey}`;
         const urlStore = `https://sheets.googleapis.com/v4/spreadsheets/${this.sheetId}/values/${this.rangeStore}?key=${this.sheetKey}`;
 
+        // 1. Fetch Store Data for Remarks & Store Status
         try {
             const storeResponse = await fetch(urlStore);
             const storeData = await storeResponse.json();
             
             if (storeData.values && storeData.values.length > 0) {
+                // Clear old map for fresh data on refresh
                 this.storeRemarksMap = {};
-                this.storeWXDataMap = {}; 
                 
+                // Map Column O to Column P for Remarks
                 storeData.values.forEach(row => {
                     const colO = row[14] ? row[14].trim() : "";
                     const colP = row[15] ? row[15].trim() : "";
                     if (colO !== "") {
                         this.storeRemarksMap[colO] = colP;
                     }
-
-                    const colR = row[17] ? row[17].trim() : "";
-                    const colW = row[22] ? row[22].trim() : "0";
-                    const colX = row[23] ? row[23].trim() : "0";
-
-                    if (colR !== "") {
-                        const last3Digits = colR.slice(-3);
-                        if (last3Digits) {
-                            this.storeWXDataMap[last3Digits] = { w: colW, x: colX };
-                        }
-                    }
                 });
+
+                // Render Store Status
                 this.renderStoreNotes(storeData.values);
             } else {
                 document.getElementById('cst-storeList').innerHTML = "<p class='cst-no-data'>No data found in Store sheet.</p>";
             }
         } catch (error) {
             console.error("Error fetching store data:", error);
-            document.getElementById('cst-storeList').innerHTML = "<p style='color:red; font-size:12px;'>Store data load error.</p>";
+            document.getElementById('cst-storeList').innerHTML = "<p style='color:red;'>Store data load karne me dikkat aayi hai.</p>";
         }
 
+        // 2. Fetch Packing List Data
         try {
             const response = await fetch(urlPL);
             const data = await response.json();
@@ -576,10 +517,11 @@ const CustomSheetTracker_2026 = {
             }
         } catch (error) {
             console.error("Error fetching PL data:", error);
-            document.getElementById('cst-notesList').innerHTML = "<p style='color:red; font-size:12px;'>Data load error.</p>";
+            document.getElementById('cst-notesList').innerHTML = "<p style='color:red;'>Data load karne me dikkat aayi hai.</p>";
         }
     },
 
+    // Packing List Render Function
     renderPLNotes: function(rows) {
         const notesListDiv = document.getElementById('cst-notesList');
         notesListDiv.innerHTML = ""; 
@@ -597,52 +539,17 @@ const CustomSheetTracker_2026 = {
 
             if (colA !== "" && colD === "") {
                 hasPendingItems = true;
-                const matchedRemark = this.storeRemarksMap[colC] || "No Remark";
-
-                const colCLast3 = colC.slice(-3);
-                const matchedWX = this.storeWXDataMap[colCLast3] || { w: "0", x: "0" };
-                
-                const valW = parseFloat(matchedWX.w) || 0;
-                const valX = parseFloat(matchedWX.x) || 0;
-
-                const colorW = valW < 0 ? "#dc2626" : "#0f766e";
-                const colorX = valX < 0 ? "#dc2626" : "#0f766e";
+                const matchedRemark = this.storeRemarksMap[colC] || "No Remark Found";
 
                 const noteHTML = `
                     <div class="cst-note-item">
-                        <div class="cst-pl-row">
-                            <div>
-                                <span class="cst-status-tab">${colN || 'N/A'}</span>
-                            </div>
-                            <div class="cst-pl-data">
-                                <span class="cst-pl-label">👤 Name:</span> <span class="cst-pl-value">${colG || 'N/A'}</span>
-                            </div>
-                            <div class="cst-pl-data">
-                                <span class="cst-pl-label">🧾 Job:</span> <strong style="color: #c2410c; font-weight:700;">${colC || 'N/A'}</strong>
-                            </div>
-                        </div>
-                        
-                        <div class="cst-po-summary-bar">
-                            <span style="color: #0284c7; font-weight: 700; text-transform: uppercase; font-size:10.5px;">Po Summary:</span> 
-                            <span style="color: ${colorW}; font-weight: 700;">B-Amt: ${matchedWX.w}</span>
-                            <span style="color: ${colorX}; font-weight: 700;">B-Wgt: ${matchedWX.x}</span>
-                        </div> 
-
-                        <div class="cst-pl-row">
-                            <div class="cst-pl-data">
-                                <span class="cst-pl-label">PL:</span> <strong class="cst-pl-value">${colA}</strong>
-                            </div>
-                            <div class="cst-pl-data">
-                                <span class="cst-pl-label">📅 Date:</span> <span class="cst-pl-value">${colB || 'N/A'}</span>
-                            </div>
-                            <div class="cst-pl-data">
-                                <span class="cst-pl-label">🚚 Veh:</span> <span class="cst-pl-value" style="color:#1e3a8a; font-weight:600;">${colE || 'N/A'}</span>
-                            </div>
-                        </div>
-
-                        <div class="cst-remark-bar">
-                            <span class="cst-pl-label">⚡ Remark:</span> <span style="color: #b91c1c; font-weight: 700;">${matchedRemark}</span> 
-                        </div> 
+                        <span class="cst-status-tab cst-status-white">${colN || 'N/A'}</span> | 
+                        <strong>👤 Name:</strong> ${colG || 'N/A'} <br>
+                        <strong>PL NO:</strong> ${colA} | 
+                        <strong>📅 Date:</strong> ${colB || 'N/A'} | 
+                        <strong>🧾 Job No:</strong> ${colC || 'N/A'} | 
+                        <strong>🚚 Vehicle No:</strong> ${colE || 'N/A'} <br>
+                        <strong>⚡ Remark:</strong> <span style="color: #d9534f; font-weight: bold;">${matchedRemark}</span>
                     </div>
                 `;
                 notesListDiv.innerHTML += noteHTML;
@@ -654,6 +561,7 @@ const CustomSheetTracker_2026 = {
         }
     },
 
+    // Store Status Render Function
     renderStoreNotes: function(rows) {
         const storeListDiv = document.getElementById('cst-storeList');
         storeListDiv.innerHTML = ""; 
@@ -676,28 +584,13 @@ const CustomSheetTracker_2026 = {
                 else if (colC === "unload") statusClass = "cst-status-unload";
                 else if (colC === "complete") statusClass = "cst-status-complete";
 
-                // UPDATED STORE UI (MATCHED WITH PACKING LIST DESIGN FOR SYMMETRY)
                 const storeHTML = `
                     <div class="cst-store-item">
-                        <div class="cst-pl-row">
-                            <div>
-                                <span class="cst-status-tab ${statusClass}">${colC_original}</span>
-                            </div>
-                            <div class="cst-pl-data">
-                                <span class="cst-pl-label">👤 Name:</span> <span class="cst-pl-value">${colE}</span>
-                            </div>
-                            <div class="cst-pl-data">
-                                <span class="cst-pl-label">📅 Date:</span> <span class="cst-pl-value">${colD}</span>
-                            </div>
-                        </div>
-                        <div class="cst-pl-row" style="margin-top: 5px; border-top: 1px dashed #e2e8f0; padding-top: 4px;">
-                            <div class="cst-pl-data">
-                                <span class="cst-pl-label">🚚 Veh No:</span> <span class="cst-pl-value" style="color:#1e3a8a; font-weight:600;">${colK}</span>
-                            </div>
-                            <div class="cst-pl-data">
-                                <span class="cst-pl-label">🧾 Inv. No:</span> <strong class="cst-pl-value" style="color:#334155;">${colH}</strong>
-                            </div>
-                        </div>
+                        <span class="cst-status-tab ${statusClass}">${colC_original}</span> | 
+                        <strong>📅 Date:</strong> ${colD} | 
+                        <strong>👤 Name:</strong> ${colE} <br>
+                        <strong>🚚 Vehicle No:</strong> ${colK} | 
+                        <strong>🧾 Inv. No.:</strong> ${colH}
                     </div>
                 `;
                 storeListDiv.innerHTML += storeHTML;
@@ -705,16 +598,18 @@ const CustomSheetTracker_2026 = {
         }
 
         if (!hasStoreItems) {
-            storeListDiv.innerHTML = "<p class='cst-no-data'>No dynamic status matches found in Store.</p>";
+            storeListDiv.innerHTML = "<p class='cst-no-data'>No dynamic status matches (load/unload/complete) found in Store.</p>";
         }
     },
 
+    // Interval hata diya hai, ab yeh sirf UI setup aur first load karega
     start: function() {
         this.initUI();
         this.fetchAndRenderAll();
     }
 };
 
+// Pehli baar run karne ke liye call
 CustomSheetTracker_2026.start();
 </script>
 
@@ -911,73 +806,7 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
 </div>  <!--   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ pyslipPage DIV STOP ------ =============== XXX  -->
 
 <div id="aficurePage" class="page"> <!--   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ aficurePage DIV START ------ =============== START  -->
-<div style="text-align:center;border-bottom: 5px solid #cbcbcb;  background-color: #eeeff1; color: #070707; font-weight: bold;"> <strong>🚑 A.F.I Cure Medical Store 🫀</strong>  </div>
-  
-<style>
-    #listStockview div { padding: 5px; cursor: pointer;}
-/* Even rows */
-#listStockview div:nth-child(even) { background: #f5faff; border-top:1px solid #d5d5d3;}
-/* Odd rows */
-#listStockview div:nth-child(odd) { background: #ffffff;  border-top:1px solid #d5d5d3;}
-/* Hover effect */
-#listStockview div:hover {background: #dbeafe; }
-#listStockview { height: 15vh; overflow-y: auto; border: 1px solid #ccc; }
 
-    .box { border: 1px solid #ccc; margin-top: 10px; padding: 10px; }
-      #stockQuery table{ border-collapse: collapse; font-size: 15px;font-family: Arial, sans-serif;width: 100%;}
-      #stockQuery th {background: #006772;color: #fff;padding: 6px 8px;text-align: center; font-weight: 600; border: 1px solid #ddd;}
-      #table100 table {width: 100%;border-collapse: collapse; font-size: 15px; font-family: Arial, sans-serif;  width: 100%;}
-      #SaltSmry table {width: 100%;border-collapse: collapse; font-size: 15px; font-family: Arial, sans-serif;  width: 100%;}
-
-      #SaltSmry th, #table100 th {background: #006772; color: #fff; padding: 6px 8px; text-align: center; font-weight: 600; border: 1px solid #ddd;}
-      #SaltSmry td, #stockQuery td, #table100 td { padding: 5px 8px; border: 1px solid #ddd; color: #333;}
-      #SaltSmry tr:nth-child(even) , #stockQuery tr:nth-child(even), #table100 tr:nth-child{ background: #f8f9fa;}
-      #SaltSmry tr:hover, #stockQuery tr:hover, #table100 tr:hover {background: #cfe1fa;}
-
-      /* Extra space remove */
-      #SaltSmry th, #SaltSmry td, #stockQuery th, #stockQuery td { line-height: 1.2; white-space: nowrap;}
-      /* Optional: first column bold */
-      #SaltSmry td:first-child {font-weight: 500;}
-      /* ----------------   title and value css  ----------------*/
-      .info-row{display:flex;border:5px solid #dfdddd; margin-bottom:5px; min-height:30px;}
-.title{background:#eaebec;color:#01133a; font-weight:bold;padding:5px 10px; border-right:1px solid #dfdddd;white-space:nowrap;}
-.value{ flex:1;padding:5px 10px;border-right:1px solid #dfdddd; overflow:hidden;white-space:nowrap;}
-/* Optional Marquee */
-.marquee-value{flex:1; padding:5px 10px; border-right:1px solid #000; overflow:hidden; white-space:nowrap;}
-.marquee-text{ display:inline-block; padding-left:100%; animation:scroll 10s linear infinite;}
-@keyframes scroll{
-    from{transform:translateX(0);}
-    to{transform:translateX(-100%);}
-}
-</style>
-
-
-<div class="topDiv" style="height: 57vh;">
-
-<div id="details" class="box" style="height: 8vh; background-color: #fdfdfd;border-bottom: 5px solid rgb(2, 62, 102);"> </div>
-  <div id="stockQuery" class="box" style="height: 18vh;">
-   <br/> <br/><br/> <br/>  <span style="text-align: center; color: #018080; font-size: 35px; font-weight: bold; font-family: Chiller;"> Welcome</span> <br/> 
-    <sapn style="text-align: center; color: #800101; font-size: 35px;font-family: Colonna MT;">A.F.I Cure Medical Store</sapn> 
-  </div>
-
-<div id="SaltSmry" class="box" style="height:25vh; overflow-y:auto; scroll-behavior:smooth;border-bottom: 5px solid rgb(102, 22, 2);"></div>
-</div>
-
-<div class="bottomDiv">
-  <!-- ----------------   ================ Buttan Div Start Hare =========== Start ============== Start --------------------- -->
-<div style="display: flex; gap: 10px; border-bottom:5px solid #025982; flex-wrap: wrap; justify-content: center; margin-bottom: 5px; background-color: #eaeaeb;  padding: 2px 2px;">
-
-<input type="text" id="search" style="width:6in; padding:8px;border-bottom:5px solid #009797; border-top:5px solid #009797; background-color: #f7f7f7;" placeholder=" 🔍 Search Medicine or Salt... ">
-<button  id="saltBtn" onclick=" sameSalt()" style="color: rgb(154, 0, 0); border: none; background-color: #eaeaeb; font-weight: bold; font-size: 14px; cursor: pointer;">Item of Same Salt</button>
-<button  id="groupBtn" onclick="sameGroup()" style="color: rgb(0, 113, 94); border: none; background-color: #eaeaeb; font-weight: bold; font-size: 14px; cursor: pointer;">Item of Same Group</button>
-</div>  <!-- ----------------   ================ Buttan Div Stop Hare =========== Stop ==============  --------------------- -->
-
-
-   <div style="text-align:center; background-color: #0b0b0b; color: #ffffff; font-weight: bold;">
- <button onclick="updateQuary()" style="text-align:center;border: none; background-color: #0b0b0b; color: #f8e6e6; font-weight: bold; font-size: 14px;cursor: pointer;">🔄 Refresh Table</button>
-</div>
-  <div id="listStockview"> <span style="color: rgb(117, 0, 0); font-weight: bold; " > <br/> <br/>Please Wait ! Data Loading ...</span></div>
-</div>
 
 </div>  <!--   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ aficurePage DIV STOP ------ =============== XXX  -->
 
@@ -1363,10 +1192,12 @@ Calculate
 <button onclick="showPage('reportPage')">📒 Dishplay Ledger Report</button>
 <button onclick="showPage('pyslipPage')">📋 Pay Slip</button>
 <button onclick="showPage('idpasswordPage')">🏦 Addr. / Att. / Psw</button>
-<button onclick="showPage('aficurePage')">⚕️ A.F.I Cure</button>
+<button onclick="openMedicineModal()">⚕️ A.F.I Cure</button>
 <button onclick="showPage('clcPage')">📈 EMI Loan Calculator</button>
 </div>
 </div>
+
+<script src="medicinesData.js"></script>
 
 <!-- BOTTOM MENU -->
 <div class="bottom-bar">
@@ -4444,394 +4275,6 @@ loadRationCardData();
 
 
 
-<!-- ~~~~~~~~~~~~~~~~ ============================ AFI CURE MEDICAL Stock Quary and Summary Script  Start Hare ~~~~~~~~~~~~~~~~ Script Start ============================ -->
-<script>
-const apiKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
-const sheetId = "1g_hAVEIFZRnRNFFQWF275Y_AXKBTw0UIP0xiH4_C2V0";
-
-let itemData = [];
-let stockData = [];
-let selected = null;
-
-const safe = (val) => (val && val !== "") ? val : "-";
-
-async function fetchData() {
-  try {
-    const itemURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/ITEMLIST!A:M?key=${apiKey}`;
-    const stockURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/STOCKDATA!A:N?key=${apiKey}`;
-
-    const [itemRes, stockRes] = await Promise.all([
-      fetch(itemURL),
-      fetch(stockURL)
-    ]);
-
-    const itemJson = await itemRes.json();
-    const stockJson = await stockRes.json();
-
-    itemData = (itemJson.values || []).slice(1);
-    stockData = (stockJson.values || []).slice(1);
-
-    renderList(itemData);
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-function renderList(data) {
-  const listStockview = document.getElementById("listStockview");
-  listStockview.innerHTML = "";
-
-  let unique = new Map();
-
-  data.forEach(row => {
-    if (!row[0]) return;
-    let key = row[0] + "|" + row[1];
-    if (!unique.has(key)) unique.set(key, row);
-  });
-
-   // Convert map values to array and sort alphabetically by medicine name
-  let sortedData = Array.from(unique.values()).sort((a, b) => {
-    return a[0].localeCompare(b[0]);
-  });
-
-  sortedData.forEach(row => {
-    const div = document.createElement("div");
-    div.className = "itemStockview";
-    div.innerHTML = `${safe(row[0])} 🧪 <span style="color:rgb(3, 116, 168); font-size: 14px;"> (${safe(row[1])})</span>`;
-    div.onclick = () => selectItem(row);
-    listStockview.appendChild(div);
-  });
-}
-
-function formatDate(dateStr) {
-  return safe(dateStr);
-}
-
-function selectItem(row) {
-  selected = row;
-
-  document.getElementById("details").innerHTML = `
-
-<style>
-.info-row{display:flex;border:5px solid #dfdddd; margin-bottom:5px; min-height:30px;}
-.title{background:#eaebec;color:#01133a; font-weight:bold;padding:5px 10px; border-right:1px solid #dfdddd;white-space:nowrap;}
-.value{ flex:1;padding:5px 10px;border-right:1px solid #dfdddd; overflow:hidden;white-space:nowrap;}
-/* Optional Marquee */
-.marquee-value{flex:1; padding:5px 10px; border-right:1px solid #000; overflow:hidden; white-space:nowrap;}
-.marquee-text{ display:inline-block; padding-left:100%; animation:scroll 10s linear infinite;}
-@keyframes scroll{
-    from{transform:translateX(0);}
-    to{transform:translateX(-100%);}
-}
-</style>
-
-<!-- Normal Value -->
-<div class="info-row">
-    <span class="title" style="background-color: #000408; color: aliceblue; border-right: 5px solid #eeeded; border-left: 5px solid #eeeded;"><b>${safe(row[0])}</b></span>
-    <span class="title" style="background-color: #db0000; color: aliceblue; border-right: 5px solid #eeeded; border-left: 5px solid #eeeded;">Pur. Rate:</span>           <span class="value">Rs. ${safe(row[4])}</span>
-    <span class="title" style="background-color: #029909; color: aliceblue; border-right: 5px solid #eeeded; border-left: 5px solid #eeeded;">Sale. Rate:</span>          <span class="value">Rs. ${safe(row[5])}</span>
-    <span class="title">M.R.P:</span>          <span class="value">Rs. ${safe(row[6])}</span>
-    <span class="title">Qty/Unit:</span>          <span class="value">Rs. ${safe(row[8])}</span>
-</div>
-
-<div class="info-row">
-    <span class="title" style="background-color: #2948f7; color: aliceblue; border-right: 5px solid #eeeded; border-left: 5px solid #eeeded;">${safe(row[1])}</span>           <span class="value">${safe(row[3])}</span>
-</div>
-
-<div class="info-row"> <span class="title">Group:</span>          <span class="value">${safe(row[2])}</span> </div>
-
-  `;
-
-  let filtered = stockData
-    .filter(r => r[2] === row[0])
-    .sort((a,b)=> new Date(b[10]) - new Date(a[10]))
-    .slice(0,5);
-
-  let html = "<b>Top 5 Stock Entries</b>";
-
-  if (filtered.length === 0) {
-    html += "<br>No data found";
-  } else {
-    html += `<table>
-      <tr>
-        <th>T. No.</th>
-        <th>LEDGER NAME</th>
-        <th>Purchase Date</th>
-        <th>Expiry</th>
-        <th>MRP</th>
-        <th>Qty</th>
-        <th>Rate</th>
-         <th>Unit</th>
-          <th>Amt</th>
-           <th>Type</th>
-      </tr>`;
-
-    filtered.forEach(r => {
-      html += `<tr>
-        <td>${safe(r[0])}</td>
-        <td>${safe(r[12])}</td>
-        <td>${formatDate(r[10])}</td>
-        <td>${formatDate(r[11])}</td>
-        <td>${safe(r[8])}</td>
-        <td>${safe(r[4])}</td>
-        <td>${safe(r[5])}</td>
-         <td>${safe(r[7])}</td>
-         <td>${safe(r[6])}</td>
-         <td>${safe(r[13])}</td>
-      </tr>`;
-    });
-
-    html += "</table>";
-  }
-
-  document.getElementById("stockQuery").innerHTML = html;
-
-  // Default same salt auto trigger
-  sameSalt();
-}
-
-function sameSalt() {
-  if (!selected) return;
-
-  let salt = selected[1];
-  let listStockview = itemData.filter(r => r[1] === salt && salt);
-
-  let html = `<b>Same Salt Medicines:- ${safe(salt)}</b>`;
-
-  if (listStockview.length === 0) {
-    html += "<br>No match found";
-  } else {
-    html += `<table>
-      <tr>
-        <th>Medicine Name</th>
-        <th>M.R..P</th>
-        <th>Avg Cost</th>
-        <th>Sale Rate</th>
-        <th>Q/U</th>
-      </tr>`;
-
-    listStockview.forEach(r => {
-      html += `<tr>
-        <td>${safe(r[0])}</td>
-        <td>${safe(r[6])}</td>
-        <td>${safe(r[4])}</td>
-        <td>${safe(r[5])}</td>
-        <td>${safe(r[8])}</td>
-      </tr>`;
-    });
-
-    html += "</table>";
-  }
-
-  document.getElementById("SaltSmry").innerHTML = html;
-}
-
-function sameGroup() {
-  if (!selected) return;
-
-  let group = selected[2];
-  let listStockview = itemData.filter(r => r[2] === group && group);
-
-  let html = `<b>Same Group Medicines:- ${safe(group)}</b>`;
-
-  if (listStockview.length === 0) {
-    html += "<br>No match found";
-  } else {
-    html += `<table>
-      <tr>
-        <th>Medicine Name</th>
-        <th>Avg Cost</th>
-        <th>Sale Rate</th>
-        <th>Salt</th>
-        <th>Description</th>
-      </tr>`;
-
-    listStockview.forEach(r => {
-      html += `<tr>
-        <td>${safe(r[0])}</td>
-        <td>${safe(r[4])}</td>
-        <td>${safe(r[5])}</td>
-         <td>${safe(r[1])}</td>
-        <td style="color:rgb(0, 83, 128);font-size: 14px;">${safe(r[3])}</td>
-      </tr>`;
-    });
-
-    html += "</table>";
-  }
-
-  document.getElementById("SaltSmry").innerHTML = html;
-}
-
-document.getElementById("search").addEventListener("input", function() {
-  let val = this.value.toLowerCase();
-
-  let filtered = itemData.filter(r => 
-    (r[0] && r[0].toLowerCase().includes(val)) ||
-    (r[1] && r[1].toLowerCase().includes(val))
-  );
-
-  renderList(filtered);
-});
-
-fetchData();
- //---------------------------- updatequary functio optional function ------------------ start
-
- // ===== UPDATE QUERY FUNCTION =====
-// ===== UPDATE QUERY FUNCTION (FINAL) =====
-async function updateQuary() {
-
-  if (!selected) {
-    console.warn("No item selected");
-    return;
-  }
-
-  // 👉 LOADING MESSAGE PEHLE DIKHAO
-  document.getElementById("stockQuery").innerHTML =
-    "<table><tr><td colspan='11'>⏳ Refreshing...</td></tr></table>";
-
-  try {
-
-    // 👉 fresh data fetch karo
-    await fetchData();
-
-    let row = selected;
-
-    // ===== DETAILS =====
-    document.getElementById("details").innerHTML = `
-      <b>${safe(row[0])}</b><br>
-      <span style="color:red;font-weight:bold">Salt:</span> ${safe(row[1])} |
-      <span style="color:green;font-weight:bold">Group:</span> ${safe(row[2])}<br>
-      Avg. Pur. Rate: ${safe(row[4])} | Avg. Sale Rate: ${safe(row[5])} | Qty/Unit: ${safe(row[8])}<br><br>
-      <span style="color:black;font-weight:bold">Discription:</span> ${safe(row[3])}
-    `;
-
-    // ===== STOCK =====
-    let filtered = stockData
-      .filter(r => r[2] === row[0])
-      .sort((a,b)=> new Date(b[10]) - new Date(a[10]))
-      .slice(0,5);
-
-    let html = "<b>Top 5 Stock Entries</b>";
-
-    if (filtered.length === 0) {
-      html += "<br>No data found";
-    } else {
-      html += `<table>
-        <tr>
-          <th style="background-color: #6d0170; color: white;">R. No.</th>
-          <th style="background-color: #6d0170; color: white;">LEDGER NAME</th>
-          <th style="background-color: #6d0170; color: white;">Purchase Date</th>
-          <th style="background-color: #6d0170; color: white;">Expiry</th>
-          <th style="background-color: #6d0170; color: white;">MRP</th>
-          <th style="background-color: #6d0170; color: white;">Qty</th>
-          <th style="background-color: #6d0170; color: white;">Rate</th>
-          <th style="background-color: #6d0170; color: white;">Unit</th>
-          <th style="background-color: #6d0170; color: white;">Amt</th>
-          <th style="background-color: #016106; color: white;">Type</th>
-        </tr>`;
-
-      filtered.forEach(r => {
-        html += `<tr>
-          <td>${safe(r[0])}</td>
-          <td>${safe(r[12])}</td>
-          <td>${formatDate(r[10])}</td>
-          <td>${formatDate(r[11])}</td>
-          <td>${safe(r[8])}</td>
-          <td>${safe(r[4])}</td>
-          <td>${safe(r[5])}</td>
-          <td>${safe(r[7])}</td>
-          <td>${safe(r[6])}</td>
-          <td>${safe(r[13])}</td>
-        </tr>`;
-      });
-
-      html += "</table>";
-    }
-
-    document.getElementById("stockQuery").innerHTML = html;
-
-    // same salt bhi refresh ho
-    sameSalt();
-
-  } catch (err) {
-    console.error(err);
-
-    // ❌ ERROR MESSAGE
-    document.getElementById("stockQuery").innerHTML =
-      "<div style='color:red'>❌ Error loading data</div>";
-  }
-}
-// -------------- stop 
-
-//----------------- Remove optional code class="salt" & "medicine" for input ke liye --------- Start -----------
- // -------- AUTO FILL MEDICINE + SALT --------
-
-// function jo sab jagah value fill kare
-function updateMedicineSalt(med, salt, qpu, mType) {
-
-  // Medicine class wale sab me value set
-  document.querySelectorAll(".medicine").forEach(el => {
-    if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
-      el.value = med;
-    } else {
-      el.innerText = med;
-    }
-  });
-
-  // Salt class wale sab me value set
-  document.querySelectorAll(".salt").forEach(el => {
-    if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
-      el.value = salt;
-    } else {
-      el.innerText = salt;
-    }
-  });
-
-   // QPU class wale sab me value set
-  document.querySelectorAll(".qpu").forEach(el => {
-    if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
-      el.value = qpu;
-    } else {
-      el.innerText = qpu;
-    }
-  });
-
-  // Medicine Type class wale sab me value set
-  document.querySelectorAll(".mType").forEach(el => {
-    if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
-      el.value = mType;
-    } else {
-      el.innerText = mType;
-    }
-  });
-}
-
-// selectItem ke baad auto call (without modifying original function)
-const oldSelectItem = selectItem;
-selectItem = function(row) {
-  oldSelectItem(row);
-
-  let med = safe(row[0]);
-  let salt = safe(row[1]);
-  let qpu = safe(row[8]);
-   let mType = safe(row[7]);
-
-  updateMedicineSalt(med, salt, qpu, mType);
-};
-
-// -------- FORM RESET HANDLE --------
-
-// jab bhi form reset ho → value wapas set ho
-document.addEventListener("reset", function(e) {
-  setTimeout(() => {
-    if (selected) {
-      updateMedicineSalt(safe(selected[0]), safe(selected[1]));
-    }
-  }, 50);
-});
-//----------------  stop --------------------
-</script>
-<!-- ~~~~~~~~~~~~~~~~ ============================ Stock Quary and Summary Script  Stop Hare ~~~~~~~~~~~~~~~~ Script Stop ============================ -->
 
 
 
