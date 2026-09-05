@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MIPL-Texovate Erp</title>
+  <title>MIPL-Texovate Erp 6.4</title>
   
   <style>
     /* =========================================================
@@ -989,6 +989,8 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
         <option value="https://codepen.io/XAuBAH/pen/BadLGaw?utm_source=chatgpt.com">	Live Html Editing- Canvas</option>
         <option value="https://thisissand.com/">Game - Sand Picture Making</option>
         <option value="https://mypngd.in/">LPG/PNG IOAG Conetion Details</option>
+        <option value="https://gst.uk.gov.in/stax/findtinno.aspx">Uttarakhand GST/TIN No Search, by No.,Address</option>
+        <option value="https://m5792.github.io/esm/Medicinelist.html">AFI Medicine Search</option>
       
     </select>
 
@@ -5579,6 +5581,30 @@ document.addEventListener("input", function(e) {
 const mffdadaEKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";
 const mffdadaEId  = "1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU";
 
+/* ================= DATE FORMATTER HELPER FUNCTION ================= */
+function formatSheetDate(dateStr) {
+  if (!dateStr) return "";
+  
+  const d = new Date(dateStr);
+  // Agar date parse nahi ho pati to original string hi return karega
+  if (isNaN(d.getTime())) return dateStr;
+
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  
+  const day = d.getDate();
+  const month = months[d.getMonth()];
+  const year = d.getFullYear();
+
+  let hours = d.getHours();
+  const minutes = d.getMinutes().toString().padStart(2, '0');
+  const ampm = hours >= 12 ? 'pm' : 'am';
+
+  hours = hours % 12;
+  hours = hours ? hours : 12; // 0 hrs ko 12 banana
+
+  return `${day}-${month}-${year}/${hours}:${minutes} ${ampm}`;
+}
+
 /* ================= LOAD PANDING DATA FROM DATAE ================= */
 async function loadPendingDATAE(){
 
@@ -5606,9 +5632,13 @@ async function loadPendingDATAE(){
     pendingRows.forEach(row => {
       const li = document.createElement("li");
       
+      // Formatting applied ONLY to row[12]
+      const formattedDate = formatSheetDate(row[12] || "");
+
       // Example display format (customize if needed)
       li.textContent = `
-      Creat By: ${row[3] || ""} | 
+        ${formattedDate} |
+      : ${row[3] || ""} | 
         Party: ${row[4] || ""} | 
         Amount: ${row[5] || ""} 
       `;
