@@ -116,7 +116,7 @@
 
   .inline-table-container {
     overflow-x: auto;
-    max-height: 500px;
+    max-height: 1000px;
   }
 
   table.inline-table {
@@ -143,9 +143,12 @@
     vertical-align: top;
   }
 
+    tr:nth-child(odd) { border-top: 2px solid #c2c1c1; background-color: #f9f8f8; }
+    tr:hover td { background: #a8feff; color: rgb(0, 15, 15); transition: background-color 1s ease, color 1s ease; }
   .inline-badge-danger {
     background: #fee2e2;
     color: #991b1b;
+
     padding: 2px 6px;
     border-radius: 4px;
     font-size: 11px;
