@@ -1,6 +1,5 @@
-
- <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
   /* Header Container */
@@ -143,12 +142,13 @@
     vertical-align: top;
   }
 
-    tr:nth-child(odd) { border-top: 2px solid #c2c1c1; background-color: #f9f8f8; }
-    tr:hover td { background: #a8feff; color: rgb(0, 15, 15); transition: background-color 1s ease, color 1s ease; }
+  tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+  tr:hover td { background-color: #bae2f0; color: rgb(0, 15, 15); transition: background-color 1s ease, color 1s ease; }
   .inline-badge-danger {
     background: #fee2e2;
     color: #991b1b;
-
     padding: 2px 6px;
     border-radius: 4px;
     font-size: 11px;
@@ -161,6 +161,19 @@
     padding: 2px 6px;
     border-radius: 4px;
     font-size: 11px;
+  }
+
+  /* Item Link Styling with Hover Effect */
+  .altf-item-link {
+    color: #2563eb;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+  }
+  .altf-item-link:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
   }
 </style>
 
@@ -5837,7 +5850,7 @@
 
     ];
 
-    function cleanStr(str) {
+   function cleanStr(str) {
         return (str || "").toLowerCase().trim();
     }
 
@@ -5889,6 +5902,82 @@
         }
     }
 
+    // Function to Show Purchase History Details
+    function showPurchaseHistory(itemName) {
+        const contentTitle = document.getElementById('inline-content-title');
+        const thead = document.getElementById('inline-table-head');
+        const tbody = document.getElementById('inline-table-body');
+
+        let purchaseData = [];
+        const scriptTag = document.getElementById('voucherDataJSON');
+        if (scriptTag) {
+            try {
+                const parsedJSON = JSON.parse(scriptTag.textContent);
+                purchaseData = (parsedJSON.vouchersGrouped && parsedJSON.vouchersGrouped.purchase) || parsedJSON.purchase || [];
+            } catch (err) {}
+        }
+
+        const historyItems = [];
+        purchaseData.forEach(p => {
+            const pDate = p.date || '';
+            const invNo = p.invoiceNo || '';
+            const party = p.partyName || '';
+
+            if (p.items && Array.isArray(p.items)) {
+                p.items.forEach(it => {
+                    if (cleanStr(it.desc) === cleanStr(itemName)) {
+                        historyItems.push({
+                            date: pDate,
+                            parsedDate: parseDate(pDate),
+                            invoiceNo: invNo,
+                            partyName: party,
+                            desc: it.desc,
+                            fullDetails: it.fullDetails || '',
+                            qty: it.qty || 0,
+                            unit: it.unit || '',
+                            rate: it.rate || 0,
+                            amount: it.amount || 0
+                        });
+                    }
+                });
+            }
+        });
+
+        historyItems.sort((a, b) => b.parsedDate - a.parsedDate);
+
+        contentTitle.innerText = `Purchase History: ${itemName}`;
+        thead.innerHTML = `
+            <tr>
+                <th style="width: 12%;">Date</th>
+                <th style="width: 10%;">Invoice No</th>
+                <th style="width: 20%;">Party Name</th>
+                <th style="width: 27%;">Details (MRP / Exp / Pack)</th>
+                <th style="width: 10%;">Qty</th>
+                <th style="width: 10%;">Rate</th>
+                <th style="width: 11%;">Expiry Alert</th>
+            </tr>
+        `;
+
+        if (historyItems.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 20px; color: #64748b;">No purchase transaction records found for this item.</td></tr>`;
+        } else {
+            tbody.innerHTML = historyItems.map(row => {
+                const expInfo = calculateExpiryCountdown(row.fullDetails);
+                return `
+                    <tr>
+                        <td><strong>${row.date}</strong></td>
+                        <td>${row.invoiceNo}</td>
+                        <td>${row.partyName}</td>
+                        <td><small style="color:#2563eb; font-weight:600;">[${row.desc}]</small><br><small>${row.fullDetails}</small></td>
+                        <td>${row.qty} ${row.unit}</td>
+                        <td>₹${row.rate}</td>
+                        <td>${expInfo.badge}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('main-inline-search');
         const expiryBtn = document.getElementById('main-expiry-btn');
@@ -5899,6 +5988,15 @@
         const tbody = document.getElementById('inline-table-body');
 
         if (!searchInput) return;
+
+        // F2 Key Shortcut Listener
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'F2' || event.keyCode === 113) {
+                event.preventDefault();
+                searchInput.focus();
+                searchInput.select();
+            }
+        });
 
         closeBtn.addEventListener('click', function() {
             contentArea.style.display = 'none';
@@ -5995,9 +6093,13 @@
                     const hGroup = highlightText(r.group, query);
                     const hBrands = highlightText(r.brand_examples, query);
 
+                    const itemNameHtml = (r.name && r.name !== 'N/A')
+                        ? `<span class="altf-item-link" data-itemname="${r.name}">${hName}</span>`
+                        : '<strong style="color:#0f172a;">N/A</strong>';
+
                     return `
                         <tr>
-                            <td><strong>${hName}</strong></td>
+                            <td>${itemNameHtml}</td>
                             <td style="color:#2563eb;">${hSalt || 'N/A'}</td>
                             <td>${hDescHi}<br><small style="color:#64748b;">${hDescEn}</small></td>
                             <td><span style="background:#f1f5f9; padding:2px 6px; border-radius:4px; font-size:11px;">${hGroup}</span></td>
@@ -6005,6 +6107,14 @@
                         </tr>
                     `;
                 }).join('');
+
+                // Click event listener for Column 1 item link
+                tbody.querySelectorAll('.altf-item-link').forEach(el => {
+                    el.addEventListener('click', function() {
+                        const itemName = this.getAttribute('data-itemname');
+                        showPurchaseHistory(itemName);
+                    });
+                });
             }
 
             contentArea.style.display = 'block';
@@ -6080,8 +6190,6 @@
     });
 })();
 </script>
-
-
 
 
 
