@@ -515,7 +515,7 @@
  
   </div>
   <div class="user-info">
-  <span id="username" onclick="showSection(9);showUserDetails();" style="cursor:pointer;"></span>
+  <span id="username" onclick="showSection(9); showUserDetails(); refreshUserSpecificRow();" style="cursor:pointer;"></span>
 
   <!-- hidden spans -->
   <span id="userid" style="display:none;"></span>
@@ -1103,6 +1103,7 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
 <!-- 🔎 TABLE -->
 <table id="daybookTable" border="1" style="width:100%;margin-top:20px;"></table>
 </div>
+
 
 
 <script>
@@ -3341,7 +3342,9 @@ Calculate
      <!-- -----------------======================  SECTION9 START HERE (SECTION9 MIPL509) ==================== ------------------------- -->
   <div id="section9" class="section hidden" style="border-radius: 10px;"> 
 
-    <h2>Payslip Generator</h2>
+    <div id="userSpecificAttendance"></div>
+
+    <h3>Payslip Generator</h3>
 
 
 <div style="
@@ -3375,6 +3378,8 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
 <!-- Payslip -->
 <div id="payslip" class="SalarySheetContainer"></div>
 
+
+<br/><br/><br/><br/>
 </div> 
  <!--  XXX -----------------======================  SECTION9 STOP HERE (SECTION9 MIPL509) ==================== ------------------------- -->
 
@@ -9037,6 +9042,7 @@ function triggerDownload(blob, filename) {
 
 
 <!-- ================  Payroll Attendance script start here ===============================-->
+<!-- ================  Payroll Attendance script start here ===============================-->
 <script>
 /* --------------------- CONFIG --------------------- */
 const apiPRLKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM";   
@@ -9074,6 +9080,7 @@ async function loadPRLSheet() {
     }
 
     loadPRLMonths();
+    renderUserRowIfReady();
 }
 
 /* --------------------- LOAD MONTHS --------------------- */
@@ -9095,25 +9102,33 @@ function loadPRLMonths() {
     });
 
     const cur = `${new Date().getFullYear()}-${new Date().getMonth()+1}`;
-    sel.innerHTML = "";
+    if (sel) {
+        sel.innerHTML = "";
 
-    sorted.forEach(m=>{
-        let [y,mo]=m.split("-");
-        let opt=document.createElement("option");
-        opt.value=m;
-        opt.textContent=new Date(y,mo-1,1)
-            .toLocaleString("en-GB",{month:"long",year:"numeric"});
-        if(m===cur) opt.selected=true;
-        sel.appendChild(opt);
-    });
+        sorted.forEach(m=>{
+            let [y,mo]=m.split("-");
+            let opt=document.createElement("option");
+            opt.value=m;
+            opt.textContent=new Date(y,mo-1,1)
+                .toLocaleString("en-GB",{month:"long",year:"numeric"});
+            if(m===cur) opt.selected=true;
+            sel.appendChild(opt);
+        });
+    }
 
     showPayroll();
 }
 
 /* --------------------- SHOW PAYROLL --------------------- */
 function showPayroll() {
-    const m = document.getElementById("monthPRLSelect").value;
-    const viewMode = document.getElementById("viewType").value;
+    const monthSelect = document.getElementById("monthPRLSelect");
+    const viewTypeSelect = document.getElementById("viewType");
+    const tableContainer = document.getElementById("attendancePRLTable");
+
+    if (!monthSelect || !viewTypeSelect || !tableContainer) return;
+
+    const m = monthSelect.value;
+    const viewMode = viewTypeSelect.value;
     if(!m) return;
 
     let [year,month]=m.split("-").map(Number);
@@ -9216,12 +9231,13 @@ function showPayroll() {
     });
 
     html+=`</table>`;
-    document.getElementById("attendancePRLTable").innerHTML=html;
+    tableContainer.innerHTML=html;
 }
 
 /* --------------------- PRINT --------------------- */
 function printPayroll(){
     const sel=document.getElementById("monthPRLSelect");
+    if(!sel) return;
     const txt=sel.options[sel.selectedIndex].text;
     const content=document.getElementById("attendancePRLTable").innerHTML;
 
@@ -9242,9 +9258,116 @@ function printPayroll(){
     setTimeout(()=>w.print(),500);
 }
 
+/* =========================================================================
+   USER SPECIFIC ROW GENERATOR & REFRESH LOGIC
+   ========================================================================= */
+function renderUserRowIfReady() {
+    if (!sheetPRLData || sheetPRLData.length === 0) return;
+
+    const userSpan = document.getElementById("username");
+    const container = document.getElementById("userSpecificAttendance");
+    if (!userSpan || !container) return;
+
+    const targetUser = (userSpan.textContent || userSpan.innerText || "").trim();
+    if (!targetUser) return;
+
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+
+    const first = new Date(year, month, 1);
+    const last = new Date(year, month + 1, 0);
+
+    let dates = [];
+    for (let d = new Date(first); d <= last; d.setDate(d.getDate() + 1)) {
+        dates.push(new Date(d));
+    }
+
+    let today = new Date(); 
+    today.setHours(0, 0, 0, 0);
+
+    let userMap = {};
+    for (let i = 1; i < sheetPRLData.length; i++) {
+        let r = sheetPRLData[i];
+        let name = r[3], dt = r[2];
+        if (!name || !dt || name.trim().toLowerCase() !== targetUser.toLowerCase()) continue;
+
+        let d = new Date(dt);
+        if (d.getMonth() === month && d.getFullYear() === year) {
+            let dateStr = d.toISOString().split("T")[0];
+            let raw = r[5] || "", t = "";
+            if (raw.includes(" ")) {
+                let p = raw.split(" ");
+                let m = p.length > 1 ? p[1] : p[0];
+                let mm = m.match(/^(\d{1,2}:\d{2})/);
+                t = mm ? mm[1] : m;
+            }
+            userMap[dateStr] = { status: r[4] || "P", time: t };
+        }
+    }
+
+    const life = empLifeMap[targetUser] || {};
+    let totalP = 0, totalA = 0;
+
+    let html = `<table><tr><th>Employee</th>`;
+    dates.forEach(d => html += `<th>${d.getDate()}</th>`);
+    html += `<th>Total P</th><th>Total A</th></tr>`;
+
+    html += `<tr><th></th>`;
+    dates.forEach(d => html += `<th>${d.toLocaleDateString("en-US", { weekday: "short" })}</th>`);
+    html += `<th></th><th></th></tr>`;
+
+    html += `<tr><td>${targetUser}</td>`;
+
+    dates.forEach(d => {
+        let show = "-";
+        let dateStr = d.toISOString().split("T")[0];
+        let entry = userMap[dateStr];
+
+        if (life.doj && d < life.doj) show = "-";
+        else if (life.doe && d > life.doe) show = "-";
+        else if (d > today) show = "-";
+        else {
+            show = entry ? entry.status : "A";
+            if (d.getDay() === 0) show = "P";
+        }
+
+        if (show === "P") totalP++;
+        else if (show === "A") totalA++;
+
+        let cls = show === "A" ? "absent" : show === "PWL" ? "pwl" : "";
+        html += `<td class="${cls}">${show}</td>`;
+    });
+
+    html += `<td>${totalP}</td><td>${totalA}</td></tr></table>`;
+    container.innerHTML = html;
+}
+
+/* CLICK PAR DATA REFRESH KARNE WALA FUNCTION */
+async function refreshUserSpecificRow() {
+    const container = document.getElementById("userSpecificAttendance");
+    if (container) container.innerHTML = "<p style='text-align:center;'>Loading updated attendance...</p>";
+    await loadPRLSheet(); // Re-fetch Google Sheet data
+}
+
+function setupUsernameObserver() {
+    const userSpan = document.getElementById("username");
+    if (!userSpan) return;
+
+    const observer = new MutationObserver(() => {
+        renderUserRowIfReady();
+    });
+
+    observer.observe(userSpan, { childList: true, characterData: true, subtree: true });
+}
+
 /* --------------------- INIT --------------------- */
+document.addEventListener("DOMContentLoaded", () => {
+    setupUsernameObserver();
+});
 loadPRLSheet();
 </script>
+<!-- ================  Payroll Attendance script stop here ===============================-->
 <!-- ================  Payroll Attendance script stop here ===============================-->
 
 
