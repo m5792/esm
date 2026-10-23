@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMI Card & Professional Bank Statement Print[cite: 1]</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Top Bar Controls */
+        .top-bar {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 8px 16px;
+            border: 1px solid #1a4cd2;
+            background: #fff;
+            color: #1a4cd2;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .tab-btn.active {
+            background: #1a4cd2;
+            color: #fff;
+        }
+
+        .filter-select, .search-input {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .search-input {
+            flex-grow: 1;
+        }
+
+        .note-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fafafa;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #eee;
+        }
+
+        .note {
+            color: #444;
+            font-size: 14px;
+        }
+
+        .note span {
+            font-weight: bold;
+            color: #000;
+        }
+
+        .totals-summary {
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 20px;
+            background: #eef2fd;
+            padding: 10px 12px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+        }
+
+        .print-btn {
+            background: #1a4cd2;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .print-btn:hover {
+            background: #1339a0;
+        }
+
+        /* Table Design */
+        .loan-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .loan-table th {
+            text-align: left;
+            padding: 12px;
+            background-color: #f8f9fa;
+            color: #555;
+            font-size: 13px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .loan-table tr {
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .loan-table tr:hover {
+            background-color: #dfeefc;
+        }
+
+        .loan-table td {
+            padding: 14px 10px;
+            font-size: 13px;
+        }
+
+        .loan-no {
+            font-weight: bold;
+            color: #222;
+        }
+
+        .loan-type-sub {
+            font-size: 11px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .customer-sub {
+            font-size: 12px;
+            color: #1a4cd2;
+            font-weight: bold;
+        }
+
+        .account-sub {
+            font-size: 11px;
+            color: #555;
+            margin-top: 2px;
+        }
+
+       
+
+        /* Detail Modal Design */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #fff;
+            width: 95%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 8px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #888;
+            font-weight: bold;
+            line-height: 1;
+            z-index: 10;
+        }
+        .close-btn:hover {
+            color: #000;
+        }
+
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            padding-right: 35px;
+        }
+
+        .status-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+
+        .status-active { background: #e6f4ea; color: #137333; }
+        .status-closed { background: #fce8e6; color: #c5221f; }
+        .status-settled { background: #eef0fd; color: #1a4cd2; }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        .detail-label { color: #666; }
+        .detail-value { font-weight: bold; color: #222; }
+
+        /* Schedule Accordion Table */
+        .schedule-section {
+            margin-top: 15px;
+            border: 1px solid #eee;
+            border-radius: 6px;
+        }
+
+        .schedule-header {
+            padding: 12px;
+            background: #f8f9fa;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .schedule-content {
+            display: none;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        .schedule-table th, .schedule-table td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .schedule-table th {
+            background: #f1f3f4;
+            position: sticky;
+            top: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="main-dashboard-area">
+    <!-- Top Bar -->
+    <div class="top-bar">
+        ID No.:<input type="text" class="search-input" id="id-filter" placeholder="Enter ID No" oninput="filterLoans()" style="width: 110px;background-color: #f9fae7;">
+       
+       <select class="filter-select" id="type-filter" onchange="filterLoans()">
+            <option value="ALL">All Loan Types</option>
+        </select>
+        Search: <input type="text" class="search-input" style="width: 200px;" id="search-input" placeholder="🔍 Loan No, Type or Account ..." oninput="filterLoans()">
+         <button class="tab-btn active" id="tab-active" onclick="switchTab('ACTIVE')">Active (0)</button>
+        <button class="tab-btn" id="tab-closed" onclick="switchTab('CLOSED')">Closed/Settled (0)</button>
+        </bbr>
+    </div>
+
+    <!-- Monthly Note -->
+    <div class="note-container">
+        <div class="note" id="calendar-note">
+           <span style="font-weight: bold;">Loan & EMI View</span> : Mukhtar Ahamad
+        </div>
+        <button class="print-btn" onclick="printFilteredLoans()">Print Loans</button>
+    </div>
+
+    <!-- Dynamic Totals Summary -->
+    <div class="totals-summary">
+        <div><span id="summary-title-1">Total Active Loan Amount</span>: <span id="summary-total-loan" style="color: #1a4cd2;">₹0.00</span></div>
+        <div><span id="summary-title-2">Total Principal Outstanding</span>: <span id="summary-total-outstanding" style="color: #c5221f;">₹0.00</span></div>
+        <div><span id="summary-title-1">Total Active EMI Amount</span>: <span id="total-due" style="color: #005b08;">₹0.00</span></div>
+    </div>
+
+    <!-- Loans Table -->
+     <div  style="display: block; height: 60vh; overflow: auto;">
+    <table class="loan-table">
+        <thead>
+            <tr>
+                <th>Loan No. & Type</th>
+                <th>Details & ECS Account</th>
+                <th>EMI Start on</th>
+                <th>EMIs Remaining</th>
+                <th>Interest Rate</th>
+                <th>Loan Amt.</th>
+                <th>Outstanding</th>
+                <th>EMI Amt.</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="loan-list">
+            <!-- Dynamic Data -->
+        </tbody>
+    </table>
+    </div>
+</div>
+
+<!-- Details Modal -->
+<div class="modal" id="details-modal">
+    <div class="modal-content" id="printable-area">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        
+        
+        <div class="detail-header">
+            <div>
+                <div style="font-weight: bold;" id="d-loan-no"></div>
+                <div class="loan-type-sub" id="d-loan-type"></div>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 18px; font-weight: bold;" id="d-outstanding"></div>
+                <div style="font-size: 11px; color: #666;" id="d-outstanding-label">Principal Outstanding Amount</div>
+            </div>
+        </div>
+
+        <strong>Id No:</strong><span style="color: #1339a0;" id="d-id"></span>
+
+        <div class="detail-row">
+            <span class="detail-label">Customer Name</span>
+            <span class="detail-value" id="d-customer"></span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Deduct Account</span>
+            <span class="detail-value" id="d-account"></span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Loan Amount</span>
+            <span class="detail-value" id="d-loan-amt"></span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Booked on</span>
+            <span class="detail-value" id="d-booked-on"></span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Interest Rate</span>
+            <span class="detail-value" id="d-interest"></span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Loan Tenure</span>
+            <span class="detail-value" id="d-tenure"></span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">EMI Amount</span>
+            <span class="detail-value" id="d-emi"></span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">EMIs Remaining</span>
+            <span class="detail-value" id="d-remaining"></span>
+        </div>
+        <div >
+    <span class="detail-label">Remark</span> : <br>
+    <span class="detail-value" style="color: #646464; background-color: #ececec;" id="d-remark"></span>
+</div>
+
+        <!-- Monthly Repayment Schedule Accordion -->
+        <div class="schedule-section" id="schedule-section-box">
+            <div class="schedule-header" onclick="toggleSchedule()">
+                <span>Monthly Instalments (Repayment Schedule & Amortization)</span>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button class="print-btn" onclick="event.stopPropagation(); LoanPrinter.printSchedule(selectedCurrentLoan);">Print Schedule</button>
+                    <span id="accordion-arrow">&#x25BC;</span>
+                </div>
+            </div>
+            <div class="schedule-content" id="schedule-content">
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>EMI Amount</th>
+                            <th style="text-align: center;">Interest</th>
+                            <th>Principal</th>
+                            <th>Remaining Principal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-rows">
+                        <!-- Dynamic Amortization Schedule -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- 1. MAIN APP SCRIPT                                        -->
+<!-- ========================================================= -->
+ <script>
+     // ID wise client database
+    const clientsData = {
+        "100": "Mukhtar Ahamad",
+        "200": "Multitech Infracon Pvt. Ltd.",
+        "3": "ESERVICES & STATIONERY",
+        "201": "Global Technologies",
+        "202" : "Multitech Solution",
+        "203": "Tushar Agawal Construction"
+    };
+
+    const rawLoansData = [
+        {
+            id: "100",
+            loanNoMasked: "116252900",
+            loanType: "Insta Loan",
+            customer: "Mukhtar Ahamad",
+            deductaccount: "HDFC 50100218955821",
+            loanAmount: 350000.00,
+            emiAmount: 9783.00,
+            bookedOn: "4 Nov 2024",
+            interestRate: 15.24, 
+            tenureMonths: 48,
+             remark: "",
+            // manualStatus: "SETTLED",
+           // settledAmount: 8448.02
+        },
+        {
+            id: "100",
+            loanNoMasked: "95483334",
+            loanType: "Insta Jumbo Loan",
+            customer: "Mukhtar Ahamad",
+            deductaccount: "HDFC 50100218955821",
+            loanAmount: 185000.00,
+            emiAmount: 4709.87,
+            bookedOn: "10 Jul 2023",
+            interestRate: 18.12,
+            tenureMonths: 60
+        },
+        {
+            id: "100",
+            loanNoMasked: "75570231",
+            loanType: "Insta Jumbo Loan",
+            customer: "Mukhtar Ahamad",
+            deductaccount: "HDFC 50100218955821",
+            loanAmount: 70000.00,
+            bookedOn: "4 Nov 2021",
+            emiAmount: 1557.11,
+            interestRate: 12.00,
+            tenureMonths: 60
+        },
+        {
+            id: "100",
+            loanNoMasked: "762800NS00000206",
+            loanType: "ROOFTOP POWERPLANT",
+            customer: "Mukhtar Ahamad",
+            deductaccount: "PNB 7628000100000187",
+            loanAmount: 175000.00,
+            bookedOn: "28 Oct 2025",
+            emiAmount: 1979.00,
+            interestRate: 6.00,
+            tenureMonths: 120
+        },
+        {
+            id: "100",
+            loanNoMasked: "PU62PRB80725994",
+            loanType: "Personal Loan",
+            customer: "Mukhtar Ahamad",
+            deductaccount: "PNB 7628000100000187",
+            loanAmount: 414842.00,
+            bookedOn: "2 Mar 2026",
+            emiAmount: 10692,
+            interestRate: 20.00,
+            tenureMonths: 63
+        },
+        {
+            id: "100",
+            loanNoMasked: "7213188",
+            loanType: "Insta Jumbo Loan",
+            customer: "Shabana",
+            deductaccount: "HDFC Saving",
+            loanAmount: 100000.00,
+            bookedOn: "4 Sep 2021",
+            emiAmount: 2665,
+            interestRate: 20.28,
+            tenureMonths: 60
+        },
+        {
+            id: "100",
+            loanNoMasked: "132985660",
+            loanType: "Credi Card EMI",
+            customer: "Shabana",
+            deductaccount: "HDFC Saving",
+            loanAmount: 67790.00,
+            bookedOn: "4 Nov 2025",
+            emiAmount: 2665,
+            interestRate: 15,
+            tenureMonths: 12
+        },
+        {
+            id: "100",
+            loanNoMasked: "762800KU00000683",
+            loanType: "CC A/C",
+            customer: "ESERVICES & STATIONERY",
+            deductaccount: "PNB - KU-683",
+            loanAmount: 350000.00,
+            bookedOn: "30 Jan 2050",
+            emiAmount: 2900,
+            interestRate: 8,
+            tenureMonths: 1
+        },
+          {
+            id: "200",
+            loanNoMasked: "87654546 - HDFC Bank",
+            loanType: "Machine Loan",
+            customer: "MIPL-DG Loan",
+            deductaccount: "PNB - 21/5714",
+            loanAmount: 420375.00,
+            bookedOn: "5 Apr 2023",
+            emiAmount: 10851,
+            interestRate: 10.02,
+            tenureMonths: 47
+        },
+         {
+            id: "200",
+            loanNoMasked: "99654680 - HDFC Bank",
+            loanType: "Machine Loan",
+            customer: "MIPL-UK18S5523 - Hydra",
+            deductaccount: "PNB - 21/5714",
+            loanAmount: 1750000.00,
+            bookedOn: "15 May 2024",
+            emiAmount: 36750,
+            interestRate: 9.5,
+            tenureMonths: 60
+        },
+        {
+            id: "200",
+            loanNoMasked: "86966783 - HDFC Bank",
+            loanType: "Machine Loan",
+            customer: "MIPL-DG Loan",
+            deductaccount: "PNB - 21/5714",
+            loanAmount: 1438125.00,
+            bookedOn: "5 Apr 2023",
+            emiAmount: 37122,
+            interestRate: 10.02,
+            tenureMonths: 47
+        },
+        {
+            id: "200",
+            loanNoMasked: "802044953 - HDFC Bank",
+            loanType: "Vehicle Loan",
+            customer: "MIPL-UK18CA8919",
+            deductaccount: "PNB - 21/5714",
+            loanAmount: 3657425.00,
+            bookedOn: "20 Aug 2025",
+            emiAmount: 75930,
+            interestRate: 9,
+            tenureMonths: 60
+        },
+           {
+            id: "200",
+            loanNoMasked: "150576362 - HDFC Bank",
+            loanType: "Vehicle Loan",
+            customer: "MIPL-UK04CC1458",
+            deductaccount: "PNB - 21/5714",
+            loanAmount: 1890000.00,
+            bookedOn: "5 May 2024",
+            emiAmount: 39690,
+            interestRate: 9.5,
+            tenureMonths: 60
+        },
+         {
+            id: "200",
+            loanNoMasked: "803239566 - HDFC Bank",
+            loanType: "Vehicle Loan",
+            customer: "MIPL-HR58F7322",
+            deductaccount: "PNB - 87/1723",
+            loanAmount: 2915000.00,
+            bookedOn: "5 May 2026",
+            emiAmount: 58701,
+            interestRate: 8,
+            tenureMonths: 60,
+            remark: "Chassis No- MB1T2VHD8TPPK5958, Engine No.- TPPZ113344, ASHOK LEYLAND LTD, Modal-NA5525/34 TT CC"
+        },
+         {
+            id: "200",
+            loanNoMasked: "803435244 - HDFC Bank",
+            loanType: "Vehicle Loan",
+            customer: "MIPL-HR58F7322 (Body)",
+            deductaccount: "PNB - 87/1723",
+            loanAmount: 700000.00,
+            bookedOn: "10 Jun 2026",
+            emiAmount: 58701,
+            interestRate: 8,
+            tenureMonths: 48,
+            remark: "Chassis No- MB1T2VHD8TPPK5958, Engine No.- TPPZ113344, ASHOK LEYLAND LTD, Modal-NA5525/34 TT CC",
+           // manualStatus: "SETTLED",
+        },
+          {
+            id: "200",
+            loanNoMasked: "453400IN00000018 - PNB Bank",
+            loanType: "Bussinus Loan",
+            customer: "Multitech Infracon Pvt. Ltd.",
+            deductaccount: "PNB - 87-1723",
+            loanAmount: 22500000.00,
+            bookedOn: "30 Apr 2022",
+            emiAmount: 355756,
+            interestRate: 8.5,
+            tenureMonths: 84
+        },
+        {
+            id: "200",
+            loanNoMasked: "453400NG00003127 - PNB Bank",
+            loanType: "Vehicle Loan",
+            customer: "MIPL - UK18T8118 - KIA Seltos",
+            deductaccount: "PNB - 87-1723",
+            loanAmount: 1500000.00,
+            bookedOn: "30 Sep 2024",
+            emiAmount: 23982,
+            interestRate: 8.8,
+            tenureMonths: 84
+        },
+         {
+            id: "200",
+            loanNoMasked: "	453400GE00000080 - PNB Bank",
+            loanType: "Bussinus Loan",
+            customer: "Multitech Infracon Pvt. Ltd.",
+            deductaccount: "PNB - 87-1723",
+            loanAmount: 12500000.00,
+            bookedOn: "1 Jul 2027",
+            emiAmount: 0, // 258333
+            interestRate: 9,
+            tenureMonths: 60
+        },
+        {
+            id: "201",
+            loanNoMasked: "	1295605000001656 - NTBL Bank",
+            loanType: "Machine Loan",
+            customer: "GLOBAL TECHNOGIES",
+            deductaccount: "NTBL 01-0888",
+            loanAmount: 980000.00,
+            bookedOn: "28 Sep 2025",
+            emiAmount: 16149, // 
+            interestRate: 10,
+            tenureMonths: 84
+        },
+        {
+            id: "201",
+            loanNoMasked: "	1295605000001809 - NTBL Bank",
+            loanType: "Machine Loan",
+            customer: "GLOBAL TECHNOGIES",
+            deductaccount: "NTBL 01-0888",
+            loanAmount: 970000.00,
+            bookedOn: "29 Nov 2025",
+            emiAmount: 15979, // 
+            interestRate: 10,
+            tenureMonths: 84
+        },
+        {
+            id: "202",
+            loanNoMasked: "	1295605000001731 - NTBL Bank",
+            loanType: "Vehicle Loan",
+            customer: "Car Loan - UK18U9779 / SCARPIO ",
+            deductaccount: "NTBL 01-6118",
+            loanAmount: 1950000.00,
+            bookedOn: "29 Oct 2025",
+            emiAmount: 30056, // 
+            interestRate: 7.90,
+            tenureMonths: 84
+        },
+         {
+            id: "202",
+            loanNoMasked: "	1295605000001670 - NTBL Bank",
+            loanType: "Machine Loan",
+            customer: "Multitech Solution ",
+            deductaccount: "NTBL 01-0879",
+            loanAmount: 870000.00,
+            bookedOn: "29 Sep 2025",
+            emiAmount: 14335, // 
+            interestRate: 10,
+            tenureMonths: 84
+        },
+        {
+            id: "202",
+            loanNoMasked: "	1295605000001861 - NTBL Bank",
+            loanType: "Machine Loan",
+            customer: "Multitech Solution ",
+            deductaccount: "NTBL 01-0879",
+            loanAmount: 990000.00,
+            bookedOn: "21 Dec 2025",
+            emiAmount: 16306, // 
+            interestRate: 10,
+            tenureMonths: 84
+        },
+        {
+            id: "202",
+            loanNoMasked: "452367856 - HDFC Bank",
+            loanType: "Bussinus Loan",
+            customer: "MS- Covid Loan",
+            deductaccount: "HDFC xxx847760",
+            loanAmount: 255730.00,
+            bookedOn: "7 Mar 2024",
+            emiAmount: 8044, // 
+            interestRate: 9.2,
+            tenureMonths: 37
+        },
+        {
+            id: "203",
+            loanNoMasked: "SA-1327224 - KOTAK MAHINDRA Bank",
+            loanType: "Vehicle Loan",
+            customer: "TAC-UK18CA4818 - Topup",
+            deductaccount: "PNB 21-1134",
+            loanAmount: 1500000.00,
+            bookedOn: "1 Sep 2024",
+            emiAmount: 39960, // 
+            interestRate: 11.65,
+            tenureMonths: 47
+        },
+        {
+            id: "203",
+            loanNoMasked: "SA-1327224 - KOTAK MAHINDRA Bank",
+            loanType: "Vehicle Loan",
+            customer: "TAC-UK18CA4818 - Topup",
+            deductaccount: "PNB 21-1134",
+            loanAmount: 1500000.00,
+            bookedOn: "1 Sep 2024",
+            emiAmount: 39960, // 
+            interestRate: 11.65,
+            tenureMonths: 47
+        },
+        {
+            id: "203",
+            loanNoMasked: "SA-1327210 - KOTAK MAHINDRA Bank",
+            loanType: "Vehicle Loan",
+            customer: "TAC-UK18CA4819 - Topup",
+            deductaccount: "PNB 21-1134",
+            loanAmount: 1600000.00,
+            bookedOn: "1 Sep 2024",
+            emiAmount: 42620, // 
+            interestRate: 11.65,
+            tenureMonths: 47
+        },
+        {
+            id: "203",
+            loanNoMasked: "453400CN00000153 - Punjab National Bank",
+            loanType: "Bussinus Loan",
+            customer: "Tushar Agawal Construction",
+            deductaccount: "PNB 87-1459",
+            loanAmount: 5000000.00,
+            bookedOn: "30 Jun 2025",
+            emiAmount: 110840, // 
+            interestRate: 8.7,
+            tenureMonths: 60
+        },
+         {
+            id: "203",
+            loanNoMasked: "453400GE00000071 - Punjab National Bank",
+            loanType: "Bussinus Loan",
+            customer: "Tushar Agawal Construction",
+            deductaccount: "PNB 87-1459",
+            loanAmount: 590000.00,
+            bookedOn: "1 Jul 2027",
+            emiAmount: 0, // 12292
+            interestRate: 9,
+            tenureMonths: 60
+        }
+
+    ];
+ </script>
+<script>
+   
+
+    let currentTab = 'ACTIVE';
+    let calculatedLoans = [];
+    let selectedCurrentLoan = null;
+    let currentFilteredLoans = [];
+
+    function formatINR(val) {
+        return '₹' + Number(val).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function processLoanCalculations(data) {
+        const currentDate = new Date();
+
+        return data.map(loan => {
+            const startDate = new Date(loan.bookedOn);
+            let monthsPassed = (currentDate.getFullYear() - startDate.getFullYear()) * 12 + (currentDate.getMonth() - startDate.getMonth());
+            if (monthsPassed < 0) monthsPassed = 0;
+
+            const totalEmis = loan.tenureMonths;
+            let emisPaid = Math.min(monthsPassed, totalEmis);
+            let emisRemainingCount = totalEmis - emisPaid;
+
+            const monthlyRate = (loan.interestRate / 100) / 12;
+            let schedule = [];
+            let tempDate = new Date(startDate);
+            let balance = loan.loanAmount;
+
+            for (let i = 1; i <= totalEmis; i++) {
+                let interestForMonth = balance * monthlyRate;
+                let principalForMonth = loan.emiAmount - interestForMonth;
+                balance -= principalForMonth;
+
+                if (balance < 0 || i === totalEmis) balance = 0;
+
+                schedule.push({
+                    emiNo: i,
+                    date: tempDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+                    amount: loan.emiAmount,
+                    interest: interestForMonth,
+                    principal: principalForMonth,
+                    remaining: balance
+                });
+                tempDate.setMonth(tempDate.getMonth() + 1);
+            }
+
+            let currentOutstanding = emisPaid > 0 && emisPaid <= totalEmis ? schedule[emisPaid - 1].remaining : loan.loanAmount;
+            if(emisRemainingCount === 0) currentOutstanding = 0;
+
+            let status = (emisRemainingCount === 0) ? "CLOSED" : "ACTIVE";
+            let finalOutstanding = currentOutstanding;
+
+            if (loan.manualStatus) {
+                status = loan.manualStatus;
+                if (loan.settledAmount !== undefined) {
+                    finalOutstanding = loan.settledAmount;
+                } else if (loan.manualStatus === "CLOSED" || loan.manualStatus === "SETTLED") {
+                    finalOutstanding = 0.00;
+                }
+            }
+
+            return {
+                ...loan,
+                status: status,
+                isManual: !!loan.manualStatus,
+                outstanding: finalOutstanding,
+                emisRemainingCount: emisRemainingCount,
+                emisRemainingStr: status !== 'ACTIVE' ? 'Completed / Settled' : `${emisRemainingCount} out of ${totalEmis}`,
+               emisRemainingShort: status !== 'ACTIVE' ? 'Completed' : `<span style="color: red; font-weight: bold;">R</span> - ${emisRemainingCount} , <span style="color: Green; font-weight: bold;">T</span> - ${totalEmis}`,
+                schedule: schedule
+            };
+        });
+    }
+
+    function populateLoanTypesDropdown() {
+        const typeFilterSelect = document.getElementById('type-filter');
+        const uniqueTypes = [...new Set(rawLoansData.map(item => item.loanType))];
+        
+        typeFilterSelect.innerHTML = '<option value="ALL">All Loan Types</option>';
+        
+        uniqueTypes.forEach(type => {
+            const opt = document.createElement('option');
+            opt.value = type;
+            opt.textContent = type;
+            typeFilterSelect.appendChild(opt);
+        });
+    }
+
+    function switchTab(tab) {
+        currentTab = tab;
+        document.getElementById('tab-active').classList.toggle('active', tab === 'ACTIVE');
+        document.getElementById('tab-closed').classList.toggle('active', tab === 'CLOSED');
+        filterLoans();
+    }
+
+    function filterLoans() {
+    const searchText = document.getElementById('search-input').value.toLowerCase();
+    const selectedType = document.getElementById('type-filter').value;
+    const idInputElem = document.getElementById('id-filter');
+    const rawIdInput = idInputElem ? idInputElem.value.trim() : "";
+
+    // Agar input blank hai, toh koi data show nahi hoga
+    if (!rawIdInput) {
+        document.getElementById('loan-list').innerHTML = '';
+        document.getElementById('tab-active').innerText = `Active (0)`;
+        document.getElementById('tab-closed').innerText = `Closed/Settled (0)`;
+        document.getElementById('total-due').innerText = formatINR(0);
+        document.getElementById('summary-total-loan').innerText = formatINR(0);
+        document.getElementById('summary-total-outstanding').innerText = formatINR(0);
+        
+        const noteContainer = document.getElementById('calendar-note');
+        if (noteContainer) {
+            noteContainer.innerHTML = `<span style="font-weight: bold;">Loan & EMI View</span> : No ID Entered`;
+        }
+        currentFilteredLoans = [];
+        return;
+    }
+
+    // Check karein ki kya user ne "0000" enter kiya hai, agar haan toh sabhi IDs allow ho jayengi
+    const showAllIds = (rawIdInput === "0000");
+
+    // Comma se IDs ko array mein convert karna (jaise: "100, 200")
+    const allowedIds = rawIdInput.split(',').map(id => id.trim()).filter(id => id !== "");
+
+    // Calendar View note update karna
+    const noteContainer = document.getElementById('calendar-note');
+    if (noteContainer) {
+        let clientName = "All Clients View (0000)";
+        if (!showAllIds) {
+            clientName = allowedIds.map(id => clientsData[id] || `ID: ${id}`).join(', ');
+        }
+        noteContainer.innerHTML = `<span style="font-weight: bold;">Loan & EMI View</span> : ${clientName}`;
+    }
+
+    const tableBody = document.getElementById('loan-list');
+    tableBody.innerHTML = '';
+
+    let activeCount = 0;
+    let closedCount = 0;
+    let totalActiveEMI = 0;
+    
+    let filteredActiveLoanAmt = 0;
+    let filteredActiveOutstanding = 0;
+
+    let filteredClosedLoanAmt = 0;
+    let filteredClosedOutstanding = 0;
+
+    currentFilteredLoans = [];
+
+    calculatedLoans.forEach(loan => {
+        const isLoanActive = loan.status === 'ACTIVE';
+
+        let matchesTab = (currentTab === 'ACTIVE' && isLoanActive) || (currentTab === 'CLOSED' && !isLoanActive);
+        let matchesType = (selectedType === 'ALL' || loan.loanType === selectedType);
+        
+        // Agar "0000" typed hai toh sabhi match karenge, nahi toh allowedIds list check hogi
+        let matchesId = showAllIds || allowedIds.includes(loan.id ? loan.id.toString() : "");
+        
+        let matchesSearch = true;
+        if (searchText) {
+            const matchNo = loan.loanNoMasked && loan.loanNoMasked.toLowerCase().includes(searchText);
+            const matchType = loan.loanType && loan.loanType.toLowerCase().includes(searchText);
+            const matchCustomer = loan.customer && loan.customer.toLowerCase().includes(searchText);
+            const matchAccount = loan.deductaccount && loan.deductaccount.toLowerCase().includes(searchText);
+            matchesSearch = (matchNo || matchType || matchCustomer || matchAccount);
+        }
+
+        if (matchesId) {
+            if (isLoanActive) {
+                activeCount++;
+            } else {
+                closedCount++;
+            }
+        }
+
+        if (!matchesTab || !matchesType || !matchesSearch || !matchesId) return;
+
+        if (isLoanActive) {
+            filteredActiveLoanAmt += loan.loanAmount;
+            filteredActiveOutstanding += loan.outstanding;
+            totalActiveEMI += loan.emiAmount;
+        } else {
+            filteredClosedLoanAmt += loan.loanAmount;
+            filteredClosedOutstanding += loan.outstanding;
+        }
+
+        currentFilteredLoans.push(loan);
+
+        const row = document.createElement('tr');
+        row.onclick = () => showDetails(loan);
+
+        row.innerHTML = `
+            <td>
+                <div class="loan-no">${loan.loanNoMasked}</div>
+                <div class="loan-type-sub">${loan.loanType}</div>
+            </td>
+            <td>
+                <div class="customer-sub">${loan.customer || 'N/A'}</div>
+                <div class="account-sub">A/c: ${loan.deductaccount || 'N/A'}</div>
+            </td>
+            <td>${loan.bookedOn}</td>
+            <td><b>${loan.emisRemainingShort}</b></td>
+            <td>${loan.interestRate}% p.a.</td>
+            <td>${formatINR(loan.loanAmount)}</td>
+            <td>${formatINR(loan.outstanding)}</td>
+            <td>${formatINR(loan.emiAmount)}</td>
+        `;
+
+        tableBody.appendChild(row);
+    });
+
+    document.getElementById('tab-active').innerText = `Active (${activeCount})`;
+    document.getElementById('tab-closed').innerText = `Closed/Settled (${closedCount})`;
+    document.getElementById('total-due').innerText = formatINR(totalActiveEMI);
+    
+    if (currentTab === 'ACTIVE') {
+        document.getElementById('summary-title-1').innerText = "Total Active Loan Amount";
+        document.getElementById('summary-title-2').innerText = "Total Principal Outstanding";
+        document.getElementById('summary-total-loan').innerText = formatINR(filteredActiveLoanAmt);
+        document.getElementById('summary-total-outstanding').innerText = formatINR(filteredActiveOutstanding);
+    } else {
+        document.getElementById('summary-title-1').innerText = "Total Closed/Settled Loan Amount";
+        document.getElementById('summary-title-2').innerText = "Total Settled/Final Outstanding";
+        document.getElementById('summary-total-loan').innerText = formatINR(filteredClosedLoanAmt);
+        document.getElementById('summary-total-outstanding').innerText = formatINR(filteredClosedOutstanding);
+    }
+}
+
+    function showDetails(loan) {
+        selectedCurrentLoan = loan;
+        let badgeClass = 'status-active';
+        if (loan.status === 'CLOSED') badgeClass = 'status-closed';
+        if (loan.status === 'SETTLED') badgeClass = 'status-settled';
+
+        document.getElementById('d-loan-no').innerHTML = `${loan.loanNoMasked} <span class="status-badge ${badgeClass}">${loan.status}</span>`;
+        document.getElementById('d-loan-type').innerText = loan.loanType;
+        document.getElementById('d-customer').innerText = loan.customer || 'N/A';
+        document.getElementById('d-account').innerText = loan.deductaccount || 'N/A';
+        document.getElementById('d-remark').innerText = loan.remark || '';
+        document.getElementById('d-outstanding').innerText = formatINR(loan.outstanding);
+        document.getElementById('d-id').innerText = loan.id || '';
+        
+        let outLabel = "Principal Outstanding Amount";
+        if (loan.status === 'SETTLED') outLabel = "Settled Amount Paid";
+        else if (loan.status === 'CLOSED') outLabel = "Final Closed Amount";
+        document.getElementById('d-outstanding-label').innerText = outLabel;
+
+        document.getElementById('d-loan-amt').innerText = formatINR(loan.loanAmount);
+        document.getElementById('d-booked-on').innerText = loan.bookedOn;
+        document.getElementById('d-interest').innerText = `${loan.interestRate}% per yr.`;
+        document.getElementById('d-tenure').innerText = `${loan.tenureMonths} months`;
+        document.getElementById('d-emi').innerText = formatINR(loan.emiAmount);
+        document.getElementById('d-remaining').innerText = loan.emisRemainingStr;
+
+        if(loan.status !== 'ACTIVE') {
+            document.getElementById('schedule-section-box').style.display = 'none';
+        } else {
+            document.getElementById('schedule-section-box').style.display = 'block';
+        }
+
+        const scheduleRows = document.getElementById('schedule-rows');
+        scheduleRows.innerHTML = '';
+        loan.schedule.forEach(item => {
+            scheduleRows.innerHTML += `
+                <tr>
+                    <td>${item.emiNo}</td>
+                    <td>${item.date}</td>
+                    <td>${formatINR(item.amount)}</td>
+                    <td >${formatINR(item.interest)}</td>
+                    <td>${formatINR(item.principal)}</td>
+                    <td>${formatINR(item.remaining)}</td>
+                </tr>
+            `;
+        });
+
+        document.getElementById('details-modal').style.display = 'flex';
+    }
+
+    function toggleSchedule() {
+        const content = document.getElementById('schedule-content');
+        const arrow = document.getElementById('accordion-arrow');
+        if (content.style.display === "block") {
+            content.style.display = "none";
+            arrow.innerHTML = "&#x25BC;";
+        } else {
+            content.style.display = "block";
+            arrow.innerHTML = "&#x25B2;";
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('details-modal').style.display = 'none';
+    }
+
+    function printFilteredLoans() {
+        LoanPrinter.printDashboard(currentFilteredLoans, currentTab);
+    }
+
+    window.onload = function() {
+        calculatedLoans = processLoanCalculations(rawLoansData);
+        populateLoanTypesDropdown();
+        
+        const idFilterElem = document.getElementById('id-filter');
+        if (idFilterElem) {
+            idFilterElem.value = "200,201,202,203"; // default id input here
+        }
+
+        filterLoans();
+    };
+</script>
+
+
+<!-- ========================================================= -->
+<!-- 2. SEPARATE MODULAR PRINT SCRIPT                        -->
+<!-- ========================================================= -->
+<script>
+const LoanPrinter = {
+    getPrintStyles: function() {
+        return `
+            <style>
+                @page {
+                    size: A4 landscape;
+                    margin: 10mm;
+                }
+                body {
+                    font-family: Arial, sans-serif;
+                    color: #222;
+                    margin: 0;
+                    padding: 0;
+                    font-size: 10pt;
+                }
+                .bank-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    border-bottom: 2px solid #1a4cd2;
+                    padding-bottom: 8mm;
+                    margin-bottom: 12px;
+                }
+                .bank-title {
+                    font-size: 16pt;
+                    font-weight: bold;
+                    color: #1a4cd2;
+                }
+                .doc-title {
+                    font-size: 11pt;
+                    color: #555;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                }
+                .loan-summary-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 6px 20px;
+                    background: #f9fafe;
+                    border: 1px solid #dce4f9;
+                    padding: 10px;
+                    border-radius: 6px;
+                    margin-bottom: 12px;
+                    font-size: 9.5pt;
+                }
+                .summary-item {
+                    display: flex;
+                    justify-content: space-between;
+                }
+                .summary-label { color: #666; }
+                .summary-val { font-weight: bold; }
+                
+                table.print-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 10px;
+                }
+                table.print-table th, table.print-table td {
+                    border: 1px solid #ddd;
+                    padding: 6px 7px;
+                    text-align: left;
+                    font-size: 9pt;
+                }
+                table.print-table th {
+                    background-color: #1a4cd2 !important;
+                    color: #ffffff !important;
+                    font-weight: bold;
+                    -webkit-print-color-adjust: exact;
+                }
+                thead { display: table-header-group; }
+                tr { page-break-inside: avoid; }
+                
+                .footer-note {
+                    margin-top: 15px;
+                    font-size: 8pt;
+                    color: #777;
+                    text-align: center;
+                    border-top: 1px solid #eee;
+                    padding-top: 6px;
+                }
+            </style>
+        `;
+    },
+
+    printSchedule: function(loan) {
+        if(!loan) return;
+
+        const printWin = window.open('', '_blank', 'width=900,height=700');
+        
+        let rowsHtml = '';
+        loan.schedule.forEach(item => {
+            rowsHtml += `
+                <tr>
+                    <td>${item.emiNo}</td>
+                    <td>${item.date}</td>
+                    <td>${formatINR(item.amount)}</td>
+                    <td>${formatINR(item.interest)}</td>
+                    <td>${formatINR(item.principal)}</td>
+                    <td>${formatINR(item.remaining)}</td>
+                </tr>
+            `;
+        });
+
+        const content = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Repayment_Schedule_${loan.loanNoMasked.replace(/ /g, '_')}</title>
+                ${this.getPrintStyles()}
+            </head>
+            <body>
+                <div class="bank-header">
+                    <div>
+                        <div class="bank-title">FINANCIAL SERVICES</div>
+                        <div class="doc-title">Loan Amortization & Repayment Schedule</div>
+                    </div>
+                    <div style="text-align: right; font-size: 9pt; color: #666;">
+                        Date: ${new Date().toLocaleDateString('en-IN')}<br>
+                        Status: <b>${loan.status}</b>
+                    </div>
+                </div>
+
+                <div class="loan-summary-grid">
+                    <div class="summary-item"><span class="summary-label">Loan No:</span><span class="summary-val">${loan.loanNoMasked}</span></div>
+                    <div class="summary-item"><span class="summary-label">Loan Type:</span><span class="summary-val">${loan.loanType}</span></div>
+                    <div class="summary-item"><span class="summary-label">Customer Name:</span><span class="summary-val">${loan.customer || 'N/A'}</span></div>
+                    <div class="summary-item"><span class="summary-label">Deduct Account:</span><span class="summary-val">${loan.deductaccount || 'N/A'}</span></div>
+                    <div class="summary-item"><span class="summary-label">Loan Amount:</span><span class="summary-val">${formatINR(loan.loanAmount)}</span></div>
+                    <div class="summary-item"><span class="summary-label">Principal Outstanding:</span><span class="summary-val">${formatINR(loan.outstanding)}</span></div>
+                    <div class="summary-item"><span class="summary-label">Interest Rate:</span><span class="summary-val">${loan.interestRate}% p.a.</span></div>
+                    <div class="summary-item"><span class="summary-label">Tenure:</span><span class="summary-val">${loan.tenureMonths} Months</span></div>
+                    <div class="summary-item"><span class="summary-label">Monthly EMI:</span><span class="summary-val">${formatINR(loan.emiAmount)}</span></div>
+                    <div class="summary-item"><span class="summary-label">Booked Date:</span><span class="summary-val">${loan.bookedOn}</span></div>
+                </div>
+
+                <table class="print-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>EMI Date</th>
+                            <th>EMI Amount</th>
+                            <th>Interest</th>
+                            <th>Principal</th>
+                            <th>Balance Principal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHtml}
+                    </tbody>
+                </table>
+
+                <div class="footer-note">
+                    This is a computer-generated Loan Repayment Schedule statement and does not require a physical signature.
+                </div>
+
+                <script>
+                    window.onload = function() {
+                        window.print();
+                        window.onafterprint = function() { window.close(); };
+                    };
+                <\/script>
+            </body>
+            </html>
+        `;
+
+        printWin.document.open();
+        printWin.document.write(content);
+        printWin.document.close();
+    },
+
+    printDashboard: function(loansList, activeTab) {
+        if(loansList.length === 0) {
+            alert('No loans to print in this category.');
+            return;
+        }
+
+        const printWin = window.open('', '_blank', 'width=1000,height=700');
+
+        let totalAmount = 0;
+        let totalOutstanding = 0;
+        let rowsHtml = '';
+
+        loansList.forEach(loan => {
+            totalAmount += loan.loanAmount;
+            totalOutstanding += loan.outstanding;
+
+            rowsHtml += `
+                <tr>
+                    <td><b>${loan.loanNoMasked}</b><br><small>${loan.loanType}</small></td>
+                    <td><b>${loan.customer || 'N/A'}</b><br><small>A/c: ${loan.deductaccount || 'N/A'}</small></td>
+                    <td>${loan.bookedOn}</td>
+                    <td><b>${loan.emisRemainingShort}</b></td>
+                    <td>${loan.interestRate}% p.a.</td>
+                    <td>${formatINR(loan.loanAmount)}</td>
+                    <td>${formatINR(loan.outstanding)}</td>
+                    <td>${formatINR(loan.emiAmount)}</td>
+                    <td>${loan.status}</td>
+                </tr>
+            `;
+        });
+
+        const content = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>${activeTab}_Loans_Statement</title>
+                ${this.getPrintStyles()}
+            </head>
+            <body>
+                <div class="bank-header">
+                    <div>
+                        <div class="bank-title">FINANCIAL SERVICES</div>
+                        <div class="doc-title">${activeTab} Loans Summary Statement (Filtered)</div>
+                    </div>
+                    <div style="text-align: right; font-size: 9pt; color: #666;">
+                        Date: ${new Date().toLocaleDateString('en-IN')}
+                    </div>
+                </div>
+
+                <div class="loan-summary-grid">
+                    <div class="summary-item"><span class="summary-label">Total Loans Count:</span><span class="summary-val">${loansList.length}</span></div>
+                    <div class="summary-item"><span class="summary-label">Category:</span><span class="summary-val">${activeTab}</span></div>
+                    <div class="summary-item"><span class="summary-label">Total Loan Value:</span><span class="summary-val">${formatINR(totalAmount)}</span></div>
+                    <div class="summary-item"><span class="summary-label">Total Outstanding:</span><span class="summary-val">${formatINR(totalOutstanding)}</span></div>
+                </div>
+
+                <table class="print-table">
+                    <thead>
+                        <tr>
+                            <th>Loan No. & Type</th>
+                            <th>Details & ECS Account</th>
+                            <th>Booked on</th>
+                            <th>EMIs Remaining</th>
+                            <th>Interest Rate</th>
+                            <th>Loan Amount</th>
+                            <th>Outstanding</th>
+                            <th>EMI Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHtml}
+                    </tbody>
+                </table>
+
+                <div class="footer-note">
+                    This is an official account statement. Generated on ${new Date().toLocaleString('en-IN')}.
+                </div>
+
+                <script>
+                    window.onload = function() {
+                        window.print();
+                        window.onafterprint = function() { window.close(); };
+                    };
+                <\/script>
+            </body>
+            </html>
+        `;
+
+        printWin.document.open();
+        printWin.document.write(content);
+        printWin.document.close();
+    }
+};
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
