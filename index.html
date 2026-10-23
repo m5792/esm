@@ -3001,6 +3001,8 @@ box-shadow:0 2px 8px rgba(0,0,0,0.1);
        <option value="IV15">IV14- Dharmpal</option>
        <option value="IV18">IV18- Tahir</option>
        <option value="IV19">IV19- Omprakash</option>
+       <option value="IV20">IV20- RAJENDER</option>
+       <option value="IV21">IV21- PREMSINGH</option>
   </select>
 
   <input type="text" id="search5793Input" placeholder="🔍 Search in Imprest Voucher table...">
@@ -3189,20 +3191,9 @@ body {
  <!-- =========== --------- showtoolTab(1) ------- ======== start ================ --> 
 <div class="tab-toolcontent" id="content2">
        
-       <h4>📊 Smart Loan Viewer</h4>
+       <strong>📊 Smart Loan Viewer</strong>
           
- <label for="loanDropdown">Select Loan No. (from Sheet):</label>
-    <select id="loanDropdown" onchange="fillLoanDetails()" style="width: 3.5in;">
-      <option value="">-- Select Loan --</option>
-    </select>
-<div class="LRSMRY" id="LRSMRY"></div>
-<div class="scheduleLR" id="scheduleLR">
-<h4>📑 Repayment schedule</h4>
-<button onclick="printLoanSummaryAndSchedule()">🖨 Print Repayment Schedule</button> <br/>
-<div id="scheduleLRTable"></div>
-</div>
-<button onclick="printLoanBalance()">🖨 Print Loans Overview</button>
-<div id="loanbalance"></div>
+<iframe  src="https://m5792.github.io/esm/Loanview.html"  width="100%"  height="800px"  title="Mera Webpage Frame"style="border: none;"></iframe>
 
 </div>  <!-- =========== --------- showtoolTab(1) ------- ======== xxxx ================ --> 
 
@@ -9784,425 +9775,6 @@ loadPRLSheet();
 
 
 
-<!-- ------------------  MIPL Repayment Sedual script and code start -------------------------------------- -->
-
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Smart Loan Viewer — Fixed</title>
-  <style>
-    :root{--primary:#007bff;--accent:#e9f1ff;--success:#28a745;--danger:#dc3545}
-   
-  
-   
-    .LRSMRY{margin-top:16px;background:var(--accent);padding:14px;border-radius:10px;display:none}
-    .LRSMRY h3{margin:0 0 8px}
-    .LRSMRY p{margin:6px 0}
-    .scheduleLR{margin-top:18px;display:none}
-   
-    tfoot td{font-weight:700;background:var(--accent)}
-    .printLRbtn{background:var(--success);margin-top:10px}
-    .printLRbtn:hover{filter:brightness(.95)}
-    .red-value{color:var(--danger);font-weight:800}
-    .muted{color:#6b7280}
-    .grid-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px}
-    @media (max-width:720px){.grid-row{grid-template-columns:1fr}}
-  </style>
-</head>
-<body>
- 
-<script>
-// ---------- CONFIG (keep your key/range as needed) ----------
-const apiLCKey = "AIzaSyBe-AlG9lpyXyC7KV-AavR6tbqOc75iYdM"; // consider securing this
-const sheetLCId = "1cXqnV7kKebvzk6-BAuuBNSmDnpJOyCqh7LRVB6sHiL4";
-const rangeLC = "HOLIDAY!I:S"; // values returned will map to row[0]..row[10]
-
-let loanData = []; 
-let currentLoan = null;
-
-// ---------- small helpers ----------
-function parseNumber(val){
-  if (val === null || val === undefined) return null;
-  const s = String(val).trim();
-  if (s === "") return null;
-  const cleaned = s.replace(/[^0-9.\-]/g, '');
-  if (cleaned === '' || isNaN(Number(cleaned))) return null;
-  return Number(cleaned);
-}
-function formatNum(n){
-  if (n === null || n === undefined || isNaN(Number(n))) return '0.00';
-  return Number(n).toFixed(2);
-}
-function safeStr(v){ return (v === undefined || v === null) ? '' : String(v); }
-
-function tryParseDateToISO(s){
-  if (!s) return null;
-  s = String(s).trim();
-  const m = s.match(/^(\d{1,2})-([A-Za-z]{3})-(\d{4})$/);
-  if (m){
-    const day = m[1].padStart(2,'0');
-    const monthMap = {Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
-    const mon = monthMap[m[2]] || '01';
-    return `${m[3]}-${mon}-${day}`;
-  }
-  if (/^\d{4}-\d{1,2}-\d{1,2}/.test(s)){
-    const d = new Date(s);
-    if (!isNaN(d)) return d.toISOString().slice(0,10);
-  }
-  const d = new Date(s);
-  if (!isNaN(d)) return d.toISOString().slice(0,10);
-  return null;
-}
-
-// NEW: format date as "26-Sep-2025"
-function formatDateDisplay(input){
-  if (!input) return '-';
-  let d;
-  if (input instanceof Date) d = input;
-  else d = new Date(String(input));
-  if (isNaN(d)) return '-';
-  const day = String(d.getDate()).padStart(2,'0');
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const mon = months[d.getMonth()];
-  const year = d.getFullYear();
-  return `${day}-${mon}-${year}`;
-}
-
-// ---------- EMI formulas ----------
-function calcEMI(P, R, N){
-  P = Number(P) || 0; R = Number(R) || 0; N = Number(N) || 0;
-  if (N <= 0) return 0;
-  const r = R/12/100;
-  if (r === 0) return P / N;
-  return P*r*Math.pow(1+r,N)/(Math.pow(1+r,N)-1);
-}
-function calcMonths(P, R, EMI){
-  P = Number(P) || 0; R = Number(R) || 0; EMI = Number(EMI) || 0;
-  if (EMI <= 0) return null;
-  const r = R/12/100;
-  if (r === 0) return Math.ceil(P/EMI);
-  const denom = Math.log(1+r);
-  const months = Math.log(EMI/(EMI - P*r))/denom;
-  return Math.max(0, Math.round(months));
-}
-function calcLoan(EMI, R, N){
-  EMI = Number(EMI) || 0; R = Number(R) || 0; N = Number(N) || 0;
-  if (N <= 0) return 0;
-  const r = R/12/100;
-  if (r === 0) return EMI * N;
-  return EMI*(Math.pow(1+r,N)-1)/(r*Math.pow(1+r,N));
-}
-function calcROI(P, EMI, N){
-  P = Number(P) || 0; EMI = Number(EMI) || 0; N = Number(N) || 0;
-  if (P <= 0 || EMI <= 0 || N <= 0) return null;
-  let low = 0, high = 1000, mid;
-  for (let i=0;i<60;i++){
-    mid = (low+high)/2;
-    const g = calcEMI(P, mid, N);
-    if (g > EMI) high = mid; else low = mid;
-  }
-  return Number(mid);
-}
-
-// ---------- load loans ----------
-async function loadLoans(){
-  try{
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetLCId}/values/${rangeLC}?key=${apiLCKey}`;
-    const res = await fetch(url);
-    const data = await res.json();
-    if (!data || !data.values || data.values.length < 2){
-      console.warn('No loan rows found in sheet or empty response');
-      return;
-    }
-    loanData = data.values.slice(1);
-
-    const dropdown = document.getElementById('loanDropdown');
-    while (dropdown.options.length > 1) dropdown.remove(1);
-
-    loanData.forEach((row, idx) => {
-      const id = row[2] !== undefined ? String(row[2]) : `row-${idx}`;
-      const label = (safeStr(row[10]) || (`${safeStr(row[0])} ${safeStr(row[1])} ${id}`)).trim();
-      const opt = document.createElement('option');
-      opt.value = id;
-      opt.textContent = label;
-      dropdown.appendChild(opt);
-    });
-
-  }catch(err){
-    console.error('Error fetching sheet:', err);
-  }
-}
-
-// ---------- show details ----------
-function fillLoanDetails(){
-  const selectedLoan = document.getElementById('loanDropdown').value;
-  const LRSMRY = document.getElementById('LRSMRY');
-  if (!selectedLoan){ 
-    LRSMRY.style.display='none'; 
-    document.getElementById('scheduleLR').style.display='none'; 
-    currentLoan=null; 
-    return; 
-  }
-
-  const row = loanData.find(r => (r[2] !== undefined) && String(r[2]) === selectedLoan);
-  if (!row) { 
-    LRSMRY.innerHTML = '<p class="muted">Selected loan not found in data.</p>'; 
-    LRSMRY.style.display='block'; 
-    return; 
-  }
-
-  const formattedDateISO = tryParseDateToISO(row[4]) || null;
-  let loanAmount = parseNumber(row[5]);
-  let roi = parseNumber(row[6]);
-  let emi = parseNumber(row[7]);
-  let months = (row[8] !== undefined && row[8] !== '') ? Number(row[8]) : null;
-  if (!isFinite(months)) months = null;
-
-  let available = {amount: loanAmount !== null, roi: roi !== null, emi: emi !== null, months: months !== null};
-  let availableCount = Object.values(available).filter(v=>v).length;
-  let autoCalculated = null;
-
-  if (availableCount >= 3){
-    if (!available.emi){ emi = calcEMI(loanAmount, roi, months); autoCalculated='emi'; }
-    else if (!available.months){ months = calcMonths(loanAmount, roi, emi); autoCalculated='months'; }
-    else if (!available.amount){ loanAmount = calcLoan(emi, roi, months); autoCalculated='amount'; }
-    else if (!available.roi){ roi = calcROI(loanAmount, emi, months); autoCalculated='roi'; }
-  }
-
-  currentLoan = {
-    firm: safeStr(row[0]), bank: safeStr(row[1]), loanNo: safeStr(row[2]), type: safeStr(row[3]), status: safeStr(row[9]),
-    startDateISO: formattedDateISO, // keep ISO for calculations
-    startDate: formatDateDisplay(formattedDateISO), // display format like 26-Sep-2025
-    amount: loanAmount, roi: roi, emi: emi, months: months, autoCalculated: autoCalculated
-  };
-
-  function formatValue(value, key){
-    if (value === null || value === undefined || isNaN(Number(value))) return '-';
-    if (key === 'months') return value + ' months';
-    if (key === 'roi') return formatNum(value) + ' %';
-    return '₹' + formatNum(value);
-  }
-
-  let statusColor = '#374151';
-  if (currentLoan.status){
-    const s = currentLoan.status.toLowerCase();
-    if (s === 'closed' || s === 'closed.') statusColor = 'red';
-    else if (s === 'running' || s === 'active') statusColor = 'green';
-  }
-
-  let html = `
-    <h3>📌 Loan Summary</h3>
-    <div class="grid-row">
-      <div><strong>Firm:</strong> ${currentLoan.firm || '-'}</div>
-      <div><strong>Finance By:</strong> ${currentLoan.bank || '-'}</div>
-      <div><strong>Loan No:</strong> ${currentLoan.loanNo || '-'}</div>
-    </div>
-    <div class="grid-row">
-      <div><strong>Loan Type:</strong> ${currentLoan.type || '-'}</div>
-      <div><strong>Start Date:</strong> ${currentLoan.startDate || '-'}</div>
-      <div><strong>Status:</strong> <span style="color:${statusColor};font-weight:700">${currentLoan.status || '-'}</span></div>
-    </div>
-     <div class="grid-row">
-    <p><strong>Loan Amount:</strong> ${ currentLoan.autoCalculated === 'amount' ? `<span class="red-value">${formatValue(currentLoan.amount,'amount')}</span>` : formatValue(currentLoan.amount,'amount') }</p>
-    <p><strong>Rate of Interest:</strong> ${ currentLoan.autoCalculated === 'roi' ? `<span class="red-value">${formatValue(currentLoan.roi,'roi')}</span>` : formatValue(currentLoan.roi,'roi') }</p>
-    <p><strong>EMI:</strong> ${ currentLoan.autoCalculated === 'emi' ? `<span class="red-value">${formatValue(currentLoan.emi,'emi')}</span>` : formatValue(currentLoan.emi,'emi') }</p>
-    <p><strong>Tenure:</strong> ${ currentLoan.autoCalculated === 'months' ? `<span class="red-value">${formatValue(currentLoan.months,'months')}</span>` : formatValue(currentLoan.months,'months') }</p>
-    </div>
-    `;
-
-  if (availableCount >= 3){
-    html += `<button onclick="generatescheduleLR()">📑 Show Repayment schedule</button>`;
-  } else {
-    html += `<p style="color:var(--danger)">⚠ Not enough data to calculate repayment schedule.</p>`;
-  }
-
-  LRSMRY.innerHTML = html;
-  LRSMRY.style.display = 'block';
-  document.getElementById('scheduleLR').style.display = 'none';
-}
-
-// ---------- generate amortization schedule ----------
-function generatescheduleLR(){
-  if (!currentLoan) return alert('No loan selected');
-  const { amount, roi, emi, months, startDateISO } = currentLoan;
-  if (!amount || !roi || !emi || !months) return alert('Missing loan details');
-
-  const monthlyRate = roi/12/100;
-  let balance = Number(amount);
-  let cumInt = 0, cumPrin = 0;
-  let html = `<table><thead><tr><th>Month</th><th>Date</th><th>Opening Balance (₹)</th><th>Interest (₹)</th><th>Principal (₹)</th><th>EMI (₹)</th><th>Closing Balance (₹)</th><th>Cum. Principal (₹)</th><th>Cum. Interest (₹)</th></tr></thead><tbody>`;
-
-  let currentDate = startDateISO ? new Date(startDateISO) : new Date();
-  if (isNaN(currentDate)) currentDate = new Date();
-
-  for (let m=1; m<=months; m++){
-    const opening = balance;
-    let interest = opening * monthlyRate;
-    if (!isFinite(interest)) interest = 0;
-    let principal = emi - interest;
-    if (principal < 0) principal = 0;
-    if (principal > balance) principal = balance;
-    const closing = Math.max(0, opening - principal);
-
-    cumInt += interest;
-    cumPrin += principal;
-
-    const payDate = formatDateDisplay(currentDate);
-    html += `<tr><td style="text-align:center">${m}</td><td>${payDate}</td><td>${formatNum(opening)}</td><td>${formatNum(interest)}</td><td>${formatNum(principal)}</td><td>${formatNum(emi)}</td><td>${formatNum(closing)}</td><td>${formatNum(cumPrin)}</td><td>${formatNum(cumInt)}</td></tr>`;
-
-    balance = closing;
-    currentDate.setMonth(currentDate.getMonth()+1);
-    if (balance <= 0) break;
-  }
-
-  html += `</tbody><tfoot><tr><td colspan="3">TOTAL</td><td>${formatNum(cumInt)}</td><td>${formatNum(cumPrin)}</td><td>${formatNum(cumInt+cumPrin)}</td><td>0.00</td><td>${formatNum(cumPrin)}</td><td>${formatNum(cumInt)}</td></tr></tfoot></table>`;
-
-  document.getElementById('scheduleLRTable').innerHTML = html;
-  document.getElementById('scheduleLR').style.display = 'block';
-}
-
-// ---------- Running loans overview ----------
-function showRunningLoans(){
-  if (!loanData || loanData.length === 0) return;
-  const today = new Date();
-  let tableHTML = `<h3>📋 Running Loans Overview</h3><table><thead><tr><th>Firm</th><th>Bank</th><th>Loan No/Type</th><th>Loan Amt</th><th>EMI Amt</th><th>Start Date</th><th>Tenure</th><th>EMI END Date</th><th>Bal. Loan</th></tr></thead><tbody>`;
-
-  loanData.forEach(row => {
-    const status = safeStr(row[9]).toLowerCase();
-    if (status !== 'running' && status !== 'active') return;
-
-    const firm = safeStr(row[0]);
-    const bank = safeStr(row[1]);
-    const loanNo = safeStr(row[10]);
-    const emiamt = safeStr(row[7]);
-    const startDateStr = row[4];
-    const loanAmount = parseNumber(row[5]) || 0;
-    const roi = parseNumber(row[6]) || 0;
-    const emi = parseNumber(row[7]) || 0;
-    const months = (row[8] !== undefined && row[8] !== '') ? Number(row[8]) : 0;
-
-    const isoStart = tryParseDateToISO(startDateStr);
-    if (!isoStart || isNaN(new Date(isoStart))) return;
-    const jsDate = new Date(isoStart);
-
-    const lastDate = new Date(jsDate);
-    lastDate.setMonth(lastDate.getMonth() + Math.max(0, months) - 1);
-
-    let monthlyRate = roi/12/100;
-    let balance = loanAmount;
-    let cDate = new Date(jsDate);
-
-    for (let m=1;m<=months;m++){
-      if (cDate > today) break;
-      let interest = balance * monthlyRate;
-      if (!isFinite(interest)) interest = 0;
-      let principal = emi - interest;
-      if (principal < 0) principal = 0;
-      if (principal > balance) principal = balance;
-      let closing = Math.max(0, balance - principal);
-      balance = closing;
-      cDate.setMonth(cDate.getMonth()+1);
-      if (balance <= 0) break;
-    }
-
-    tableHTML += `<tr><td>${firm}</td><td>${bank}</td><td>${loanNo}</td><td>₹${formatNum(loanAmount)}</td><td>₹${emiamt}</td><td>${formatDateDisplay(isoStart)}</td><td>${months}</td><td>${formatDateDisplay(lastDate)}</td><td>₹${formatNum(balance)}</td></tr>`;
-  });
-
-  tableHTML += `</tbody></table>`;
-  document.getElementById('loanbalance').innerHTML = tableHTML;
-}
-
-// ---------- PRINT FUNCTIONS ----------
-// ---------- PRINT FUNCTIONS ----------
-function printLoanSummaryAndSchedule() {
-  const content = document.getElementById('LRSMRY').innerHTML + document.getElementById('scheduleLRTable').innerHTML;
-  openPrintWindow(content, 'Loan Summary & Schedule');
-}
-
-function printLoanBalance() {
-  const content = document.getElementById('loanbalance').innerHTML;
-  openPrintWindow(content, 'Running Loans Overview');
-}
-
-function openPrintWindow(content, title) {
-  const mywindow = window.open('', 'PRINT', 'height=600,width=800');
-  mywindow.document.write(`
-    <html>
-    <head>
-      <title>${title}</title>
-      <style>
-        body {
-          font-family: Arial, sans-serif;
-          margin: 20px;
-          color: #333;
-        }
-        h2, h3 {
-          text-align: center;
-          margin-bottom: 20px;
-          color: #222;
-        }
-        table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-bottom: 20px;
-        }
-        th, td {
-          border: 1px solid #555;
-          padding: 8px 12px;
-          text-align: center;
-          font-size: 14px;
-        }
-        th {
-          background-color: #f2f2f2;
-          font-weight: bold;
-        }
-        tr:nth-child(even) {
-          background-color: #fafafa;
-        }
-        tr:hover {
-          background-color: #f1f1f1;
-        }
-        @media print {
-          body {
-            margin: 10mm;
-          }
-          table {
-            page-break-inside: auto;
-          }
-          tr { page-break-inside: avoid; page-break-after: auto; }
-          thead { display: table-header-group; }
-          tfoot { display: table-footer-group; }
-        }
-      </style>
-    </head>
-    <body>
-      <h2>${title}</h2>
-      ${content}
-    </body>
-    </html>
-  `);
-  mywindow.document.close();
-  mywindow.focus();
-  mywindow.print();
-  mywindow.close();
-}
-
-
-// ---------- initialise ----------
-window.addEventListener('DOMContentLoaded', async () => {
-  await loadLoans();
-  showRunningLoans();
-});
-</script>
-
-
-</body>
-</html>
-
-<!-- ------------------  MIPL Repayment Sedual script and code stop -------------------------------------- -->
-
 
 <!-- ================  Employee & Event Serch script start hare ===============================-->
 <script>
@@ -13679,3 +13251,238 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 <!-- ===== Note: ========== Unified Tally Prime Date Format Script Stop ======= xxx ========= -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ===== Note: ========== Mouse Right Click Script and Code Start  ======= Start ========= -->
+<!-- Custom Context Menu Container -->
+<div id="cm-app-context-menu">
+  <ul>
+    <li onclick="showSection(1); CMAppModule.hideMenu();" style="color: #001bb3; font-weight: bold;">Home</li>
+    <li onclick="showSection(4); CMAppModule.hideMenu();document.getElementById('ctr1').click();">Dishplay Ledger Report</li>
+    <li onclick="showSection(5); CMAppModule.hideMenu();" mfvbtn="80">Cash Ledger Report</li>
+    <li onclick="showSection(6); CMAppModule.hideMenu();" mfvbtn="3">Imprest Voucher Report</li>
+     <li onclick="showSection(8); CMAppModule.hideMenu();">Packing List Report</li>
+    
+    <li class="cm-app-divider"></li>
+    <li onclick="CMAppModule.handleAction('copy')">Copy</li>
+    <li onclick="CMAppModule.handleAction('paste')">Paste</li>
+    <li class="cm-app-divider"></li>
+    
+    <!-- Submenu: URL Options -->
+    <li class="cm-app-has-submenu">
+      URL
+      <ul class="cm-app-submenu">
+        <li onclick="CMAppModule.openURL('https://www.google.com')">Google</li>
+        <li onclick="CMAppModule.openURL('https://www.yahoo.com')">Yahoo</li>
+        <li onclick="CMAppModule.openURL('https://www.youtube.com')">YouTube</li>
+        <li onclick="CMAppModule.openURL('https://m5792.github.io/esm/Medicinelist.html')">Medicine Search</li>
+      </ul>
+    </li>
+
+    <!-- Submenu: Voucher Options -->
+    <li class="cm-app-has-submenu">
+      Voucher
+      <ul class="cm-app-submenu">
+        <li onclick="showSection(3); showVoucher(1); CMAppModule.hideMenu();" mfvbtn="21">Store Voucher</li>
+        <li onclick="showSection(3); showVoucher(2); CMAppModule.hideMenu();"mfvbtn="22">Contactor Voucher</li>
+        <li onclick="showSection(3); showVoucher(3); CMAppModule.hideMenu();"mfvbtn="23">Cash Voucher</li>
+        <li onclick="showSection(3); showVoucher(4); CMAppModule.hideMenu();"mfvbtn="24">Sales Voucher</li>
+        <li onclick="showSection(3); showVoucher(5); CMAppModule.hideMenu();"mfvbtn="25">Banking Voucher</li>
+      
+      </ul>
+    </li>
+
+    <!-- Submenu: Admin Options -->
+    <li class="cm-app-has-submenu" mfvbtn="28">
+      Admin
+      <ul class="cm-app-submenu">
+        <li onclick="showSection(4); CMAppModule.hideMenu(); document.getElementById('ctr2').click();">Id / Password</li>
+        <li onclick="showSection(3); showVoucher(8); CMAppModule.hideMenu();">User Control</li>
+        <li onclick="CMAppModule.openURL('https://docs.google.com/spreadsheets/d/1vjkI_bpHNR6Tna17FISridqXSvCUnELA5oMgnAqzbO0/edit?gid=9766610#gid=9766610')">CMIV Data Sheet</li>
+      <li onclick="CMAppModule.openURL('https://docs.google.com/spreadsheets/d/1ZcLYgP459FzX9eE2-r3yOxdatRyEt-rPeOSvbxRINqU/edit?gid=1462163867#gid=1462163867')">Master Voucher Data Sheet</li>
+        <li onclick="CMAppModule.openURL('https://docs.google.com/spreadsheets/d/1gOdnvS_To2tGVuIMtMdNGFT4cCkqyL5gHqBWjnhNG_4/edit?gid=256332957#gid=256332957')">Packing List Data Sheet</li>
+        <li onclick="CMAppModule.openURL('https://www.google.com')">Misc Data (ID/Pasword, (Address) Sheet</li>
+      </ul>
+    </li>
+
+     <!-- Submenu: Admin Options -->
+    <li class="cm-app-has-submenu">
+      Calculation
+      <ul class="cm-app-submenu">
+        <li>For Amt:- Qty x R.AMT / T.QTY</li>
+        <li>For Qty:- Amt / R.AMT x T.QTY</li>
+        <li>Sheet (Ft) in Kg:- W x L x 0.45</li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<!-- Isolated Styling CSS -->
+<style>
+  #cm-app-context-menu {
+    position: absolute;
+    display: none;
+    background: #ffffff;
+    border: 1px solid #dcdcdc;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    border-radius: 6px;
+    width: 200px;
+    z-index: 999999;
+    padding: 5px 0;
+    font-size: 14px;
+    user-select: none;
+  }
+
+  #cm-app-context-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  #cm-app-context-menu li {
+    position: relative;
+    padding: 10px 15px;
+    cursor: pointer;
+    color: #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+  }
+
+  #cm-app-context-menu li:hover {
+    background-color: #f0f4f8;
+    color: #007bff;
+  }
+
+  #cm-app-context-menu .cm-app-divider {
+    height: 1px;
+    background-color: #e9ecef;
+    margin: 4px 0;
+    padding: 0;
+  }
+
+  /* Submenu Layout & Arrow */
+  #cm-app-context-menu .cm-app-has-submenu::after {
+    content: "▶";
+    font-size: 10px;
+    color: #888;
+  }
+
+  #cm-app-context-menu .cm-app-submenu {
+    display: none;
+    position: absolute;
+    left: 100%;
+    top: -5px;
+    background: #ffffff;
+    border: 1px solid #dcdcdc;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    border-radius: 6px;
+    width: 300px;
+    padding: 5px 0;
+  }
+
+  #cm-app-context-menu .cm-app-has-submenu:hover > .cm-app-submenu {
+    display: block;
+  }
+</style>
+
+<!-- Isolated Script Engine -->
+<script>
+  const CMAppModule = (function() {
+    const menu = document.getElementById('cm-app-context-menu');
+
+    function init() {
+      // Right Click Event
+      document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        
+        // Window Boundary Checking
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+        const menuWidth = menu.offsetWidth || 200;
+        const menuHeight = menu.offsetHeight || 250;
+
+        const posX = (mouseX + menuWidth > window.innerWidth) ? (mouseX - menuWidth) : mouseX;
+        const posY = (mouseY + menuHeight > window.innerHeight) ? (mouseY - menuHeight) : mouseY;
+
+        menu.style.left = posX + 'px';
+        menu.style.top = posY + 'px';
+        menu.style.display = 'block';
+      });
+
+      // Hide Menu on Left Click Outside
+      document.addEventListener('click', function(e) {
+        if (menu && !menu.contains(e.target)) {
+          hideMenu();
+        }
+      });
+
+      // Hide Menu on ESC key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          hideMenu();
+        }
+      });
+    }
+
+    function hideMenu() {
+      if (menu) menu.style.display = 'none';
+    }
+
+    // Default Action Handler (Copy & Paste)
+    function handleAction(actionKey) {
+      hideMenu();
+
+      if (actionKey === 'copy') {
+        const text = window.getSelection().toString();
+        if (text) navigator.clipboard.writeText(text);
+      } 
+      else if (actionKey === 'paste') {
+        navigator.clipboard.readText().then(text => {
+          console.log('Pasted text:', text);
+        }).catch(err => console.error(err));
+      }
+    }
+
+    // URL Redirect Handler
+    function openURL(url) {
+      hideMenu();
+      window.open(url, '_blank');
+    }
+
+    return {
+      init: init,
+      hideMenu: hideMenu,
+      handleAction: handleAction,
+      openURL: openURL
+    };
+  })();
+
+  // Initialize script when page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    CMAppModule.init();
+  });
+</script>
+
+<!-- ===== Note: ========== Mouse Right Click Script and Code Stop  ======= xxx ========= -->
