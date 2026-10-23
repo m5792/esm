@@ -283,7 +283,7 @@
 <div class="container" id="main-dashboard-area">
     <!-- Top Bar -->
     <div class="top-bar">
-        ID No.:<input type="text" class="search-input" id="id-filter" placeholder="Enter ID No" oninput="filterLoans()" style="width: 110px;background-color: #f9fae7;">
+        ID No.:<input type="text" class="search-input" id="id-filter" placeholder="Enter ID No eg 0000" oninput="filterLoans()" style="width: 110px;background-color: #f9fae7;">
        
        <select class="filter-select" id="type-filter" onchange="filterLoans()">
             <option value="ALL">All Loan Types</option>
@@ -352,7 +352,7 @@
         <strong>Id No:</strong><span style="color: #1339a0;" id="d-id"></span>
 
         <div class="detail-row">
-            <span class="detail-label">Customer Name</span>
+            <span class="detail-label">Loan Details</span>
             <span class="detail-value" id="d-customer"></span>
         </div>
         <div class="detail-row">
@@ -568,6 +568,21 @@
             interestRate: 10.02,
             tenureMonths: 47
         },
+         {
+            id: "200",
+            loanNoMasked: "129929358 - HDFC Bank",
+            loanType: "Vehicle Loan",
+            customer: "MIPL-UK18P1881| Tata Harrier",
+            deductaccount: "PNB - 21/5714",
+            loanAmount: 2053998.00,
+            bookedOn: "7 Jun 2022",
+            emiAmount: 31202,
+            interestRate: 7.2,
+            tenureMonths: 84,
+            manualStatus: "SETTLED",
+          // settledAmount: 1208160
+          remark: "Pre Closed Settled Amt-1208160/ dt. 29.9.25 / Pay By TAC-87-1459"
+        },
         {
             id: "200",
             loanNoMasked: "802044953 - HDFC Bank",
@@ -616,7 +631,7 @@
             emiAmount: 58701,
             interestRate: 8,
             tenureMonths: 48,
-            remark: "Chassis No- MB1T2VHD8TPPK5958, Engine No.- TPPZ113344, ASHOK LEYLAND LTD, Modal-NA5525/34 TT CC",
+            remark: "Chassis No- MB1T2VHD8TPPK5958, Engine No.- TPPZ113344, ASHOK LEYLAND LTD, Modal-NA5525/34 TT CC"
            // manualStatus: "SETTLED",
         },
           {
@@ -659,25 +674,27 @@
             id: "201",
             loanNoMasked: "	1295605000001656 - NTBL Bank",
             loanType: "Machine Loan",
-            customer: "GLOBAL TECHNOGIES",
+            customer: "GT- Stud Weld & Mig Weld Machine",
             deductaccount: "NTBL 01-0888",
             loanAmount: 980000.00,
             bookedOn: "28 Sep 2025",
             emiAmount: 16149, // 
             interestRate: 10,
-            tenureMonths: 84
+            tenureMonths: 84,
+            remark: "Trustweld Engineers / In. No. TWE2252 / Dt. 19.8.2025 / Rs. 613600 & AVIAN TECHNOLOGIES / In No. 25-26/802 / DT. 1.09.2025 / Rs. 700022"
         },
         {
             id: "201",
             loanNoMasked: "	1295605000001809 - NTBL Bank",
             loanType: "Machine Loan",
-            customer: "GLOBAL TECHNOGIES",
+            customer: "GT-ISBT Based Saw Machine",
             deductaccount: "NTBL 01-0888",
             loanAmount: 970000.00,
             bookedOn: "29 Nov 2025",
             emiAmount: 15979, // 
             interestRate: 10,
-            tenureMonths: 84
+            tenureMonths: 84,
+            remark: "MANSOORI WELDARC INDIA P Ltd. / In. No. 25-26/1358 / Dt. 4.11.2025 / Rs. 1298000"
         },
         {
             id: "202",
@@ -693,27 +710,59 @@
         },
          {
             id: "202",
+            loanNoMasked: "	85995702 - HDFC Bank",
+            loanType: "Vehicle Loan",
+            customer: "Car Loan - UK18CA2303",
+            deductaccount: "HDFC-7760",
+            loanAmount: 1300000.00,
+            bookedOn: "5 Jan 2022",
+            emiAmount: 41366, // 
+            interestRate: 9.04,
+            tenureMonths: 36,
+           // manualStatus: "SETTLED",
+           // settledAmount: 8448.02
+           remark: ""
+        },
+        {
+            id: "202",
+            loanNoMasked: "	85995653 - HDFC Bank",
+            loanType: "Vehicle Loan",
+            customer: "Car Loan - UK18CA3770",
+            deductaccount: "HDFC-7760",
+            loanAmount: 1500000.00,
+            bookedOn: "5 Jan 2022",
+            emiAmount: 47730, // 
+            interestRate: 9.04,
+            tenureMonths: 36,
+           // manualStatus: "SETTLED",
+           // settledAmount: 8448.02
+           remark: ""
+        },
+         {
+            id: "202",
             loanNoMasked: "	1295605000001670 - NTBL Bank",
             loanType: "Machine Loan",
-            customer: "Multitech Solution ",
+            customer: "MS- Horizontal Line Mold Machine",
             deductaccount: "NTBL 01-0879",
             loanAmount: 870000.00,
             bookedOn: "29 Sep 2025",
             emiAmount: 14335, // 
             interestRate: 10,
-            tenureMonths: 84
+            tenureMonths: 84,
+            remark: "Vishwas Welding Works / In. No. 54 / Dt. 28/8/2025 / Rs. 1179162"
         },
         {
             id: "202",
             loanNoMasked: "	1295605000001861 - NTBL Bank",
             loanType: "Machine Loan",
-            customer: "Multitech Solution ",
+            customer: "MS- JRF Standing Seam Machine ",
             deductaccount: "NTBL 01-0879",
             loanAmount: 990000.00,
             bookedOn: "21 Dec 2025",
             emiAmount: 16306, // 
             interestRate: 10,
-            tenureMonths: 84
+            tenureMonths: 84,
+            remark: "Jupiter Roll Form Machines P. Ltd. / In. No. GT/25-26/0969 / Dt. 28/11/2025 / Rs. 2306116"
         },
         {
             id: "202",
@@ -1232,7 +1281,7 @@ const LoanPrinter = {
                 <div class="loan-summary-grid">
                     <div class="summary-item"><span class="summary-label">Loan No:</span><span class="summary-val">${loan.loanNoMasked}</span></div>
                     <div class="summary-item"><span class="summary-label">Loan Type:</span><span class="summary-val">${loan.loanType}</span></div>
-                    <div class="summary-item"><span class="summary-label">Customer Name:</span><span class="summary-val">${loan.customer || 'N/A'}</span></div>
+                    <div class="summary-item"><span class="summary-label">Loan Details:</span><span class="summary-val">${loan.customer || 'N/A'}</span></div>
                     <div class="summary-item"><span class="summary-label">Deduct Account:</span><span class="summary-val">${loan.deductaccount || 'N/A'}</span></div>
                     <div class="summary-item"><span class="summary-label">Loan Amount:</span><span class="summary-val">${formatINR(loan.loanAmount)}</span></div>
                     <div class="summary-item"><span class="summary-label">Principal Outstanding:</span><span class="summary-val">${formatINR(loan.outstanding)}</span></div>
